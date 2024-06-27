@@ -4,7 +4,7 @@ const UAT = 'uat';
 const TEST = 'test';
 const PRODUCTION = 'production';
 
-const ENVIRONMENT = {
+const environment = {
     DEVELOPMENT,
     STAGING,
     UAT,
@@ -12,4 +12,4 @@ const ENVIRONMENT = {
     PRODUCTION,
 };
 
-export default ENVIRONMENT;
+export default environment;

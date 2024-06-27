@@ -105,7 +105,7 @@ const EWOULDBLOCK = 'EWOULDBLOCK';
 const EPROTO = 'EPROTO';
 
 // Export the error codes as an object for easy access throughout the application
-const ERROR_CODES = {
+const errorCodes = {
     EACCES,
     EADDRINUSE,
     ECONNREFUSED,
@@ -124,4 +124,4 @@ const ERROR_CODES = {
     EPROTO,
 };
 
-export default ERROR_CODES;
+export default errorCodes;
