@@ -1,9 +1,9 @@
 import express from 'express';
 
-import booksController from "./books.controller.js";
+import statusController from "./status.controller.js";
 
 const router = express.Router();
 
-router.get('/', booksController)
+router.get('/', statusController)
 
 export default router;
