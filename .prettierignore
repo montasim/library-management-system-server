@@ -2,4 +2,8 @@
 .idea
 node_modules
 build
+documentation
 yarn.lock
+LICENSE
+SECURITY.md
+.prettierignore
