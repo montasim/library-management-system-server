@@ -21,7 +21,7 @@
   "scripts": {
     "start": "node ./build/server.js",
     "dev": "nodemon server.js",
-    "build": "node terser.js",
+    "build": "yarn prettier:fix && node terser.js",
     "prettier:check": "prettier . --check",
     "prettier:fix": "prettier . --write",
     "test": "jest",
