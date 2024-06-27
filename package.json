@@ -1,8 +1,45 @@
 {
   "name": "library-management-system-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20.x",
+    "yarn": ">=1.22.x"
+  },
   "repository": "https://github.com/montasim/library-management-system-server.git",
-  "author": "Ｍ♢ＮＴΛＳＩＭ <montasimmamun@gmail.com>",
-  "license": "MIT"
+  "author": {
+    "name": "Mohammad Montasim -Al- Mamun Shuvo",
+    "email": "montasimmamun@gmail.com",
+    "mobile": "+8801722815469",
+    "portfolio": "https://montasim-dev.web.app/",
+    "linkedin": "https://www.linkedin.com/in/montasim",
+    "github": "https://github.com/montasim"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "node build.js"
+  },
+  "keywords": [
+    "node.js",
+    "express.js",
+    "mongodb",
+    "library",
+    "library manaegment",
+    "library manaegment system",
+    "book",
+    "book management",
+    "book management system",
+    "book store",
+    "book store management",
+    "book store management system"
+  ],
+  "dependencies": {
+
+  },
+  "devDependencies": {
+
+  }
 }
