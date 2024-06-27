@@ -19,9 +19,9 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "node server.js",
+    "start": "node ./build/server.js",
     "dev": "nodemon server.js",
-    "build": "node build.js",
+    "build": "node terser.js",
     "prettier:check": "prettier . --check",
     "prettier:fix": "prettier . --write",
     "test": "jest",
@@ -46,11 +46,13 @@
     "cors": "^2.8.5",
     "dompurify": "^3.1.5",
     "express": "^4.19.2",
+    "glob": "^10.4.2",
     "helmet": "^7.1.0",
     "hpp": "^0.2.3",
     "jest": "^29.7.0",
     "jsdom": "^24.1.0",
-    "supertest": "^7.0.0"
+    "supertest": "^7.0.0",
+    "terser": "^5.31.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
