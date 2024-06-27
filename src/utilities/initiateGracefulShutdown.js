@@ -13,7 +13,9 @@ const initiateGracefulShutdown = async (reason, server) => {
                 clearTimeout(shutdownTimeout);
 
                 if (error) {
-                    console.error(`Failed to close server due to: ${error.message}`);
+                    console.error(
+                        `Failed to close server due to: ${error.message}`
+                    );
 
                     reject(error);
                 } else {

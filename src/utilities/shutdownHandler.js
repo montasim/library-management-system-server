@@ -6,7 +6,9 @@ const shutdownHandler = async (signal, server) => {
     try {
         await initiateGracefulShutdown(signal, server);
     } catch (shutdownError) {
-        console.error(`Error during graceful shutdown on ${signal}: ${shutdownError.message}`);
+        console.error(
+            `Error during graceful shutdown on ${signal}: ${shutdownError.message}`
+        );
 
         process.exit(1);
     }

@@ -75,7 +75,13 @@ const bytesToKilobytes = (bytes) => {
  * @param {Object} sizeTracker - Tracker for original and minified sizes.
  * @returns {Promise<string>} The result of the minification process.
  */
-const minifyJavaScript = async (file, srcPath, destPath, options, sizeTracker) => {
+const minifyJavaScript = async (
+    file,
+    srcPath,
+    destPath,
+    options,
+    sizeTracker
+) => {
     const fileContent = fs.readFileSync(srcPath, 'utf8');
     const originalSize = getFileSize(srcPath);
     const terserResult = await minify(fileContent, options);
@@ -126,7 +132,13 @@ const processFiles = async (files, rootDir, outputDir, config) => {
 
         try {
             if (file.endsWith('.js')) {
-                const result = await minifyJavaScript(file, srcPath, destPath, config, sizeTracker);
+                const result = await minifyJavaScript(
+                    file,
+                    srcPath,
+                    destPath,
+                    config,
+                    sizeTracker
+                );
 
                 if (result === 'minified') {
                     stats.minified++;
@@ -160,21 +172,32 @@ const main = async () => {
         return;
     }
 
-    const ignorePatterns = config.ignore ? config.ignore.concat(DEFAULT_IGNORE_PATTERNS) : DEFAULT_IGNORE_PATTERNS;
+    const ignorePatterns = config.ignore
+        ? config.ignore.concat(DEFAULT_IGNORE_PATTERNS)
+        : DEFAULT_IGNORE_PATTERNS;
     const allFiles = globSync('**/*', { ignore: ignorePatterns, nodir: true });
-    const { stats, sizeTracker } = await processFiles(allFiles, ROOT_DIR, OUTPUT_DIR, config);
+    const { stats, sizeTracker } = await processFiles(
+        allFiles,
+        ROOT_DIR,
+        OUTPUT_DIR,
+        config
+    );
 
     // Using console.table for a neat summary output, converting bytes to KB
     console.table({
-        'Total': allFiles.length,
-        'Minified': stats.minified,
-        'Copied': stats.copied,
-        'Failed': stats.failed,
-        'Original Size (KB)': parseFloat(bytesToKilobytes(sizeTracker.originalTotal)),
-        'Minified Size (KB)': parseFloat(bytesToKilobytes(sizeTracker.minifiedTotal)),
+        Total: allFiles.length,
+        Minified: stats.minified,
+        Copied: stats.copied,
+        Failed: stats.failed,
+        'Original Size (KB)': parseFloat(
+            bytesToKilobytes(sizeTracker.originalTotal)
+        ),
+        'Minified Size (KB)': parseFloat(
+            bytesToKilobytes(sizeTracker.minifiedTotal)
+        ),
     });
 };
 
-main().catch(error => {
-    console.error("Failed to process files:", error);
+main().catch((error) => {
+    console.error('Failed to process files:', error);
 });
