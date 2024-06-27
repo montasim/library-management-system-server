@@ -1,6 +1,5 @@
 import express from 'express';
 import helmet from 'helmet';
-import hpp from 'hpp';
 import cors from 'cors';
 import compression from 'compression';
 
@@ -10,13 +9,14 @@ import sanitizeRequestConfiguration from './configuration/sanitizeRequest.config
 
 import appRoutes from './routes.js';
 import errorHandlingMiddleware from './middleware/errorHandlingMiddleware.js';
+import hppConfiguration from './configuration/hpp.configuration.js';
 
 const app = express();
 
 // Security middleware
 app.use(helmet(helmetConfiguration));
 app.use(cors(corsConfiguration));
-app.use(hpp());
+app.use(hppConfiguration());
 app.use(compression()); // Assuming compressionConfiguration is intended to be compression middleware setup
 
 // Body parsing middleware
