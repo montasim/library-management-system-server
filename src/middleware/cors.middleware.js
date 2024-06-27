@@ -9,11 +9,11 @@ const corsMiddleware = {
         }
     },
     optionsSuccessStatus: 200, // For legacy browser support
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true, // This allows the server to send cookies
     preflightContinue: false,
-    maxAge: 24 * 60 * 60 // 24 hours
+    maxAge: 24 * 60 * 60, // 24 hours
 };
 
 export default corsMiddleware;

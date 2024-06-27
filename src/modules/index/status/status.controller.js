@@ -1,4 +1,4 @@
-import statusService from "./status.service.js";
+import statusService from './status.service.js';
 
 const statusController = (req, res) => {
     const statusData = statusService(req);

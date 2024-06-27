@@ -1,4 +1,4 @@
-import httpStatus from "../../constant/statusCodes.constants.js";
+import httpStatus from '../../constant/statusCodes.constants.js';
 
 const undefinedService = (req) => {
     return {

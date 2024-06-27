@@ -1,4 +1,4 @@
-import booksService from "./books.service.js";
+import booksService from './books.service.js';
 
 const booksController = (req, res) => {
     const booksData = booksService(req);
