@@ -1,6 +1,6 @@
 import httpStatus from '../../../constant/statusCodes.constants.js';
 
-const booksService = (req) => {
+const createBook = (req) => {
     return {
         route: req.originalUrl,
         timeStamp: new Date(),
@@ -9,6 +9,46 @@ const booksService = (req) => {
         message: 'Success',
         status: httpStatus.OK,
     };
+};
+
+const getBooks = (req) => {
+    return {
+        route: req.originalUrl,
+        timeStamp: new Date(),
+        success: true,
+        data: {},
+        message: 'Success',
+        status: httpStatus.OK,
+    };
+};
+
+const updateBook = (req) => {
+    return {
+        route: req.originalUrl,
+        timeStamp: new Date(),
+        success: true,
+        data: {},
+        message: 'Success',
+        status: httpStatus.OK,
+    };
+};
+
+const deleteBook = (req) => {
+    return {
+        route: req.originalUrl,
+        timeStamp: new Date(),
+        success: true,
+        data: {},
+        message: 'Success',
+        status: httpStatus.OK,
+    };
+};
+
+const booksService = {
+        createBook,
+        getBooks,
+        updateBook,
+        deleteBook,
 };
 
 export default booksService;
