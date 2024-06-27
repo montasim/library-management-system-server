@@ -22,6 +22,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "build": "node build.js",
+    "prettier:check": "prettier . --check",
     "prettier:fix": "prettier . --write",
     "release": "standard-version"
   },
