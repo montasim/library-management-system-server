@@ -7,3 +7,4 @@ yarn.lock
 LICENSE
 SECURITY.md
 .prettierignore
+.babelrc
