@@ -1,4 +1,4 @@
-const corsMiddleware = {
+const corsConfiguration = {
     origin: (origin, callback) => {
         const whitelist = ['http://localhost:5000', '127.0.01:5000']; // List of allowed origins
 
@@ -16,4 +16,4 @@ const corsMiddleware = {
     maxAge: 24 * 60 * 60, // 24 hours
 };
 
-export default corsMiddleware;
+export default corsConfiguration;
