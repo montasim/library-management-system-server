@@ -1,0 +1,8 @@
+{
+  "name": "library-management-system-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/montasim/library-management-system-server.git",
+  "author": "Ｍ♢ＮＴΛＳＩＭ <montasimmamun@gmail.com>",
+  "license": "MIT"
+}
