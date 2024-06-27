@@ -1,0 +1,34 @@
+# This configuration file is used by Git to handle the line endings and encoding settings for files based on their type.
+# It ensures consistent handling of files across different operating systems and environments.
+
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+# Ensures automatic text handling, which normalizes line endings on commit and converts them on checkout.
+
+# Specify line ending settings for specific file types to ensure consistency across platforms.
+*.js text eol=crlf    # Ensure JavaScript files use CRLF line endings in Windows environments.
+*.jsx text eol=crlf   # Ensure JSX files use CRLF line endings in Windows environments.
+*.ts text eol=crlf    # Ensure TypeScript files use CRLF line endings in Windows environments.
+*.tsx text eol=crlf   # Ensure TSX files use CRLF line endings in Windows environments.
+*.json text eol=crlf  # Ensure JSON files use CRLF line endings in Windows environments.
+*.md text eol=crlf    # Ensure Markdown files use CRLF line endings in Windows environments.
+
+# Set UTF-8 encoding for certain file types to prevent encoding issues across different environments.
+*.js charset=utf-8
+*.jsx charset=utf-8
+*.ts charset=utf-8
+*.tsx charset=utf-8
+*.json charset=utf-8
+
+# Special handling for markdown files to prevent issues with formatting that uses trailing whitespace.
+*.md text=auto eol=crlf
+*.md -trim_trailing_whitespace   # Disable trimming of trailing whitespace in Markdown files.
+
+# Define binary files to prevent Git from attempting to auto-correct line endings or apply text transformations.
+*.png binary   # Treat PNG files as binary to avoid corrupting their content.
+*.jpg binary   # Treat JPEG files as binary to avoid corrupting their content.
+*.gif binary   # Treat GIF files as binary to avoid corrupting their content.
+
+# Explanation of binary setting
+# 'binary' attribute is used to tell Git to treat the file as a binary data, preventing any automatic end-of-line conversion,
+# and ensuring that the file is not modified.
