@@ -5,9 +5,12 @@ const hppConfiguration = (options) => {
         // Check for multiple instances of sensitive parameters
         const sensitiveParams = ['user', 'auth', 'token'];
 
-        sensitiveParams.forEach(param => {
+        sensitiveParams.forEach((param) => {
             if (req.query[param] && Array.isArray(req.query[param])) {
-                console.warn(`HPP attempt detected on parameter: ${param}`, req.query[param]);
+                console.warn(
+                    `HPP attempt detected on parameter: ${param}`,
+                    req.query[param]
+                );
                 // Optionally, handle this as an incident report
             }
         });

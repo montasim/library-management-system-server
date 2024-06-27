@@ -5,12 +5,14 @@ import methodNotSupported from '../../../shared/methodNotSupported.js';
 
 const router = express.Router();
 
-router.route("/")
+router
+    .route('/')
     .post(booksController.createBook)
     .get(booksController.getBooks)
     .all(methodNotSupported);
 
-router.route("/:bookId")
+router
+    .route('/:bookId')
     .get(booksController.updateBook)
     .put(booksController.updateBook)
     .delete(booksController.deleteBook)

@@ -45,10 +45,10 @@ const deleteBook = (req) => {
 };
 
 const booksService = {
-        createBook,
-        getBooks,
-        updateBook,
-        deleteBook,
+    createBook,
+    getBooks,
+    updateBook,
+    deleteBook,
 };
 
 export default booksService;

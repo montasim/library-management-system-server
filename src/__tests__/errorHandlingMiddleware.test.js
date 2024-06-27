@@ -38,4 +38,3 @@ describe('Error Handling Middleware', () => {
         expect(response.body.success).toBeFalsy();
     });
 });
-

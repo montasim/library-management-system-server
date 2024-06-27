@@ -20,7 +20,7 @@ app.use(hppConfiguration());
 app.use(compression()); // Assuming compressionConfiguration is intended to be compression middleware setup
 
 // Body parsing middleware
-app.use(express.json({ limit: '20mb' }));  // unified the limit for JSON
+app.use(express.json({ limit: '20mb' })); // unified the limit for JSON
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
 // Sanitize request data

@@ -4,8 +4,8 @@ const methodNotSupported = (req, res) => {
     // Extract the methods allowed for the current route
     const methods = req.route.methods;
     const allowedMethods = Object.keys(methods)
-        .filter(method => methods[method] === true && method !== '_all')  // Exclude '_all'
-        .map(method => method.toUpperCase())
+        .filter((method) => methods[method] === true && method !== '_all') // Exclude '_all'
+        .map((method) => method.toUpperCase())
         .join(', ');
 
     const methodNotSupportedData = {

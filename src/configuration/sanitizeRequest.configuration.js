@@ -6,8 +6,8 @@ const { window } = new JSDOM('');
 const dompurify = DOMPurify(window);
 
 // Sanitization function to cleanse all strings in an object
-const sanitize = obj => {
-    const seen = new WeakSet();  // Avoid circular reference issues
+const sanitize = (obj) => {
+    const seen = new WeakSet(); // Avoid circular reference issues
 
     // Recursively sanitize objects and arrays
     const recurSanitize = (object) => {
@@ -16,11 +16,12 @@ const sanitize = obj => {
         }
         seen.add(object);
 
-        Object.keys(object).forEach(key => {
+        Object.keys(object).forEach((key) => {
             const value = object[key];
             if (typeof value === 'string') {
                 object[key] = dompurify.sanitize(value);
-            } else if (value && typeof value === 'object') {  // Check for non-null objects
+            } else if (value && typeof value === 'object') {
+                // Check for non-null objects
                 recurSanitize(value);
             }
         });
@@ -32,7 +33,7 @@ const sanitize = obj => {
 // Middleware to sanitize query, body, and params of a request
 const sanitizeRequestConfiguration = (req, res, next) => {
     try {
-        ['body', 'query', 'params'].forEach(part => {
+        ['body', 'query', 'params'].forEach((part) => {
             if (req[part] && typeof req[part] === 'object') {
                 sanitize(req[part]);
             }
@@ -42,7 +43,7 @@ const sanitizeRequestConfiguration = (req, res, next) => {
 
         return res.status(500).json({
             success: false,
-            message: 'Error processing request, please try again later.'
+            message: 'Error processing request, please try again later.',
         });
     }
 

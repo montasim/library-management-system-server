@@ -11,7 +11,7 @@ const errorHandlingMiddleware = (error, req, res, next) => {
         console.error('Error:', {
             error,
             body: req.body,
-            path: req.path
+            path: req.path,
         });
     }
 
@@ -20,7 +20,9 @@ const errorHandlingMiddleware = (error, req, res, next) => {
         route: req.originalUrl,
         timeStamp: new Date(),
         success: false,
-        data: process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT && { stack: error.stack },
+        data: process.env.NODE_ENV === ENVIRONMENT.DEVELOPMENT && {
+            stack: error.stack,
+        },
         message: message,
         status: status,
     };
@@ -28,12 +30,16 @@ const errorHandlingMiddleware = (error, req, res, next) => {
     // Handle known error types here
     if (error.code === ERROR_CODES.ECONNREFUSED) {
         response.status = httpStatus.SERVICE_UNAVAILABLE;
-        response.message = 'Service temporarily unavailable. Please try again later.';
+        response.message =
+            'Service temporarily unavailable. Please try again later.';
     } else if (error.isOperational) {
         response.message = error.message; // Operational error with a more user-friendly message
     } else {
         // For security reasons, do not send the error details to the client in production
-        response.message = process.env.NODE_ENV === ENVIRONMENT.PRODUCTION ? 'An unexpected error occurred' : error.message;
+        response.message =
+            process.env.NODE_ENV === ENVIRONMENT.PRODUCTION
+                ? 'An unexpected error occurred'
+                : error.message;
     }
 
     res.status(response.status).json(response);

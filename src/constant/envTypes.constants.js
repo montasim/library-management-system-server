@@ -12,5 +12,4 @@ const ENVIRONMENT = {
     PRODUCTION,
 };
 
-
 export default ENVIRONMENT;
