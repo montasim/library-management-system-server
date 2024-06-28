@@ -28,6 +28,7 @@
     "prettier:fix": "prettier . --write",
     "test": "jest",
     "release": "standard-version",
+    "generate-docs": "jsdoc -c jsdoc.json",
     "clean": "yarn autoclean --init",
     "postinstall": "yarn autoclean --force && yarn build"
   },
@@ -63,6 +64,7 @@
     "@babel/core": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
     "eslint": "^9.5.0",
+    "jsdoc": "^4.0.3",
     "nodemon": "^3.1.4",
     "prettier": "^3.3.2",
     "standard-version": "^9.5.0"
