@@ -15,9 +15,13 @@ import configuration from '../configuration/configuration.js';
  */
 const connect = async () => {
     // Setting up connection event listeners before initiating the connecting
-    mongoose.connection.on('error', (error) => console.error(`Database connection error: ${error}`));
+    mongoose.connection.on('error', (error) =>
+        console.error(`Database connection error: ${error}`)
+    );
 
-    mongoose.connection.on('reconnected', () => console.info('Database reconnected'));
+    mongoose.connection.on('reconnected', () =>
+        console.info('Database reconnected')
+    );
 
     mongoose.connection.on('disconnected', async () => {
         console.info('Database disconnected! Attempting to reconnect...');

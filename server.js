@@ -19,10 +19,14 @@ const startServer = async () => {
         server.on('error', (error) => handleServerError(error, server));
 
         // Uncaught Exceptions - These are errors that were not caught and handled within your code.
-        process.on('uncaughtException', (error) => handleUncaughtException(error, server));
+        process.on('uncaughtException', (error) =>
+            handleUncaughtException(error, server)
+        );
 
         // Unhandled Promise Rejections - Promises that fail without a .catch() handler.
-        process.on('unhandledRejection', (error) => handleUnhandledRejection(error, server));
+        process.on('unhandledRejection', (error) =>
+            handleUnhandledRejection(error, server)
+        );
 
         // Process Signals - SIGINT and SIGTERM, which are typical termination signals sent by operating systems or manually by users.
         process.on('SIGINT', () => shutdownHandler('SIGINT', server));

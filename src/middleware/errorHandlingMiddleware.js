@@ -4,7 +4,7 @@ import errorCodes from '../constant/errorCodes.constants.js';
 
 const errorHandlingMiddleware = (error, req, res, next) => {
     // Set a default status and message in case none is explicitly set by the throwing function
-    let { status, message } = error;
+    const { status, message } = error;
 
     // Log detailed error information in development for debugging
     if (process.env.NODE_ENV === environment.DEVELOPMENT) {
@@ -23,8 +23,8 @@ const errorHandlingMiddleware = (error, req, res, next) => {
         data: process.env.NODE_ENV === environment.DEVELOPMENT && {
             stack: error.stack,
         },
-        message: message,
-        status: status,
+        message,
+        status,
     };
 
     // Handle known error types here

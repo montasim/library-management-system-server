@@ -34,11 +34,18 @@ const getEnvVar = (envVar, defaultValue) => {
 };
 
 // Base MongoDB URL which might be appended with '-test' for test environment
-const mongoDbUrl = getEnvVar(process.env.MONGODB_URL, '') + (process.env.NODE_ENV === environment.TEST ? '-test' : '');
+const mongoDbUrl =
+    getEnvVar(process.env.MONGODB_URL, '') +
+    (process.env.NODE_ENV === environment.TEST ? '-test' : '');
 
 const envVarsSchema = Joi.object({
     NODE_ENV: Joi.string()
-        .valid(environment.PRODUCTION, environment.STAGING, environment.DEVELOPMENT, environment.TEST)
+        .valid(
+            environment.PRODUCTION,
+            environment.STAGING,
+            environment.DEVELOPMENT,
+            environment.TEST
+        )
         .required()
         .description('The application environment.'),
     VERSION: Joi.string()
@@ -84,7 +91,9 @@ const envVarsSchema = Joi.object({
     TIMEOUT_IN_SECONDS: Joi.number()
         .required()
         .description('Timeout in seconds.'),
-    CACHE_TTL_IN_SECONDS: Joi.number().required().description('Cache TTL in seconds.'),
+    CACHE_TTL_IN_SECONDS: Joi.number()
+        .required()
+        .description('Cache TTL in seconds.'),
     JSON_PAYLOAD_LIMIT: Joi.number()
         .required()
         .description('JSON payload limit in bytes.'),
@@ -135,7 +144,9 @@ const { value: envVars, error } = envVarsSchema.validate(process.env, {
 });
 
 if (error) {
-    throw new Error(`Config validation error: ${error.details.map(x => x.message).join(', ')}`);
+    throw new Error(
+        `Config validation error: ${error.details.map((x) => x.message).join(', ')}`
+    );
 }
 
 /**
@@ -150,17 +161,32 @@ const configuration = {
     },
     jwt: {
         secret: getEnvVar(envVars.JWT_SECRET, 'defaultSecret'),
-        accessExpirationMinutes: getInt(envVars.JWT_ACCESS_EXPIRATION_MINUTES, 30),
+        accessExpirationMinutes: getInt(
+            envVars.JWT_ACCESS_EXPIRATION_MINUTES,
+            30
+        ),
         refreshExpirationDays: getInt(envVars.JWT_REFRESH_EXPIRATION_DAYS, 30),
-        resetPasswordExpirationMinutes: getInt(envVars.JWT_RESET_PASSWORD_EXPIRATION_MINUTES, 10),
-        verifyEmailExpirationMinutes: getInt(envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES, 10),
+        resetPasswordExpirationMinutes: getInt(
+            envVars.JWT_RESET_PASSWORD_EXPIRATION_MINUTES,
+            10
+        ),
+        verifyEmailExpirationMinutes: getInt(
+            envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES,
+            10
+        ),
     },
     auth: {
         loginAttempts: getInt(envVars.MAXIMUM_LOGIN_ATTEMPTS, 5),
-        resetPasswordAttempts: getInt(envVars.MAXIMUM_RESET_PASSWORD_ATTEMPTS, 5),
+        resetPasswordAttempts: getInt(
+            envVars.MAXIMUM_RESET_PASSWORD_ATTEMPTS,
+            5
+        ),
         verifyEmailAttempts: getInt(envVars.MAXIMUM_VERIFY_EMAIL_ATTEMPTS, 5),
         changeEmailAttempts: getInt(envVars.MAXIMUM_CHANGE_EMAIL_ATTEMPTS, 5),
-        changePasswordAttempts: getInt(envVars.MAXIMUM_CHANGE_PASSWORD_ATTEMPTS, 5),
+        changePasswordAttempts: getInt(
+            envVars.MAXIMUM_CHANGE_PASSWORD_ATTEMPTS,
+            5
+        ),
         activeSessions: getInt(envVars.MAXIMUM_ACTIVE_SESSIONS, 10),
         lockDuration: getInt(envVars.LOCK_DURATION_HOUR, 1),
     },
@@ -170,8 +196,12 @@ const configuration = {
     },
     jsonPayloadLimit: getInt(envVars.JSON_PAYLOAD_LIMIT, 1000000),
     cors: {
-        origin: getEnvVar(envVars.CORS_ORIGIN, '').split(',').map((origin) => origin.trim()),
-        methods: getEnvVar(envVars.CORS_METHODS, '').split(',').map((method) => method.trim()),
+        origin: getEnvVar(envVars.CORS_ORIGIN, '')
+            .split(',')
+            .map((origin) => origin.trim()),
+        methods: getEnvVar(envVars.CORS_METHODS, '')
+            .split(',')
+            .map((method) => method.trim()),
     },
     rateLimit: {
         windowMs: getInt(envVars.RATE_LIMIT_WINDOW_MS, 60000),
