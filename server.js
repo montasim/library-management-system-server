@@ -13,8 +13,11 @@ const startServer = async () => {
         await EmailService.connect();
         await DatabaseMiddleware.connect();
 
+        // Uppercase the first letter of the environment
+        const envCapitalized = configuration.env.charAt(0).toUpperCase() + configuration.env.slice(1);
+
         const server = app.listen(configuration.port, () => {
-            console.log(`Server started on port ${configuration.port}`);
+            console.log(`${envCapitalized} server started on port ${configuration.port}`);
         });
 
         // Server Startup Errors - Such as port in use, permissions issues, etc.
