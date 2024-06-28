@@ -23,7 +23,9 @@ const connect = async () => {
             },
         });
 
-        console.info(`Email service connected to host: ${configuration.email.smtp.host}, port: ${configuration.email.smtp.port}`);
+        console.info(
+            `Email service connected to host: ${configuration.email.smtp.host}, port: ${configuration.email.smtp.port}`
+        );
     } catch (error) {
         console.error('Failed to initialize email service:', error);
 
