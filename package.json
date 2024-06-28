@@ -1,6 +1,6 @@
 {
   "name": "library-management-system-server",
-  "version": "1.0.0",
+  "version": "4.0.0",
   "description": "",
   "main": "server.js",
   "type": "module",
@@ -28,6 +28,10 @@
     "prettier:fix": "prettier . --write",
     "test": "jest",
     "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:patch": "standard-version --release-as patch",
+    "postrelease": "yarn push --tags",
     "generate-docs": "jsdoc -c jsdoc.json",
     "clean": "yarn autoclean --init",
     "postinstall": "yarn autoclean --force && yarn build"
