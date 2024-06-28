@@ -17,12 +17,24 @@ const initiateGracefulShutdown = async (reason, server, error) => {
     emailData.timeDetected = new Date().toDateString();
 
     const subject = 'System Error - Critical Issue Detected';
-    const { pageTitle, preheaderText, heroSection, mainSection, footerContent } = prepareEmailContent(subject, emailData);
+    const {
+        pageTitle,
+        preheaderText,
+        heroSection,
+        mainSection,
+        footerContent,
+    } = prepareEmailContent(subject, emailData);
 
     await EmailService.sendEmail(
         configuration.admin.email,
         subject,
-        prepareEmail(pageTitle, preheaderText, heroSection, mainSection, footerContent)
+        prepareEmail(
+            pageTitle,
+            preheaderText,
+            heroSection,
+            mainSection,
+            footerContent
+        )
     );
 
     const shutdownTimeout = setTimeout(() => {

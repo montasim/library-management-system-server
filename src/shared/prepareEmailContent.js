@@ -4,7 +4,8 @@ const prepareEmailContent = (subject, emailData) => {
     switch (subject) {
         case 'Confirm Your Email Address':
             pageTitle = 'Email Confirmation';
-            preheaderText = 'Activate your account by confirming your email address.';
+            preheaderText =
+                'Activate your account by confirming your email address.';
             heroSection = `
                 <tr>
                   <td align="center" bgcolor="#e9ecef">
@@ -176,7 +177,8 @@ const prepareEmailContent = (subject, emailData) => {
             break;
         case 'Reset Your Password':
             pageTitle = 'Password Reset';
-            preheaderText = 'Tap the button below to reset your customer account password.';
+            preheaderText =
+                'Tap the button below to reset your customer account password.';
             heroSection = `
                 <tr>
                   <td align="center" bgcolor="#e9ecef">
@@ -259,7 +261,8 @@ const prepareEmailContent = (subject, emailData) => {
             break;
         case 'System Error - Critical Issue Detected':
             pageTitle = 'Critical System Alert for Administrators';
-            preheaderText = 'Urgent: Critical issue detected in the system that requires your immediate attention.';
+            preheaderText =
+                'Urgent: Critical issue detected in the system that requires your immediate attention.';
             heroSection = `
                 <tr>
                   <td align="center" bgcolor="#e9ecef">
@@ -336,7 +339,7 @@ const prepareEmailContent = (subject, emailData) => {
         preheaderText,
         heroSection,
         mainSection,
-        footerContent
+        footerContent,
     };
 };
 

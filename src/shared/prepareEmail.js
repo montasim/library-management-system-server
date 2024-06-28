@@ -1,4 +1,10 @@
-const prepareEmail = (pageTitle, preheaderText, heroSection, mainSection, footerContent) => {
+const prepareEmail = (
+    pageTitle,
+    preheaderText,
+    heroSection,
+    mainSection,
+    footerContent
+) => {
     return `
         <!DOCTYPE html>
         <html>
