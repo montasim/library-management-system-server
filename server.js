@@ -1,6 +1,7 @@
 import app from './src/app.js';
 
 import configuration from './src/configuration/configuration.js';
+import EmailService from './src/service/email.service.js';
 import DatabaseMiddleware from './src/middleware/database.middleware.js';
 import handleServerError from './src/utilities/handleServerError.js';
 import shutdownHandler from './src/utilities/shutdownHandler.js';
@@ -9,6 +10,7 @@ import handleUnhandledRejection from './src/utilities/handleUnhandledRejection.j
 
 const startServer = async () => {
     try {
+        await EmailService.connect();
         await DatabaseMiddleware.connect();
 
         const server = app.listen(configuration.port, () => {
