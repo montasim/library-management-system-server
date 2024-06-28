@@ -7,7 +7,7 @@ const handleUnhandledRejection = async (error, server) => {
     );
 
     try {
-        await initiateGracefulShutdown('Unhandled Rejection', server);
+        await initiateGracefulShutdown('Unhandled Rejection', server, error);
     } catch (shutdownError) {
         console.error(
             `Failed to shutdown gracefully: ${shutdownError.message}`

@@ -4,7 +4,7 @@ const handleUncaughtException = async (error, server) => {
     console.error(`Uncaught Exception: ${error.message}`, error.stack);
 
     try {
-        await initiateGracefulShutdown('Uncaught Exception', server);
+        await initiateGracefulShutdown('Uncaught Exception', server, error);
     } catch (shutdownError) {
         console.error(
             `Failed to shutdown gracefully: ${shutdownError.message}`

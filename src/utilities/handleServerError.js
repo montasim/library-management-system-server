@@ -6,7 +6,7 @@ const handleServerError = async (error, server) => {
     );
 
     try {
-        await initiateGracefulShutdown('Startup Failure', server);
+        await initiateGracefulShutdown('Startup Failure', server, error);
     } catch (shutdownError) {
         console.error(
             `Error during graceful shutdown: ${shutdownError.message}`

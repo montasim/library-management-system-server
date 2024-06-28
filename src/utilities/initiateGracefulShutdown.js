@@ -1,5 +1,29 @@
-const initiateGracefulShutdown = async (reason, server) => {
+import prepareEmailContent from '../shared/prepareEmailContent.js';
+import EmailService from '../service/email.service.js';
+import configuration from '../configuration/configuration.js';
+import prepareEmail from '../shared/prepareEmail.js';
+
+const initiateGracefulShutdown = async (reason, server, error) => {
     console.log(`Shutting down gracefully due to ${reason}.`);
+
+    const emailData = {};
+
+    emailData.reason = reason;
+    emailData.errorCode = error.code;
+    emailData.component = error.syscall;
+    emailData.path = error.path;
+    emailData.address = error.address;
+    emailData.port = error.port;
+    emailData.timeDetected = new Date().toDateString();
+
+    const subject = 'System Error - Critical Issue Detected';
+    const { pageTitle, preheaderText, heroSection, mainSection, footerContent } = prepareEmailContent(subject, emailData);
+
+    await EmailService.sendEmail(
+        configuration.admin.email,
+        subject,
+        prepareEmail(pageTitle, preheaderText, heroSection, mainSection, footerContent)
+    );
 
     const shutdownTimeout = setTimeout(() => {
         console.error('Shutdown timed out, forcing shutdown.');
