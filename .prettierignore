@@ -1,11 +1,20 @@
 # Ignore artifacts:
+
 .idea
+
 node_modules
+
 build
 logs
+
 documentation
+
 yarn.lock
+
 LICENSE
 SECURITY.md
+
 .prettierignore
 .babelrc
+.env
+.env.development
