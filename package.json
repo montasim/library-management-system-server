@@ -27,7 +27,9 @@
     "prettier:check": "prettier . --check",
     "prettier:fix": "prettier . --write",
     "test": "jest",
-    "release": "standard-version"
+    "release": "standard-version",
+    "clean": "yarn autoclean --init",
+    "postinstall": "yarn autoclean --force && yarn build"
   },
   "keywords": [
     "node.js",
