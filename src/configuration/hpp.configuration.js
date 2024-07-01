@@ -1,5 +1,7 @@
 import hpp from 'hpp';
 
+import logger from '../utilities/logger.js';
+
 const hppConfiguration = (options) => {
     return (req, res, next) => {
         // Check for multiple instances of sensitive parameters
@@ -7,7 +9,7 @@ const hppConfiguration = (options) => {
 
         sensitiveParams.forEach((param) => {
             if (req.query[param] && Array.isArray(req.query[param])) {
-                console.warn(
+                logger.warn(
                     `HPP attempt detected on parameter: ${param}`,
                     req.query[param]
                 );

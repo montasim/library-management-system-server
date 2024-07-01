@@ -1,6 +1,7 @@
-import httpStatus from '../constant/statusCodes.constants.js';
 import environment from '../constant/envTypes.constants.js';
+import logger from '../utilities/logger.js';
 import errorCodes from '../constant/errorCodes.constants.js';
+import httpStatus from '../constant/statusCodes.constants.js';
 
 const errorHandlingMiddleware = (error, req, res, next) => {
     // Set a default status and message in case none is explicitly set by the throwing function
@@ -8,7 +9,7 @@ const errorHandlingMiddleware = (error, req, res, next) => {
 
     // Log detailed error information in development for debugging
     if (process.env.NODE_ENV === environment.DEVELOPMENT) {
-        console.error('Error:', {
+        logger.error('Error:', {
             error,
             body: req.body,
             path: req.path,

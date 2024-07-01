@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
+
 import configuration from '../configuration/configuration.js';
+import logger from '../utilities/logger.js';
 
 let transporter;
 
@@ -23,11 +25,11 @@ const connect = async () => {
             },
         });
 
-        console.info(
+        logger.info(
             `Email service connected to host: ${configuration.email.smtp.host}, port: ${configuration.email.smtp.port}`
         );
     } catch (error) {
-        console.error('Failed to initialize email service:', error);
+        logger.error('Failed to initialize email service:', error);
 
         throw error;
     }
@@ -56,7 +58,7 @@ const sendEmail = async (emailAddress, subject, html) => {
             html,
         });
     } catch (error) {
-        console.error('Failed to send email:', error);
+        logger.error('Failed to send email:', error);
 
         throw error;
     }

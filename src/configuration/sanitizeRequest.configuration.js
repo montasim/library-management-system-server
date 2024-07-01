@@ -1,6 +1,8 @@
 import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 
+import logger from '../utilities/logger.js';
+
 // Create a JSDOM window object to use with DOMPurify
 const { window } = new JSDOM('');
 const dompurify = DOMPurify(window);
@@ -39,7 +41,7 @@ const sanitizeRequestConfiguration = (req, res, next) => {
             }
         });
     } catch (error) {
-        console.error('Sanitization error:', error);
+        logger.error('Sanitization error:', error);
 
         return res.status(500).json({
             success: false,
