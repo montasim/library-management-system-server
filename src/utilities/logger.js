@@ -2,10 +2,12 @@ import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 
 const logger = winston.createLogger({
-    level: 'debug',  // This will capture all logs at level 'debug' and above
+    level: 'debug', // This will capture all logs at level 'debug' and above
     format: winston.format.combine(
         winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+        winston.format.printf(
+            (info) => `${info.timestamp} ${info.level}: ${info.message}`
+        )
     ),
     transports: [
         // Console transport for output on the console
@@ -13,7 +15,9 @@ const logger = winston.createLogger({
             level: 'debug', // Consider setting this to 'info' in production if 'debug' is too verbose
             format: winston.format.combine(
                 winston.format.colorize(),
-                winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+                winston.format.printf(
+                    (info) => `${info.timestamp} ${info.level}: ${info.message}`
+                )
             ),
         }),
         // Separate files for each log level

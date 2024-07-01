@@ -1,15 +1,17 @@
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-import compression from 'compression';
 
 import helmetConfiguration from './configuration/helmet.configuration.js';
 import corsConfiguration from './configuration/cors.configuration.js';
+import compressionConfiguration
+    from './configuration/compression.configuration.js';
 import sanitizeRequestConfiguration from './configuration/sanitizeRequest.configuration.js';
 
 import appRoutes from './routes.js';
 import errorHandlingMiddleware from './middleware/errorHandlingMiddleware.js';
 import hppConfiguration from './configuration/hpp.configuration.js';
+import morganConfiguration from './configuration/morgan.configuration.js';
 
 const app = express();
 
@@ -17,7 +19,10 @@ const app = express();
 app.use(helmet(helmetConfiguration));
 app.use(cors(corsConfiguration));
 app.use(hppConfiguration());
-app.use(compression()); // Assuming compressionConfiguration is intended to be compression middleware setup
+app.use(compressionConfiguration);
+
+// Morgan HTTP request logger setup
+app.use(morganConfiguration);
 
 // Body parsing middleware
 app.use(express.json({ limit: '20mb' })); // unified the limit for JSON

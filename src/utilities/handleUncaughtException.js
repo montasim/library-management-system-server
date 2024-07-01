@@ -7,9 +7,7 @@ const handleUncaughtException = async (error, server) => {
     try {
         await initiateGracefulShutdown('Uncaught Exception', server, error);
     } catch (shutdownError) {
-        logger.error(
-            `Failed to shutdown gracefully: ${shutdownError.message}`
-        );
+        logger.error(`Failed to shutdown gracefully: ${shutdownError.message}`);
 
         process.exit(1);
     }
