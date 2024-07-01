@@ -1,7 +1,6 @@
 import Joi from 'joi';
 
-import customValidationMessage
-    from '../../../shared/customValidationMessage.js';
+import customValidationMessage from '../../../shared/customValidationMessage.js';
 
 const bookSchemaBase = Joi.object({
     name: Joi.string().required(),
@@ -17,36 +16,44 @@ const bookSchemaBase = Joi.object({
     price: Joi.number().precision(2),
     stockAvailable: Joi.number().integer(),
     createdBy: Joi.string(),
-    updatedBy: Joi.string()
-}).strict()
+    updatedBy: Joi.string(),
+})
+    .strict()
     .messages(customValidationMessage);
 
-const createBookSchema = bookSchemaBase.fork([
-    'bestSeller',
-    'image',
-    'review',
-    'writer',
-    'subject',
-    'publication',
-    'page',
-    'edition',
-    'summary',
-    'price',
-    'stockAvailable',
-    'createdBy'
-], field => field.required());
+const createBookSchema = bookSchemaBase.fork(
+    [
+        'bestSeller',
+        'image',
+        'review',
+        'writer',
+        'subject',
+        'publication',
+        'page',
+        'edition',
+        'summary',
+        'price',
+        'stockAvailable',
+        'createdBy',
+    ],
+    (field) => field.required()
+);
 
-const updateBookSchema = bookSchemaBase.fork(Object.keys(bookSchemaBase.describe().keys), field => field.optional()).min(1);
+const updateBookSchema = bookSchemaBase
+    .fork(Object.keys(bookSchemaBase.describe().keys), (field) =>
+        field.optional()
+    )
+    .min(1);
 
 const getBooksQuerySchema = Joi.object({
     page: Joi.number().integer().min(1),
     limit: Joi.number().integer().min(1).max(100),
     sort: Joi.string(),
-    filter: Joi.string()
+    filter: Joi.string(),
 }).strict();
 
 const bookIdParamSchema = Joi.object({
-    bookId: Joi.string().alphanum().required()
+    bookId: Joi.string().alphanum().required(),
 }).strict();
 
 const booksSchema = {

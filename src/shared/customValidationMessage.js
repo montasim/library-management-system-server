@@ -8,7 +8,7 @@ const customValidationMessage = {
     'string.uri': `{#label} must be a valid URI`,
     'string.alphanum': `{#label} must be alphanumeric`,
     'number.integer': `{#label} must be an integer`,
-    'array.base': `{#label} must be an array`
+    'array.base': `{#label} must be an array`,
 };
 
 export default customValidationMessage;

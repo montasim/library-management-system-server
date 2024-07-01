@@ -10,7 +10,9 @@ import httpStatus from '../constant/httpStatus.constants.js';
  */
 const validateWithSchema = (schema, property = 'body') => {
     return asyncErrorHandler(async (req, res, next) => {
-        const { error } = schema.messages(customValidationMessage).validate(req[property]);
+        const { error } = schema
+            .messages(customValidationMessage)
+            .validate(req[property]);
 
         if (error) {
             const errorData = {
