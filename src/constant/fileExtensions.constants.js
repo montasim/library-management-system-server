@@ -24,7 +24,7 @@ const fileExtensions = {
     CSS: 'css',
     HTML: 'html',
     CSV: 'csv', // Added CSV for spreadsheet documents
-    TXT: 'txt'  // Added TXT for text files
+    TXT: 'txt', // Added TXT for text files
 };
 
 export default fileExtensions;

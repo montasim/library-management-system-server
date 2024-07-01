@@ -4,8 +4,7 @@ import cors from 'cors';
 
 import helmetConfiguration from './configuration/helmet.configuration.js';
 import corsConfiguration from './configuration/cors.configuration.js';
-import compressionConfiguration
-    from './configuration/compression.configuration.js';
+import compressionConfiguration from './configuration/compression.configuration.js';
 import sanitizeRequestConfiguration from './configuration/sanitizeRequest.configuration.js';
 
 import appRoutes from './routes.js';
