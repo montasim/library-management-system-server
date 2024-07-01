@@ -18,19 +18,36 @@ const bookSchemaBase = Joi.object({
     stockAvailable: Joi.number().integer(),
     createdBy: Joi.string(),
     updatedBy: Joi.string()
-}).messages(customValidationMessage);
+}).strict()
+    .messages(customValidationMessage);
 
-const createBookSchema = bookSchemaBase.fork(['bestSeller', 'image', 'review', 'writer', 'subject', 'publication', 'page', 'edition', 'summary', 'price', 'stockAvailable', 'createdBy'], field => field.required());
+const createBookSchema = bookSchemaBase.fork([
+    'bestSeller',
+    'image',
+    'review',
+    'writer',
+    'subject',
+    'publication',
+    'page',
+    'edition',
+    'summary',
+    'price',
+    'stockAvailable',
+    'createdBy'
+], field => field.required());
+
 const updateBookSchema = bookSchemaBase.fork(Object.keys(bookSchemaBase.describe().keys), field => field.optional()).min(1);
+
 const getBooksQuerySchema = Joi.object({
     page: Joi.number().integer().min(1),
     limit: Joi.number().integer().min(1).max(100),
     sort: Joi.string(),
     filter: Joi.string()
-});
+}).strict();
+
 const bookIdParamSchema = Joi.object({
     bookId: Joi.string().alphanum().required()
-});
+}).strict();
 
 const booksSchema = {
     createBookSchema,

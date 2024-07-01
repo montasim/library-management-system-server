@@ -1,17 +1,6 @@
 import asyncErrorHandler from '../utilities/asyncErrorHandler.js';
-
-const customMessages = {
-    'string.empty': `{#label} cannot be empty`,
-    'string.min': `{#label} should have a minimum length of {#limit}`,
-    'number.min': `{#label} should be at least {#limit}`,
-    'number.max': `{#label} should be no more than {#limit}`,
-    'any.required': `{#label} is a required field`,
-    'number.base': `{#label} must be a number`,
-    'string.uri': `{#label} must be a valid URI`,
-    'string.alphanum': `{#label} must be alphanumeric`,
-    'number.integer': `{#label} must be an integer`,
-    'array.base': `{#label} must be an array`
-};
+import customValidationMessage from './customValidationMessage.js';
+import httpStatus from '../constant/httpStatus.constants.js';
 
 /**
  * A higher-order function that returns a middleware for validating requests against a given Joi schema.
@@ -21,10 +10,19 @@ const customMessages = {
  */
 const validateWithSchema = (schema, property = 'body') => {
     return asyncErrorHandler(async (req, res, next) => {
-        const { error } = schema.messages(customMessages).validate(req[property]);
+        const { error } = schema.messages(customValidationMessage).validate(req[property]);
 
         if (error) {
-            return res.status(400).json({ error: error.details[0].message });
+            const errorData = {
+                route: req.originalUrl,
+                timeStamp: new Date(),
+                success: false,
+                data: {},
+                message: error.details[0].message,
+                status: httpStatus.BAD_REQUEST,
+            };
+
+            return res.status(errorData.status).json(errorData);
         }
 
         next();
