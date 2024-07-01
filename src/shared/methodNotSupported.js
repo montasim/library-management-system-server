@@ -1,4 +1,4 @@
-import httpStatus from '../constant/statusCodes.constants.js';
+import httpStatus from '../constant/httpStatus.constants.js';
 
 const methodNotSupported = (req, res) => {
     // Extract the methods allowed for the current route

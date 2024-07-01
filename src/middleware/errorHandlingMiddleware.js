@@ -1,7 +1,7 @@
 import environment from '../constant/envTypes.constants.js';
 import logger from '../utilities/logger.js';
 import errorCodes from '../constant/errorCodes.constants.js';
-import httpStatus from '../constant/statusCodes.constants.js';
+import httpStatus from '../constant/httpStatus.constants.js';
 
 const errorHandlingMiddleware = (error, req, res, next) => {
     // Set a default status and message in case none is explicitly set by the throwing function

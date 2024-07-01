@@ -1,7 +1,7 @@
 import request from 'supertest';
 import express from 'express';
 
-import httpStatus from '../constant/statusCodes.constants.js';
+import httpStatus from '../constant/httpStatus.constants.js';
 import errorHandlingMiddleware from '../middleware/errorHandlingMiddleware.js';
 
 const app = express();

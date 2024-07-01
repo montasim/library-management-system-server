@@ -1,4 +1,4 @@
-import httpStatus from '../../../constant/statusCodes.constants.js';
+import httpStatus from '../../../constant/httpStatus.constants.js';
 
 const createBook = (req) => {
     return {
