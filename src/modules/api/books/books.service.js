@@ -1,11 +1,14 @@
 import httpStatus from '../../../constant/httpStatus.constants.js';
+import Books from './books.model.js';
 
-const createBook = (req) => {
+const createBook = async (req, bookData) => {
+    const book = new Books(bookData);
+
     return {
         route: req.originalUrl,
         timeStamp: new Date(),
         success: true,
-        data: {},
+        data: await book.save(),
         message: 'Success',
         status: httpStatus.OK,
     };
