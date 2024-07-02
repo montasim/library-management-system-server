@@ -3,13 +3,17 @@ import booksSchema from './books.schema.js';
 
 const createBook = validateWithSchema(booksSchema.createBookSchema, 'body');
 const getBooks = validateWithSchema(booksSchema.getBooksQuerySchema, 'query');
+const getBook = validateWithSchema(booksSchema.bookIdParamSchema, 'params');
 const updateBook = validateWithSchema(booksSchema.updateBookSchema, 'body');
+const deleteBooks = validateWithSchema(booksSchema.bookIdsParamSchema, 'query');
 const deleteBook = validateWithSchema(booksSchema.bookIdParamSchema, 'params');
 
 const booksValidator = {
     createBook,
     getBooks,
+    getBook,
     updateBook,
+    deleteBooks,
     deleteBook,
 };
 

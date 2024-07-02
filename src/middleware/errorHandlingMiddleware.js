@@ -12,7 +12,7 @@ const errorHandlingMiddleware = (error, req, res, next) => {
         logger.error('Detailed Error:', {
             error: error,
             body: req.body,
-            path: req.path
+            path: req.path,
         });
     }
 
@@ -20,7 +20,9 @@ const errorHandlingMiddleware = (error, req, res, next) => {
     switch (error.name) {
         case 'ValidationError':
             status = httpStatus.BAD_REQUEST;
-            message = Object.values(error.errors).map(err => err.message).join(", ");
+            message = Object.values(error.errors)
+                .map((err) => err.message)
+                .join(', ');
             break;
         case 'CastError':
             status = httpStatus.BAD_REQUEST;
@@ -28,20 +30,23 @@ const errorHandlingMiddleware = (error, req, res, next) => {
             break;
         case 'UnauthorizedError':
             status = httpStatus.UNAUTHORIZED;
-            message = 'Unauthorized: Access is denied due to invalid credentials.';
+            message =
+                'Unauthorized: Access is denied due to invalid credentials.';
             break;
         case 'ForbiddenError':
             status = httpStatus.FORBIDDEN;
-            message = 'Forbidden: You do not have permission to access this resource.';
+            message =
+                'Forbidden: You do not have permission to access this resource.';
             break;
         case 'NotFoundError':
             status = httpStatus.NOT_FOUND;
             message = error.message || 'The requested resource was not found.';
             break;
         default:
-            message = process.env.NODE_ENV === environment.PRODUCTION
-                ? 'An unexpected error occurred'
-                : error.message;
+            message =
+                process.env.NODE_ENV === environment.PRODUCTION
+                    ? 'An unexpected error occurred'
+                    : error.message;
             break;
     }
 
@@ -57,7 +62,7 @@ const errorHandlingMiddleware = (error, req, res, next) => {
         // Log non-operational errors more aggressively
         logger.error('Non-operational error:', {
             message: error.message,
-            stack: error.stack
+            stack: error.stack,
         });
     }
 
@@ -68,11 +73,14 @@ const errorHandlingMiddleware = (error, req, res, next) => {
         success: false,
         data: {},
         message,
-        status
+        status,
     };
 
     // Optionally add error stack in non-production environments for detailed debugging
-    if (process.env.NODE_ENV !== environment.PRODUCTION && !error.isOperational) {
+    if (
+        process.env.NODE_ENV !== environment.PRODUCTION &&
+        !error.isOperational
+    ) {
         response.data.stack = error.stack;
     }
 
