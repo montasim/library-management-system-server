@@ -2,7 +2,9 @@ import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
 import permissionsService from './permissions.service.js';
 
 const createPermission = asyncErrorHandler(async (req, res) => {
-    const newPermissionData = await permissionsService.createPermission(req.body);
+    const newPermissionData = await permissionsService.createPermission(
+        req.body
+    );
 
     newPermissionData.route = req.originalUrl;
 
@@ -18,7 +20,9 @@ const getPermissions = asyncErrorHandler(async (req, res) => {
 });
 
 const getPermission = asyncErrorHandler(async (req, res) => {
-    const permissionData = await permissionsService.getPermission(req.params.permissionId);
+    const permissionData = await permissionsService.getPermission(
+        req.params.permissionId
+    );
 
     permissionData.route = req.originalUrl;
 
@@ -38,7 +42,8 @@ const updatePermission = asyncErrorHandler(async (req, res) => {
 
 const deletePermissions = asyncErrorHandler(async (req, res) => {
     const permissionIds = req.query.ids.split(',');
-    const deletedPermissionsData = await permissionsService.deletePermissions(permissionIds);
+    const deletedPermissionsData =
+        await permissionsService.deletePermissions(permissionIds);
 
     deletedPermissionsData.route = req.originalUrl;
 
@@ -46,7 +51,9 @@ const deletePermissions = asyncErrorHandler(async (req, res) => {
 });
 
 const deletePermission = asyncErrorHandler(async (req, res) => {
-    const deletedPermissionData = await permissionsService.deletePermission(req.params.permissionId);
+    const deletedPermissionData = await permissionsService.deletePermission(
+        req.params.permissionId
+    );
 
     deletedPermissionData.route = req.originalUrl;
 

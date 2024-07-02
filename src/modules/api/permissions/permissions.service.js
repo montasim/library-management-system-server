@@ -49,7 +49,10 @@ const getPermissions = async (params) => {
         const totalPages = Math.ceil(totalPermissions / limit);
 
         // Adjust the limit if it exceeds the total number of permissions
-        const adjustedLimit = Math.min(limit, totalPermissions - (page - 1) * limit);
+        const adjustedLimit = Math.min(
+            limit,
+            totalPermissions - (page - 1) * limit
+        );
 
         const permissions = await PermissionsModel.find(query)
             .sort(sort)
@@ -110,9 +113,13 @@ const getPermission = async (permissionId) => {
 const updatePermission = async (permissionId, updateData) => {
     updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
 
-    const updatedPermission = await PermissionsModel.findByIdAndUpdate(permissionId, updateData, {
-        new: true,
-    });
+    const updatedPermission = await PermissionsModel.findByIdAndUpdate(
+        permissionId,
+        updateData,
+        {
+            new: true,
+        }
+    );
 
     if (!updatedPermission) {
         return {
@@ -143,7 +150,8 @@ const deletePermissions = async (permissionIds) => {
     // Process each permissionId
     for (const permissionId of permissionIds) {
         try {
-            const permission = await PermissionsModel.findByIdAndDelete(permissionId);
+            const permission =
+                await PermissionsModel.findByIdAndDelete(permissionId);
             if (permission) {
                 results.deleted.push(permissionId);
             } else {
@@ -151,7 +159,9 @@ const deletePermissions = async (permissionIds) => {
             }
         } catch (error) {
             // Log the error and mark this ID as failed
-            logger.error(`Failed to delete permission with ID ${permissionId}: ${error}`);
+            logger.error(
+                `Failed to delete permission with ID ${permissionId}: ${error}`
+            );
             results.failed.push(permissionId);
         }
     }

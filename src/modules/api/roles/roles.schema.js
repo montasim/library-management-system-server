@@ -14,11 +14,8 @@ const roleSchemaBase = Joi.object({
 }).strict();
 
 // Schema for creating a role, making specific fields required
-const createRoleSchema = roleSchemaBase.fork(
-    [
-        'name'
-    ],
-    (field) => field.required()
+const createRoleSchema = roleSchemaBase.fork(['name'], (field) =>
+    field.required()
 );
 
 // Schema for updating a role

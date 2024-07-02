@@ -8,16 +8,34 @@ const router = express.Router();
 
 router
     .route('/')
-    .post(permissionsValidator.createPermission, permissionsController.createPermission)
-    .get(permissionsValidator.getPermissions, permissionsController.getPermissions)
-    .delete(permissionsValidator.deletePermissions, permissionsController.deletePermissions)
+    .post(
+        permissionsValidator.createPermission,
+        permissionsController.createPermission
+    )
+    .get(
+        permissionsValidator.getPermissions,
+        permissionsController.getPermissions
+    )
+    .delete(
+        permissionsValidator.deletePermissions,
+        permissionsController.deletePermissions
+    )
     .all(methodNotSupported);
 
 router
     .route('/:permissionId')
-    .get(permissionsValidator.getPermission, permissionsController.getPermission)
-    .put(permissionsValidator.updatePermission, permissionsController.updatePermission)
-    .delete(permissionsValidator.deletePermission, permissionsController.deletePermission)
+    .get(
+        permissionsValidator.getPermission,
+        permissionsController.getPermission
+    )
+    .put(
+        permissionsValidator.updatePermission,
+        permissionsController.updatePermission
+    )
+    .delete(
+        permissionsValidator.deletePermission,
+        permissionsController.deletePermission
+    )
     .all(methodNotSupported);
 
 export default router;

@@ -14,11 +14,8 @@ const subjectSchemaBase = Joi.object({
 }).strict();
 
 // Schema for creating a subject, making specific fields required
-const createSubjectSchema = subjectSchemaBase.fork(
-    [
-        'name'
-    ],
-    (field) => field.required()
+const createSubjectSchema = subjectSchemaBase.fork(['name'], (field) =>
+    field.required()
 );
 
 // Schema for updating a subject

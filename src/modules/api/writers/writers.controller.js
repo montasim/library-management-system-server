@@ -46,7 +46,9 @@ const deleteWriters = asyncErrorHandler(async (req, res) => {
 });
 
 const deleteWriter = asyncErrorHandler(async (req, res) => {
-    const deletedWriterData = await writersService.deleteWriter(req.params.writerId);
+    const deletedWriterData = await writersService.deleteWriter(
+        req.params.writerId
+    );
 
     deletedWriterData.route = req.originalUrl;
 

@@ -53,7 +53,10 @@ const getWriters = async (params) => {
         const totalPages = Math.ceil(totalWriters / limit);
 
         // Adjust the limit if it exceeds the total number of writers
-        const adjustedLimit = Math.min(limit, totalWriters - (page - 1) * limit);
+        const adjustedLimit = Math.min(
+            limit,
+            totalWriters - (page - 1) * limit
+        );
 
         const writers = await WritersModel.find(query)
             .sort(sort)
@@ -114,9 +117,13 @@ const getWriter = async (writerId) => {
 const updateWriter = async (writerId, updateData) => {
     updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
 
-    const updatedWriter = await WritersModel.findByIdAndUpdate(writerId, updateData, {
-        new: true,
-    });
+    const updatedWriter = await WritersModel.findByIdAndUpdate(
+        writerId,
+        updateData,
+        {
+            new: true,
+        }
+    );
 
     if (!updatedWriter) {
         return {
@@ -155,7 +162,9 @@ const deleteWriters = async (writerIds) => {
             }
         } catch (error) {
             // Log the error and mark this ID as failed
-            logger.error(`Failed to delete writer with ID ${writerId}: ${error}`);
+            logger.error(
+                `Failed to delete writer with ID ${writerId}: ${error}`
+            );
             results.failed.push(writerId);
         }
     }

@@ -2,7 +2,9 @@ import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
 import publicationsService from './publications.service.js';
 
 const createPublication = asyncErrorHandler(async (req, res) => {
-    const newPublicationData = await publicationsService.createPublication(req.body);
+    const newPublicationData = await publicationsService.createPublication(
+        req.body
+    );
 
     newPublicationData.route = req.originalUrl;
 
@@ -10,7 +12,9 @@ const createPublication = asyncErrorHandler(async (req, res) => {
 });
 
 const getPublications = asyncErrorHandler(async (req, res) => {
-    const publicationsData = await publicationsService.getPublications(req.query);
+    const publicationsData = await publicationsService.getPublications(
+        req.query
+    );
 
     publicationsData.route = req.originalUrl;
 
@@ -18,7 +22,9 @@ const getPublications = asyncErrorHandler(async (req, res) => {
 });
 
 const getPublication = asyncErrorHandler(async (req, res) => {
-    const publicationData = await publicationsService.getPublication(req.params.publicationId);
+    const publicationData = await publicationsService.getPublication(
+        req.params.publicationId
+    );
 
     publicationData.route = req.originalUrl;
 
@@ -38,7 +44,8 @@ const updatePublication = asyncErrorHandler(async (req, res) => {
 
 const deletePublications = asyncErrorHandler(async (req, res) => {
     const publicationIds = req.query.ids.split(',');
-    const deletedPublicationsData = await publicationsService.deletePublications(publicationIds);
+    const deletedPublicationsData =
+        await publicationsService.deletePublications(publicationIds);
 
     deletedPublicationsData.route = req.originalUrl;
 
@@ -46,7 +53,9 @@ const deletePublications = asyncErrorHandler(async (req, res) => {
 });
 
 const deletePublication = asyncErrorHandler(async (req, res) => {
-    const deletedPublicationData = await publicationsService.deletePublication(req.params.publicationId);
+    const deletedPublicationData = await publicationsService.deletePublication(
+        req.params.publicationId
+    );
 
     deletedPublicationData.route = req.originalUrl;
 

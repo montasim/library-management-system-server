@@ -38,7 +38,8 @@ const updateSubject = asyncErrorHandler(async (req, res) => {
 
 const deleteSubjects = asyncErrorHandler(async (req, res) => {
     const subjectIds = req.query.ids.split(',');
-    const deletedSubjectsData = await subjectsService.deleteSubjects(subjectIds);
+    const deletedSubjectsData =
+        await subjectsService.deleteSubjects(subjectIds);
 
     deletedSubjectsData.route = req.originalUrl;
 
@@ -46,7 +47,9 @@ const deleteSubjects = asyncErrorHandler(async (req, res) => {
 });
 
 const deleteSubject = asyncErrorHandler(async (req, res) => {
-    const deletedSubjectData = await subjectsService.deleteSubject(req.params.subjectId);
+    const deletedSubjectData = await subjectsService.deleteSubject(
+        req.params.subjectId
+    );
 
     deletedSubjectData.route = req.originalUrl;
 

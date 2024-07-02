@@ -31,12 +31,7 @@ const writerSchemaBase = Joi.object({
 
 // Schema for creating a writer, making specific fields required
 const createWriterSchema = writerSchemaBase.fork(
-    [
-        'name',
-        'image',
-        'review',
-        'summary',
-    ],
+    ['name', 'image', 'review', 'summary'],
     (field) => field.required()
 );
 

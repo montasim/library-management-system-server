@@ -49,7 +49,10 @@ const getPublications = async (params) => {
         const totalPages = Math.ceil(totalPublications / limit);
 
         // Adjust the limit if it exceeds the total number of publications
-        const adjustedLimit = Math.min(limit, totalPublications - (page - 1) * limit);
+        const adjustedLimit = Math.min(
+            limit,
+            totalPublications - (page - 1) * limit
+        );
 
         const publications = await PublicationsModel.find(query)
             .sort(sort)
@@ -110,9 +113,13 @@ const getPublication = async (publicationId) => {
 const updatePublication = async (publicationId, updateData) => {
     updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
 
-    const updatedPublication = await PublicationsModel.findByIdAndUpdate(publicationId, updateData, {
-        new: true,
-    });
+    const updatedPublication = await PublicationsModel.findByIdAndUpdate(
+        publicationId,
+        updateData,
+        {
+            new: true,
+        }
+    );
 
     if (!updatedPublication) {
         return {
@@ -143,7 +150,8 @@ const deletePublications = async (publicationIds) => {
     // Process each publicationId
     for (const publicationId of publicationIds) {
         try {
-            const publication = await PublicationsModel.findByIdAndDelete(publicationId);
+            const publication =
+                await PublicationsModel.findByIdAndDelete(publicationId);
             if (publication) {
                 results.deleted.push(publicationId);
             } else {
@@ -151,7 +159,9 @@ const deletePublications = async (publicationIds) => {
             }
         } catch (error) {
             // Log the error and mark this ID as failed
-            logger.error(`Failed to delete publication with ID ${publicationId}: ${error}`);
+            logger.error(
+                `Failed to delete publication with ID ${publicationId}: ${error}`
+            );
             results.failed.push(publicationId);
         }
     }
@@ -166,7 +176,8 @@ const deletePublications = async (publicationIds) => {
 };
 
 const deletePublication = async (publicationId) => {
-    const publication = await PublicationsModel.findByIdAndDelete(publicationId);
+    const publication =
+        await PublicationsModel.findByIdAndDelete(publicationId);
 
     if (!publication) {
         return {

@@ -49,7 +49,10 @@ const getSubjects = async (params) => {
         const totalPages = Math.ceil(totalSubjects / limit);
 
         // Adjust the limit if it exceeds the total number of subjects
-        const adjustedLimit = Math.min(limit, totalSubjects - (page - 1) * limit);
+        const adjustedLimit = Math.min(
+            limit,
+            totalSubjects - (page - 1) * limit
+        );
 
         const subjects = await SubjectsModel.find(query)
             .sort(sort)
@@ -110,9 +113,13 @@ const getSubject = async (subjectId) => {
 const updateSubject = async (subjectId, updateData) => {
     updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
 
-    const updatedSubject = await SubjectsModel.findByIdAndUpdate(subjectId, updateData, {
-        new: true,
-    });
+    const updatedSubject = await SubjectsModel.findByIdAndUpdate(
+        subjectId,
+        updateData,
+        {
+            new: true,
+        }
+    );
 
     if (!updatedSubject) {
         return {
@@ -151,7 +158,9 @@ const deleteSubjects = async (subjectIds) => {
             }
         } catch (error) {
             // Log the error and mark this ID as failed
-            logger.error(`Failed to delete subject with ID ${subjectId}: ${error}`);
+            logger.error(
+                `Failed to delete subject with ID ${subjectId}: ${error}`
+            );
             results.failed.push(subjectId);
         }
     }

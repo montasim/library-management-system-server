@@ -14,11 +14,8 @@ const publicationSchemaBase = Joi.object({
 }).strict();
 
 // Schema for creating a publication, making specific fields required
-const createPublicationSchema = publicationSchemaBase.fork(
-    [
-        'name'
-    ],
-    (field) => field.required()
+const createPublicationSchema = publicationSchemaBase.fork(['name'], (field) =>
+    field.required()
 );
 
 // Schema for updating a publication
