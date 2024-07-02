@@ -26,29 +26,83 @@ const createBook = async (bookData) => {
     }
 };
 
-const getBooks = async ({
-    page = 1,
-    limit = 10,
-    sort = 'createdAt',
-    filter = '',
-}) => {
-    const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        sort,
-    };
-    const books = await BooksModel.find({})
-        .sort(sort)
-        .skip((page - 1) * limit)
-        .limit(limit);
+const getBooks = async (params) => {
+    const {
+        page = 1,
+        limit = 10,
+        sort = '-createdAt', // Default sort by most recent creation
+        name,
+        bestSeller,
+        review,
+        writer,
+        subject,
+        publication,
+        pageNumber,
+        edition,
+        summary,
+        price,
+        stockAvailable,
+        createdBy,
+        updatedBy,
+        ...otherFilters
+    } = params;
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: books,
-        message: `${books?.length} ${books?.length > 1 ? 'books' : 'book'} fetched successfully.`,
-        status: httpStatus.OK,
-    };
+    const query = {};
+
+    // Constructing query filters based on parameters
+    if (name) query.name = { $regex: name, $options: 'i' };
+    if (bestSeller) query.bestSeller = bestSeller;
+    if (review) query.review = review;
+    if (writer) query.writer = { $regex: writer, $options: 'i' };
+    if (subject) query.subject = { $in: subject.split(',') };
+    if (publication) query.publication = { $regex: publication, $options: 'i' };
+    if (pageNumber) query.page = pageNumber;
+    if (edition) query.edition = { $regex: edition, $options: 'i' };
+    if (summary) query.summary = { $regex: summary, $options: 'i' };
+    if (price) query.price = price;
+    if (stockAvailable) query.stockAvailable = stockAvailable;
+    if (createdBy) query.createdBy = { $regex: createdBy, $options: 'i' };
+    if (updatedBy) query.updatedBy = { $regex: updatedBy, $options: 'i' };
+
+    try {
+        const totalBooks = await BooksModel.countDocuments(query);
+        const totalPages = Math.ceil(totalBooks / limit);
+
+        // Adjust the limit if it exceeds the total number of books
+        const adjustedLimit = Math.min(limit, totalBooks - (page - 1) * limit);
+
+        const books = await BooksModel.find(query)
+            .sort(sort)
+            .skip((page - 1) * limit)
+            .limit(adjustedLimit);
+
+        return {
+            timeStamp: new Date(),
+            success: true,
+            data: {
+                books,
+                totalBooks,
+                totalPages,
+                currentPage: page,
+                pageSize: adjustedLimit,
+                sort,
+            },
+            message: books.length
+                ? `${books.length} books fetched successfully.`
+                : 'No books found.',
+            status: httpStatus.OK,
+        };
+    } catch (error) {
+        logger.error('Error fetching books:', error);
+
+        return {
+            timeStamp: new Date(),
+            success: false,
+            data: {},
+            message: 'Failed to fetch books.',
+            status: httpStatus.INTERNAL_SERVER_ERROR,
+        };
+    }
 };
 
 const getBook = async (bookId) => {

@@ -63,8 +63,6 @@ const bookSchemaBase = Joi.object({
         .required()
         .min(0)
         .messages(customValidationMessage),
-    createdBy: Joi.string().trim().messages(customValidationMessage),
-    updatedBy: Joi.string().trim().messages(customValidationMessage),
 }).strict();
 
 // Schema for creating a book, making specific fields required
@@ -82,7 +80,6 @@ const createBookSchema = bookSchemaBase.fork(
         'summary',
         'price',
         'stockAvailable',
-        'createdBy',
     ],
     (field) => field.required()
 );
@@ -111,13 +108,42 @@ const bookIdsParamSchema = Joi.object({
         .messages(customValidationMessage),
 }).required();
 
-// Schema for querying books
 const getBooksQuerySchema = Joi.object({
-    page: Joi.number().integer().min(1),
-    limit: Joi.number().integer().min(1).max(100),
-    sort: Joi.string().trim(),
-    filter: Joi.string().trim(),
-}).strict();
+    page: Joi.string().min(1).default(1).custom((value, helpers) => parseInt(value)),
+    limit: Joi.string().min(1).max(100).default(10).custom((value, helpers) => parseInt(value)),
+    sort: Joi.string().trim().default('createdAt'),
+    name: Joi.string()
+        .trim()
+        .min(booksConstants.lengths.NAME_MIN)
+        .max(booksConstants.lengths.NAME_MAX),
+    bestSeller: Joi.string().valid('1').custom((value, helpers) => parseInt(value)),
+    review: Joi.string().custom((value, helpers) => parseFloat(value)).min(0).max(5),
+    writer: Joi.string()
+        .trim()
+        .min(booksConstants.lengths.WRITER_MIN)
+        .max(booksConstants.lengths.WRITER_MAX),
+    subject: Joi.array().items(Joi.string().trim()).messages({
+        'array.base': 'Subject must be an array.',
+        'string.empty': 'Each subject must not be empty.',
+        'array.min': 'At least one subject must be specified.',
+    }),
+    publication: Joi.string()
+        .trim()
+        .min(booksConstants.lengths.PUBLICATION_MIN)
+        .max(booksConstants.lengths.PUBLICATION_MAX),
+    edition: Joi.string()
+        .trim()
+        .min(booksConstants.lengths.EDITION_MIN)
+        .max(booksConstants.lengths.EDITION_MAX),
+    summary: Joi.string()
+        .trim()
+        .min(booksConstants.lengths.SUMMARY_MIN)
+        .max(booksConstants.lengths.SUMMARY_MAX),
+    price: Joi.string().custom((value, helpers) => parseFloat(value)),
+    stockAvailable: Joi.string().custom((value, helpers) => parseInt(value)).min(0),
+    createdBy: Joi.string().trim(),
+    updatedBy: Joi.string().trim(),
+}).strict().messages(customValidationMessage);
 
 // Schema for single book ID validation
 const bookIdParamSchema = Joi.object({
