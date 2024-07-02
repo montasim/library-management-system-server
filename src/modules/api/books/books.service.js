@@ -2,36 +2,26 @@ import httpStatus from '../../../constant/httpStatus.constants.js';
 import BooksModel from './books.model.js';
 
 const createBook = async (bookData) => {
-    try {
-        const newBookDoc = await BooksModel.create({
-            ...bookData,
-            createdBy: 'admin',
-        });
+    const newBookDoc = await BooksModel.create({
+        ...bookData,
+        createdBy: 'admin',
+    });
 
-        // Convert the Mongoose document to a plain JavaScript object
-        const newBook = newBookDoc.toObject();
+    // Convert the Mongoose document to a plain JavaScript object
+    const newBook = newBookDoc.toObject();
 
-        const message = newBook
-            ? 'Book created successfully.'
-            : 'Failed to create book.';
-        const status = newBook ? httpStatus.CREATED : httpStatus.NOT_FOUND;
+    const message = newBook
+        ? 'Book created successfully.'
+        : 'Failed to create book.';
+    const status = newBook ? httpStatus.CREATED : httpStatus.NOT_FOUND;
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: newBook,
-            message: message,
-            status: status,
-        };
-    } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: `Error creating book: ${error.message}`,
-            status: httpStatus.BAD_REQUEST
-        };
-    }
+    return {
+        timeStamp: new Date(),
+        success: true,
+        data: newBook,
+        message: message,
+        status: status,
+    };
 };
 
 const getBooks = (req) => {
