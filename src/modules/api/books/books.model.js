@@ -1,11 +1,17 @@
 import mongoose from 'mongoose';
 
-const bookSchema = new mongoose.Schema(
+const booksSchema = new mongoose.Schema(
     {
-        name: { type: String, required: [true, 'Name cannot be empty'] },
+        name: {
+            type: String,
+            required: [true, 'Name cannot be empty'],
+        },
         bestSeller: {
             type: Number,
-            enum: { values: [1], message: 'Best Seller must be 1' },
+            enum: {
+                values: [1],
+                message: 'Best Seller must be 1',
+            },
             required: [true, 'Best Seller is required'],
         },
         image: {
@@ -22,7 +28,10 @@ const bookSchema = new mongoose.Schema(
             max: [5, 'Review cannot be more than 5'],
             required: [true, 'Review is required'],
         },
-        writer: { type: String, required: [true, 'Writer name is required'] },
+        writer: {
+            type: String,
+            required: [true, 'Writer name is required'],
+        },
         subject: {
             type: [{ type: String }],
             required: [true, 'At least one subject is required'],
@@ -37,22 +46,37 @@ const bookSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Publication name is required'],
         },
-        page: { type: Number, required: [true, 'Page number is required'] },
-        edition: { type: String, required: [true, 'Edition is required'] },
-        summary: { type: String, required: [true, 'Summary is required'] },
-        price: { type: Number, required: [true, 'Price is required'] },
+        page: {
+            type: Number,
+            required: [true, 'Page number is required'],
+        },
+        edition: {
+            type: String,
+            required: [true, 'Edition is required'],
+        },
+        summary: {
+            type: String,
+            required: [true, 'Summary is required'],
+        },
+        price: {
+            type: Number,
+            required: [true, 'Price is required'],
+        },
         stockAvailable: {
             type: Number,
             required: [true, 'Stock availability is required'],
         },
-        createdBy: { type: String, required: [true, 'Creator is required'] },
-        updatedBy: { type: String },
+        createdBy: {
+            type: String,
+            required: [true, 'Creator is required'],
+        },
+        updatedBy: {
+            type: String,
+        },
     },
     {
         timestamps: true,
     }
 );
 
-const Books = mongoose.model('Books', bookSchema);
-
-export default Books;
+export default mongoose.model('BooksModel', booksSchema);

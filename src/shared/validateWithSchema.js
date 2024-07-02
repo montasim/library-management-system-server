@@ -24,7 +24,7 @@ const validateWithSchema = (schema, property = 'body') => {
                 status: httpStatus.BAD_REQUEST,
             };
 
-            return res.status(errorData.status).json(errorData);
+            return res.status(errorData.status).send(errorData);
         }
 
         next();

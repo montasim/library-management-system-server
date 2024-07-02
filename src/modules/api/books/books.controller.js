@@ -14,7 +14,7 @@ const createBook = asyncErrorHandler(async (req, res) => {
         summary,
         price,
         stockAvailable,
-        createdB,
+        createdBy,
     } = req.body;
     const bookData = {
         bestSeller,
@@ -28,9 +28,11 @@ const createBook = asyncErrorHandler(async (req, res) => {
         summary,
         price,
         stockAvailable,
-        createdB,
+        createdBy,
     };
-    const newBookData = await booksService.createBook(req, bookData);
+    const newBookData = await booksService.createBook(bookData);
+
+    newBookData.route = req.originalUrl;
 
     res.status(newBookData.status).send(newBookData);
 });
