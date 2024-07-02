@@ -3,6 +3,7 @@ import booksService from './books.service.js';
 
 const createBook = asyncErrorHandler(async (req, res) => {
     const {
+        name,
         bestSeller,
         image,
         review,
@@ -17,6 +18,7 @@ const createBook = asyncErrorHandler(async (req, res) => {
         createdBy,
     } = req.body;
     const bookData = {
+        name,
         bestSeller,
         image,
         review,
