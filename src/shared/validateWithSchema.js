@@ -12,7 +12,12 @@ import httpStatus from '../constant/httpStatus.constants.js';
 const validateWithSchema = (schema, property = 'body', options = {}) => {
     return asyncErrorHandler(async (req, res, next) => {
         // Ensure conversion is enabled by default for all validations
-        const defaultOptions = { abortEarly: false, convert: true, messages: customValidationMessage, ...options };
+        const defaultOptions = {
+            abortEarly: false,
+            convert: true,
+            messages: customValidationMessage,
+            ...options,
+        };
         const { error, value } = schema.validate(req[property], defaultOptions);
 
         if (error) {
@@ -21,7 +26,9 @@ const validateWithSchema = (schema, property = 'body', options = {}) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: error.details.map(detail => detail.message).join(', '),
+                message: error.details
+                    .map((detail) => detail.message)
+                    .join(', '),
                 status: httpStatus.BAD_REQUEST,
             };
 

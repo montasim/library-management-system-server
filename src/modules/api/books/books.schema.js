@@ -109,15 +109,27 @@ const bookIdsParamSchema = Joi.object({
 }).required();
 
 const getBooksQuerySchema = Joi.object({
-    page: Joi.string().min(1).default(1).custom((value, helpers) => parseInt(value)),
-    limit: Joi.string().min(1).max(100).default(10).custom((value, helpers) => parseInt(value)),
+    page: Joi.string()
+        .min(1)
+        .default(1)
+        .custom((value, helpers) => parseInt(value)),
+    limit: Joi.string()
+        .min(1)
+        .max(100)
+        .default(10)
+        .custom((value, helpers) => parseInt(value)),
     sort: Joi.string().trim().default('createdAt'),
     name: Joi.string()
         .trim()
         .min(booksConstants.lengths.NAME_MIN)
         .max(booksConstants.lengths.NAME_MAX),
-    bestSeller: Joi.string().valid('1').custom((value, helpers) => parseInt(value)),
-    review: Joi.string().custom((value, helpers) => parseFloat(value)).min(0).max(5),
+    bestSeller: Joi.string()
+        .valid('1')
+        .custom((value, helpers) => parseInt(value)),
+    review: Joi.string()
+        .custom((value, helpers) => parseFloat(value))
+        .min(0)
+        .max(5),
     writer: Joi.string()
         .trim()
         .min(booksConstants.lengths.WRITER_MIN)
@@ -140,10 +152,14 @@ const getBooksQuerySchema = Joi.object({
         .min(booksConstants.lengths.SUMMARY_MIN)
         .max(booksConstants.lengths.SUMMARY_MAX),
     price: Joi.string().custom((value, helpers) => parseFloat(value)),
-    stockAvailable: Joi.string().custom((value, helpers) => parseInt(value)).min(0),
+    stockAvailable: Joi.string()
+        .custom((value, helpers) => parseInt(value))
+        .min(0),
     createdBy: Joi.string().trim(),
     updatedBy: Joi.string().trim(),
-}).strict().messages(customValidationMessage);
+})
+    .strict()
+    .messages(customValidationMessage);
 
 // Schema for single book ID validation
 const bookIdParamSchema = Joi.object({

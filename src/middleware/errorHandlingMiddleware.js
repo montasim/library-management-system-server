@@ -10,7 +10,7 @@ const errorHandlingMiddleware = (error, req, res, next) => {
     // Log detailed error information in development for debugging
     if (process.env.NODE_ENV === environment.DEVELOPMENT) {
         logger.error('Detailed Error:', {
-            error: error,
+            error,
             body: req.body,
             path: req.path,
         });
