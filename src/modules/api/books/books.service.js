@@ -1,6 +1,41 @@
+import WritersModel from '../writers/writers.model.js';
+import SubjectsModel from '../subjects/subjects.model.js';
+import PublicationsModel from '../publications/publications.model.js';
 import BooksModel from './books.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import logger from '../../../utilities/logger.js';
+
+// Helper function to validate IDs
+const validateIds = async (writer, publication) => {
+    const errors = [];
+
+    // Validate writer
+    if (writer && !(await WritersModel.findById(writer))) {
+        errors.push(`Invalid writer ID: ${writer}`);
+    }
+
+    // Validate publication
+    if (publication && !(await PublicationsModel.findById(publication))) {
+        errors.push(`Invalid publication ID: ${publication}`);
+    }
+
+    return errors;
+};
+
+// Helper function to validate subject IDs
+const validateSubjectIds = async (subjectIds) => {
+    const subjectErrors = [];
+
+    if (subjectIds && subjectIds.length) {
+        for (const subjectId of subjectIds) {
+            if (!(await SubjectsModel.findById(subjectId))) {
+                subjectErrors.push(`Invalid subject ID: ${subjectId}`);
+            }
+        }
+    }
+
+    return subjectErrors;
+};
 
 const createBook = async (bookData) => {
     try {
@@ -8,6 +43,19 @@ const createBook = async (bookData) => {
 
         if (oldDetails) {
             throw new Error(`Book name "${bookData.name}" already exists.`);
+        }
+
+        const { writer, subject, publication } = bookData;
+        const errors = await validateIds(writer, publication);
+
+        if (errors.length) {
+            throw new Error(errors.join(' '));
+        }
+
+        const subjectErrors = await validateSubjectIds(subject);
+
+        if (subjectErrors.length) {
+            throw new Error(errors.join(' '));
         }
 
         bookData.createdBy = 'Admin'; // Hardcoded for now, will be dynamic in future
@@ -134,29 +182,98 @@ const getBook = async (bookId) => {
 };
 
 const updateBook = async (bookId, updateData) => {
-    updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
+    try {
+        const { writer, addSubject, deleteSubject, publication } = updateData;
+        const errors = await validateIds(writer, publication);
 
-    const updatedBook = await BooksModel.findByIdAndUpdate(bookId, updateData, {
-        new: true,
-    });
+        if (errors.length) {
+            throw new Error(errors.join(' '));
+        }
 
-    if (!updatedBook) {
+        const addSubjectErrors = await validateSubjectIds(addSubject);
+        const deleteSubjectErrors = await validateSubjectIds(deleteSubject);
+
+        if (addSubjectErrors.length || deleteSubjectErrors.length) {
+            throw new Error([...addSubjectErrors, ...deleteSubjectErrors].join(' '));
+        }
+
+        // Ensure no overlap between addSubject and deleteSubject
+        if (addSubject && deleteSubject) {
+            const overlappingSubjects = addSubject.filter(subject => deleteSubject.includes(subject));
+
+            if (overlappingSubjects.length) {
+                throw new Error(`The following subjects are in both addSubject and deleteSubject: ${overlappingSubjects.join(', ')}`);
+            }
+        }
+
+        updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
+
+        // Find the current book
+        const book = await BooksModel.findById(bookId);
+
+        if (!book) {
+            return {
+                timeStamp: new Date(),
+                success: false,
+                data: {},
+                message: 'Book not found.',
+                status: httpStatus.NOT_FOUND,
+            };
+        }
+
+        // Ensure book.subject is an array
+        if (!Array.isArray(book.subject)) {
+            book.subject = [];
+        }
+
+        const existingSubjects = [];
+        const newSubjects = [];
+
+        // Handle adding subjects
+        if (addSubject && addSubject.length) {
+            addSubject.forEach(subject => {
+                if (book.subject.includes(subject)) {
+                    existingSubjects.push(subject);
+                } else {
+                    newSubjects.push(subject);
+                }
+            });
+
+            if (existingSubjects.length) {
+                throw new Error(`The following subjects already exist: ${existingSubjects.join(', ')}`);
+            }
+
+            book.subject.push(...newSubjects);
+        }
+
+        // Handle deleting subjects
+        if (deleteSubject && deleteSubject.length) {
+            book.subject = book.subject.filter(subject => !deleteSubject.includes(subject.toString()));
+        }
+
+        // Update other fields
+        const { addSubject: _, deleteSubject: __, ...otherUpdates } = updateData;
+
+        Object.assign(book, otherUpdates);
+
+        const updatedBook = await book.save();
+
+        return {
+            timeStamp: new Date(),
+            success: true,
+            data: updatedBook,
+            message: 'Book updated successfully.',
+            status: httpStatus.OK,
+        };
+    } catch (error) {
         return {
             timeStamp: new Date(),
             success: false,
             data: {},
-            message: 'Book not found.',
-            status: httpStatus.NOT_FOUND,
+            message: error.message || 'Error updating the book.',
+            status: httpStatus.BAD_REQUEST,
         };
     }
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: updatedBook,
-        message: 'Book updated successfully.',
-        status: httpStatus.OK,
-    };
 };
 
 const deleteBooks = async (bookIds) => {

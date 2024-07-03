@@ -42,6 +42,18 @@ const bookSchemaBase = Joi.object({
             'any.custom': 'Invalid subject ID format.',
             ...customValidationMessage,
         }),
+    addSubject: Joi.array()
+        .items(Joi.string().trim().custom(customObjectIdValidator('addSubject')))
+        .messages({
+            'any.custom': 'Invalid subject ID format.',
+            ...customValidationMessage,
+        }),
+    deleteSubject: Joi.array()
+        .items(Joi.string().trim().custom(customObjectIdValidator('deleteSubject')))
+        .messages({
+            'any.custom': 'Invalid subject ID format.',
+            ...customValidationMessage,
+        }),
     publication: Joi.string()
         .trim()
         .required()
@@ -144,7 +156,6 @@ const getBooksQuerySchema = Joi.object({
         .max(5),
     writer: Joi.string()
         .trim()
-        .required()
         .custom(customObjectIdValidator('writer'))
         .messages({
             'any.custom': 'Invalid writer ID format.',
@@ -158,7 +169,6 @@ const getBooksQuerySchema = Joi.object({
         }),
     publication: Joi.string()
         .trim()
-        .required()
         .custom(customObjectIdValidator('publication'))
         .messages({
             'any.custom': 'Invalid publication ID format.',
