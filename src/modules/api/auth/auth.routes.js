@@ -13,7 +13,7 @@ router
 
 router
     .route('/login')
-    .post(authValidator.signup, authController.signup)
+    .post(authValidator.login, authController.login)
     .all(methodNotSupported);
 
 router

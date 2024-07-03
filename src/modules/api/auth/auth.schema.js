@@ -47,27 +47,29 @@ const userSchemaBase = Joi.object({
         .messages(customValidationMessage),
     password: Joi.string()
         .trim()
-        .required()
         .min(userConstants.lengths.PASSWORD_MIN)
         .max(userConstants.lengths.PASSWORD_MAX)
         .messages(customValidationMessage),
     confirmPassword: Joi.string()
         .trim()
-        .required()
         .min(userConstants.lengths.PASSWORD_MIN)
         .max(userConstants.lengths.PASSWORD_MAX)
         .messages(customValidationMessage),
     isActive: Joi.boolean().default(true).messages(customValidationMessage),
 }).strict();
 
-// Schema for creating a subject, making specific fields required
 const signup = userSchemaBase.fork(
     ['name', 'email', 'password', 'confirmPassword'],
     (field) => field.required()
 );
 
+const login = userSchemaBase.fork(['email', 'password'], (field) =>
+    field.required()
+);
+
 const authSchema = {
     signup,
+    login,
 };
 
 export default authSchema;

@@ -84,14 +84,6 @@ const userSchema = new mongoose.Schema(
         password: {
             type: String,
             required: [true, 'Password is required'],
-            minlength: [
-                userConstants.lengths.PASSWORD_MIN,
-                `Password must be at least ${userConstants.lengths.PASSWORD_MIN} characters long`,
-            ],
-            maxlength: [
-                userConstants.lengths.PASSWORD_MAX,
-                `Password must be no more than ${userConstants.lengths.PASSWORD_MAX} characters long`,
-            ],
         },
         mustChangePassword: {
             type: Boolean,
