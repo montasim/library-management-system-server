@@ -4,6 +4,12 @@ import logger from '../../../utilities/logger.js';
 
 const createPublication = async (publicationData) => {
     try {
+        const oldDetails = await PublicationsModel.findOne({ name: publicationData.name }).lean();
+
+        if (oldDetails) {
+            throw new Error(`Publication name "${publicationData.name}" already exists.`);
+        }
+
         publicationData.createdBy = 'Admin'; // Hardcoded for now, will be dynamic in future
 
         const newPublication = await PublicationsModel.create(publicationData);

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 import permissionsConstants from './permissions.constant.js';
 
 const permissionSchema = new mongoose.Schema(
@@ -11,7 +10,7 @@ const permissionSchema = new mongoose.Schema(
             required: [true, 'Name cannot be empty.'],
             minlength: [
                 permissionsConstants.lengths.NAME_MIN,
-                'Name must be at least 3 character long.',
+                'Name must be at least 3 characters long.',
             ],
             maxlength: [
                 permissionsConstants.lengths.NAME_MAX,
@@ -40,25 +39,38 @@ const permissionSchema = new mongoose.Schema(
 );
 
 // Pre-save middleware for creation
-permissionSchema.pre('save', function (error, doc, next) {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        next(new Error('Role name already exists.'));
-    } else if (this.isNew && !this.createdBy) {
-        next(new Error('Creator is required.'));
-    } else {
-        next();
+permissionSchema.pre('save', function (next) {
+    if (this.isNew && !this.createdBy) {
+        return next(new Error('Creator is required.'));
     }
+
+    next();
 });
 
 // Pre-update middleware for updates
-permissionSchema.pre('findOneAndUpdate', function (error, res, next) {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        next(new Error('Role name already exists.'));
-    } else if (!this._update.updatedBy) {
-        next(new Error('Updater is required.'));
-    } else {
-        next();
+permissionSchema.pre('findOneAndUpdate', function (next) {
+    if (!this._update.updatedBy) {
+        return next(new Error('Updater is required.'));
     }
+
+    next();
+});
+
+// Error handling middleware for unique constraint violations
+permissionSchema.post('save', function (error, doc, next) {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        return next(new Error('Permission name already exists.'));
+    }
+
+    next(error);
+});
+
+permissionSchema.post('findOneAndUpdate', function (error, res, next) {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        return next(new Error('Permission name already exists.'));
+    }
+
+    next(error);
 });
 
 const PermissionsModel = mongoose.model('Permissions', permissionSchema);

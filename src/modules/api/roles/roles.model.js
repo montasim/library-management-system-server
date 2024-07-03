@@ -50,25 +50,38 @@ const roleSchema = new mongoose.Schema(
 roleSchema.index({ name: 1 }, { unique: true });
 
 // Pre-save middleware for creation
-roleSchema.pre('save', function (error, doc, next) {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        next(new Error('Role name already exists.'));
-    } else if (this.isNew && !this.createdBy) {
-        next(new Error('Creator is required.'));
-    } else {
-        next();
+roleSchema.pre('save', function (next) {
+    if (this.isNew && !this.createdBy) {
+        return next(new Error('Creator is required.'));
     }
+
+    next();
 });
 
 // Pre-update middleware for updates
-roleSchema.pre('findOneAndUpdate', function (error, res, next) {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        next(new Error('Role name already exists.'));
-    } else if (!this._update.updatedBy) {
-        next(new Error('Updater is required.'));
-    } else {
-        next();
+roleSchema.pre('findOneAndUpdate', function (next) {
+    if (!this._update.updatedBy) {
+        return next(new Error('Updater is required.'));
     }
+
+    next();
+});
+
+// Error handling middleware for unique constraint violations
+roleSchema.post('save', function (error, doc, next) {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        return next(new Error('Role name already exists.'));
+    }
+
+    next(error);
+});
+
+roleSchema.post('findOneAndUpdate', function (error, res, next) {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        return next(new Error('Role name already exists.'));
+    }
+
+    next(error);
 });
 
 const RolesModel = mongoose.model('Roles', roleSchema);

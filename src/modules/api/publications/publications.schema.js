@@ -11,6 +11,9 @@ const publicationSchemaBase = Joi.object({
         .min(publicationsConstants.lengths.NAME_MIN)
         .max(publicationsConstants.lengths.NAME_MAX)
         .messages(customValidationMessage),
+    isActive: Joi.boolean()
+        .required()
+        .messages(customValidationMessage),
 }).strict();
 
 // Schema for creating a publication, making specific fields required
@@ -57,6 +60,20 @@ const getPublicationsQuerySchema = Joi.object({
         .trim()
         .min(publicationsConstants.lengths.NAME_MIN)
         .max(publicationsConstants.lengths.NAME_MAX),
+    isActive: Joi.string()
+        .valid('true', 'false', '1', '0')
+        .custom((value, helpers) => {
+            if (value === 'true' || value === '1') {
+                return true;
+            } else if (value === 'false' || value === '0') {
+                return false;
+            }
+            return helpers.error('any.invalid');
+        })
+        .messages({
+            'any.only': 'isActive must be a boolean value represented as true/false or 1/0.',
+            ...customValidationMessage,
+        }),
     createdBy: Joi.string().trim(),
     updatedBy: Joi.string().trim(),
 })
