@@ -38,6 +38,21 @@ const errorHandlingMiddleware = (error, req, res, next) => {
             message =
                 'Forbidden: You do not have permission to access this resource.';
             break;
+        case 'OverwriteModelError':
+            status = httpStatus.INTERNAL_SERVER_ERROR;
+            message = 'Internal Server Error: Model Overwrite Attempted.';
+            break;
+        case 'MongoServerError':
+            // Handle specific MongoDB server errors
+            if (error.code === 11000) {
+                status = httpStatus.CONFLICT;
+                message =
+                    'Duplicate key error: An item with the same value already exists.';
+            } else {
+                status = httpStatus.INTERNAL_SERVER_ERROR;
+                message = 'MongoDB Server Error';
+            }
+            break;
         case 'NotFoundError':
             status = httpStatus.NOT_FOUND;
             message = error.message || 'The requested resource was not found.';

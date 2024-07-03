@@ -39,7 +39,9 @@ const validateSubjectIds = async (subjectIds) => {
 
 const createBook = async (bookData) => {
     try {
-        const oldDetails = await BooksModel.findOne({ name: bookData.name }).lean();
+        const oldDetails = await BooksModel.findOne({
+            name: bookData.name,
+        }).lean();
 
         if (oldDetails) {
             throw new Error(`Book name "${bookData.name}" already exists.`);
@@ -194,15 +196,21 @@ const updateBook = async (bookId, updateData) => {
         const deleteSubjectErrors = await validateSubjectIds(deleteSubject);
 
         if (addSubjectErrors.length || deleteSubjectErrors.length) {
-            throw new Error([...addSubjectErrors, ...deleteSubjectErrors].join(' '));
+            throw new Error(
+                [...addSubjectErrors, ...deleteSubjectErrors].join(' ')
+            );
         }
 
         // Ensure no overlap between addSubject and deleteSubject
         if (addSubject && deleteSubject) {
-            const overlappingSubjects = addSubject.filter(subject => deleteSubject.includes(subject));
+            const overlappingSubjects = addSubject.filter((subject) =>
+                deleteSubject.includes(subject)
+            );
 
             if (overlappingSubjects.length) {
-                throw new Error(`The following subjects are in both addSubject and deleteSubject: ${overlappingSubjects.join(', ')}`);
+                throw new Error(
+                    `The following subjects are in both addSubject and deleteSubject: ${overlappingSubjects.join(', ')}`
+                );
             }
         }
 
@@ -231,7 +239,7 @@ const updateBook = async (bookId, updateData) => {
 
         // Handle adding subjects
         if (addSubject && addSubject.length) {
-            addSubject.forEach(subject => {
+            addSubject.forEach((subject) => {
                 if (book.subject.includes(subject)) {
                     existingSubjects.push(subject);
                 } else {
@@ -240,7 +248,9 @@ const updateBook = async (bookId, updateData) => {
             });
 
             if (existingSubjects.length) {
-                throw new Error(`The following subjects already exist: ${existingSubjects.join(', ')}`);
+                throw new Error(
+                    `The following subjects already exist: ${existingSubjects.join(', ')}`
+                );
             }
 
             book.subject.push(...newSubjects);
@@ -248,11 +258,17 @@ const updateBook = async (bookId, updateData) => {
 
         // Handle deleting subjects
         if (deleteSubject && deleteSubject.length) {
-            book.subject = book.subject.filter(subject => !deleteSubject.includes(subject.toString()));
+            book.subject = book.subject.filter(
+                (subject) => !deleteSubject.includes(subject.toString())
+            );
         }
 
         // Update other fields
-        const { addSubject: _, deleteSubject: __, ...otherUpdates } = updateData;
+        const {
+            addSubject: _,
+            deleteSubject: __,
+            ...otherUpdates
+        } = updateData;
 
         Object.assign(book, otherUpdates);
 

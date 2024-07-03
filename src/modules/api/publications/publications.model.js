@@ -6,6 +6,7 @@ const publicationSchema = new mongoose.Schema(
         name: {
             type: String,
             trim: true,
+            unique: true,
             required: [true, 'Name cannot be empty.'],
             minlength: [
                 publicationsConstants.lengths.NAME_MIN,
@@ -56,7 +57,7 @@ publicationSchema.pre('findOneAndUpdate', function (next) {
 });
 
 // Error handling middleware for unique constraint violations
-publicationSchema.post('save', function (error, doc, next) {
+publicationSchema.post('save', (error, doc, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
         return next(new Error('Publication name already exists.'));
     }
@@ -64,7 +65,7 @@ publicationSchema.post('save', function (error, doc, next) {
     next(error);
 });
 
-publicationSchema.post('findOneAndUpdate', function (error, res, next) {
+publicationSchema.post('findOneAndUpdate', (error, res, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
         return next(new Error('Publication name already exists.'));
     }

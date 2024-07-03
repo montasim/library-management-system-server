@@ -7,6 +7,7 @@ const writerSchema = new mongoose.Schema(
         name: {
             type: String,
             trim: true,
+            unique: true,
             required: [true, 'Name cannot be empty.'],
             minlength: [
                 writersConstants.lengths.NAME_MIN,

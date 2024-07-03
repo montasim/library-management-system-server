@@ -2,8 +2,7 @@ import Joi from 'joi';
 
 import booksConstants from './books.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
-import customObjectIdValidator
-    from '../../../shared/customObjectIdValidator.js';
+import customObjectIdValidator from '../../../shared/customObjectIdValidator.js';
 
 // Define base schema for books
 const bookSchemaBase = Joi.object({
@@ -43,13 +42,17 @@ const bookSchemaBase = Joi.object({
             ...customValidationMessage,
         }),
     addSubject: Joi.array()
-        .items(Joi.string().trim().custom(customObjectIdValidator('addSubject')))
+        .items(
+            Joi.string().trim().custom(customObjectIdValidator('addSubject'))
+        )
         .messages({
             'any.custom': 'Invalid subject ID format.',
             ...customValidationMessage,
         }),
     deleteSubject: Joi.array()
-        .items(Joi.string().trim().custom(customObjectIdValidator('deleteSubject')))
+        .items(
+            Joi.string().trim().custom(customObjectIdValidator('deleteSubject'))
+        )
         .messages({
             'any.custom': 'Invalid subject ID format.',
             ...customValidationMessage,
@@ -84,9 +87,7 @@ const bookSchemaBase = Joi.object({
         .required()
         .min(0)
         .messages(customValidationMessage),
-    isActive: Joi.boolean()
-        .required()
-        .messages(customValidationMessage),
+    isActive: Joi.boolean().required().messages(customValidationMessage),
 }).strict();
 
 // Schema for creating a book, making specific fields required
@@ -197,7 +198,8 @@ const getBooksQuerySchema = Joi.object({
             return helpers.error('any.invalid');
         })
         .messages({
-            'any.only': 'isActive must be a boolean value represented as true/false or 1/0.',
+            'any.only':
+                'isActive must be a boolean value represented as true/false or 1/0.',
             ...customValidationMessage,
         }),
     createdBy: Joi.string().trim(),

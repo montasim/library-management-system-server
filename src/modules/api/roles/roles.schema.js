@@ -13,15 +13,15 @@ const roleSchemaBase = Joi.object({
         .max(rolesConstants.lengths.NAME_MAX)
         .messages(customValidationMessage),
     permissions: Joi.array()
-        .items(Joi.string().trim().custom(customObjectIdValidator('permission')))
+        .items(
+            Joi.string().trim().custom(customObjectIdValidator('permission'))
+        )
         .required()
         .messages({
             'any.custom': 'Invalid permission ID format.',
             ...customValidationMessage,
         }),
-    isActive: Joi.boolean()
-        .required()
-        .messages(customValidationMessage),
+    isActive: Joi.boolean().required().messages(customValidationMessage),
 }).strict();
 
 // Schema for creating a role, making specific fields required
@@ -69,7 +69,9 @@ const getRolesQuerySchema = Joi.object({
         .min(rolesConstants.lengths.NAME_MIN)
         .max(rolesConstants.lengths.NAME_MAX),
     permissions: Joi.array()
-        .items(Joi.string().trim().custom(customObjectIdValidator('permission')))
+        .items(
+            Joi.string().trim().custom(customObjectIdValidator('permission'))
+        )
         .messages({
             'any.custom': 'Invalid permission ID format.',
             ...customValidationMessage,
@@ -85,7 +87,8 @@ const getRolesQuerySchema = Joi.object({
             return helpers.error('any.invalid');
         })
         .messages({
-            'any.only': 'isActive must be a boolean value represented as true/false or 1/0.',
+            'any.only':
+                'isActive must be a boolean value represented as true/false or 1/0.',
             ...customValidationMessage,
         }),
     createdBy: Joi.string().trim(),

@@ -11,9 +11,7 @@ const permissionSchemaBase = Joi.object({
         .min(permissionsConstants.lengths.NAME_MIN)
         .max(permissionsConstants.lengths.NAME_MAX)
         .messages(customValidationMessage),
-    isActive: Joi.boolean()
-        .required()
-        .messages(customValidationMessage),
+    isActive: Joi.boolean().required().messages(customValidationMessage),
 }).strict();
 
 // Schema for creating a permission, making specific fields required
@@ -71,7 +69,8 @@ const getPermissionsQuerySchema = Joi.object({
             return helpers.error('any.invalid');
         })
         .messages({
-            'any.only': 'isActive must be a boolean value represented as true/false or 1/0.',
+            'any.only':
+                'isActive must be a boolean value represented as true/false or 1/0.',
             ...customValidationMessage,
         }),
     createdBy: Joi.string().trim(),

@@ -131,7 +131,7 @@ bookSchema.pre('findOneAndUpdate', function (next) {
 });
 
 // Error handling middleware for unique constraint violations
-bookSchema.post('save', function (error, doc, next) {
+bookSchema.post('save', (error, doc, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
         return next(new Error('Book name already exists.'));
     }
@@ -139,7 +139,7 @@ bookSchema.post('save', function (error, doc, next) {
     next(error);
 });
 
-bookSchema.post('findOneAndUpdate', function (error, res, next) {
+bookSchema.post('findOneAndUpdate', (error, res, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
         return next(new Error('Book name already exists.'));
     }

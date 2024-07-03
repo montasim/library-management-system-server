@@ -57,7 +57,7 @@ permissionSchema.pre('findOneAndUpdate', function (next) {
 });
 
 // Error handling middleware for unique constraint violations
-permissionSchema.post('save', function (error, doc, next) {
+permissionSchema.post('save', (error, doc, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
         return next(new Error('Permission name already exists.'));
     }
@@ -65,7 +65,7 @@ permissionSchema.post('save', function (error, doc, next) {
     next(error);
 });
 
-permissionSchema.post('findOneAndUpdate', function (error, res, next) {
+permissionSchema.post('findOneAndUpdate', (error, res, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
         return next(new Error('Permission name already exists.'));
     }

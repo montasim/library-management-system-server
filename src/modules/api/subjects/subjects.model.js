@@ -2,11 +2,14 @@ import mongoose from 'mongoose';
 
 import subjectsConstants from './subjects.constant.js';
 
-const subjectSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+const subjectSchema = new Schema(
     {
         name: {
             type: String,
             trim: true,
+            unique: true,
             required: [true, 'Name cannot be empty.'],
             minlength: [
                 subjectsConstants.lengths.NAME_MIN,
@@ -52,6 +55,7 @@ subjectSchema.pre('findOneAndUpdate', function (next) {
     }
 });
 
+// Check if the model already exists before defining it
 const SubjectsModel = mongoose.model('Subjects', subjectSchema);
 
 export default SubjectsModel;

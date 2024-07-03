@@ -5,13 +5,17 @@ import logger from '../../../utilities/logger.js';
 
 const createRole = async (roleData) => {
     try {
-        const oldDetails = await RolesModel.findOne({ name: roleData.name }).lean();
+        const oldDetails = await RolesModel.findOne({
+            name: roleData.name,
+        }).lean();
 
         if (oldDetails) {
             throw new Error(`Role name "${roleData.name}" already exists.`);
         }
 
-        const arePermissionsValid = await validatePermissions(roleData.permissions);
+        const arePermissionsValid = await validatePermissions(
+            roleData.permissions
+        );
 
         if (!arePermissionsValid) {
             throw new Error('Invalid permissions provided.');

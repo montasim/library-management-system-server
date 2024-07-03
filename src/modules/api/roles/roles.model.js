@@ -68,7 +68,7 @@ roleSchema.pre('findOneAndUpdate', function (next) {
 });
 
 // Error handling middleware for unique constraint violations
-roleSchema.post('save', function (error, doc, next) {
+roleSchema.post('save', (error, doc, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
         return next(new Error('Role name already exists.'));
     }
@@ -76,7 +76,7 @@ roleSchema.post('save', function (error, doc, next) {
     next(error);
 });
 
-roleSchema.post('findOneAndUpdate', function (error, res, next) {
+roleSchema.post('findOneAndUpdate', (error, res, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
         return next(new Error('Role name already exists.'));
     }
