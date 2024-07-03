@@ -107,7 +107,10 @@ const login = async (userData, device) => {
             };
         }
 
-        const { token, tokenDetails } = await createAuthenticationToken(userDetails, device);
+        const { token, tokenDetails } = await createAuthenticationToken(
+            userDetails,
+            device
+        );
 
         return {
             timeStamp: new Date(),
