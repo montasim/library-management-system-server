@@ -4,6 +4,12 @@ import logger from '../../../utilities/logger.js';
 
 const createBook = async (bookData) => {
     try {
+        const oldDetails = await BooksModel.findOne({ name: bookData.name }).lean();
+
+        if (oldDetails) {
+            throw new Error(`Book name "${bookData.name}" already exists.`);
+        }
+
         bookData.createdBy = 'Admin'; // Hardcoded for now, will be dynamic in future
 
         const newBook = await BooksModel.create(bookData);

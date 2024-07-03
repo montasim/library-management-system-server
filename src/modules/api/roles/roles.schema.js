@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 import rolesConstants from './roles.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
-import objectIdValidator from '../../../shared/objectIdValidator.js';
+import customObjectIdValidator from '../../../shared/customObjectIdValidator.js';
 
 // Define base schema for roles
 const roleSchemaBase = Joi.object({
@@ -13,7 +13,7 @@ const roleSchemaBase = Joi.object({
         .max(rolesConstants.lengths.NAME_MAX)
         .messages(customValidationMessage),
     permissions: Joi.array()
-        .items(Joi.string().trim().custom(objectIdValidator))
+        .items(Joi.string().trim().custom(customObjectIdValidator('permission')))
         .required()
         .messages({
             'any.custom': 'Invalid permission ID format.',
@@ -69,7 +69,7 @@ const getRolesQuerySchema = Joi.object({
         .min(rolesConstants.lengths.NAME_MIN)
         .max(rolesConstants.lengths.NAME_MAX),
     permissions: Joi.array()
-        .items(Joi.string().trim().custom(objectIdValidator))
+        .items(Joi.string().trim().custom(customObjectIdValidator('permission')))
         .messages({
             'any.custom': 'Invalid permission ID format.',
             ...customValidationMessage,

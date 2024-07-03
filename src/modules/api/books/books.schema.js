@@ -2,6 +2,8 @@ import Joi from 'joi';
 
 import booksConstants from './books.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
+import customObjectIdValidator
+    from '../../../shared/customObjectIdValidator.js';
 
 // Define base schema for books
 const bookSchemaBase = Joi.object({
@@ -28,19 +30,26 @@ const bookSchemaBase = Joi.object({
     writer: Joi.string()
         .trim()
         .required()
-        .min(booksConstants.lengths.WRITER_MIN)
-        .max(booksConstants.lengths.WRITER_MAX)
-        .messages(customValidationMessage),
-    subject: Joi.array().items(Joi.string().trim()).required().messages({
-        'array.base': 'Subject must be an array.',
-        'array.min': 'At least one subject must be specified.',
-    }),
+        .custom(customObjectIdValidator('writer'))
+        .messages({
+            'any.custom': 'Invalid writer ID format.',
+            ...customValidationMessage,
+        }),
+    subject: Joi.array()
+        .items(Joi.string().trim().custom(customObjectIdValidator('subject')))
+        .required()
+        .messages({
+            'any.custom': 'Invalid subject ID format.',
+            ...customValidationMessage,
+        }),
     publication: Joi.string()
         .trim()
         .required()
-        .min(booksConstants.lengths.PUBLICATION_MIN)
-        .max(booksConstants.lengths.PUBLICATION_MAX)
-        .messages(customValidationMessage),
+        .custom(customObjectIdValidator('publication'))
+        .messages({
+            'any.custom': 'Invalid publication ID format.',
+            ...customValidationMessage,
+        }),
     page: Joi.number().integer().required().messages(customValidationMessage),
     edition: Joi.string()
         .trim()
@@ -62,6 +71,9 @@ const bookSchemaBase = Joi.object({
         .integer()
         .required()
         .min(0)
+        .messages(customValidationMessage),
+    isActive: Joi.boolean()
+        .required()
         .messages(customValidationMessage),
 }).strict();
 
@@ -132,17 +144,26 @@ const getBooksQuerySchema = Joi.object({
         .max(5),
     writer: Joi.string()
         .trim()
-        .min(booksConstants.lengths.WRITER_MIN)
-        .max(booksConstants.lengths.WRITER_MAX),
-    subject: Joi.array().items(Joi.string().trim()).messages({
-        'array.base': 'Subject must be an array.',
-        'string.empty': 'Each subject must not be empty.',
-        'array.min': 'At least one subject must be specified.',
-    }),
+        .required()
+        .custom(customObjectIdValidator('writer'))
+        .messages({
+            'any.custom': 'Invalid writer ID format.',
+            ...customValidationMessage,
+        }),
+    subject: Joi.array()
+        .items(Joi.string().trim().custom(customObjectIdValidator('subject')))
+        .messages({
+            'any.custom': 'Invalid subject ID format.',
+            ...customValidationMessage,
+        }),
     publication: Joi.string()
         .trim()
-        .min(booksConstants.lengths.PUBLICATION_MIN)
-        .max(booksConstants.lengths.PUBLICATION_MAX),
+        .required()
+        .custom(customObjectIdValidator('publication'))
+        .messages({
+            'any.custom': 'Invalid publication ID format.',
+            ...customValidationMessage,
+        }),
     edition: Joi.string()
         .trim()
         .min(booksConstants.lengths.EDITION_MIN)
@@ -155,6 +176,20 @@ const getBooksQuerySchema = Joi.object({
     stockAvailable: Joi.string()
         .custom((value, helpers) => parseInt(value))
         .min(0),
+    isActive: Joi.string()
+        .valid('true', 'false', '1', '0')
+        .custom((value, helpers) => {
+            if (value === 'true' || value === '1') {
+                return true;
+            } else if (value === 'false' || value === '0') {
+                return false;
+            }
+            return helpers.error('any.invalid');
+        })
+        .messages({
+            'any.only': 'isActive must be a boolean value represented as true/false or 1/0.',
+            ...customValidationMessage,
+        }),
     createdBy: Joi.string().trim(),
     updatedBy: Joi.string().trim(),
 })

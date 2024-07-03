@@ -2,11 +2,14 @@ import mongoose from 'mongoose';
 
 import booksConstants from './books.constant.js';
 
+const { Schema } = mongoose;
+
 const bookSchema = new mongoose.Schema(
     {
         name: {
             type: String,
             trim: true,
+            unique: true,
             required: [true, 'Name cannot be empty.'],
             minlength: [
                 booksConstants.lengths.NAME_MIN,
@@ -38,44 +41,18 @@ const bookSchema = new mongoose.Schema(
             required: [true, 'Review is required.'],
         },
         writer: {
-            type: String,
-            trim: true,
-            required: [true, 'Writer name is required.'],
-            minlength: [
-                booksConstants.lengths.WRITER_MIN,
-                'Writer name must be at least 3 character long.',
-            ],
-            maxlength: [
-                booksConstants.lengths.WRITER_MAX,
-                'Writer name cannot be more than 50 characters long.',
-            ],
+            type: Schema.Types.ObjectId,
+            ref: 'WritersModel',
         },
-        subject: {
-            type: [
-                {
-                    type: String,
-                    trim: true,
-                },
-            ],
-            trim: true,
-            required: [true, 'At least one subject is required.'],
-            validate: {
-                validator: (v) => v.length > 0,
-                message: 'At least one subject must be specified.',
+        subject: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'SubjectsModel',
             },
-        },
+        ],
         publication: {
-            type: String,
-            trim: true,
-            required: [true, 'Publication name is required.'],
-            minlength: [
-                booksConstants.lengths.PUBLICATION_MIN,
-                'Publication name must be at least 3 character long.',
-            ],
-            maxlength: [
-                booksConstants.lengths.PUBLICATION_MAX,
-                'Publication name cannot be more than 50 characters long.',
-            ],
+            type: Schema.Types.ObjectId,
+            ref: 'PublicationsModel',
         },
         page: {
             type: Number,
@@ -132,6 +109,9 @@ const bookSchema = new mongoose.Schema(
     }
 );
 
+// Create a unique index on the name field
+bookSchema.index({ name: 1 }, { unique: true });
+
 // Pre-save middleware for creation
 bookSchema.pre('save', function (next) {
     if (this.isNew && !this.createdBy) {
@@ -148,6 +128,23 @@ bookSchema.pre('findOneAndUpdate', function (next) {
     } else {
         next();
     }
+});
+
+// Error handling middleware for unique constraint violations
+bookSchema.post('save', function (error, doc, next) {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        return next(new Error('Book name already exists.'));
+    }
+
+    next(error);
+});
+
+bookSchema.post('findOneAndUpdate', function (error, res, next) {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        return next(new Error('Book name already exists.'));
+    }
+
+    next(error);
 });
 
 const BooksModel = mongoose.model('Books', bookSchema);
