@@ -1,21 +1,33 @@
 import mongoose from 'mongoose';
-
 import rolesConstants from './roles.constant.js';
+
+const { Schema } = mongoose;
 
 const roleSchema = new mongoose.Schema(
     {
         name: {
             type: String,
             trim: true,
+            unique: true,
             required: [true, 'Name cannot be empty.'],
             minlength: [
                 rolesConstants.lengths.NAME_MIN,
-                'Name must be at least 3 character long.',
+                'Name must be at least 3 characters long.',
             ],
             maxlength: [
                 rolesConstants.lengths.NAME_MAX,
                 'Name cannot be more than 100 characters long.',
             ],
+        },
+        permissions: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'PermissionModel',
+            },
+        ],
+        isActive: {
+            type: Boolean,
+            default: true,
         },
         createdBy: {
             type: String,
@@ -34,9 +46,14 @@ const roleSchema = new mongoose.Schema(
     }
 );
 
+// Create a unique index on the name field
+roleSchema.index({ name: 1 }, { unique: true });
+
 // Pre-save middleware for creation
-roleSchema.pre('save', function (next) {
-    if (this.isNew && !this.createdBy) {
+roleSchema.pre('save', function (error, doc, next) {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        next(new Error('Role name already exists.'));
+    } else if (this.isNew && !this.createdBy) {
         next(new Error('Creator is required.'));
     } else {
         next();
@@ -44,8 +61,10 @@ roleSchema.pre('save', function (next) {
 });
 
 // Pre-update middleware for updates
-roleSchema.pre('findOneAndUpdate', function (next) {
-    if (!this._update.updatedBy) {
+roleSchema.pre('findOneAndUpdate', function (error, res, next) {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        next(new Error('Role name already exists.'));
+    } else if (!this._update.updatedBy) {
         next(new Error('Updater is required.'));
     } else {
         next();

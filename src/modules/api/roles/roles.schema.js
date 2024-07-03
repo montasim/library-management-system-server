@@ -2,6 +2,7 @@ import Joi from 'joi';
 
 import rolesConstants from './roles.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
+import objectIdValidator from '../../../shared/objectIdValidator.js';
 
 // Define base schema for roles
 const roleSchemaBase = Joi.object({
@@ -10,6 +11,16 @@ const roleSchemaBase = Joi.object({
         .required()
         .min(rolesConstants.lengths.NAME_MIN)
         .max(rolesConstants.lengths.NAME_MAX)
+        .messages(customValidationMessage),
+    permissions: Joi.array()
+        .items(Joi.string().trim().custom(objectIdValidator))
+        .required()
+        .messages({
+            'any.custom': 'Invalid permission ID format.',
+            ...customValidationMessage,
+        }),
+    isActive: Joi.boolean()
+        .required()
         .messages(customValidationMessage),
 }).strict();
 
@@ -57,6 +68,26 @@ const getRolesQuerySchema = Joi.object({
         .trim()
         .min(rolesConstants.lengths.NAME_MIN)
         .max(rolesConstants.lengths.NAME_MAX),
+    permissions: Joi.array()
+        .items(Joi.string().trim().custom(objectIdValidator))
+        .messages({
+            'any.custom': 'Invalid permission ID format.',
+            ...customValidationMessage,
+        }),
+    isActive: Joi.string()
+        .valid('true', 'false', '1', '0')
+        .custom((value, helpers) => {
+            if (value === 'true' || value === '1') {
+                return true;
+            } else if (value === 'false' || value === '0') {
+                return false;
+            }
+            return helpers.error('any.invalid');
+        })
+        .messages({
+            'any.only': 'isActive must be a boolean value represented as true/false or 1/0.',
+            ...customValidationMessage,
+        }),
     createdBy: Joi.string().trim(),
     updatedBy: Joi.string().trim(),
 })
