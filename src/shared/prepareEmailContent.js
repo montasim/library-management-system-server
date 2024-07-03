@@ -57,7 +57,19 @@ const prepareEmailContent = (subject, emailData) => {
                                 <table border="0" cellpadding="0" cellspacing="0">
                                   <tr>
                                     <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                                      <a href="https://github.com/montasim" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Confirm your email</a>
+                                      <a href="${emailData.emailVerificationLink}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Confirm your email</a>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td align="center" bgcolor="#ffffff" style="padding: 12px;">
+                                <table border="0" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                    <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
+                                      <a href="${emailData.resendEmailVerificationLink}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Resend verification</a>
                                     </td>
                                   </tr>
                                 </table>
@@ -72,7 +84,7 @@ const prepareEmailContent = (subject, emailData) => {
                       <tr>
                         <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
                           <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
-                          <p style="margin: 0;"><a href="https://github.com/montasim" target="_blank">https://github.com/montasim</a></p>
+                          <p style="margin: 0;"><a href="${emailData.emailVerificationLink}" target="_blank">${emailData.emailVerificationLink}</a></p>
                         </td>
                       </tr>
                       <!-- end copy -->

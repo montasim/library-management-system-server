@@ -12,6 +12,16 @@ router
     .all(methodNotSupported);
 
 router
+    .route('/verify/:token')
+    .get(authValidator.verify, authController.verify)
+    .all(methodNotSupported);
+
+router
+    .route('/resend-verification/:id')
+    .get(authValidator.resendVerification, authController.resendVerification)
+    .all(methodNotSupported);
+
+router
     .route('/login')
     .post(authValidator.login, authController.login)
     .all(methodNotSupported);

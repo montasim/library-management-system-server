@@ -3,11 +3,35 @@ import authService from './auth.service.js';
 import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
 
 const signup = asyncErrorHandler(async (req, res) => {
-    const newUserData = await authService.signup(req.body);
+    const hostData = {
+        hostname: req.hostname,
+        port: req.port
+    }
+    const newUserData = await authService.signup(req.body, hostData);
 
     newUserData.route = req.originalUrl;
 
     res.status(newUserData.status).send(newUserData);
+});
+
+const verify = asyncErrorHandler(async (req, res) => {
+    const verifyData = await authService.verify(req.params.token);
+
+    verifyData.route = req.originalUrl;
+
+    res.status(verifyData.status).send(verifyData);
+});
+
+const resendVerification = asyncErrorHandler(async (req, res) => {
+    const hostData = {
+        hostname: req.hostname,
+        port: req.port
+    }
+    const verificationData = await authService.resendVerification(req.params.id, hostData);
+
+    verificationData.route = req.originalUrl;
+
+    res.status(verificationData.status).send(verificationData);
 });
 
 const login = asyncErrorHandler(async (req, res) => {
@@ -21,6 +45,8 @@ const login = asyncErrorHandler(async (req, res) => {
 
 const authController = {
     signup,
+    verify,
+    resendVerification,
     login,
 };
 
