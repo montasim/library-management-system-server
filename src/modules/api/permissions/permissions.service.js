@@ -4,6 +4,12 @@ import logger from '../../../utilities/logger.js';
 
 const createPermission = async (permissionData) => {
     try {
+        const oldDetails = await PermissionsModel.findOne({ name: permissionData.name }).lean();
+
+        if (oldDetails) {
+            throw new Error(`Permission name "${permissionData.name}" already exists.`);
+        }
+
         permissionData.createdBy = 'Admin'; // Hardcoded for now, will be dynamic in future
 
         const newPermission = await PermissionsModel.create(permissionData);

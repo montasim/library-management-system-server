@@ -7,6 +7,7 @@ const permissionSchema = new mongoose.Schema(
         name: {
             type: String,
             trim: true,
+            unique: true,
             required: [true, 'Name cannot be empty.'],
             minlength: [
                 permissionsConstants.lengths.NAME_MIN,
@@ -16,6 +17,10 @@ const permissionSchema = new mongoose.Schema(
                 permissionsConstants.lengths.NAME_MAX,
                 'Name cannot be more than 100 characters long.',
             ],
+        },
+        isActive: {
+            type: Boolean,
+            default: true,
         },
         createdBy: {
             type: String,
@@ -35,8 +40,10 @@ const permissionSchema = new mongoose.Schema(
 );
 
 // Pre-save middleware for creation
-permissionSchema.pre('save', function (next) {
-    if (this.isNew && !this.createdBy) {
+permissionSchema.pre('save', function (error, doc, next) {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        next(new Error('Role name already exists.'));
+    } else if (this.isNew && !this.createdBy) {
         next(new Error('Creator is required.'));
     } else {
         next();
@@ -44,8 +51,10 @@ permissionSchema.pre('save', function (next) {
 });
 
 // Pre-update middleware for updates
-permissionSchema.pre('findOneAndUpdate', function (next) {
-    if (!this._update.updatedBy) {
+permissionSchema.pre('findOneAndUpdate', function (error, res, next) {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        next(new Error('Role name already exists.'));
+    } else if (!this._update.updatedBy) {
         next(new Error('Updater is required.'));
     } else {
         next();
