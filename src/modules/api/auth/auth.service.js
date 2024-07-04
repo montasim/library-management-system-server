@@ -453,7 +453,7 @@ const resetPassword = async (hostData, token, userData) => {
     }
 };
 
-const login = async (userData, device) => {
+const login = async (userData, userAgent, device) => {
     try {
         const userDetails = await UsersModel.findOne({
             email: userData.email,
@@ -485,6 +485,15 @@ const login = async (userData, device) => {
         );
 
         if (!isPasswordValid) {
+            userDetails.login.failed.device.push({
+                details: userAgent, // Assuming userAgent is a string
+                dateTime: new Date(),
+            });
+
+            await UsersModel.findByIdAndUpdate(userDetails._id, {
+                $set: { 'login.failed': userDetails.login.failed }
+            }).lean();
+
             return {
                 timeStamp: new Date(),
                 success: false,
@@ -494,10 +503,62 @@ const login = async (userData, device) => {
             };
         }
 
+        // if (userDetails.login.successful.device.length >= configuration.auth.activeSessions) {
+        //     return {
+        //         timeStamp: new Date(),
+        //         success: false,
+        //         data: {},
+        //         message: `Too many devices used. Can not login more than ${configuration.auth.activeSessions} device at a time. Please log out from an existing device.`,
+        //         status: httpStatus.UNAUTHORIZED,
+        //     };
+        // }
+
         const { token, tokenDetails } = await createAuthenticationToken(
             userDetails,
             device
         );
+
+        userDetails.login.successful.device.push({
+            details: userAgent, // Assuming userAgent is a string
+            dateTime: new Date(),
+        });
+
+        await UsersModel.findByIdAndUpdate(userDetails._id, {
+            $set: { 'login.successful': userDetails.login.successful }
+        }).lean();
+
+        const subject = 'Login Successfully';
+        const emailData = {
+            userName: userDetails.name,
+        };
+        const {
+            pageTitle,
+            preheaderText,
+            heroSection,
+            mainSection,
+            footerContent,
+        } = prepareEmailContent(subject, emailData);
+
+        await EmailService.sendEmail(
+            configuration.admin.email,
+            subject,
+            prepareEmail(
+                pageTitle,
+                preheaderText,
+                heroSection,
+                mainSection,
+                footerContent
+            )
+        );
+
+        // Remove sensitive data
+        delete userDetails.password;
+        delete userDetails.emailVerifyToken;
+        delete userDetails.emailVerifyTokenExpires;
+        delete userDetails.phoneVerifyToken;
+        delete userDetails.phoneVerifyTokenExpires;
+        delete userDetails.resetPasswordVerifyToken;
+        delete userDetails.resetPasswordVerifyTokenExpires;
 
         return {
             timeStamp: new Date(),

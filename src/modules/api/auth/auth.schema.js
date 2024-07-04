@@ -22,7 +22,6 @@ const mobileField = createStringField(userConstants.lengths.MOBILE_MIN, userCons
 
 const passwordField = createStringField(userConstants.lengths.PASSWORD_MIN, userConstants.lengths.PASSWORD_MAX);
 
-
 // Define base schema for subjects
 const userSchemaBase = Joi.object({
     name: createStringField(userConstants.lengths.NAME_MIN, userConstants.lengths.NAME_MAX),

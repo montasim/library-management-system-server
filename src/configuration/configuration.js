@@ -187,7 +187,7 @@ const configuration = {
             envVars.MAXIMUM_CHANGE_PASSWORD_ATTEMPTS,
             5
         ),
-        activeSessions: getInt(envVars.MAXIMUM_ACTIVE_SESSIONS, 10),
+        activeSessions: getInt(envVars.MAXIMUM_ACTIVE_SESSIONS, 3),
         lockDuration: getInt(envVars.LOCK_DURATION_HOUR, 1),
     },
     timeout: getInt(envVars.TIMEOUT_IN_SECONDS, 30),

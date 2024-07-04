@@ -38,7 +38,7 @@ router
 
 router
     .route('/logout')
-    .post(authValidator.signup, authController.signup)
+    .get(authController.logout)
     .all(methodNotSupported);
 
 export default router;

@@ -71,12 +71,23 @@ const resetPassword = asyncErrorHandler(async (req, res) => {
 });
 
 const login = asyncErrorHandler(async (req, res) => {
+    const { headers } = req;
+    const userAgentString = headers['user-agent'];
     const device = await getRequestedDeviceDetails(req);
-    const userData = await authService.login(req.body, device);
+    const loginData = await authService.login(req.body, userAgentString, device);
 
-    userData.route = req.originalUrl;
+    loginData.route = req.originalUrl;
 
-    res.status(userData.status).send(userData);
+    res.status(loginData.status).send(loginData);
+});
+
+const logout = asyncErrorHandler(async (req, res) => {
+    const device = await getRequestedDeviceDetails(req);
+    const logoutData = await authService.login(device);
+
+    logoutData.route = req.originalUrl;
+
+    res.status(logoutData.status).send(logoutData);
 });
 
 const authController = {
@@ -86,6 +97,7 @@ const authController = {
     requestNewPassword,
     resetPassword,
     login,
+    logout,
 };
 
 export default authController;
