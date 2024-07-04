@@ -36,9 +36,6 @@ router
     .put(authValidator.resetPassword, authController.resetPassword)
     .all(methodNotSupported);
 
-router
-    .route('/logout')
-    .get(authController.logout)
-    .all(methodNotSupported);
+router.route('/logout').get(authController.logout).all(methodNotSupported);
 
 export default router;

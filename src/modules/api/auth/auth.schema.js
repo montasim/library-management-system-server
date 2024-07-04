@@ -8,35 +8,58 @@ import userConstants from '../users/users.constants.js';
 const createStringField = (min, max) =>
     Joi.string().trim().min(min).max(max).messages(customValidationMessage);
 
-const emailField = createStringField(userConstants.lengths.EMAIL_MIN, userConstants.lengths.EMAIL_MAX)
+const emailField = createStringField(
+    userConstants.lengths.EMAIL_MIN,
+    userConstants.lengths.EMAIL_MAX
+)
     .pattern(patterns.EMAIL)
     .messages({
         'string.pattern.base': 'Please fill a valid email address',
     });
 
-const mobileField = createStringField(userConstants.lengths.MOBILE_MIN, userConstants.lengths.MOBILE_MAX)
+const mobileField = createStringField(
+    userConstants.lengths.MOBILE_MIN,
+    userConstants.lengths.MOBILE_MAX
+)
     .pattern(patterns.MOBILE)
     .messages({
         'string.pattern.base': 'Please enter a valid Bangladeshi mobile number',
     });
 
-const passwordField = createStringField(userConstants.lengths.PASSWORD_MIN, userConstants.lengths.PASSWORD_MAX);
+const passwordField = createStringField(
+    userConstants.lengths.PASSWORD_MIN,
+    userConstants.lengths.PASSWORD_MAX
+);
 
 // Define base schema for subjects
 const userSchemaBase = Joi.object({
-    name: createStringField(userConstants.lengths.NAME_MIN, userConstants.lengths.NAME_MAX),
+    name: createStringField(
+        userConstants.lengths.NAME_MIN,
+        userConstants.lengths.NAME_MAX
+    ),
     email: emailField,
     mobile: mobileField,
-    address: createStringField(userConstants.lengths.ADDRESS_MIN, userConstants.lengths.ADDRESS_MAX),
-    department: createStringField(userConstants.lengths.DEPARTMENT_MIN, userConstants.lengths.DEPARTMENT_MAX),
-    designation: createStringField(userConstants.lengths.DESIGNATION_MIN, userConstants.lengths.DESIGNATION_MAX),
+    address: createStringField(
+        userConstants.lengths.ADDRESS_MIN,
+        userConstants.lengths.ADDRESS_MAX
+    ),
+    department: createStringField(
+        userConstants.lengths.DEPARTMENT_MIN,
+        userConstants.lengths.DEPARTMENT_MAX
+    ),
+    designation: createStringField(
+        userConstants.lengths.DESIGNATION_MIN,
+        userConstants.lengths.DESIGNATION_MAX
+    ),
     password: passwordField,
-    confirmPassword: Joi.valid(Joi.ref('password'))
-        .messages({'any.only': 'Passwords do not match'}),
+    confirmPassword: Joi.valid(Joi.ref('password')).messages({
+        'any.only': 'Passwords do not match',
+    }),
     oldPassword: passwordField,
     newPassword: passwordField,
-    confirmNewPassword: Joi.valid(Joi.ref('newPassword'))
-        .messages({'any.only': 'New passwords do not match'}),
+    confirmNewPassword: Joi.valid(Joi.ref('newPassword')).messages({
+        'any.only': 'New passwords do not match',
+    }),
     isActive: Joi.boolean().default(true),
 }).strict();
 

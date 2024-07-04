@@ -1,8 +1,7 @@
 import express from 'express';
 
 import authRoutes from './auth/auth.routes.js';
-import authenticateMiddleware
-    from '../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../middleware/authenticate.middleware.js';
 import booksRoutes from './books/books.routes.js';
 import permissionsRoutes from './permissions/permissions.routes.js';
 import publicationsRoutes from './publications/publications.routes.js';

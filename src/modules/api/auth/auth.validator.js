@@ -8,7 +8,10 @@ const resendVerification = validateWithSchema(
     'params'
 );
 const login = validateWithSchema(authSchema.login, 'body');
-const requestNewPassword = validateWithSchema(authSchema.requestNewPassword, 'body');
+const requestNewPassword = validateWithSchema(
+    authSchema.requestNewPassword,
+    'body'
+);
 const resetPassword = validateWithSchema(authSchema.resetPassword, 'body');
 const logout = validateWithSchema(authSchema.signup, 'body');
 

@@ -10,12 +10,9 @@ import prepareEmail from '../../../shared/prepareEmail.js';
 import generateHashedToken from '../../../utilities/generateHashedToken.js';
 import createHashedPassword from '../../../utilities/createHashedPassword.js';
 import comparePassword from '../../../utilities/comparePassword.js';
-import decodeAuthenticationToken
-    from '../../../utilities/decodeAuthenticationToken.js';
-import getRequestedDeviceDetails
-    from '../../../utilities/getRequestedDeviceDetails.js';
-import getAuthenticationToken
-    from '../../../utilities/getAuthenticationToken.js';
+import decodeAuthenticationToken from '../../../utilities/decodeAuthenticationToken.js';
+import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
+import getAuthenticationToken from '../../../utilities/getAuthenticationToken.js';
 
 const signup = async (userData, hostData) => {
     try {
@@ -147,7 +144,7 @@ const verify = async (token) => {
 
         const subject = 'Welcome Email';
         const emailData = {
-            userName: userDetails.name
+            userName: userDetails.name,
         };
         const {
             pageTitle,
@@ -286,7 +283,8 @@ const requestNewPassword = async (email, hostData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Your email address is not verified. Please verify your email first.',
+                message:
+                    'Your email address is not verified. Please verify your email first.',
                 status: httpStatus.UNAUTHORIZED,
             };
         }
@@ -295,10 +293,13 @@ const requestNewPassword = async (email, hostData) => {
             await generateVerificationToken();
 
         // Update user with the reset password verification token and its expiry
-        await UsersModel.updateOne({ _id: userDetails._id }, {
-            resetPasswordVerifyToken: emailVerifyToken,
-            resetPasswordVerifyTokenExpires: emailVerifyTokenExpires,
-        });
+        await UsersModel.updateOne(
+            { _id: userDetails._id },
+            {
+                resetPasswordVerifyToken: emailVerifyToken,
+                resetPasswordVerifyTokenExpires: emailVerifyTokenExpires,
+            }
+        );
 
         const subject = 'Reset Your Password';
         const emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/reset-password/${plainToken}`;
@@ -330,7 +331,8 @@ const requestNewPassword = async (email, hostData) => {
             timeStamp: new Date(),
             success: true,
             data: {},
-            message: 'Password reset email sent successfully. Please check your email.',
+            message:
+                'Password reset email sent successfully. Please check your email.',
             status: httpStatus.OK,
         };
     } catch (error) {
@@ -419,7 +421,7 @@ const resetPassword = async (hostData, token, userData) => {
 
         const subject = 'Reset Password Successful';
         const emailData = {
-            userName: userDetails.name
+            userName: userDetails.name,
         };
         const {
             pageTitle,
@@ -480,7 +482,8 @@ const login = async (userData, userAgent, device) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Your email address is not verified. Please verify your email first.',
+                message:
+                    'Your email address is not verified. Please verify your email first.',
                 status: httpStatus.UNAUTHORIZED,
             };
         }
@@ -497,7 +500,7 @@ const login = async (userData, userAgent, device) => {
             });
 
             await UsersModel.findByIdAndUpdate(userDetails._id, {
-                $set: { 'login.failed': userDetails.login.failed }
+                $set: { 'login.failed': userDetails.login.failed },
             }).lean();
 
             return {
@@ -530,7 +533,7 @@ const login = async (userData, userAgent, device) => {
         });
 
         await UsersModel.findByIdAndUpdate(userDetails._id, {
-            $set: { 'login.successful': userDetails.login.successful }
+            $set: { 'login.successful': userDetails.login.successful },
         }).lean();
 
         const subject = 'Login Successfully';
@@ -587,7 +590,9 @@ const login = async (userData, userAgent, device) => {
 const logout = async (req) => {
     try {
         const device = await getRequestedDeviceDetails(req);
-        const jwtToken = await getAuthenticationToken(req?.headers['authorization']);
+        const jwtToken = await getAuthenticationToken(
+            req?.headers['authorization']
+        );
         const tokenData = await decodeAuthenticationToken(jwtToken);
 
         return {

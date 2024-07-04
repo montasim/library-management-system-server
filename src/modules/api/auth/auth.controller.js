@@ -42,7 +42,10 @@ const requestNewPassword = asyncErrorHandler(async (req, res) => {
         hostname: req.hostname,
         port: req.port,
     };
-    const requestNewPasswordData = await authService.requestNewPassword(req.body.email, hostData);
+    const requestNewPasswordData = await authService.requestNewPassword(
+        req.body.email,
+        hostData
+    );
 
     requestNewPasswordData.route = req.originalUrl;
 
@@ -62,7 +65,7 @@ const resetPassword = asyncErrorHandler(async (req, res) => {
     const verificationData = await authService.resetPassword(
         hostData,
         req.params.token,
-        userData,
+        userData
     );
 
     verificationData.route = req.originalUrl;
@@ -74,7 +77,11 @@ const login = asyncErrorHandler(async (req, res) => {
     const { headers } = req;
     const userAgentString = headers['user-agent'];
     const device = await getRequestedDeviceDetails(req);
-    const loginData = await authService.login(req.body, userAgentString, device);
+    const loginData = await authService.login(
+        req.body,
+        userAgentString,
+        device
+    );
 
     loginData.route = req.originalUrl;
 

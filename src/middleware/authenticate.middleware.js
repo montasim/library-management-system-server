@@ -1,7 +1,6 @@
 import getAuthenticationToken from '../utilities/getAuthenticationToken.js';
 import httpStatus from '../constant/httpStatus.constants.js';
-import decodeAuthenticationToken
-    from '../utilities/decodeAuthenticationToken.js';
+import decodeAuthenticationToken from '../utilities/decodeAuthenticationToken.js';
 import UsersModel from '../modules/api/users/users.model.js';
 
 const authenticateMiddleware = async (req, res, next) => {
@@ -14,7 +13,7 @@ const authenticateMiddleware = async (req, res, next) => {
             data: {},
             message: 'Access forbidden. No token provided.',
             status: httpStatus.FORBIDDEN,
-            route: req.originalUrl
+            route: req.originalUrl,
         };
 
         return res.status(forbiddenData.status).send(forbiddenData);
@@ -23,7 +22,9 @@ const authenticateMiddleware = async (req, res, next) => {
     try {
         const decodedData = await decodeAuthenticationToken(token);
 
-        const userDetails = await UsersModel.findById(decodedData.currentUser._id);
+        const userDetails = await UsersModel.findById(
+            decodedData.currentUser._id
+        );
 
         if (!userDetails) {
             const unauthorizedData = {
@@ -32,7 +33,7 @@ const authenticateMiddleware = async (req, res, next) => {
                 data: {},
                 message: 'Unauthorized access.',
                 status: httpStatus.UNAUTHORIZED,
-                route: req.originalUrl
+                route: req.originalUrl,
             };
 
             return res.status(unauthorizedData.status).send(unauthorizedData);
@@ -48,7 +49,7 @@ const authenticateMiddleware = async (req, res, next) => {
             data: {},
             message: 'Access forbidden. Invalid token.',
             status: httpStatus.FORBIDDEN,
-            route: req.originalUrl
+            route: req.originalUrl,
         };
 
         return res.status(forbiddenData.status).send(forbiddenData);

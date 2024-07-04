@@ -109,7 +109,7 @@ const userSchema = new mongoose.Schema(
                     {
                         details: String, // If you just need to store the user agent string
                         dateTime: Date,
-                    }
+                    },
                 ],
             },
             successful: {
@@ -117,7 +117,7 @@ const userSchema = new mongoose.Schema(
                     {
                         details: String, // If you just need to store the user agent string
                         dateTime: Date,
-                    }
+                    },
                 ],
             },
         },

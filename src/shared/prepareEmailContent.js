@@ -189,7 +189,8 @@ const prepareEmailContent = (subject, emailData) => {
             break;
         case 'Login Successfully':
             pageTitle = 'Security Alert: New Login Detected';
-            preheaderText = 'A new login to your account was detected. If this was not you, please secure your account immediately.';
+            preheaderText =
+                'A new login to your account was detected. If this was not you, please secure your account immediately.';
             heroSection = `
                 <tr>
                   <td align="center" bgcolor="#e9ecef">
