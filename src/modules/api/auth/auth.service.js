@@ -1,6 +1,3 @@
-import bcrypt from 'bcrypt';
-import crypto from 'crypto';
-
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import UsersModel from '../users/users.model.js';
 import userConstants from '../users/users.constants.js';
@@ -11,6 +8,8 @@ import EmailService from '../../../service/email.service.js';
 import configuration from '../../../configuration/configuration.js';
 import prepareEmail from '../../../shared/prepareEmail.js';
 import generateHashedToken from '../../../utilities/generateHashedToken.js';
+import createHashedPassword from '../../../utilities/createHashedPassword.js';
+import comparePassword from '../../../utilities/comparePassword.js';
 
 const signup = async (userData, hostData) => {
     try {
@@ -58,7 +57,7 @@ const signup = async (userData, hostData) => {
             };
         }
 
-        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        const hashedPassword = await createHashedPassword(userData.password);
         const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
             await generateVerificationToken();
 
@@ -358,7 +357,7 @@ const resetPassword = async (hostData, token, userData) => {
             };
         }
 
-        const isPasswordValid = await bcrypt.compare(
+        const isPasswordValid = await comparePassword(
             userData.oldPassword,
             userDetails.password
         );
@@ -403,7 +402,7 @@ const resetPassword = async (hostData, token, userData) => {
             };
         }
 
-        const hashedPassword = await bcrypt.hash(userData.newPassword, 10);
+        const hashedPassword = await createHashedPassword(userData.newPassword);
 
         // Update the user with new password and expiry
         userDetails.password = hashedPassword;
@@ -480,7 +479,7 @@ const login = async (userData, device) => {
             };
         }
 
-        const isPasswordValid = await bcrypt.compare(
+        const isPasswordValid = await comparePassword(
             userData.password,
             userDetails.password
         );
