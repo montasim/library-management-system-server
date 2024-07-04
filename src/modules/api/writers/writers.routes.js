@@ -1,7 +1,6 @@
 import express from 'express';
 
-import authenticateMiddleware
-    from '../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 import writersValidator from './writers.validator.js';
 import cacheMiddleware from '../../../middleware/cache.middleware.js';
 import configuration from '../../../configuration/configuration.js';
