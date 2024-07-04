@@ -8,7 +8,8 @@ const resendVerification = validateWithSchema(
     'params'
 );
 const login = validateWithSchema(authSchema.login, 'body');
-const resetPassword = validateWithSchema(authSchema.signup, 'body');
+const requestNewPassword = validateWithSchema(authSchema.requestNewPassword, 'body');
+const resetPassword = validateWithSchema(authSchema.resetPassword, 'body');
 const logout = validateWithSchema(authSchema.signup, 'body');
 
 const authValidator = {
@@ -16,6 +17,7 @@ const authValidator = {
     verify,
     resendVerification,
     login,
+    requestNewPassword,
     resetPassword,
     logout,
 };

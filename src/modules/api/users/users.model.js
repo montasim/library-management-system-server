@@ -95,6 +95,8 @@ const userSchema = new mongoose.Schema(
         },
         emailVerifyToken: String,
         emailVerifyTokenExpires: Date,
+        resetPasswordVerifyToken: String,
+        resetPasswordVerifyTokenExpires: Date,
         isPhoneVerified: {
             type: Boolean,
             default: false,

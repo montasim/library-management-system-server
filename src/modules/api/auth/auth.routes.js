@@ -27,8 +27,13 @@ router
     .all(methodNotSupported);
 
 router
-    .route('/reset-password')
-    .put(authValidator.signup, authController.signup)
+    .route('/request-new-password')
+    .put(authValidator.requestNewPassword, authController.requestNewPassword)
+    .all(methodNotSupported);
+
+router
+    .route('/reset-password/:token')
+    .put(authValidator.resetPassword, authController.resetPassword)
     .all(methodNotSupported);
 
 router

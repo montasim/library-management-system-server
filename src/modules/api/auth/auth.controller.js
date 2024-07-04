@@ -37,6 +37,39 @@ const resendVerification = asyncErrorHandler(async (req, res) => {
     res.status(verificationData.status).send(verificationData);
 });
 
+const requestNewPassword = asyncErrorHandler(async (req, res) => {
+    const hostData = {
+        hostname: req.hostname,
+        port: req.port,
+    };
+    const requestNewPasswordData = await authService.requestNewPassword(req.body.email, hostData);
+
+    requestNewPasswordData.route = req.originalUrl;
+
+    res.status(requestNewPasswordData.status).send(requestNewPasswordData);
+});
+
+const resetPassword = asyncErrorHandler(async (req, res) => {
+    const hostData = {
+        hostname: req.hostname,
+        port: req.port,
+    };
+    const userData = {
+        oldPassword: req.body.oldPassword,
+        newPassword: req.body.newPassword,
+        confirmNewPassword: req.body.confirmNewPassword,
+    };
+    const verificationData = await authService.resetPassword(
+        hostData,
+        req.params.token,
+        userData,
+    );
+
+    verificationData.route = req.originalUrl;
+
+    res.status(verificationData.status).send(verificationData);
+});
+
 const login = asyncErrorHandler(async (req, res) => {
     const device = await getRequestedDeviceDetails(req);
     const userData = await authService.login(req.body, device);
@@ -50,6 +83,8 @@ const authController = {
     signup,
     verify,
     resendVerification,
+    requestNewPassword,
+    resetPassword,
     login,
 };
 
