@@ -10,6 +10,12 @@ import prepareEmail from '../../../shared/prepareEmail.js';
 import generateHashedToken from '../../../utilities/generateHashedToken.js';
 import createHashedPassword from '../../../utilities/createHashedPassword.js';
 import comparePassword from '../../../utilities/comparePassword.js';
+import decodeAuthenticationToken
+    from '../../../utilities/decodeAuthenticationToken.js';
+import getRequestedDeviceDetails
+    from '../../../utilities/getRequestedDeviceDetails.js';
+import getAuthenticationToken
+    from '../../../utilities/getAuthenticationToken.js';
 
 const signup = async (userData, hostData) => {
     try {
@@ -578,6 +584,30 @@ const login = async (userData, userAgent, device) => {
     }
 };
 
+const logout = async (req) => {
+    try {
+        const device = await getRequestedDeviceDetails(req);
+        const jwtToken = await getAuthenticationToken(req?.headers['authorization']);
+        const tokenData = await decodeAuthenticationToken(jwtToken);
+
+        return {
+            timeStamp: new Date(),
+            success: true,
+            data: {},
+            message: 'User logged out successfully.',
+            status: httpStatus.OK,
+        };
+    } catch (error) {
+        return {
+            timeStamp: new Date(),
+            success: false,
+            data: {},
+            message: error.message || 'Error logout the user.',
+            status: httpStatus.BAD_REQUEST,
+        };
+    }
+};
+
 const authService = {
     signup,
     verify,
@@ -585,6 +615,7 @@ const authService = {
     requestNewPassword,
     resetPassword,
     login,
+    logout,
 };
 
 export default authService;

@@ -82,8 +82,7 @@ const login = asyncErrorHandler(async (req, res) => {
 });
 
 const logout = asyncErrorHandler(async (req, res) => {
-    const device = await getRequestedDeviceDetails(req);
-    const logoutData = await authService.login(device);
+    const logoutData = await authService.logout(req);
 
     logoutData.route = req.originalUrl;
 
