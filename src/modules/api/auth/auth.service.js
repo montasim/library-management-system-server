@@ -4,8 +4,7 @@ import crypto from 'crypto';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import UsersModel from '../users/users.model.js';
 import userConstants from '../users/users.constants.js';
-import generateVerificationToken
-    from '../../../utilities/generateVerificationToken.js';
+import generateVerificationToken from '../../../utilities/generateVerificationToken.js';
 import createAuthenticationToken from '../../../utilities/createAuthenticationToken.js';
 import prepareEmailContent from '../../../shared/prepareEmailContent.js';
 import EmailService from '../../../service/email.service.js';
@@ -59,17 +58,14 @@ const signup = async (userData, hostData) => {
         }
 
         const hashedPassword = await bcrypt.hash(userData.password, 10);
-        const {
-            emailVerifyToken,
-            emailVerifyTokenExpires,
-            plainToken
-        } = await generateVerificationToken();
+        const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
+            await generateVerificationToken();
 
         const newUser = await UsersModel.create({
             ...userData,
             password: hashedPassword,
-            emailVerifyToken: emailVerifyToken,
-            emailVerifyTokenExpires: emailVerifyTokenExpires,
+            emailVerifyToken,
+            emailVerifyTokenExpires,
         });
 
         const subject = 'Confirm Your Email Address';
@@ -120,10 +116,13 @@ const signup = async (userData, hostData) => {
 const verify = async (token) => {
     try {
         // Hash the plain token to compare with the stored hash
-        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+        const hashedToken = crypto
+            .createHash('sha256')
+            .update(token)
+            .digest('hex');
         const userDetails = await UsersModel.findOne({
             emailVerifyToken: hashedToken,
-            emailVerifyTokenExpires: { $gt: Date.now() } // Check if the token hasn't expired
+            emailVerifyTokenExpires: { $gt: Date.now() }, // Check if the token hasn't expired
         });
 
         if (!userDetails) {
@@ -185,7 +184,8 @@ const resendVerification = async (userId, hostData) => {
             };
         }
 
-        const { emailVerifyToken, emailVerifyTokenExpires, plainToken } = await generateVerificationToken();
+        const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
+            await generateVerificationToken();
 
         // Update the user with new verification token and expiry
         userDetails.emailVerifyToken = emailVerifyToken;

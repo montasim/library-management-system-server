@@ -64,16 +64,11 @@ const signup = userSchemaBase.fork(
 );
 
 const verify = Joi.object({
-    token: Joi.string()
-        .required()
-        .messages(customValidationMessage),
+    token: Joi.string().required().messages(customValidationMessage),
 }).strict();
 
 const resendVerification = Joi.object({
-    id: Joi.string()
-        .alphanum()
-        .required()
-        .messages(customValidationMessage),
+    id: Joi.string().alphanum().required().messages(customValidationMessage),
 }).strict();
 
 const login = userSchemaBase.fork(['email', 'password'], (field) =>

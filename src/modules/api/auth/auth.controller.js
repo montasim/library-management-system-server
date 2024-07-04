@@ -5,8 +5,8 @@ import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDeta
 const signup = asyncErrorHandler(async (req, res) => {
     const hostData = {
         hostname: req.hostname,
-        port: req.port
-    }
+        port: req.port,
+    };
     const newUserData = await authService.signup(req.body, hostData);
 
     newUserData.route = req.originalUrl;
@@ -25,9 +25,12 @@ const verify = asyncErrorHandler(async (req, res) => {
 const resendVerification = asyncErrorHandler(async (req, res) => {
     const hostData = {
         hostname: req.hostname,
-        port: req.port
-    }
-    const verificationData = await authService.resendVerification(req.params.id, hostData);
+        port: req.port,
+    };
+    const verificationData = await authService.resendVerification(
+        req.params.id,
+        hostData
+    );
 
     verificationData.route = req.originalUrl;
 

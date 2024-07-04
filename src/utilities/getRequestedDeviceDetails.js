@@ -11,7 +11,9 @@ const getRequestedDeviceDetails = async (req) => {
         os = 'Unknown',
         browser = 'Unknown',
         version = 'Unknown',
-        isDesktop, isTablet, isMobile
+        isDesktop,
+        isTablet,
+        isMobile,
     } = userAgent;
 
     // Get client IP address
@@ -21,7 +23,13 @@ const getRequestedDeviceDetails = async (req) => {
     const language = headers['accept-language']?.split(',')[0] || 'Unknown';
 
     // Determine device type
-    const device = isDesktop ? 'Desktop' : isTablet ? 'Tablet' : isMobile ? 'Mobile' : 'Unknown';
+    const device = isDesktop
+        ? 'Desktop'
+        : isTablet
+          ? 'Tablet'
+          : isMobile
+            ? 'Mobile'
+            : 'Unknown';
 
     return {
         os,
@@ -29,7 +37,7 @@ const getRequestedDeviceDetails = async (req) => {
         version,
         ip,
         language,
-        device
+        device,
     };
 };
 
