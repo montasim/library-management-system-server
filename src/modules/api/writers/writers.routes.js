@@ -1,6 +1,10 @@
 import express from 'express';
 
+import authenticateMiddleware
+    from '../../../middleware/authenticate.middleware.js';
 import writersValidator from './writers.validator.js';
+import cacheMiddleware from '../../../middleware/cache.middleware.js';
+import configuration from '../../../configuration/configuration.js';
 import uploadMiddleware from '../../../middleware/upload.middleware.js';
 import writersController from './writers.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
@@ -10,23 +14,45 @@ const router = express.Router();
 router
     .route('/')
     .post(
+        authenticateMiddleware,
         writersValidator.createWriter,
+        cacheMiddleware.invalidate('writers'),
         uploadMiddleware.single('image'),
         writersController.createWriter
     )
-    .get(writersValidator.getWriters, writersController.getWriters)
-    .delete(writersValidator.deleteWriters, writersController.deleteWriters)
+    .get(
+        writersValidator.getWriters,
+        cacheMiddleware.create(configuration.cache.timeout),
+        writersController.getWriters
+    )
+    .delete(
+        authenticateMiddleware,
+        writersValidator.deleteWriters,
+        cacheMiddleware.invalidate('writers'),
+        writersController.deleteWriters
+    )
     .all(methodNotSupported);
 
 router
     .route('/:writerId')
-    .get(writersValidator.getWriter, writersController.getWriter)
+    .get(
+        writersValidator.getWriter,
+        cacheMiddleware.create(configuration.cache.timeout),
+        writersController.getWriter
+    )
     .put(
+        authenticateMiddleware,
         writersValidator.updateWriter,
+        cacheMiddleware.invalidate('writers'),
         uploadMiddleware.single('image'),
         writersController.updateWriter
     )
-    .delete(writersValidator.deleteWriter, writersController.deleteWriter)
+    .delete(
+        authenticateMiddleware,
+        writersValidator.deleteWriter,
+        cacheMiddleware.invalidate('writers'),
+        writersController.deleteWriter
+    )
     .all(methodNotSupported);
 
 export default router;
