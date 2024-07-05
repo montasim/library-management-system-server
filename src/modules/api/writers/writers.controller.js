@@ -50,7 +50,10 @@ const updateWriter = asyncErrorHandler(async (req, res) => {
 const deleteWriters = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
     const writerIds = req.query.ids.split(',');
-    const deletedWritersData = await writersService.deleteWriters(requester, writerIds);
+    const deletedWritersData = await writersService.deleteWriters(
+        requester,
+        writerIds
+    );
 
     deletedWritersData.route = req.originalUrl;
 

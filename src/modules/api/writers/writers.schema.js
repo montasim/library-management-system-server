@@ -10,14 +10,8 @@ const writerSchemaBase = Joi.object({
         .min(writersConstants.lengths.NAME_MIN)
         .max(writersConstants.lengths.NAME_MAX)
         .messages(customValidationMessage),
-    image: Joi.string()
-        .uri()
-        .trim()
-        .messages(customValidationMessage),
-    review: Joi.number()
-        .min(0)
-        .max(5)
-        .messages(customValidationMessage),
+    image: Joi.string().uri().trim().messages(customValidationMessage),
+    review: Joi.number().min(0).max(5).messages(customValidationMessage),
     summary: Joi.string()
         .trim()
         .min(writersConstants.lengths.SUMMARY_MIN)

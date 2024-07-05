@@ -17,7 +17,11 @@ import databaseService from '../../../service/database.service.js';
 
 const signup = async (userData, hostData) => {
     try {
-        const existingUser = await databaseService.findOne(UsersModel, 'email', userData.email);
+        const existingUser = await databaseService.findOne(
+            UsersModel,
+            'email',
+            userData.email
+        );
 
         if (existingUser) {
             return {

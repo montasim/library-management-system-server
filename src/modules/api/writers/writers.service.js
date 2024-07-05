@@ -23,9 +23,7 @@ const createWriter = async (requester, writerData, writerImage) => {
         }).lean();
 
         if (oldDetails) {
-            throw new Error(
-                `Writers "${writerData.name}" already exists.`
-            );
+            throw new Error(`Writers "${writerData.name}" already exists.`);
         }
 
         let writerImageData = {};
@@ -270,7 +268,8 @@ const deleteWriters = async (requester, writerIds) => {
                 await GoogleDriveFileOperations.deleteFile(oldFileId);
             }
 
-            const deletedWriter = await WritersModel.findByIdAndDelete(writerId);
+            const deletedWriter =
+                await WritersModel.findByIdAndDelete(writerId);
 
             if (deletedWriter) {
                 results.deleted.push(writerId);

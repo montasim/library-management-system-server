@@ -70,8 +70,7 @@ const updateUser = async (userId, updateData, userImage) => {
             await GoogleDriveFileOperations.deleteFile(oldFileId);
         }
 
-        userImageData =
-            await GoogleDriveFileOperations.uploadFile(userImage);
+        userImageData = await GoogleDriveFileOperations.uploadFile(userImage);
 
         if (!userImageData || userImageData instanceof Error) {
             return {
@@ -94,7 +93,11 @@ const updateUser = async (userId, updateData, userImage) => {
         }
     }
 
-    const updatedUser = await databaseService.findByIdAndUpdate(UsersModel, userId, updateData);
+    const updatedUser = await databaseService.findByIdAndUpdate(
+        UsersModel,
+        userId,
+        updateData
+    );
 
     if (!updatedUser) {
         return {

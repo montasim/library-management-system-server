@@ -3,8 +3,7 @@ import express from 'express';
 import uploadMiddleware from '../../../middleware/upload.middleware.js';
 import usersController from './users.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
-import authenticateMiddleware
-    from '../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 
 const router = express.Router();
 
