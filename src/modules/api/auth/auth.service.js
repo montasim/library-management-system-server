@@ -13,12 +13,11 @@ import comparePassword from '../../../utilities/comparePassword.js';
 import decodeAuthenticationToken from '../../../utilities/decodeAuthenticationToken.js';
 import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
 import getAuthenticationToken from '../../../utilities/getAuthenticationToken.js';
+import databaseService from '../../../service/database.service.js';
 
 const signup = async (userData, hostData) => {
     try {
-        const existingUser = await UsersModel.findOne({
-            email: userData.email,
-        }).lean();
+        const existingUser = await databaseService.findOne(UsersModel, 'email', userData.email);
 
         if (existingUser) {
             return {
@@ -64,7 +63,7 @@ const signup = async (userData, hostData) => {
         const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
             await generateVerificationToken();
 
-        const newUser = await UsersModel.create({
+        const newUser = await databaseService.create(UsersModel, {
             ...userData,
             password: hashedPassword,
             emailVerifyToken,
