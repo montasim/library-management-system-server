@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 
 import writersConstants from './writers.constant.js';
 
+const { Schema } = mongoose;
+
 const writerSchema = new mongoose.Schema(
     {
         name: {
@@ -19,13 +21,27 @@ const writerSchema = new mongoose.Schema(
             ],
         },
         image: {
-            type: String,
-            trim: true,
-            required: [true, 'Image URL is required.'],
-            match: [
-                /^https?:\/\/.*\.(jpg|jpeg|png)$/,
-                'Please provide a valid URL for an image ending with .jpg, .jpeg, or .png.',
-            ],
+            fileId: {
+                type: String,
+                maxlength: [
+                    100,
+                    'Picture fileId must be less than 100 characters long',
+                ],
+            },
+            shareableLink: {
+                type: String,
+                maxlength: [
+                    500,
+                    'Picture shareableLink must be less than 500 characters long',
+                ],
+            },
+            downloadLink: {
+                type: String,
+                maxlength: [
+                    500,
+                    'Picture downloadLink must be less than 500 characters long',
+                ],
+            },
         },
         review: {
             type: Number,
@@ -47,9 +63,8 @@ const writerSchema = new mongoose.Schema(
             ],
         },
         createdBy: {
-            type: String,
-            trim: true,
-            required: false,
+            type: Schema.Types.ObjectId,
+            ref: 'UsersModel',
         },
         updatedBy: {
             type: String,

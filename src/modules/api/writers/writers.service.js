@@ -1,12 +1,56 @@
 import WritersModel from './writers.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import logger from '../../../utilities/logger.js';
+import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
+import validateUserRequest from '../../../utilities/validateUserRequest.js';
 
-const createWriter = async (writerData) => {
+const createWriter = async (requester, writerData, writerImage) => {
     try {
-        writerData.createdBy = 'Admin'; // Hardcoded for now, will be dynamic in future
+        const isAuthorized = await validateUserRequest(requester);
 
-        const newWriter = await WritersModel.create(writerData);
+        if (!isAuthorized) {
+            return {
+                timeStamp: new Date(),
+                success: false,
+                data: {},
+                message: 'User not authorized.',
+                status: httpStatus.FORBIDDEN,
+            };
+        }
+
+        const oldDetails = await WritersModel.findOne({
+            name: writerData.name,
+        }).lean();
+
+        if (oldDetails) {
+            throw new Error(
+                `Writers "${writerData.name}" already exists.`
+            );
+        }
+
+        let writerImageData = {};
+
+        if (writerImage) {
+            writerImageData =
+                await GoogleDriveFileOperations.uploadFile(writerImage);
+
+            if (!writerImageData || writerImageData instanceof Error) {
+                return {
+                    timeStamp: new Date(),
+                    success: true,
+                    data: {},
+                    message: 'Failed to save image.',
+                    status: httpStatus.INTERNAL_SERVER_ERROR,
+                };
+            }
+        }
+
+        writerData.createdBy = requester;
+
+        const newWriter = await WritersModel.create({
+            ...writerData,
+            image: writerImageData,
+        });
 
         return {
             timeStamp: new Date(),
@@ -114,8 +158,56 @@ const getWriter = async (writerId) => {
     };
 };
 
-const updateWriter = async (writerId, updateData) => {
-    updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
+const updateWriter = async (requester, writerId, updateData, writerImage) => {
+    const isAuthorized = await validateUserRequest(requester);
+
+    if (!isAuthorized) {
+        return {
+            timeStamp: new Date(),
+            success: false,
+            data: {},
+            message: 'User not authorized.',
+            status: httpStatus.FORBIDDEN,
+        };
+    }
+
+    const existingWriter = await WritersModel.findById(writerId).lean();
+
+    updateData.updatedBy = requester;
+
+    let writerImageData = {};
+
+    // Handle file update
+    if (writerImage) {
+        // Delete the old file from Google Drive if it exists
+        const oldFileId = existingWriter.image?.fileId;
+        if (oldFileId) {
+            await GoogleDriveFileOperations.deleteFile(oldFileId);
+        }
+
+        writerImageData =
+            await GoogleDriveFileOperations.uploadFile(writerImage);
+
+        if (!writerImageData || writerImageData instanceof Error) {
+            return {
+                timeStamp: new Date(),
+                success: false,
+                data: {},
+                message: 'Failed to save image.',
+                status: httpStatus.INTERNAL_SERVER_ERROR,
+            };
+        }
+
+        writerImageData = {
+            fileId: writerImageData.fileId,
+            shareableLink: writerImageData.shareableLink,
+            downloadLink: writerImageData.downloadLink,
+        };
+
+        if (writerImageData) {
+            updateData.image = writerImageData;
+        }
+    }
 
     const updatedWriter = await WritersModel.findByIdAndUpdate(
         writerId,
@@ -144,7 +236,19 @@ const updateWriter = async (writerId, updateData) => {
     };
 };
 
-const deleteWriters = async (writerIds) => {
+const deleteWriters = async (requester, writerIds) => {
+    const isAuthorized = await validateUserRequest(requester);
+
+    if (!isAuthorized) {
+        return {
+            timeStamp: new Date(),
+            success: false,
+            data: {},
+            message: 'User not authorized.',
+            status: httpStatus.FORBIDDEN,
+        };
+    }
+
     const results = {
         deleted: [],
         notFound: [],
@@ -154,11 +258,22 @@ const deleteWriters = async (writerIds) => {
     // Process each writerId
     for (const writerId of writerIds) {
         try {
-            const writer = await WritersModel.findByIdAndDelete(writerId);
-            if (writer) {
-                results.deleted.push(writerId);
-            } else {
+            const writer = await WritersModel.findById(writerId).lean();
+
+            if (!writer) {
                 results.notFound.push(writerId);
+            }
+
+            // Delete the old file from Google Drive if it exists
+            const oldFileId = writer.image?.fileId;
+            if (oldFileId) {
+                await GoogleDriveFileOperations.deleteFile(oldFileId);
+            }
+
+            const deletedWriter = await WritersModel.findByIdAndDelete(writerId);
+
+            if (deletedWriter) {
+                results.deleted.push(writerId);
             }
         } catch (error) {
             // Log the error and mark this ID as failed
@@ -178,7 +293,27 @@ const deleteWriters = async (writerIds) => {
     };
 };
 
-const deleteWriter = async (writerId) => {
+const deleteWriter = async (requester, writerId) => {
+    const isAuthorized = await validateUserRequest(requester);
+
+    if (!isAuthorized) {
+        return {
+            timeStamp: new Date(),
+            success: false,
+            data: {},
+            message: 'User not authorized.',
+            status: httpStatus.FORBIDDEN,
+        };
+    }
+
+    const existingWriter = await WritersModel.findById(writerId).lean();
+
+    // Delete the old file from Google Drive if it exists
+    const oldFileId = existingWriter.image?.fileId;
+    if (oldFileId) {
+        await GoogleDriveFileOperations.deleteFile(oldFileId);
+    }
+
     const writer = await WritersModel.findByIdAndDelete(writerId);
 
     if (!writer) {

@@ -1,7 +1,7 @@
 import getAuthenticationToken from '../utilities/getAuthenticationToken.js';
 import httpStatus from '../constant/httpStatus.constants.js';
 import decodeAuthenticationToken from '../utilities/decodeAuthenticationToken.js';
-import UsersModel from '../modules/api/users/users.model.js';
+import validateUserRequest from '../utilities/validateUserRequest.js';
 
 const authenticateMiddleware = async (req, res, next) => {
     const token = await getAuthenticationToken(req?.headers['authorization']);
@@ -21,12 +21,10 @@ const authenticateMiddleware = async (req, res, next) => {
 
     try {
         const decodedData = await decodeAuthenticationToken(token);
+        const requester = decodedData ? decodedData.currentUser._id : undefined;
+        const isAuthorized = await validateUserRequest(requester);
 
-        const userDetails = await UsersModel.findById(
-            decodedData.currentUser._id
-        );
-
-        if (!userDetails) {
+        if (!isAuthorized) {
             const unauthorizedData = {
                 timeStamp: new Date(),
                 success: false,

@@ -1,8 +1,15 @@
 import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
 import writersService from './writers.service.js';
+import getRequesterId from '../../../utilities/getRequesterId.js';
 
 const createWriter = asyncErrorHandler(async (req, res) => {
-    const newWriterData = await writersService.createWriter(req.body);
+    const requester = getRequesterId(req);
+    const writerImage = req.file;
+    const newWriterData = await writersService.createWriter(
+        requester,
+        req.body,
+        writerImage
+    );
 
     newWriterData.route = req.originalUrl;
 
@@ -26,9 +33,13 @@ const getWriter = asyncErrorHandler(async (req, res) => {
 });
 
 const updateWriter = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
+    const writerImage = req.file;
     const updatedWriterData = await writersService.updateWriter(
+        requester,
         req.params.writerId,
-        req.body
+        req.body,
+        writerImage
     );
 
     updatedWriterData.route = req.originalUrl;
@@ -37,8 +48,9 @@ const updateWriter = asyncErrorHandler(async (req, res) => {
 });
 
 const deleteWriters = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const writerIds = req.query.ids.split(',');
-    const deletedWritersData = await writersService.deleteWriters(writerIds);
+    const deletedWritersData = await writersService.deleteWriters(requester, writerIds);
 
     deletedWritersData.route = req.originalUrl;
 
@@ -46,7 +58,9 @@ const deleteWriters = asyncErrorHandler(async (req, res) => {
 });
 
 const deleteWriter = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const deletedWriterData = await writersService.deleteWriter(
+        requester,
         req.params.writerId
     );
 

@@ -7,23 +7,19 @@ import customValidationMessage from '../../../shared/customValidationMessage.js'
 const writerSchemaBase = Joi.object({
     name: Joi.string()
         .trim()
-        .required()
         .min(writersConstants.lengths.NAME_MIN)
         .max(writersConstants.lengths.NAME_MAX)
         .messages(customValidationMessage),
     image: Joi.string()
         .uri()
         .trim()
-        .required()
         .messages(customValidationMessage),
     review: Joi.number()
         .min(0)
         .max(5)
-        .required()
         .messages(customValidationMessage),
     summary: Joi.string()
         .trim()
-        .required()
         .min(writersConstants.lengths.SUMMARY_MIN)
         .max(writersConstants.lengths.SUMMARY_MAX)
         .messages(customValidationMessage),
