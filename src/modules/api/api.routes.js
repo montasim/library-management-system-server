@@ -2,6 +2,7 @@ import express from 'express';
 
 import authRoutes from './auth/auth.routes.js';
 import booksRoutes from './books/books.routes.js';
+import favouriteBooksRoutes from './favouriteBooks/favouriteBooks.routes.js';
 import permissionsRoutes from './permissions/permissions.routes.js';
 import publicationsRoutes from './publications/publications.routes.js';
 import rolesRoutes from './roles/roles.routes.js';
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.use('/auth', authRoutes);
 router.use('/books', booksRoutes);
+router.use('/favourite-books', favouriteBooksRoutes);
 router.use('/permissions', permissionsRoutes);
 router.use('/publications', publicationsRoutes);
 router.use('/roles', rolesRoutes);
