@@ -19,7 +19,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "pm2 start ecosystem.config.json --no-daemon",
+    "start": "yarn build && pm2 start ecosystem.config.json --no-daemon",
     "dev": "nodemon server.js",
     "build": "yarn lint:fix && yarn prettier:fix && node terser.js",
     "lint:check": "eslint .",
@@ -33,6 +33,7 @@
     "release:patch": "standard-version --release-as patch",
     "postrelease": "yarn push --tags",
     "generate-docs": "jsdoc -c jsdoc.json",
+    "clean": "yarn autoclean --init",
     "postinstall": "yarn autoclean --force && yarn build"
   },
   "keywords": [
