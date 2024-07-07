@@ -5,7 +5,5 @@ node_modules
 build
 logs
 
-yarn.lock
-
 .env
 .env.development
