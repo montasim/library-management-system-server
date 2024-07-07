@@ -97,7 +97,7 @@ const signup = async (userData, hostData) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userData.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -165,7 +165,7 @@ const verify = async (token) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -252,7 +252,7 @@ const resendVerification = async (userId, hostData) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -342,7 +342,7 @@ const requestNewPassword = async (email, hostData) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -458,7 +458,7 @@ const resetPassword = async (hostData, token, userData) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -575,7 +575,7 @@ const login = async (userData, userAgent, device) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
