@@ -33,7 +33,6 @@
     "release:patch": "standard-version --release-as patch",
     "postrelease": "yarn push --tags",
     "generate-docs": "jsdoc -c jsdoc.json",
-    "clean": "yarn autoclean --init",
     "postinstall": "yarn autoclean --force && yarn build"
   },
   "keywords": [
