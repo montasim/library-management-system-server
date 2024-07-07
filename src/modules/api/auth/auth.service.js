@@ -13,6 +13,7 @@ import comparePassword from '../../../utilities/comparePassword.js';
 import decodeAuthenticationToken from '../../../utilities/decodeAuthenticationToken.js';
 import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
 import getAuthenticationToken from '../../../utilities/getAuthenticationToken.js';
+import environment from '../../../constant/envTypes.constants.js';
 
 const signup = async (userData, hostData) => {
     try {
@@ -72,8 +73,17 @@ const signup = async (userData, hostData) => {
         });
 
         const subject = 'Confirm Your Email Address';
-        const emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/verify/${plainToken}`;
-        const resendEmailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/resend-verification/${newUser._id}`;
+        let emailVerificationLink;
+        let resendEmailVerificationLink;
+
+        if (configuration.env === environment.PRODUCTION) {
+            emailVerificationLink = `https://${hostData.hostname}/api/v1/auth/verify/${plainToken}`;
+            resendEmailVerificationLink = `https://${hostData.hostname}/api/v1/auth/resend-verification/${newUser._id}`;
+        } else {
+            emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/verify/${plainToken}`;
+            resendEmailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/resend-verification/${newUser._id}`;
+        }
+
         const emailData = {
             emailVerificationLink,
             resendEmailVerificationLink,
@@ -218,8 +228,17 @@ const resendVerification = async (userId, hostData) => {
         await userDetails.save();
 
         const subject = 'Confirm Your Email Address';
-        const emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/verify/${plainToken}`;
-        const resendEmailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/resend-verification/${userDetails._id}`;
+        let emailVerificationLink;
+        let resendEmailVerificationLink;
+
+        if (configuration.env === environment.PRODUCTION) {
+            emailVerificationLink = `https://${hostData.hostname}/api/v1/auth/verify/${plainToken}`;
+            resendEmailVerificationLink = `https://${hostData.hostname}/api/v1/auth/resend-verification/${userDetails._id}`;
+        } else {
+            emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/verify/${plainToken}`;
+            resendEmailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/resend-verification/${userDetails._id}`;
+        }
+
         const emailData = {
             emailVerificationLink,
             resendEmailVerificationLink,
@@ -302,7 +321,14 @@ const requestNewPassword = async (email, hostData) => {
         );
 
         const subject = 'Reset Your Password';
-        const emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/reset-password/${plainToken}`;
+        let emailVerificationLink;
+
+        if (configuration.env === environment.PRODUCTION) {
+            emailVerificationLink = `https://${hostData.hostname}/api/v1/auth/reset-password/${plainToken}`;
+        } else {
+            emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/reset-password/${plainToken}`;
+        }
+
         const emailData = {
             userName: userDetails.name,
             resetPasswordVerificationLink: emailVerificationLink,
