@@ -2,14 +2,14 @@ import httpStatus from '../../../constant/httpStatus.constants.js';
 import configuration from '../../../configuration/configuration.js';
 
 const homeService = async () => {
-    const homeData =  {
+    const homeData = {
         message: 'Welcome to the API portal.',
         version: '1.0.0',
         license: 'MIT',
         description: '',
         engines: {
-            "node": ">=20.x",
-            "yarn": ">=1.22.x",
+            node: '>=20.x',
+            yarn: '>=1.22.x',
         },
         homepage: configuration.github.repository,
         bugs: `${configuration.github.repository}/issues`,

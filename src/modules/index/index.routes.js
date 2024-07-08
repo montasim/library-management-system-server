@@ -2,8 +2,7 @@ import express from 'express';
 
 import homeRoutes from './home/home.routes.js';
 import statusRoutes from './status/status.routes.js';
-import testUncaughtExceptionRoutes
-    from './testUncaughtException/testUncaughtException.routes.js';
+import testUncaughtExceptionRoutes from './testUncaughtException/testUncaughtException.routes.js';
 
 const router = express.Router();
 
