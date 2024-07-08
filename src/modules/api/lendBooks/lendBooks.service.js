@@ -210,7 +210,6 @@ const getLendBooks = async (requester) => {
 const writersService = {
     createLendBook,
     getLendBooks,
-    deleteLendBook,
 };
 
 export default writersService;
