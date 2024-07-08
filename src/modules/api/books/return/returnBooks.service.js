@@ -1,7 +1,7 @@
-import httpStatus from '../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
-import LendBooksModel from '../lendBooks/lendBooks.model.js';
-import BooksHistoryModel from '../booksHistory/booksHistory.model.js';
+import httpStatus from '../../../../constant/httpStatus.constants.js';
+import validateUserRequest from '../../../../utilities/validateUserRequest.js';
+import LendBooksModel from '../lend/lendBooks.model.js';
+import BooksHistoryModel from '../history/booksHistory.model.js';
 
 const returnBook = async (requester, bookData) => {
     try {

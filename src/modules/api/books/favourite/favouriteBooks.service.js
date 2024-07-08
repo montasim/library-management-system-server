@@ -1,8 +1,8 @@
 import FavouriteBooksModel from './favouriteBooks.model.js';
-import httpStatus from '../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
-import UsersModel from '../users/users.model.js';
-import BooksModel from '../books/books.model.js';
+import httpStatus from '../../../../constant/httpStatus.constants.js';
+import validateUserRequest from '../../../../utilities/validateUserRequest.js';
+import UsersModel from '../../users/users.model.js';
+import BooksModel from '../books.model.js';
 
 const createFavouriteBook = async (requester, favouriteBookId) => {
     try {

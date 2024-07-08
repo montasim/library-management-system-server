@@ -1,7 +1,7 @@
 import LendBooksModel from './lendBooks.model.js';
-import httpStatus from '../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
-import BooksModel from '../books/books.model.js';
+import httpStatus from '../../../../constant/httpStatus.constants.js';
+import validateUserRequest from '../../../../utilities/validateUserRequest.js';
+import BooksModel from '../books.model.js';
 
 const createLendBook = async (requester, lendBookData) => {
     try {

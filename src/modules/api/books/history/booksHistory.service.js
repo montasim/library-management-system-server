@@ -1,5 +1,5 @@
-import httpStatus from '../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
+import httpStatus from '../../../../constant/httpStatus.constants.js';
+import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import BooksHistoryModel from './booksHistory.model.js';
 
 const getBooksHistory = async (requester, params) => {

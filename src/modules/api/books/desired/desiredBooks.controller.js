@@ -1,4 +1,4 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
 import desiredBooksService from './desiredBooks.service.js';
 
 const getDesiredBooks = asyncErrorHandler(async (req, res) => {

@@ -1,12 +1,12 @@
-import validateWithSchema from '../../../shared/validateWithSchema.js';
-import favouriteBooksSchema from './favouriteBooks.schema.js';
+import validateWithSchema from '../../../../shared/validateWithSchema.js';
+import favouriteBooksSchema from './requestBooks.schema.js';
 
 const createFavouriteBook = validateWithSchema(favouriteBooksSchema.createFavouriteBookSchema, 'params');
 const deleteFavouriteBook = validateWithSchema(favouriteBooksSchema.deleteFavouriteBookSchema, 'params');
 
-const favouriteBooksValidator = {
+const requestBooksValidator = {
     createFavouriteBook,
     deleteFavouriteBook,
 };
 
-export default favouriteBooksValidator;
+export default requestBooksValidator;

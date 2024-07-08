@@ -1,6 +1,6 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
-import favouriteBooksService from '../favouriteBooks/favouriteBooks.service.js';
-import getRequesterId from '../../../utilities/getRequesterId.js';
+import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import favouriteBooksService from './favouriteBooks.service.js';
+import getRequesterId from '../../../../utilities/getRequesterId.js';
 
 const createFavouriteBook = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);

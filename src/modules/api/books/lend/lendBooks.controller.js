@@ -1,6 +1,6 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
-import lendBooksService from '../lendBooks/lendBooks.service.js';
-import getRequesterId from '../../../utilities/getRequesterId.js';
+import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import lendBooksService from './lendBooks.service.js';
+import getRequesterId from '../../../../utilities/getRequesterId.js';
 
 const createLendBook = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);

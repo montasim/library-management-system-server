@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import booksConstants from '../books/books.constant.js';
+import booksConstants from '../books.constant.js';
 
 const { Schema } = mongoose;
 

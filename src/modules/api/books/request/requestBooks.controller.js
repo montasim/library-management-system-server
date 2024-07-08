@@ -1,6 +1,6 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
-import requestBooksService from '../requestBooks/requestBooks.service.js';
-import getRequesterId from '../../../utilities/getRequesterId.js';
+import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import requestBooksService from './requestBooks.service.js';
+import getRequesterId from '../../../../utilities/getRequesterId.js';
 
 const createRequestBook = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);

@@ -1,8 +1,8 @@
 import express from 'express';
 
-import methodNotSupported from '../../../shared/methodNotSupported.js';
+import methodNotSupported from '../../../../shared/methodNotSupported.js';
 import authenticateMiddleware
-    from '../../../middleware/authenticate.middleware.js';
+    from '../../../../middleware/authenticate.middleware.js';
 import lendBooksController from './lendBooks.controller.js';
 
 const router = express.Router();

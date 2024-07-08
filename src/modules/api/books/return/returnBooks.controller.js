@@ -1,5 +1,5 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
-import getRequesterId from '../../../utilities/getRequesterId.js';
+import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import getRequesterId from '../../../../utilities/getRequesterId.js';
 import returnBooksService from './returnBooks.service.js';
 
 const returnBook = asyncErrorHandler(async (req, res) => {

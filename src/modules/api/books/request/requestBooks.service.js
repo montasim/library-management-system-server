@@ -1,6 +1,6 @@
 import RequestBooksModel from './requestBooks.model.js';
-import httpStatus from '../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
+import httpStatus from '../../../../constant/httpStatus.constants.js';
+import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 
 const createRequestBook = async (requester, bookData) => {
     try {
@@ -150,7 +150,7 @@ const getRequestBook = async (requester, requestBookId) => {
             };
         }
 
-        // Find the specific book request in the array of requestBooks
+        // Find the specific book request in the array of request
         const bookRequest = requestBooks.requestBooks.find(book => {
             console.log(book._id.toString());
 

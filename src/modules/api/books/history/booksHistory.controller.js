@@ -1,6 +1,6 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
-import booksHistoryService from '../booksHistory/booksHistory.service.js';
-import getRequesterId from '../../../utilities/getRequesterId.js';
+import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import booksHistoryService from './booksHistory.service.js';
+import getRequesterId from '../../../../utilities/getRequesterId.js';
 
 const getBooks = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);

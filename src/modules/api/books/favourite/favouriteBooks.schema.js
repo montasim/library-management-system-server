@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-import customValidationMessage from '../../../shared/customValidationMessage.js';
+import customValidationMessage from '../../../../shared/customValidationMessage.js';
 
 // Schema for single book ID validation
 const favouriteBookIdParamSchema = Joi.object({

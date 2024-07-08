@@ -2,9 +2,9 @@ import express from 'express';
 
 import favouriteBooksValidator from './favouriteBooks.validator.js';
 import favouriteBooksController from './favouriteBooks.controller.js';
-import methodNotSupported from '../../../shared/methodNotSupported.js';
+import methodNotSupported from '../../../../shared/methodNotSupported.js';
 import authenticateMiddleware
-    from '../../../middleware/authenticate.middleware.js';
+    from '../../../../middleware/authenticate.middleware.js';
 
 const router = express.Router();
 

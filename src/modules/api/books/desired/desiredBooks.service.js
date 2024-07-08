@@ -1,16 +1,16 @@
-import httpStatus from '../../../constant/httpStatus.constants.js';
-import RequestBooksModel from '../requestBooks/requestBooks.model.js';
+import httpStatus from '../../../../constant/httpStatus.constants.js';
+import RequestBooksModel from '../request/requestBooks.model.js';
 
 const getDesiredBooks = async () => {
     try {
         // Aggregate to find the most desired books across all users' requests
         const desiredBooks = await RequestBooksModel.aggregate([
             {
-                $unwind: '$requestBooks' // Unwind the array of requested books
+                $unwind: '$request' // Unwind the array of requested books
             },
             {
                 $group: {
-                    _id: '$requestBooks.name', // Group by the name of the book
+                    _id: '$request.name', // Group by the name of the book
                     count: { $sum: 1 } // Count how many times each book is requested
                 }
             },

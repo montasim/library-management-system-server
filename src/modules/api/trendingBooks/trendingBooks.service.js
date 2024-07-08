@@ -1,16 +1,16 @@
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import FavouriteBooksModel from '../favouriteBooks/favouriteBooks.model.js';
+import FavouriteBooksModel from '../books/favourite/favouriteBooks.model.js';
 
 const getTrendingBooks = async () => {
     try {
         // Aggregate to find the most common books across all users' favourites
         const trendingBooks = await FavouriteBooksModel.aggregate([
             {
-                $unwind: '$favouriteBooks'
+                $unwind: '$favourite'
             },
             {
                 $group: {
-                    _id: '$favouriteBooks',
+                    _id: '$favourite',
                     count: { $sum: 1 }
                 }
             },
