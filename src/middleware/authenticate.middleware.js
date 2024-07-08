@@ -45,7 +45,7 @@ const authenticateMiddleware = async (req, res, next) => {
             timeStamp: new Date(),
             success: false,
             data: {},
-            message: 'Access forbidden. Invalid token.',
+            message: 'Your session has expired. Please login again.',
             status: httpStatus.FORBIDDEN,
             route: req.originalUrl,
         };
