@@ -1,4 +1,4 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
 import trendingBooksService from './trendingBooks.service.js';
 
 const getTrendingBooks = asyncErrorHandler(async (req, res) => {

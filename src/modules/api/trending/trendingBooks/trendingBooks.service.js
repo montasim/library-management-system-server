@@ -1,5 +1,5 @@
-import httpStatus from '../../../constant/httpStatus.constants.js';
-import FavouriteBooksModel from '../books/favourite/favouriteBooks.model.js';
+import httpStatus from '../../../../constant/httpStatus.constants.js';
+import FavouriteBooksModel from '../../books/favourite/favouriteBooks.model.js';
 
 const getTrendingBooks = async () => {
     try {

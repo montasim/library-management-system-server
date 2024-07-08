@@ -1,7 +1,7 @@
 import express from 'express';
 
 import trendingBooksController from './trendingBooks.controller.js';
-import methodNotSupported from '../../../shared/methodNotSupported.js';
+import methodNotSupported from '../../../../shared/methodNotSupported.js';
 
 const router = express.Router();
 
