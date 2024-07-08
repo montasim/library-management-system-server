@@ -2,6 +2,7 @@ import express from 'express';
 
 import authRoutes from './auth/auth.routes.js';
 import booksRoutes from './books/books.routes.js';
+import booksHistoryRoutes from './booksHistory/booksHistory.routes.js';
 import desiredBooksRoutes from './desiredBooks/desiredBooks.routes.js';
 import favouriteBooksRoutes from './favouriteBooks/favouriteBooks.routes.js';
 import lendBooksRoutes from './lendBooks/lendBooks.routes.js';
@@ -19,6 +20,7 @@ const router = express.Router();
 
 router.use('/auth', authRoutes);
 router.use('/books', booksRoutes);
+router.use('/books-history', booksHistoryRoutes);
 router.use('/desired-books', desiredBooksRoutes);
 router.use('/favourite-books', favouriteBooksRoutes);
 router.use('/lend-books', lendBooksRoutes);
