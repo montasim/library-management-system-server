@@ -3,10 +3,10 @@ import express from 'express';
 import authValidator from './auth.validator.js';
 import authController from './auth.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
-import permissionsValidator from '../permissions/permissions.validator.js';
-import permissionsController from '../permissions/permissions.controller.js';
-import rolesValidator from '../roles/roles.validator.js';
-import rolesController from '../roles/roles.controller.js';
+import permissionsValidator from './permissions/permissions.validator.js';
+import permissionsController from './permissions/permissions.controller.js';
+import rolesValidator from './roles/roles.validator.js';
+import rolesController from './roles/roles.controller.js';
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import PermissionsModel from './permissions.model.js';
-import httpStatus from '../../../constant/httpStatus.constants.js';
-import logger from '../../../utilities/logger.js';
+import httpStatus from '../../../../constant/httpStatus.constants.js';
+import logger from '../../../../utilities/logger.js';
 
 const createPermission = async (permissionData) => {
     try {

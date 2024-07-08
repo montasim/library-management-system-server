@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 import permissionsConstants from './permissions.constant.js';
-import customValidationMessage from '../../../shared/customValidationMessage.js';
+import customValidationMessage from '../../../../shared/customValidationMessage.js';
 
 // Define base schema for permissions
 const permissionSchemaBase = Joi.object({

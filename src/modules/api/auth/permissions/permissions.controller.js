@@ -1,4 +1,4 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
 import permissionsService from './permissions.service.js';
 
 const createPermission = asyncErrorHandler(async (req, res) => {

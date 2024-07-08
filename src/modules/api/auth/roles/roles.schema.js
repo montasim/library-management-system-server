@@ -1,8 +1,8 @@
 import Joi from 'joi';
 
 import rolesConstants from './roles.constant.js';
-import customValidationMessage from '../../../shared/customValidationMessage.js';
-import customObjectIdValidator from '../../../shared/customObjectIdValidator.js';
+import customValidationMessage from '../../../../shared/customValidationMessage.js';
+import customObjectIdValidator from '../../../../shared/customObjectIdValidator.js';
 
 // Define base schema for roles
 const roleSchemaBase = Joi.object({

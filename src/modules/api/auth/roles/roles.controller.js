@@ -1,4 +1,4 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
 import rolesService from './roles.service.js';
 
 const createRole = asyncErrorHandler(async (req, res) => {

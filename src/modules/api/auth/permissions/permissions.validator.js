@@ -1,4 +1,4 @@
-import validateWithSchema from '../../../shared/validateWithSchema.js';
+import validateWithSchema from '../../../../shared/validateWithSchema.js';
 import permissionsSchema from './permissions.schema.js';
 
 const createPermission = validateWithSchema(

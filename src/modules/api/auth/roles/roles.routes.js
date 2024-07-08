@@ -2,7 +2,7 @@ import express from 'express';
 
 import rolesController from './roles.controller.js';
 import rolesValidator from './roles.validator.js';
-import methodNotSupported from '../../../shared/methodNotSupported.js';
+import methodNotSupported from '../../../../shared/methodNotSupported.js';
 
 const router = express.Router();
 

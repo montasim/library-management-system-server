@@ -2,7 +2,7 @@ import express from 'express';
 
 import permissionsController from './permissions.controller.js';
 import permissionsValidator from './permissions.validator.js';
-import methodNotSupported from '../../../shared/methodNotSupported.js';
+import methodNotSupported from '../../../../shared/methodNotSupported.js';
 
 const router = express.Router();
 

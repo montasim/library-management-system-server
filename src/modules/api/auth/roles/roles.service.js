@@ -1,7 +1,7 @@
-import validatePermissions from '../../../shared/validatePermissions.js';
+import validatePermissions from '../../../../shared/validatePermissions.js';
 import RolesModel from './roles.model.js';
-import httpStatus from '../../../constant/httpStatus.constants.js';
-import logger from '../../../utilities/logger.js';
+import httpStatus from '../../../../constant/httpStatus.constants.js';
+import logger from '../../../../utilities/logger.js';
 
 const createRole = async (roleData) => {
     try {
