@@ -13,7 +13,8 @@ const mobileField = createStringField(
 )
     .pattern(patterns.MOBILE)
     .messages({
-        'string.pattern.base': 'Please enter a valid Bangladeshi mobile number.',
+        'string.pattern.base':
+            'Please enter a valid Bangladeshi mobile number.',
     });
 
 const emailField = createStringField(
@@ -42,7 +43,7 @@ const objectIdField = Joi.string()
     .messages({
         'string.length': 'The ID must be exactly 24 characters long.',
         'string.hex': 'The ID must be a valid hexadecimal string.',
-        ...customValidationMessage  // Spread your custom messages if there are additional overrides
+        ...customValidationMessage, // Spread your custom messages if there are additional overrides
     });
 
 const validationService = {

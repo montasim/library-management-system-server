@@ -14,8 +14,9 @@ const permissionSchemaBase = Joi.object({
 }).strict();
 
 // Schema for creating a permission, making specific fields required
-const createPermissionSchema = permissionSchemaBase.fork(['name', 'isActive'], (field) =>
-    field.required()
+const createPermissionSchema = permissionSchemaBase.fork(
+    ['name', 'isActive'],
+    (field) => field.required()
 );
 
 // Schema for updating a permission
