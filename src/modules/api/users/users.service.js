@@ -2,7 +2,6 @@ import UsersModel from './users.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
-import databaseService from '../../../service/database.service.js';
 
 const getUser = async (userId) => {
     const user = await UsersModel.findById(userId).lean();
@@ -36,7 +35,7 @@ const getUser = async (userId) => {
 };
 
 const updateUser = async (userId, updateData, userImage) => {
-    const existingUser = await databaseService.findById(UsersModel, userId);
+    const existingUser = await UsersModel.findById(userId).lean();
 
     if (!existingUser) {
         return {
@@ -93,11 +92,9 @@ const updateUser = async (userId, updateData, userImage) => {
         }
     }
 
-    const updatedUser = await databaseService.findByIdAndUpdate(
-        UsersModel,
-        userId,
-        updateData
-    );
+    const updatedUser = await UsersModel.findByIdAndUpdate(userId, updateData, {
+        new: true,
+    });
 
     if (!updatedUser) {
         return {
@@ -128,7 +125,7 @@ const updateUser = async (userId, updateData, userImage) => {
 };
 
 const deleteUser = async (userId) => {
-    const existingUser = await databaseService.findById(UsersModel, userId);
+    const existingUser = await UsersModel.findById(userId).lean();
 
     if (!existingUser) {
         return {
@@ -146,7 +143,7 @@ const deleteUser = async (userId) => {
         await GoogleDriveFileOperations.deleteFile(oldFileId);
     }
 
-    const user = await databaseService.findByIdAndDelete(UsersModel, userId);
+    const user = await UsersModel.findByIdAndDelete(userId);
 
     if (!user) {
         return {

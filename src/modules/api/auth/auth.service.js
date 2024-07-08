@@ -13,22 +13,20 @@ import comparePassword from '../../../utilities/comparePassword.js';
 import decodeAuthenticationToken from '../../../utilities/decodeAuthenticationToken.js';
 import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
 import getAuthenticationToken from '../../../utilities/getAuthenticationToken.js';
-import databaseService from '../../../service/database.service.js';
+import environment from '../../../constant/envTypes.constants.js';
 
 const signup = async (userData, hostData) => {
     try {
-        const existingUser = await databaseService.findOne(
-            UsersModel,
-            'email',
-            userData.email
-        );
+        const existingUser = await UsersModel.findOne({
+            email: userData.email,
+        }).lean();
 
         if (existingUser) {
             return {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Email address already taken. Please login.',
+                message: 'This email address is already registered. Please log in or use the forgot password option if you need to recover your password.',
                 status: httpStatus.CONFLICT,
             };
         }
@@ -38,7 +36,7 @@ const signup = async (userData, hostData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Passwords do not match.',
+                message: 'The passwords you entered do not match. Please try again.',
                 status: httpStatus.BAD_REQUEST,
             };
         }
@@ -48,7 +46,7 @@ const signup = async (userData, hostData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: `Password must be at least ${userConstants.lengths.PASSWORD_MIN} characters long.`,
+                message: `Your password must be between ${userConstants.lengths.PASSWORD_MIN} and ${userConstants.lengths.PASSWORD_MAX} characters.`,
                 status: httpStatus.BAD_REQUEST,
             };
         }
@@ -58,7 +56,7 @@ const signup = async (userData, hostData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: `Password must be less than ${userConstants.lengths.PASSWORD_MAX} characters long.`,
+                message: `Your password must be between ${userConstants.lengths.PASSWORD_MIN} and ${userConstants.lengths.PASSWORD_MAX} characters.`,
                 status: httpStatus.BAD_REQUEST,
             };
         }
@@ -67,7 +65,7 @@ const signup = async (userData, hostData) => {
         const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
             await generateVerificationToken();
 
-        const newUser = await databaseService.create(UsersModel, {
+        const newUser = await UsersModel.create({
             ...userData,
             password: hashedPassword,
             emailVerifyToken,
@@ -75,8 +73,17 @@ const signup = async (userData, hostData) => {
         });
 
         const subject = 'Confirm Your Email Address';
-        const emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/verify/${plainToken}`;
-        const resendEmailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/resend-verification/${newUser._id}`;
+        let emailVerificationLink;
+        let resendEmailVerificationLink;
+
+        if (configuration.env === environment.PRODUCTION) {
+            emailVerificationLink = `https://${hostData.hostname}/api/v1/auth/verify/${plainToken}`;
+            resendEmailVerificationLink = `https://${hostData.hostname}/api/v1/auth/resend-verification/${newUser._id}`;
+        } else {
+            emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/verify/${plainToken}`;
+            resendEmailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/resend-verification/${newUser._id}`;
+        }
+
         const emailData = {
             emailVerificationLink,
             resendEmailVerificationLink,
@@ -90,7 +97,7 @@ const signup = async (userData, hostData) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userData.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -133,7 +140,7 @@ const verify = async (token) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Verification token is invalid or has expired.',
+                message: 'The verification link is invalid or has expired. Please request a new verification email.',
                 status: httpStatus.FORBIDDEN,
             };
         }
@@ -158,7 +165,7 @@ const verify = async (token) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -206,7 +213,7 @@ const resendVerification = async (userId, hostData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Email already verified.',
+                message: 'This email address has already been verified. No further action is required.',
                 status: httpStatus.FORBIDDEN,
             };
         }
@@ -221,8 +228,17 @@ const resendVerification = async (userId, hostData) => {
         await userDetails.save();
 
         const subject = 'Confirm Your Email Address';
-        const emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/verify/${plainToken}`;
-        const resendEmailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/resend-verification/${userDetails._id}`;
+        let emailVerificationLink;
+        let resendEmailVerificationLink;
+
+        if (configuration.env === environment.PRODUCTION) {
+            emailVerificationLink = `https://${hostData.hostname}/api/v1/auth/verify/${plainToken}`;
+            resendEmailVerificationLink = `https://${hostData.hostname}/api/v1/auth/resend-verification/${userDetails._id}`;
+        } else {
+            emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/verify/${plainToken}`;
+            resendEmailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/resend-verification/${userDetails._id}`;
+        }
+
         const emailData = {
             emailVerificationLink,
             resendEmailVerificationLink,
@@ -236,7 +252,7 @@ const resendVerification = async (userId, hostData) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -276,7 +292,7 @@ const requestNewPassword = async (email, hostData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'User not found. Please sign up first.',
+                message: 'No account found with that email address. Please check your email address or register for a new account.',
                 status: httpStatus.NOT_FOUND,
             };
         }
@@ -287,7 +303,7 @@ const requestNewPassword = async (email, hostData) => {
                 success: false,
                 data: {},
                 message:
-                    'Your email address is not verified. Please verify your email first.',
+                    'Your email address has not been verified yet. Please verify your email to proceed with password reset.',
                 status: httpStatus.UNAUTHORIZED,
             };
         }
@@ -305,7 +321,14 @@ const requestNewPassword = async (email, hostData) => {
         );
 
         const subject = 'Reset Your Password';
-        const emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/reset-password/${plainToken}`;
+        let emailVerificationLink;
+
+        if (configuration.env === environment.PRODUCTION) {
+            emailVerificationLink = `https://${hostData.hostname}/api/v1/auth/reset-password/${plainToken}`;
+        } else {
+            emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/reset-password/${plainToken}`;
+        }
+
         const emailData = {
             userName: userDetails.name,
             resetPasswordVerificationLink: emailVerificationLink,
@@ -319,7 +342,7 @@ const requestNewPassword = async (email, hostData) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -363,7 +386,7 @@ const resetPassword = async (hostData, token, userData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Verification token is invalid or has expired.',
+                message: 'Your password reset link is invalid or has expired. Please request a new password reset link.',
                 status: httpStatus.FORBIDDEN,
             };
         }
@@ -388,7 +411,7 @@ const resetPassword = async (hostData, token, userData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Passwords do not match.',
+                message: 'The new passwords do not match. Please try again.',
                 status: httpStatus.BAD_REQUEST,
             };
         }
@@ -398,7 +421,7 @@ const resetPassword = async (hostData, token, userData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: `Password must be at least ${userConstants.lengths.PASSWORD_MIN} characters long.`,
+                message: `Your password must be between ${userConstants.lengths.PASSWORD_MIN} and ${userConstants.lengths.PASSWORD_MAX} characters.`,
                 status: httpStatus.BAD_REQUEST,
             };
         }
@@ -435,7 +458,7 @@ const resetPassword = async (hostData, token, userData) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -475,7 +498,7 @@ const login = async (userData, userAgent, device) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'User not found. Please sign up first.',
+                message: 'No account found with that email address. Please check your email address or register for a new account.',
                 status: httpStatus.NOT_FOUND,
             };
         }
@@ -486,7 +509,7 @@ const login = async (userData, userAgent, device) => {
                 success: false,
                 data: {},
                 message:
-                    'Your email address is not verified. Please verify your email first.',
+                    'Please verify your email address to proceed with logging in.',
                 status: httpStatus.UNAUTHORIZED,
             };
         }
@@ -510,7 +533,7 @@ const login = async (userData, userAgent, device) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Invalid credentials.',
+                message: 'Incorrect password. Please try again or use the forgot password option to reset it.',
                 status: httpStatus.UNAUTHORIZED,
             };
         }
@@ -552,7 +575,7 @@ const login = async (userData, userAgent, device) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            configuration.admin.email,
+            userDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -602,7 +625,7 @@ const logout = async (req) => {
             timeStamp: new Date(),
             success: true,
             data: {},
-            message: 'User logged out successfully.',
+            message: 'You have been logged out successfully.',
             status: httpStatus.OK,
         };
     } catch (error) {
@@ -610,7 +633,7 @@ const logout = async (req) => {
             timeStamp: new Date(),
             success: false,
             data: {},
-            message: error.message || 'Error logout the user.',
+            message: error.message || 'There was an issue logging you out. Please try again.',
             status: httpStatus.BAD_REQUEST,
         };
     }
