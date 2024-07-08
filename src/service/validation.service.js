@@ -34,11 +34,24 @@ const passwordField = createStringField(
         'string.pattern.base': 'Please provide a valid password.',
     });
 
+const booleanField = Joi.boolean().messages(customValidationMessage);
+
+const objectIdField = Joi.string()
+    .length(24) // MongoDB ObjectId must be exactly 24 characters long
+    .hex() // Ensures the string is a hexadecimal string
+    .messages({
+        'string.length': 'The ID must be exactly 24 characters long.',
+        'string.hex': 'The ID must be a valid hexadecimal string.',
+        ...customValidationMessage  // Spread your custom messages if there are additional overrides
+    });
+
 const validationService = {
     createStringField,
     mobileField,
     emailField,
     passwordField,
+    booleanField,
+    objectIdField,
 };
 
 export default validationService;
