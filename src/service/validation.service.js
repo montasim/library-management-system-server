@@ -20,10 +20,14 @@ const emailField = createStringField(
     userConstants.lengths.EMAIL_MIN,
     userConstants.lengths.EMAIL_MAX
 )
+    .email({ minDomainSegments: 2, tlds: { allow: true } })
+    .regex(/^((?!tempmail|mailinator|yopmail).)*$/, 'no-temp-email')
     .pattern(patterns.EMAIL)
     .messages({
+        'string.pattern.name': '"email" must not be a temporary email address',
+        'string.regex.no-temp-email': '"email" must not be from a temporary email provider (like tempmail, mailinator, or yopmail)',
         'string.pattern.base': 'Please fill a valid email address.',
-    });
+    })
 
 const passwordField = createStringField(
     userConstants.lengths.PASSWORD_MIN,
