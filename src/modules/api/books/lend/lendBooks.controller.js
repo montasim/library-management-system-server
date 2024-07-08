@@ -4,7 +4,10 @@ import getRequesterId from '../../../../utilities/getRequesterId.js';
 
 const createLendBook = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
-    const newLendBookData = await lendBooksService.createLendBook(requester, req.body);
+    const newLendBookData = await lendBooksService.createLendBook(
+        requester,
+        req.body
+    );
 
     newLendBookData.route = req.originalUrl;
 

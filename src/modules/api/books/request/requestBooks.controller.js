@@ -4,7 +4,10 @@ import getRequesterId from '../../../../utilities/getRequesterId.js';
 
 const createRequestBook = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
-    const newRequestBookData = await requestBooksService.createRequestBook(requester, req.body);
+    const newRequestBookData = await requestBooksService.createRequestBook(
+        requester,
+        req.body
+    );
 
     newRequestBookData.route = req.originalUrl;
 
@@ -13,7 +16,8 @@ const createRequestBook = asyncErrorHandler(async (req, res) => {
 
 const getRequestBooks = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
-    const requestBooksData = await requestBooksService.getRequestBooks(requester);
+    const requestBooksData =
+        await requestBooksService.getRequestBooks(requester);
 
     requestBooksData.route = req.originalUrl;
 
@@ -22,7 +26,10 @@ const getRequestBooks = asyncErrorHandler(async (req, res) => {
 
 const getRequestBook = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
-    const requestBooksData = await requestBooksService.getRequestBook(requester, req.params.requestedBookId);
+    const requestBooksData = await requestBooksService.getRequestBook(
+        requester,
+        req.params.requestedBookId
+    );
 
     requestBooksData.route = req.originalUrl;
 
@@ -31,7 +38,10 @@ const getRequestBook = asyncErrorHandler(async (req, res) => {
 
 const deleteRequestBook = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
-    const deletedRequestBookData = await requestBooksService.deleteRequestBook(requester, req.params.requestedBookId);
+    const deletedRequestBookData = await requestBooksService.deleteRequestBook(
+        requester,
+        req.params.requestedBookId
+    );
 
     deletedRequestBookData.route = req.originalUrl;
 

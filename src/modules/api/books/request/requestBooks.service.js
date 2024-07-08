@@ -16,10 +16,14 @@ const createRequestBook = async (requester, bookData) => {
         }
 
         // Check for existing request document for the user
-        const existingRequest = await RequestBooksModel.findOne({ owner: requester });
+        const existingRequest = await RequestBooksModel.findOne({
+            owner: requester,
+        });
         if (existingRequest) {
             // Check for duplicate book request
-            const isDuplicate = existingRequest.requestBooks.some(book => book.name === bookData.name);
+            const isDuplicate = existingRequest.requestBooks.some(
+                (book) => book.name === bookData.name
+            );
             if (isDuplicate) {
                 return {
                     timeStamp: new Date(),
@@ -59,7 +63,9 @@ const createRequestBook = async (requester, bookData) => {
         return {
             timeStamp: new Date(),
             success: false,
-            message: error.message || 'Failed to process your request for a new book.',
+            message:
+                error.message ||
+                'Failed to process your request for a new book.',
             status: httpStatus.BAD_REQUEST,
         };
     }
@@ -78,23 +84,24 @@ const getRequestBooks = async (requester) => {
             };
         }
 
-        const requestBooks = await RequestBooksModel.findOne({ owner: requester })
-            .populate({
-                path: 'requestBooks',
-                select: '',
-                populate: [
-                    {
-                        path: 'subject',
-                        model: 'Subjects',
-                        select: 'name -_id'
-                    },
-                    {
-                        path: 'publication',
-                        model: 'Publications',
-                        select: 'name -_id'
-                    }
-                ]
-            });
+        const requestBooks = await RequestBooksModel.findOne({
+            owner: requester,
+        }).populate({
+            path: 'requestBooks',
+            select: '',
+            populate: [
+                {
+                    path: 'subject',
+                    model: 'Subjects',
+                    select: 'name -_id',
+                },
+                {
+                    path: 'publication',
+                    model: 'Publications',
+                    select: 'name -_id',
+                },
+            ],
+        });
 
         if (!requestBooks || requestBooks.requestBooks.length === 0) {
             return {
@@ -111,7 +118,7 @@ const getRequestBooks = async (requester) => {
             success: true,
             data: {
                 total: requestBooks.requestBooks.length,
-                requestBooks: requestBooks.requestBooks
+                requestBooks: requestBooks.requestBooks,
             },
             message: 'Successfully retrieved your favourite books.',
             status: httpStatus.OK,
@@ -140,7 +147,9 @@ const getRequestBook = async (requester, requestBookId) => {
         }
 
         // Retrieve the whole document of requests from the specific user
-        const requestBooks = await RequestBooksModel.findOne({ owner: requester });
+        const requestBooks = await RequestBooksModel.findOne({
+            owner: requester,
+        });
         if (!requestBooks) {
             return {
                 timeStamp: new Date(),
@@ -151,7 +160,7 @@ const getRequestBook = async (requester, requestBookId) => {
         }
 
         // Find the specific book request in the array of request
-        const bookRequest = requestBooks.requestBooks.find(book => {
+        const bookRequest = requestBooks.requestBooks.find((book) => {
             console.log(book._id.toString());
 
             return book._id.toString() === requestBookId;
@@ -195,7 +204,9 @@ const deleteRequestBook = async (requester, requestBookId) => {
             };
         }
 
-        const requestBook = await RequestBooksModel.findOne({ owner: requester });
+        const requestBook = await RequestBooksModel.findOne({
+            owner: requester,
+        });
         if (!requestBook) {
             return {
                 timeStamp: new Date(),
@@ -206,7 +217,9 @@ const deleteRequestBook = async (requester, requestBookId) => {
         }
 
         // Remove the requested book by ID from the array
-        const index = requestBook.requestBooks.findIndex(book => book._id.toString() === requestBookId);
+        const index = requestBook.requestBooks.findIndex(
+            (book) => book._id.toString() === requestBookId
+        );
         if (index > -1) {
             requestBook.requestBooks.splice(index, 1);
             await requestBook.save();

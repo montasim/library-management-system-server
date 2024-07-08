@@ -30,7 +30,9 @@ const createLendBook = async (requester, lendBookData) => {
         }
 
         // Step 3: Check if the book is already lent by someone else
-        const isBookLent = await LendBooksModel.findOne({ 'books.id': lendBookData.bookId });
+        const isBookLent = await LendBooksModel.findOne({
+            'books.id': lendBookData.bookId,
+        });
         if (isBookLent) {
             return {
                 timeStamp: new Date(),
@@ -66,16 +68,23 @@ const createLendBook = async (requester, lendBookData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'The "to" date cannot be more than 30 days from the "from" date.',
+                message:
+                    'The "to" date cannot be more than 30 days from the "from" date.',
                 status: httpStatus.BAD_REQUEST,
             };
         }
 
         // Step 5: Find existing document for the user or create a new one
-        const existingLend = await LendBooksModel.findOne({ lender: requester });
+        const existingLend = await LendBooksModel.findOne({
+            lender: requester,
+        });
         if (existingLend) {
             // Prevent adding duplicate book IDs
-            if (existingLend.books.some(book => book.id.toString() === lendBookData.bookId)) {
+            if (
+                existingLend.books.some(
+                    (book) => book.id.toString() === lendBookData.bookId
+                )
+            ) {
                 return {
                     timeStamp: new Date(),
                     success: false,
@@ -127,7 +136,9 @@ const createLendBook = async (requester, lendBookData) => {
             timeStamp: new Date(),
             success: false,
             data: {},
-            message: error.message || 'Failed to process your request to add a lend book.',
+            message:
+                error.message ||
+                'Failed to process your request to add a lend book.',
             status: httpStatus.BAD_REQUEST,
         };
     }
@@ -148,23 +159,24 @@ const getLendBooks = async (requester) => {
         }
 
         // Step 2: Fetch the lend books for the requester
-        const lendBooks = await LendBooksModel.findOne({ lender: requester })
-            .populate({
-                path: 'books.id',
-                select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt',
-                populate: [
-                    {
-                        path: 'subject',
-                        model: 'Subjects',
-                        select: 'name -_id'
-                    },
-                    {
-                        path: 'publication',
-                        model: 'Publications',
-                        select: 'name -_id'
-                    }
-                ]
-            });
+        const lendBooks = await LendBooksModel.findOne({
+            lender: requester,
+        }).populate({
+            path: 'books.id',
+            select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt',
+            populate: [
+                {
+                    path: 'subject',
+                    model: 'Subjects',
+                    select: 'name -_id',
+                },
+                {
+                    path: 'publication',
+                    model: 'Publications',
+                    select: 'name -_id',
+                },
+            ],
+        });
 
         // Step 3: Check if the requester has any lend books
         if (!lendBooks || lendBooks.books.length === 0) {
@@ -178,10 +190,10 @@ const getLendBooks = async (requester) => {
         }
 
         // Step 4: Transform the data to rename 'id' to 'book'
-        const transformedLendBooks = lendBooks.books.map(bookEntry => ({
+        const transformedLendBooks = lendBooks.books.map((bookEntry) => ({
             ...bookEntry._doc,
             book: bookEntry.id,
-            id: bookEntry._id
+            id: bookEntry._id,
         }));
 
         // Step 5: Return the lend books with the transformed structure
@@ -190,7 +202,7 @@ const getLendBooks = async (requester) => {
             success: true,
             data: {
                 total: transformedLendBooks.length,
-                lendBooks: transformedLendBooks
+                lendBooks: transformedLendBooks,
             },
             message: 'Successfully retrieved your lend books.',
             status: httpStatus.OK,

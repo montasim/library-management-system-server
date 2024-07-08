@@ -2,8 +2,7 @@ import express from 'express';
 
 import requestBooksController from './requestBooks.controller.js';
 import methodNotSupported from '../../../../shared/methodNotSupported.js';
-import authenticateMiddleware
-    from '../../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../../middleware/authenticate.middleware.js';
 
 const router = express.Router();
 

@@ -4,7 +4,10 @@ import returnBooksService from './returnBooks.service.js';
 
 const returnBook = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
-    const returnBooksData = await returnBooksService.returnBook(requester, req.body);
+    const returnBooksData = await returnBooksService.returnBook(
+        requester,
+        req.body
+    );
 
     returnBooksData.route = req.originalUrl;
 

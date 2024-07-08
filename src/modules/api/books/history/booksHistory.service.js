@@ -40,7 +40,10 @@ const getBooksHistory = async (requester, params) => {
         const totalPages = Math.ceil(totalHistory / limit);
 
         // Adjust the limit if it exceeds the total number of history records
-        const adjustedLimit = Math.min(limit, totalHistory - (page - 1) * limit);
+        const adjustedLimit = Math.min(
+            limit,
+            totalHistory - (page - 1) * limit
+        );
 
         const booksHistory = await BooksHistoryModel.find(query)
             .sort(sort)
@@ -53,19 +56,19 @@ const getBooksHistory = async (requester, params) => {
                     {
                         path: 'writer',
                         model: 'Writers',
-                        select: 'name'
+                        select: 'name',
                     },
                     {
                         path: 'subject',
                         model: 'Subjects',
-                        select: 'name'
+                        select: 'name',
                     },
                     {
                         path: 'publication',
                         model: 'Publications',
-                        select: 'name'
-                    }
-                ]
+                        select: 'name',
+                    },
+                ],
             })
             .populate({
                 path: 'lend.user return.user',
@@ -141,7 +144,7 @@ const getBookHistory = async (requester, bookId) => {
             data: bookHistory,
             message: 'Successfully retrieved book history.',
             status: httpStatus.OK,
-        }
+        };
     } catch (error) {
         return {
             timeStamp: new Date(),

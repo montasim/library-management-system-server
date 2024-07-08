@@ -18,35 +18,46 @@ const returnBook = async (requester, bookData) => {
         }
 
         // Step 2: Validate if the book is currently lent by the user
-        const lendRecord = await LendBooksModel.findOne({ lender: bookData.user, 'books.id': bookData.bookId });
+        const lendRecord = await LendBooksModel.findOne({
+            lender: bookData.user,
+            'books.id': bookData.bookId,
+        });
         if (!lendRecord) {
             return {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'No lending record found for this book by the specified user.',
+                message:
+                    'No lending record found for this book by the specified user.',
                 status: httpStatus.NOT_FOUND,
             };
         }
 
         // Find the lend details for the specific book
-        const lendDetails = lendRecord.books.find(book => book.id.toString() === bookData.bookId);
+        const lendDetails = lendRecord.books.find(
+            (book) => book.id.toString() === bookData.bookId
+        );
         if (!lendDetails) {
             return {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'No lending record details found for this book by the specified user.',
+                message:
+                    'No lending record details found for this book by the specified user.',
                 status: httpStatus.NOT_FOUND,
             };
         }
 
         // Step 3: Remove the book from the lender's list
-        lendRecord.books = lendRecord.books.filter(book => book.id.toString() !== bookData.bookId);
+        lendRecord.books = lendRecord.books.filter(
+            (book) => book.id.toString() !== bookData.bookId
+        );
         await lendRecord.save();
 
         // Step 4: Update the books history with the lend and return details
-        let bookHistory = await BooksHistoryModel.findOne({ book: bookData.bookId });
+        let bookHistory = await BooksHistoryModel.findOne({
+            book: bookData.bookId,
+        });
         if (!bookHistory) {
             bookHistory = new BooksHistoryModel({
                 book: bookData.bookId,
@@ -56,7 +67,11 @@ const returnBook = async (requester, bookData) => {
         }
 
         // Add to lend history if not already present
-        if (!bookHistory.lend.some(lend => lend.user.toString() === bookData.user)) {
+        if (
+            !bookHistory.lend.some(
+                (lend) => lend.user.toString() === bookData.user
+            )
+        ) {
             bookHistory.lend.push({
                 user: bookData.user,
                 from: lendDetails.from,
@@ -86,7 +101,9 @@ const returnBook = async (requester, bookData) => {
             timeStamp: new Date(),
             success: false,
             data: {},
-            message: error.message || 'Failed to process your request to return a book.',
+            message:
+                error.message ||
+                'Failed to process your request to return a book.',
             status: httpStatus.BAD_REQUEST,
         };
     }

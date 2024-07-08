@@ -6,42 +6,42 @@ const getTrendingBooks = async () => {
         // Aggregate to find the most common books across all users' favourites
         const trendingBooks = await FavouriteBooksModel.aggregate([
             {
-                $unwind: '$favourite'
+                $unwind: '$favourite',
             },
             {
                 $group: {
                     _id: '$favourite',
-                    count: { $sum: 1 }
-                }
+                    count: { $sum: 1 },
+                },
             },
             {
                 $match: {
-                    count: { $gt: 1 } // Adjust this threshold based on what you consider "trending"
-                }
+                    count: { $gt: 1 }, // Adjust this threshold based on what you consider "trending"
+                },
             },
             {
                 $lookup: {
                     from: 'books',
                     localField: '_id',
                     foreignField: '_id',
-                    as: 'bookDetails'
-                }
+                    as: 'bookDetails',
+                },
             },
             {
-                $unwind: '$bookDetails'
+                $unwind: '$bookDetails',
             },
             {
                 $project: {
                     bookDetails: 1,
-                    count: 1
-                }
+                    count: 1,
+                },
             },
             {
-                $sort: { count: -1 } // Sort by the most popular books first
+                $sort: { count: -1 }, // Sort by the most popular books first
             },
             {
-                $limit: 10 // Limit to top 10 trending books
-            }
+                $limit: 10, // Limit to top 10 trending books
+            },
         ]);
 
         if (trendingBooks.length === 0) {

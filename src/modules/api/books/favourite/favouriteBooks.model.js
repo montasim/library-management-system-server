@@ -30,6 +30,9 @@ favouriteBookSchema.pre('save', function (next) {
     }
 });
 
-const FavouriteBooksModel = mongoose.model('FavouriteBooks', favouriteBookSchema);
+const FavouriteBooksModel = mongoose.model(
+    'FavouriteBooks',
+    favouriteBookSchema
+);
 
 export default FavouriteBooksModel;

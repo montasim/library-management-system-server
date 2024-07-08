@@ -30,7 +30,9 @@ const createFavouriteBook = async (requester, favouriteBookId) => {
         }
 
         // Find existing document for the user
-        const existingFavourite = await FavouriteBooksModel.findOne({ owner: requester });
+        const existingFavourite = await FavouriteBooksModel.findOne({
+            owner: requester,
+        });
         if (existingFavourite) {
             // Prevent adding duplicate book IDs
             if (existingFavourite.favouriteBooks.includes(favouriteBookId)) {
@@ -39,7 +41,7 @@ const createFavouriteBook = async (requester, favouriteBookId) => {
                     success: false,
                     data: {},
                     message: 'This book is already in your favourites.',
-                    status: httpStatus.CONFLICT,  // Changed status to indicate conflict
+                    status: httpStatus.CONFLICT, // Changed status to indicate conflict
                 };
             }
 
@@ -73,7 +75,9 @@ const createFavouriteBook = async (requester, favouriteBookId) => {
             timeStamp: new Date(),
             success: false,
             data: {},
-            message: error.message || 'Failed to process your request to add a favourite book.',
+            message:
+                error.message ||
+                'Failed to process your request to add a favourite book.',
             status: httpStatus.BAD_REQUEST,
         };
     }
@@ -92,23 +96,24 @@ const getFavouriteBooks = async (requester) => {
             };
         }
 
-        const favouriteBooks = await FavouriteBooksModel.findOne({ owner: requester })
-            .populate({
-                path: 'favouriteBooks',
-                select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt',
-                populate: [
-                    {
-                        path: 'subject',
-                        model: 'Subjects',
-                        select: 'name -_id'
-                    },
-                    {
-                        path: 'publication',
-                        model: 'Publications',
-                        select: 'name -_id'
-                    }
-                ]
-            });
+        const favouriteBooks = await FavouriteBooksModel.findOne({
+            owner: requester,
+        }).populate({
+            path: 'favouriteBooks',
+            select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt',
+            populate: [
+                {
+                    path: 'subject',
+                    model: 'Subjects',
+                    select: 'name -_id',
+                },
+                {
+                    path: 'publication',
+                    model: 'Publications',
+                    select: 'name -_id',
+                },
+            ],
+        });
 
         if (!favouriteBooks || favouriteBooks.favouriteBooks.length === 0) {
             return {
@@ -125,7 +130,7 @@ const getFavouriteBooks = async (requester) => {
             success: true,
             data: {
                 total: favouriteBooks.favouriteBooks.length,
-                favouriteBooks: favouriteBooks.favouriteBooks
+                favouriteBooks: favouriteBooks.favouriteBooks,
             },
             message: 'Successfully retrieved your favourite books.',
             status: httpStatus.OK,
@@ -154,7 +159,9 @@ const deleteFavouriteBook = async (requester, favouriteBookId) => {
             };
         }
 
-        const favouriteBooks = await FavouriteBooksModel.findOne({ owner: requester });
+        const favouriteBooks = await FavouriteBooksModel.findOne({
+            owner: requester,
+        });
 
         if (!favouriteBooks) {
             return {

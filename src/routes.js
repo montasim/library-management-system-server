@@ -8,7 +8,9 @@ import configuration from './configuration/configuration.js';
 const router = express.Router();
 
 router.use('/', indexRoutes);
+
 router.use(`/api/${configuration.version}`, ApiRoutes);
+
 router.use('*', undefinedController);
 
 export default router;

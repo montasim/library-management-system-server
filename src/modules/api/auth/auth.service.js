@@ -26,7 +26,8 @@ const signup = async (userData, hostData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'This email address is already registered. Please log in or use the forgot password option if you need to recover your password.',
+                message:
+                    'This email address is already registered. Please log in or use the forgot password option if you need to recover your password.',
                 status: httpStatus.CONFLICT,
             };
         }
@@ -36,7 +37,8 @@ const signup = async (userData, hostData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'The passwords you entered do not match. Please try again.',
+                message:
+                    'The passwords you entered do not match. Please try again.',
                 status: httpStatus.BAD_REQUEST,
             };
         }
@@ -140,7 +142,8 @@ const verify = async (token) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'The verification link is invalid or has expired. Please request a new verification email.',
+                message:
+                    'The verification link is invalid or has expired. Please request a new verification email.',
                 status: httpStatus.FORBIDDEN,
             };
         }
@@ -213,7 +216,8 @@ const resendVerification = async (userId, hostData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'This email address has already been verified. No further action is required.',
+                message:
+                    'This email address has already been verified. No further action is required.',
                 status: httpStatus.FORBIDDEN,
             };
         }
@@ -292,7 +296,8 @@ const requestNewPassword = async (email, hostData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'No account found with that email address. Please check your email address or register for a new account.',
+                message:
+                    'No account found with that email address. Please check your email address or register for a new account.',
                 status: httpStatus.NOT_FOUND,
             };
         }
@@ -386,7 +391,8 @@ const resetPassword = async (hostData, token, userData) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Your password reset link is invalid or has expired. Please request a new password reset link.',
+                message:
+                    'Your password reset link is invalid or has expired. Please request a new password reset link.',
                 status: httpStatus.FORBIDDEN,
             };
         }
@@ -498,7 +504,8 @@ const login = async (userData, userAgent, device) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'No account found with that email address. Please check your email address or register for a new account.',
+                message:
+                    'No account found with that email address. Please check your email address or register for a new account.',
                 status: httpStatus.NOT_FOUND,
             };
         }
@@ -533,7 +540,8 @@ const login = async (userData, userAgent, device) => {
                 timeStamp: new Date(),
                 success: false,
                 data: {},
-                message: 'Incorrect password. Please try again or use the forgot password option to reset it.',
+                message:
+                    'Incorrect password. Please try again or use the forgot password option to reset it.',
                 status: httpStatus.UNAUTHORIZED,
             };
         }
@@ -633,7 +641,9 @@ const logout = async (req) => {
             timeStamp: new Date(),
             success: false,
             data: {},
-            message: error.message || 'There was an issue logging you out. Please try again.',
+            message:
+                error.message ||
+                'There was an issue logging you out. Please try again.',
             status: httpStatus.BAD_REQUEST,
         };
     }
