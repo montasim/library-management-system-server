@@ -48,6 +48,9 @@ const envVarsSchema = Joi.object({
         )
         .required()
         .description('The application environment.'),
+    GITHUB_REPOSITORY: Joi.string()
+        .required()
+        .description('GitHub repository URL.'),
     VERSION: Joi.string()
         .valid('v1', 'v2', 'v3', 'v4', 'v5')
         .required()
@@ -154,6 +157,9 @@ if (error) {
  */
 const configuration = {
     env: getEnvVar(envVars.NODE_ENV, environment.DEVELOPMENT),
+    github: {
+        repository: getEnvVar(envVars.GITHUB_REPOSITORY, ''),
+    },
     version: getEnvVar(envVars.VERSION, 'v1'),
     port: getInt(getEnvVar(envVars.PORT, 3000), 3000),
     mongoose: {
