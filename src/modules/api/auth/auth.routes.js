@@ -7,6 +7,8 @@ import permissionsValidator from './permissions/permissions.validator.js';
 import permissionsController from './permissions/permissions.controller.js';
 import rolesValidator from './roles/roles.validator.js';
 import rolesController from './roles/roles.controller.js';
+import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
+import routesConstants from '../../../constant/routes.constants.js';
 
 const router = express.Router();
 
@@ -18,32 +20,40 @@ router
 router.route('/logout').get(authController.logout).all(methodNotSupported);
 
 router
-    .route('/permissions')
+    .route(`/${routesConstants.permissions.routes}`)
     .post(
+        authenticateMiddleware,
         permissionsValidator.createPermission,
         permissionsController.createPermission
     )
     .get(
+        authenticateMiddleware,
         permissionsValidator.getPermissions,
         permissionsController.getPermissions
     )
     .delete(
+        authenticateMiddleware,
         permissionsValidator.deletePermissions,
         permissionsController.deletePermissions
     )
     .all(methodNotSupported);
 
 router
-    .route('/permissions/:permissionId')
+    .route(
+        `/${routesConstants.permissions.routes}/:${routesConstants.permissions.params}`
+    )
     .get(
+        authenticateMiddleware,
         permissionsValidator.getPermission,
         permissionsController.getPermission
     )
     .put(
+        authenticateMiddleware,
         permissionsValidator.updatePermission,
         permissionsController.updatePermission
     )
     .delete(
+        authenticateMiddleware,
         permissionsValidator.deletePermission,
         permissionsController.deletePermission
     )
@@ -66,16 +76,40 @@ router
 
 router
     .route('/roles')
-    .post(rolesValidator.createRole, rolesController.createRole)
-    .get(rolesValidator.getRoles, rolesController.getRoles)
-    .delete(rolesValidator.deleteRoles, rolesController.deleteRoles)
+    .post(
+        authenticateMiddleware,
+        rolesValidator.createRole,
+        rolesController.createRole
+    )
+    .get(
+        authenticateMiddleware,
+        rolesValidator.getRoles,
+        rolesController.getRoles
+    )
+    .delete(
+        authenticateMiddleware,
+        rolesValidator.deleteRoles,
+        rolesController.deleteRoles
+    )
     .all(methodNotSupported);
 
 router
     .route('/roles/:roleId')
-    .get(rolesValidator.getRole, rolesController.getRole)
-    .put(rolesValidator.updateRole, rolesController.updateRole)
-    .delete(rolesValidator.deleteRole, rolesController.deleteRole)
+    .get(
+        authenticateMiddleware,
+        rolesValidator.getRole,
+        rolesController.getRole
+    )
+    .put(
+        authenticateMiddleware,
+        rolesValidator.updateRole,
+        rolesController.updateRole
+    )
+    .delete(
+        authenticateMiddleware,
+        rolesValidator.deleteRole,
+        rolesController.deleteRole
+    )
     .all(methodNotSupported);
 
 router

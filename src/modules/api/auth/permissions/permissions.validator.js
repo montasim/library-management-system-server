@@ -1,30 +1,39 @@
 import validateWithSchema from '../../../../shared/validateWithSchema.js';
 import permissionsSchema from './permissions.schema.js';
 
-const createPermission = validateWithSchema(
-    permissionsSchema.createPermissionSchema,
-    'body'
-);
-const getPermissions = validateWithSchema(
-    permissionsSchema.getPermissionsQuerySchema,
-    'query'
-);
-const getPermission = validateWithSchema(
-    permissionsSchema.permissionIdParamSchema,
-    'params'
-);
-const updatePermission = validateWithSchema(
-    permissionsSchema.updatePermissionSchema,
-    'body'
-);
-const deletePermissions = validateWithSchema(
-    permissionsSchema.permissionIdsParamSchema,
-    'query'
-);
-const deletePermission = validateWithSchema(
-    permissionsSchema.permissionIdParamSchema,
-    'params'
-);
+const createPermission = validateWithSchema([
+    { schema: permissionsSchema.createPermissionSchema, property: 'body' },
+]);
+
+const getPermissions = validateWithSchema([
+    { schema: permissionsSchema.getPermissionsQuerySchema, property: 'query' },
+]);
+
+const getPermission = validateWithSchema([
+    {
+        schema: permissionsSchema.permissionIdParamSchema,
+        property: 'params',
+    },
+]);
+
+const updatePermission = validateWithSchema([
+    { schema: permissionsSchema.updatePermissionSchema, property: 'body' },
+    { schema: permissionsSchema.permissionIdParamSchema, property: 'params' },
+]);
+
+const deletePermissions = validateWithSchema([
+    {
+        schema: permissionsSchema.permissionIdsParamSchema,
+        property: 'query',
+    },
+]);
+
+const deletePermission = validateWithSchema([
+    {
+        schema: permissionsSchema.permissionIdParamSchema,
+        property: 'params',
+    },
+]);
 
 const permissionsValidator = {
     createPermission,

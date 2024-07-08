@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import permissionsConstants from './permissions.constant.js';
 
+const { Schema } = mongoose;
+
 const permissionSchema = new mongoose.Schema(
     {
         name: {
@@ -16,20 +18,24 @@ const permissionSchema = new mongoose.Schema(
                 permissionsConstants.lengths.NAME_MAX,
                 'Name cannot be more than 100 characters long.',
             ],
+            match: [
+                permissionsConstants.pattern.name,
+                permissionsConstants.message.pattern,
+            ],
         },
         isActive: {
             type: Boolean,
             default: true,
         },
         createdBy: {
-            type: String,
             trim: true,
-            required: false,
+            type: Schema.Types.ObjectId,
+            ref: 'UsersModel',
         },
         updatedBy: {
-            type: String,
             trim: true,
-            required: false,
+            type: Schema.Types.ObjectId,
+            ref: 'UsersModel',
         },
     },
     {

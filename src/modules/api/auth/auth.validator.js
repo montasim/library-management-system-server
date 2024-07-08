@@ -1,19 +1,54 @@
 import validateWithSchema from '../../../shared/validateWithSchema.js';
 import authSchema from './auth.schema.js';
 
-const signup = validateWithSchema(authSchema.signup, 'body');
-const verify = validateWithSchema(authSchema.verify, 'params');
-const resendVerification = validateWithSchema(
-    authSchema.resendVerification,
-    'params'
-);
-const login = validateWithSchema(authSchema.login, 'body');
-const requestNewPassword = validateWithSchema(
-    authSchema.requestNewPassword,
-    'body'
-);
-const resetPassword = validateWithSchema(authSchema.resetPassword, 'body');
-const logout = validateWithSchema(authSchema.signup, 'body');
+const signup = validateWithSchema([
+    {
+        schema: authSchema.signup,
+        property: 'body',
+    },
+]);
+
+const verify = validateWithSchema([
+    {
+        schema: authSchema.verify,
+        property: 'params',
+    },
+]);
+
+const resendVerification = validateWithSchema([
+    {
+        schema: authSchema.resendVerification,
+        property: 'params',
+    },
+]);
+
+const login = validateWithSchema([
+    {
+        schema: authSchema.login,
+        property: 'body',
+    },
+]);
+
+const requestNewPassword = validateWithSchema([
+    {
+        schema: authSchema.requestNewPassword,
+        property: 'body',
+    },
+]);
+
+const resetPassword = validateWithSchema([
+    {
+        schema: authSchema.resetPassword,
+        property: 'body',
+    },
+]);
+
+const logout = validateWithSchema([
+    {
+        schema: authSchema.signup,
+        property: 'body',
+    },
+]);
 
 const authValidator = {
     signup,

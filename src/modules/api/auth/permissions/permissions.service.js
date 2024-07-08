@@ -1,210 +1,210 @@
 import PermissionsModel from './permissions.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import logger from '../../../../utilities/logger.js';
+import validateUserRequest from '../../../../utilities/validateUserRequest.js';
+import errorResponse from '../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../utilities/sendResponse.js';
 
-const createPermission = async (permissionData) => {
+// Centralized permission fetching with error handling
+const fetchPermissionById = async (permissionId) => {
     try {
-        const oldDetails = await PermissionsModel.findOne({
-            name: permissionData.name,
-        }).lean();
-
-        if (oldDetails) {
-            throw new Error(
-                `Permission name "${permissionData.name}" already exists.`
-            );
-        }
-
-        permissionData.createdBy = 'Admin'; // Hardcoded for now, will be dynamic in future
-
-        const newPermission = await PermissionsModel.create(permissionData);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: newPermission,
-            message: 'Permission created successfully.',
-            status: httpStatus.CREATED,
-        };
+        return await PermissionsModel.findById(permissionId);
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error creating the permission.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error(
+            `Error fetching permission with ID ${permissionId}: ${error}`
+        );
+
+        throw new Error('Error fetching permission details.');
     }
 };
 
-const getPermissions = async (params) => {
+const createPermission = async (requester, newPermissionData) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to create permissions.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    const exists = await PermissionsModel.exists({
+        name: newPermissionData.name,
+    });
+    if (exists) {
+        return sendResponse(
+            {},
+            `Permission name "${newPermissionData.name}" already exists.`,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    newPermissionData.createdBy = requester;
+
+    const newPermission = await PermissionsModel.create(newPermissionData);
+
+    return sendResponse(
+        newPermission,
+        'Permission created successfully.',
+        httpStatus.CREATED
+    );
+};
+
+const getPermissions = async (requester, params) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to view permissions.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
     const {
         page = 1,
         limit = 10,
-        sort = '-createdAt', // Default sort by most recent creation
+        sort = '-createdAt',
         name,
         createdBy,
         updatedBy,
-        ...otherFilters
+        createdAt,
+        updatedAt,
     } = params;
-
-    const query = {};
-
-    // Constructing query filters based on parameters
-    if (name) query.name = { $regex: name, $options: 'i' };
-    if (createdBy) query.createdBy = { $regex: createdBy, $options: 'i' };
-    if (updatedBy) query.updatedBy = { $regex: updatedBy, $options: 'i' };
-
-    try {
-        const totalPermissions = await PermissionsModel.countDocuments(query);
-        const totalPages = Math.ceil(totalPermissions / limit);
-
-        // Adjust the limit if it exceeds the total number of permissions
-        const adjustedLimit = Math.min(
-            limit,
-            totalPermissions - (page - 1) * limit
-        );
-
-        const permissions = await PermissionsModel.find(query)
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(adjustedLimit);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {
-                permissions,
-                totalPermissions,
-                totalPages,
-                currentPage: page,
-                pageSize: adjustedLimit,
-                sort,
-            },
-            message: permissions.length
-                ? `${permissions.length} permissions fetched successfully.`
-                : 'No permissions found.',
-            status: httpStatus.OK,
-        };
-    } catch (error) {
-        logger.error('Error fetching permissions:', error);
-
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Failed to fetch permissions.',
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-        };
-    }
-};
-
-const getPermission = async (permissionId) => {
-    const permission = await PermissionsModel.findById(permissionId);
-
-    if (!permission) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Permission not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: permission,
-        message: 'Permission fetched successfully.',
-        status: httpStatus.OK,
+    const query = {
+        ...(name && { name: new RegExp(name, 'i') }),
+        ...(createdBy && { createdBy }),
+        ...(updatedBy && { updatedBy }),
+        ...(createdAt && { createdAt }),
+        ...(updatedAt && { updatedAt }),
     };
+    const totalPermissions = await PermissionsModel.countDocuments(query);
+    const totalPages = Math.ceil(totalPermissions / limit);
+    const permissions = await PermissionsModel.find(query)
+        .sort(sort)
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+    return sendResponse(
+        {
+            permissions,
+            totalPermissions,
+            totalPages,
+            currentPage: page,
+            pageSize: limit,
+            sort,
+        },
+        permissions.length
+            ? `${permissions.length} permissions fetched successfully.`
+            : 'No permissions found.',
+        httpStatus.OK
+    );
 };
 
-const updatePermission = async (permissionId, updateData) => {
-    updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
+const getPermission = async (requester, permissionId) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to view permissions.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    const permission = await PermissionsModel.findById(permissionId);
+    if (!permission) {
+        return errorResponse('Permission not found.', httpStatus.NOT_FOUND);
+    }
+
+    return sendResponse(
+        permission,
+        'Permission fetched successfully.',
+        httpStatus.OK
+    );
+};
+
+const updatePermission = async (requester, permissionId, updateData) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to update permissions.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    updateData.updatedBy = requester;
 
     const updatedPermission = await PermissionsModel.findByIdAndUpdate(
         permissionId,
         updateData,
-        {
-            new: true,
-        }
+        { new: true }
     );
-
     if (!updatedPermission) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Permission not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+        return sendResponse({}, 'Permission not found.', httpStatus.NOT_FOUND);
     }
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: updatedPermission,
-        message: 'Permission updated successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        updatedPermission,
+        'Permission updated successfully.',
+        httpStatus.OK
+    );
 };
 
-const deletePermissions = async (permissionIds) => {
+const deletePermissions = async (requester, permissionIds) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to delete permissions.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    // First, check which permissions exist
+    const existingPermissions = await PermissionsModel.find({
+        _id: { $in: permissionIds },
+    })
+        .select('_id')
+        .lean();
+
+    const existingIds = existingPermissions.map((p) => p._id.toString());
+    const notFoundIds = permissionIds.filter((id) => !existingIds.includes(id));
+
+    // Perform deletion on existing permissions only
+    const deletionResult = await PermissionsModel.deleteMany({
+        _id: { $in: existingIds },
+    });
+
     const results = {
-        deleted: [],
-        notFound: [],
-        failed: [],
+        deleted: deletionResult.deletedCount,
+        notFound: notFoundIds.length,
+        failed:
+            permissionIds.length -
+            deletionResult.deletedCount -
+            notFoundIds.length,
     };
 
-    // Process each permissionId
-    for (const permissionId of permissionIds) {
-        try {
-            const permission =
-                await PermissionsModel.findByIdAndDelete(permissionId);
-            if (permission) {
-                results.deleted.push(permissionId);
-            } else {
-                results.notFound.push(permissionId);
-            }
-        } catch (error) {
-            // Log the error and mark this ID as failed
-            logger.error(
-                `Failed to delete permission with ID ${permissionId}: ${error}`
-            );
-            results.failed.push(permissionId);
-        }
+    // Custom message to summarize the outcome
+    const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
+
+    if (results.deleted <= 0) {
+        return errorResponse(message, httpStatus.OK);
     }
 
-    return {
-        timeStamp: new Date(),
-        success: results.failed.length === 0, // Success only if there were no failures
-        data: results,
-        message: `Deleted ${results.deleted.length}, Not found ${results.notFound.length}, Failed ${results.failed.length}`,
-        status: httpStatus.OK,
-    };
+    return sendResponse({}, message, httpStatus.OK);
 };
 
-const deletePermission = async (permissionId) => {
-    const permission = await PermissionsModel.findByIdAndDelete(permissionId);
-
-    if (!permission) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Permission not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+const deletePermission = async (requester, permissionId) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to delete permissions.',
+            httpStatus.FORBIDDEN
+        );
     }
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: {},
-        message: 'Permission deleted successfully.',
-        status: httpStatus.OK,
-    };
+    const deletedPermission =
+        await PermissionsModel.findByIdAndDelete(permissionId);
+    if (!deletedPermission) {
+        return sendResponse({}, 'Permission not found.', httpStatus.NOT_FOUND);
+    }
+
+    return sendResponse({}, 'Permission deleted successfully.', httpStatus.OK);
 };
 
 const permissionsService = {
