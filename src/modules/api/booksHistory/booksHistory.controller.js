@@ -4,7 +4,7 @@ import getRequesterId from '../../../utilities/getRequesterId.js';
 
 const getBooks = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
-    const booksHistoryData = await booksHistoryService.getBooksHistory(requester);
+    const booksHistoryData = await booksHistoryService.getBooksHistory(requester, req.query);
 
     booksHistoryData.route = req.originalUrl;
 
