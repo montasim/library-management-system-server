@@ -16,21 +16,35 @@ const createRole = async (requester, newRoleData) => {
         );
     }
 
-    const oldDetails = await RolesModel.findOne({ name: newRoleData.name }).lean();
+    const oldDetails = await RolesModel.findOne({
+        name: newRoleData.name,
+    }).lean();
     if (oldDetails) {
-        return errorResponse(`Role name "${newRoleData.name}" already exists.`, httpStatus.BAD_REQUEST);
+        return errorResponse(
+            `Role name "${newRoleData.name}" already exists.`,
+            httpStatus.BAD_REQUEST
+        );
     }
 
-    const arePermissionsValid = await validatePermissions(newRoleData.permissions);
+    const arePermissionsValid = await validatePermissions(
+        newRoleData.permissions
+    );
     if (!arePermissionsValid) {
-        return errorResponse('Invalid permissions provided.', httpStatus.BAD_REQUEST);
+        return errorResponse(
+            'Invalid permissions provided.',
+            httpStatus.BAD_REQUEST
+        );
     }
 
     newRoleData.createdBy = requester;
 
     const newRole = await RolesModel.create(newRoleData);
 
-    return sendResponse(newRole, 'Role created successfully.', httpStatus.CREATED);
+    return sendResponse(
+        newRole,
+        'Role created successfully.',
+        httpStatus.CREATED
+    );
 };
 
 const getRoles = async (requester, params) => {
@@ -68,18 +82,21 @@ const getRoles = async (requester, params) => {
         .limit(limit);
 
     if (!roles.length) {
-        return sendResponse(
-            {}, 'No roles found.', httpStatus.NOT_FOUND);
+        return sendResponse({}, 'No roles found.', httpStatus.NOT_FOUND);
     }
 
-    return sendResponse({
-        roles,
-        totalRoles,
-        totalPages,
-        currentPage: page,
-        pageSize: limit,
-        sort,
-    }, `${roles.length} roles fetched successfully.`, httpStatus.OK);
+    return sendResponse(
+        {
+            roles,
+            totalRoles,
+            totalPages,
+            currentPage: page,
+            pageSize: limit,
+            sort,
+        },
+        `${roles.length} roles fetched successfully.`,
+        httpStatus.OK
+    );
 };
 
 const getRole = async (requester, roleId) => {
@@ -97,17 +114,19 @@ const updateRole = async (requester, roleId, updateData) => {
 
     updateData.updatedBy = requester;
 
-    const updatedRole = await RolesModel.findByIdAndUpdate(
-        roleId,
-        updateData,
-        { new: true}
-    );
+    const updatedRole = await RolesModel.findByIdAndUpdate(roleId, updateData, {
+        new: true,
+    });
 
     if (!updatedRole) {
         return sendResponse({}, 'Role not found.', httpStatus.NOT_FOUND);
     }
 
-    return sendResponse(updatedRole, 'Role updated successfully.', httpStatus.OK);
+    return sendResponse(
+        updatedRole,
+        'Role updated successfully.',
+        httpStatus.OK
+    );
 };
 
 const deleteRoles = async (requester, roleIds) => {
@@ -138,9 +157,7 @@ const deleteRoles = async (requester, roleIds) => {
         deleted: deletionResult.deletedCount,
         notFound: notFoundIds.length,
         failed:
-            roleIds.length -
-            deletionResult.deletedCount -
-            notFoundIds.length,
+            roleIds.length - deletionResult.deletedCount - notFoundIds.length,
     };
 
     // Custom message to summarize the outcome

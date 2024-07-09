@@ -85,22 +85,30 @@ const getPermissions = async (requester, params) => {
         .limit(limit);
 
     if (!permissions.length) {
-        return sendResponse(
-            {}, 'No permissions found.', httpStatus.NOT_FOUND);
+        return sendResponse({}, 'No permissions found.', httpStatus.NOT_FOUND);
     }
 
-    return sendResponse({
-        permissions,
-        totalPermissions,
-        totalPages,
-        currentPage: page,
-        pageSize: limit,
-        sort,
-    }, `${roles.length} permissions fetched successfully.`, httpStatus.OK);
+    return sendResponse(
+        {
+            permissions,
+            totalPermissions,
+            totalPages,
+            currentPage: page,
+            pageSize: limit,
+            sort,
+        },
+        `${roles.length} permissions fetched successfully.`,
+        httpStatus.OK
+    );
 };
 
 const getPermission = async (requester, permissionId) => {
-    return getResourceById(requester, permissionId, PermissionsModel, 'permission');
+    return getResourceById(
+        requester,
+        permissionId,
+        PermissionsModel,
+        'permission'
+    );
 };
 
 const updatePermission = async (requester, permissionId, updateData) => {
@@ -174,7 +182,12 @@ const deletePermissions = async (requester, permissionIds) => {
 };
 
 const deletePermission = async (requester, permissionId) => {
-    return deleteResourceById(requester, permissionId, PermissionsModel, 'permission');
+    return deleteResourceById(
+        requester,
+        permissionId,
+        PermissionsModel,
+        'permission'
+    );
 };
 
 const permissionsService = {

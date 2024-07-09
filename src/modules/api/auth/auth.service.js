@@ -1,9 +1,7 @@
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import UsersModel from '../users/users.model.js';
-import generateVerificationToken
-    from '../../../utilities/generateVerificationToken.js';
-import createAuthenticationToken
-    from '../../../utilities/createAuthenticationToken.js';
+import generateVerificationToken from '../../../utilities/generateVerificationToken.js';
+import createAuthenticationToken from '../../../utilities/createAuthenticationToken.js';
 import prepareEmailContent from '../../../shared/prepareEmailContent.js';
 import EmailService from '../../../service/email.service.js';
 import configuration from '../../../configuration/configuration.js';
@@ -11,10 +9,8 @@ import prepareEmail from '../../../shared/prepareEmail.js';
 import generateHashedToken from '../../../utilities/generateHashedToken.js';
 import createHashedPassword from '../../../utilities/createHashedPassword.js';
 import comparePassword from '../../../utilities/comparePassword.js';
-import decodeAuthenticationToken
-    from '../../../utilities/decodeAuthenticationToken.js';
-import getRequestedDeviceDetails
-    from '../../../utilities/getRequestedDeviceDetails.js';
+import decodeAuthenticationToken from '../../../utilities/decodeAuthenticationToken.js';
+import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
 import environment from '../../../constant/envTypes.constants.js';
 import validateEmail from '../../../utilities/validateEmail.js';
 import validatePassword from '../../../utilities/validatePassword.js';
@@ -35,11 +31,7 @@ const signup = async (userData, hostData) => {
 
     const emailValidationResult = await validateEmail(userData.email);
     if (emailValidationResult !== 'Valid') {
-        return sendResponse(
-            {},
-            emailValidationResult,
-            httpStatus.BAD_REQUEST
-        );
+        return sendResponse({}, emailValidationResult, httpStatus.BAD_REQUEST);
     }
 
     if (userData.password !== userData.confirmPassword) {
@@ -169,10 +161,7 @@ const verify = async (token) => {
 const resendVerification = async (userId, hostData) => {
     const userDetails = await UsersModel.findById(userId);
     if (!userDetails) {
-        return errorResponse(
-            'User not found.',
-            httpStatus.NOT_FOUND
-        );
+        return errorResponse('User not found.', httpStatus.NOT_FOUND);
     }
 
     if (userDetails.isEmailVerified) {
@@ -336,7 +325,9 @@ const resetPassword = async (hostData, token, userData) => {
         );
     }
 
-    const passwordValidationResult = await validatePassword(userData.newPassword);
+    const passwordValidationResult = await validatePassword(
+        userData.newPassword
+    );
     if (passwordValidationResult !== 'Valid') {
         return sendResponse(
             {},
@@ -346,7 +337,7 @@ const resetPassword = async (hostData, token, userData) => {
     }
 
     // Update the user with new password and expiry
-    userDetails.password = await createHashedPassword(userData.newPassword);;
+    userDetails.password = await createHashedPassword(userData.newPassword);
     userDetails.resetPasswordVerifyToken = undefined;
     userDetails.resetPasswordVerifyTokenExpires = undefined;
 
@@ -376,11 +367,7 @@ const resetPassword = async (hostData, token, userData) => {
         )
     );
 
-    return sendResponse(
-        {},
-        'Reset Password Successful.',
-        httpStatus.OK
-    );
+    return sendResponse({}, 'Reset Password Successful.', httpStatus.OK);
 };
 
 const login = async (userData, userAgent, device) => {
@@ -488,7 +475,9 @@ const login = async (userData, userAgent, device) => {
 const logout = async (req) => {
     // Assuming these functions are well-defined and return relevant details or throw an error if something goes wrong.
     const device = await getRequestedDeviceDetails(req);
-    const jwtToken = req?.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : null;
+    const jwtToken = req?.headers['authorization']
+        ? req.headers['authorization'].split(' ')[1]
+        : null;
 
     if (!jwtToken) {
         return errorResponse(

@@ -9,7 +9,7 @@ const pattern = {
 
 const rolesConstants = {
     lengths,
-    pattern
+    pattern,
 };
 
 export default rolesConstants;

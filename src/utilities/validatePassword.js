@@ -28,7 +28,11 @@ const validatePassword = async (password) => {
     }
 
     // Example simple pattern check (sequential characters or too simple)
-    if (password.match(/^(.)\1+$/) || password === '1234' || password.toLowerCase() === 'password') {
+    if (
+        password.match(/^(.)\1+$/) ||
+        password === '1234' ||
+        password.toLowerCase() === 'password'
+    ) {
         return 'Password contains a simple pattern or is a common password';
     }
 

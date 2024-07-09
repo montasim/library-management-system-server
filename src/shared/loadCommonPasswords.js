@@ -56,7 +56,7 @@ const loadCommonPasswords = async () => {
 
     try {
         const data = await fs.readFile(filePath, { encoding: 'utf-8' });
-        const lines = data.split('\n').map(line => line.trim().toLowerCase());
+        const lines = data.split('\n').map((line) => line.trim().toLowerCase());
 
         return new Set(lines);
     } catch (err) {

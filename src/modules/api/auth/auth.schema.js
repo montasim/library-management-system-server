@@ -26,13 +26,13 @@ const authSchemaBase = Joi.object({
     confirmNewPassword: Joi.valid(Joi.ref('newPassword')).messages({
         'any.only': 'New passwords do not match',
     }),
-    token:  Joi.string()
+    token: Joi.string()
         .length(40) // Length should be 40 characters for a 20-byte hex string
         .hex() // Validate that the string is a hexadecimal number
         .messages({
             'string.length': `{#label} must be exactly 40 characters long.`,
             'string.hex': `{#label} must only consist of hexadecimal characters (0-9, a-f).`,
-            ...customValidationMessage
+            ...customValidationMessage,
         }),
     id: validationService.objectIdField,
 }).strict();
@@ -42,19 +42,14 @@ const signup = authSchemaBase.fork(
     (field) => field.required()
 );
 
-const verify = authSchemaBase.fork(
-    ['token'],
-    (field) => field.required()
+const verify = authSchemaBase.fork(['token'], (field) => field.required());
+
+const resendVerification = authSchemaBase.fork(['id'], (field) =>
+    field.required()
 );
 
-const resendVerification = authSchemaBase.fork(
-    ['id'],
-    (field) => field.required()
-);
-
-const requestNewPassword = authSchemaBase.fork(
-    ['email'],
-    (field) => field.required()
+const requestNewPassword = authSchemaBase.fork(['email'], (field) =>
+    field.required()
 );
 
 const resetPassword = authSchemaBase.fork(

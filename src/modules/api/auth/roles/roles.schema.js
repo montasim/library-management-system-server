@@ -12,13 +12,11 @@ const roleSchemaBase = Joi.object({
             rolesConstants.lengths.NAME_MAX
         )
         .regex(rolesConstants.pattern.name)
-            .messages({
-                'string.pattern.base': `{#label} with value {#value} must start with an uppercase letter followed by lowercase letters, and must not include numbers or special characters.`,
-            }),
+        .messages({
+            'string.pattern.base': `{#label} with value {#value} must start with an uppercase letter followed by lowercase letters, and must not include numbers or special characters.`,
+        }),
     permissions: Joi.array()
-        .items(
-            validationService.objectIdsField.required(),
-        )
+        .items(validationService.objectIdsField.required())
         .required()
         .messages({
             'any.custom': 'Invalid permission ID format.',
@@ -60,19 +58,20 @@ const roleIdsParamSchema = Joi.object({
     .required()
     .messages(customValidationMessage);
 
-const getRolesQuerySchema = roleSchemaBase.fork([
-    'name',
-    'permissions',
-    'isActive',
-    'page',
-    'limit',
-    'sort',
-    'createdBy',
-    'updatedBy',
-    'createdAt',
-    'updatedBy',
-    ], (field) =>
-    field.optional()
+const getRolesQuerySchema = roleSchemaBase.fork(
+    [
+        'name',
+        'permissions',
+        'isActive',
+        'page',
+        'limit',
+        'sort',
+        'createdBy',
+        'updatedBy',
+        'createdAt',
+        'updatedBy',
+    ],
+    (field) => field.optional()
 );
 
 // Schema for single role ID validation
