@@ -112,6 +112,16 @@ const updateRole = async (requester, roleId, updateData) => {
         );
     }
 
+    const oldDetails = await RolesModel.findOne({
+        name: updateData.name,
+    }).lean();
+    if (oldDetails) {
+        return errorResponse(
+            `Role name "${updateData.name}" already exists.`,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
     updateData.updatedBy = requester;
 
     const updatedRole = await RolesModel.findByIdAndUpdate(roleId, updateData, {

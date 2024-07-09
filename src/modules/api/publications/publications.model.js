@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
+
 import publicationsConstants from './publications.constant.js';
+
+const { Schema } = mongoose;
 
 const publicationSchema = new mongoose.Schema(
     {
@@ -22,14 +25,14 @@ const publicationSchema = new mongoose.Schema(
             default: true,
         },
         createdBy: {
-            type: String,
             trim: true,
-            required: false,
+            type: Schema.Types.ObjectId,
+            ref: 'UsersModel',
         },
         updatedBy: {
-            type: String,
             trim: true,
-            required: false,
+            type: Schema.Types.ObjectId,
+            ref: 'UsersModel',
         },
     },
     {

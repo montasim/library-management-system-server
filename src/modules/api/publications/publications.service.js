@@ -101,6 +101,17 @@ const updatePublication = async (requester, publicationId, updateData) => {
         );
     }
 
+    const exists = await PublicationsModel.findOne({
+        name: updateData.name,
+    }).lean();
+    if (exists) {
+        return sendResponse(
+            {},
+            `Publication name "${updateData.name}" already exists.`,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
     updateData.updatedBy = requester;
 
     const updatedPublication = await PublicationsModel.findByIdAndUpdate(

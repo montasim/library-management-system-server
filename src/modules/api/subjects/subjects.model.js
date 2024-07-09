@@ -20,15 +20,19 @@ const subjectSchema = new Schema(
                 'Name cannot be more than 100 characters long.',
             ],
         },
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
         createdBy: {
-            type: String,
             trim: true,
-            required: false,
+            type: Schema.Types.ObjectId,
+            ref: 'UsersModel',
         },
         updatedBy: {
-            type: String,
             trim: true,
-            required: false,
+            type: Schema.Types.ObjectId,
+            ref: 'UsersModel',
         },
     },
     {

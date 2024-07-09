@@ -63,13 +63,14 @@ const writerSchema = new mongoose.Schema(
             ],
         },
         createdBy: {
+            trim: true,
             type: Schema.Types.ObjectId,
             ref: 'UsersModel',
         },
         updatedBy: {
-            type: String,
             trim: true,
-            required: false,
+            type: Schema.Types.ObjectId,
+            ref: 'UsersModel',
         },
     },
     {

@@ -2,28 +2,61 @@ import validateWithSchema from '../../../shared/validateWithSchema.js';
 import subjectsSchema from './subjects.schema.js';
 
 const createSubject = validateWithSchema(
-    subjectsSchema.createSubjectSchema,
-    'body'
+    [
+        {
+            schema: subjectsSchema.createSubjectSchema,
+            property: 'body'
+        }
+    ]
 );
+
 const getSubjects = validateWithSchema(
-    subjectsSchema.getSubjectsQuerySchema,
-    'query'
+    [
+        {
+            schema: subjectsSchema.getSubjectsQuerySchema,
+            property: 'query'
+        }
+    ]
 );
+
 const getSubject = validateWithSchema(
-    subjectsSchema.subjectIdParamSchema,
-    'params'
+    [
+        {
+            schema: subjectsSchema.subjectIdParamSchema,
+            property: 'params'
+        }
+    ]
 );
+
 const updateSubject = validateWithSchema(
-    subjectsSchema.updateSubjectSchema,
-    'body'
+    [
+        {
+            schema: subjectsSchema.subjectIdParamSchema,
+            property: 'params'
+        },
+        {
+            schema: subjectsSchema.updateSubjectSchema,
+            property: 'body'
+        }
+    ]
 );
+
 const deleteSubjects = validateWithSchema(
-    subjectsSchema.subjectIdsParamSchema,
-    'query'
+    [
+        {
+            schema: subjectsSchema.subjectIdsParamSchema,
+            property: 'query'
+        }
+    ]
 );
+
 const deleteSubject = validateWithSchema(
-    subjectsSchema.subjectIdParamSchema,
-    'params'
+    [
+        {
+            schema: subjectsSchema.subjectIdParamSchema,
+            property: 'params'
+        }
+    ]
 );
 
 const subjectsValidator = {

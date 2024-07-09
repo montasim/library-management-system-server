@@ -1,117 +1,118 @@
 import SubjectsModel from './subjects.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import logger from '../../../utilities/logger.js';
+import validateUserRequest from '../../../utilities/validateUserRequest.js';
+import errorResponse from '../../../utilities/errorResponse.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import deleteResourceById from '../../../shared/deleteResourceById.js';
 
-const createSubject = async (subjectData) => {
-    try {
-        subjectData.createdBy = 'Admin'; // Hardcoded for now, will be dynamic in future
-
-        const newSubject = await SubjectsModel.create(subjectData);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: newSubject,
-            message: 'Subject created successfully.',
-            status: httpStatus.CREATED,
-        };
-    } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error creating the subject.',
-            status: httpStatus.BAD_REQUEST,
-        };
+const createSubject = async (requester, subjectData) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to create subjects.',
+            httpStatus.FORBIDDEN
+        );
     }
+
+    const exists = await SubjectsModel.findOne({
+        name: subjectData.name,
+    }).lean();
+    if (exists) {
+        return sendResponse(
+            {},
+            `Subject name "${subjectData.name}" already exists.`,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    subjectData.createdBy = requester;
+
+    const newSubject = await SubjectsModel.create(subjectData);
+
+    return sendResponse(
+        newSubject,
+        'Subject created successfully.',
+        httpStatus.CREATED
+    );
 };
 
 const getSubjects = async (params) => {
     const {
         page = 1,
         limit = 10,
-        sort = '-createdAt', // Default sort by most recent creation
+        sort = '-createdAt',
         name,
         createdBy,
         updatedBy,
-        ...otherFilters
+        createdAt,
+        updatedAt,
     } = params;
+    const query = {
+        ...(name && { name: new RegExp(name, 'i') }),
+        ...(createdBy && { createdBy }),
+        ...(updatedBy && { updatedBy }),
+        ...(createdAt && { createdAt }),
+        ...(updatedAt && { updatedAt }),
+    };
+    const totalSubjects = await SubjectsModel.countDocuments(query);
+    const totalPages = Math.ceil(totalSubjects / limit);
+    const subjects = await SubjectsModel.find(query)
+        .sort(sort)
+        .skip((page - 1) * limit)
+        .limit(limit);
 
-    const query = {};
-
-    // Constructing query filters based on parameters
-    if (name) query.name = { $regex: name, $options: 'i' };
-    if (createdBy) query.createdBy = { $regex: createdBy, $options: 'i' };
-    if (updatedBy) query.updatedBy = { $regex: updatedBy, $options: 'i' };
-
-    try {
-        const totalSubjects = await SubjectsModel.countDocuments(query);
-        const totalPages = Math.ceil(totalSubjects / limit);
-
-        // Adjust the limit if it exceeds the total number of subjects
-        const adjustedLimit = Math.min(
-            limit,
-            totalSubjects - (page - 1) * limit
-        );
-
-        const subjects = await SubjectsModel.find(query)
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(adjustedLimit);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {
-                subjects,
-                totalSubjects,
-                totalPages,
-                currentPage: page,
-                pageSize: adjustedLimit,
-                sort,
-            },
-            message: subjects.length
-                ? `${subjects.length} subjects fetched successfully.`
-                : 'No subjects found.',
-            status: httpStatus.OK,
-        };
-    } catch (error) {
-        logger.error('Error fetching subjects:', error);
-
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Failed to fetch subjects.',
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-        };
+    if (!subjects.length) {
+        return sendResponse({}, 'No subject found.', httpStatus.NOT_FOUND);
     }
+
+    return sendResponse(
+        {
+            subjects,
+            totalSubjects,
+            totalPages,
+            currentPage: page,
+            pageSize: limit,
+            sort,
+        },
+        `${subjects.length} subjects fetched successfully.`,
+        httpStatus.OK
+    );
 };
 
 const getSubject = async (subjectId) => {
     const subject = await SubjectsModel.findById(subjectId);
-
     if (!subject) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Subject not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+        return errorResponse('Subject not found.', httpStatus.NOT_FOUND);
     }
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: subject,
-        message: 'Subject fetched successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        subject,
+        'Subject fetched successfully.',
+        httpStatus.OK
+    );
 };
 
-const updateSubject = async (subjectId, updateData) => {
-    updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
+const updateSubject = async (requester, subjectId, updateData) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to update subjects.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    const exists = await SubjectsModel.findOne({
+        name: updateData.name,
+    }).lean();
+    if (exists) {
+        return sendResponse(
+            {},
+            `Subject name "${updateData.name}" already exists.`,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    updateData.updatedBy = requester;
 
     const updatedSubject = await SubjectsModel.findByIdAndUpdate(
         subjectId,
@@ -120,80 +121,69 @@ const updateSubject = async (subjectId, updateData) => {
             new: true,
         }
     );
-
     if (!updatedSubject) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Subject not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+        return sendResponse({}, 'Subject not found.', httpStatus.NOT_FOUND);
     }
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: updatedSubject,
-        message: 'Subject updated successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        updatedSubject,
+        'Subject updated successfully.',
+        httpStatus.OK
+    );
 };
 
-const deleteSubjects = async (subjectIds) => {
+const deleteSubjects = async (requester, subjectIds) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to delete subjects.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    // First, check which permissions exist
+    const existingSubjects = await SubjectsModel.find({
+        _id: { $in: subjectIds },
+    })
+        .select('_id')
+        .lean();
+
+    const existingIds = existingSubjects.map((p) => p._id.toString());
+    const notFoundIds = subjectIds.filter(
+        (id) => !existingIds.includes(id)
+    );
+
+    // Perform deletion on existing permissions only
+    const deletionResult = await SubjectsModel.deleteMany({
+        _id: { $in: existingIds },
+    });
+
     const results = {
-        deleted: [],
-        notFound: [],
-        failed: [],
+        deleted: deletionResult.deletedCount,
+        notFound: notFoundIds.length,
+        failed:
+            subjectIds.length -
+            deletionResult.deletedCount -
+            notFoundIds.length,
     };
 
-    // Process each subjectId
-    for (const subjectId of subjectIds) {
-        try {
-            const subject = await SubjectsModel.findByIdAndDelete(subjectId);
-            if (subject) {
-                results.deleted.push(subjectId);
-            } else {
-                results.notFound.push(subjectId);
-            }
-        } catch (error) {
-            // Log the error and mark this ID as failed
-            logger.error(
-                `Failed to delete subject with ID ${subjectId}: ${error}`
-            );
-            results.failed.push(subjectId);
-        }
+    // Custom message to summarize the outcome
+    const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
+
+    if (results.deleted <= 0) {
+        return errorResponse(message, httpStatus.OK);
     }
 
-    return {
-        timeStamp: new Date(),
-        success: results.failed.length === 0, // Success only if there were no failures
-        data: results,
-        message: `Deleted ${results.deleted.length}, Not found ${results.notFound.length}, Failed ${results.failed.length}`,
-        status: httpStatus.OK,
-    };
+    return sendResponse({}, message, httpStatus.OK);
 };
 
-const deleteSubject = async (subjectId) => {
-    const subject = await SubjectsModel.findByIdAndDelete(subjectId);
-
-    if (!subject) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Subject not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: {},
-        message: 'Subject deleted successfully.',
-        status: httpStatus.OK,
-    };
+const deleteSubject = async (requester, subjectId) => {
+    return deleteResourceById(
+        requester,
+        subjectId,
+        SubjectsModel,
+        'subject'
+    );
 };
 
 const subjectsService = {

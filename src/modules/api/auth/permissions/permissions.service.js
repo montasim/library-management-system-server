@@ -120,6 +120,17 @@ const updatePermission = async (requester, permissionId, updateData) => {
         );
     }
 
+    const exists = await PermissionsModel.exists({
+        name: updateData.name,
+    });
+    if (exists) {
+        return sendResponse(
+            {},
+            `Permission name "${updateData.name}" already exists.`,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
     updateData.updatedBy = requester;
 
     const updatedPermission = await PermissionsModel.findByIdAndUpdate(
