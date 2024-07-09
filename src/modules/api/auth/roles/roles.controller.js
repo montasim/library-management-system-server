@@ -1,8 +1,10 @@
 import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
 import rolesService from './roles.service.js';
+import getRequesterId from '../../../../utilities/getRequesterId.js';
 
 const createRole = asyncErrorHandler(async (req, res) => {
-    const newRoleData = await rolesService.createRole(req.body);
+    const requester = getRequesterId(req);
+    const newRoleData = await rolesService.createRole(requester, req.body);
 
     newRoleData.route = req.originalUrl;
 
@@ -10,7 +12,8 @@ const createRole = asyncErrorHandler(async (req, res) => {
 });
 
 const getRoles = asyncErrorHandler(async (req, res) => {
-    const rolesData = await rolesService.getRoles(req.query);
+    const requester = getRequesterId(req);
+    const rolesData = await rolesService.getRoles(requester, req.query);
 
     rolesData.route = req.originalUrl;
 
@@ -18,7 +21,8 @@ const getRoles = asyncErrorHandler(async (req, res) => {
 });
 
 const getRole = asyncErrorHandler(async (req, res) => {
-    const roleData = await rolesService.getRole(req.params.roleId);
+    const requester = getRequesterId(req);
+    const roleData = await rolesService.getRole(requester, req.params.roleId);
 
     roleData.route = req.originalUrl;
 
@@ -26,7 +30,9 @@ const getRole = asyncErrorHandler(async (req, res) => {
 });
 
 const updateRole = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const updatedRoleData = await rolesService.updateRole(
+        requester,
         req.params.roleId,
         req.body
     );
@@ -37,8 +43,9 @@ const updateRole = asyncErrorHandler(async (req, res) => {
 });
 
 const deleteRoles = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const roleIds = req.query.ids.split(',');
-    const deletedRolesData = await rolesService.deleteRoles(roleIds);
+    const deletedRolesData = await rolesService.deleteRoles(requester, roleIds);
 
     deletedRolesData.route = req.originalUrl;
 
@@ -46,7 +53,8 @@ const deleteRoles = asyncErrorHandler(async (req, res) => {
 });
 
 const deleteRole = asyncErrorHandler(async (req, res) => {
-    const deletedRoleData = await rolesService.deleteRole(req.params.roleId);
+    const requester = getRequesterId(req);
+    const deletedRoleData = await rolesService.deleteRole(requester, req.params.roleId);
 
     deletedRoleData.route = req.originalUrl;
 

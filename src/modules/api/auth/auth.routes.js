@@ -75,7 +75,7 @@ router
     .all(methodNotSupported);
 
 router
-    .route('/roles')
+    .route(`/${routesConstants.roles.routes}`)
     .post(
         authenticateMiddleware,
         rolesValidator.createRole,
@@ -94,7 +94,7 @@ router
     .all(methodNotSupported);
 
 router
-    .route('/roles/:roleId')
+    .route(`/${routesConstants.roles.routes}/:${routesConstants.roles.params}`)
     .get(
         authenticateMiddleware,
         rolesValidator.getRole,

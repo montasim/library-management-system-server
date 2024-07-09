@@ -82,20 +82,19 @@ const getPermissions = async (requester, params) => {
         .skip((page - 1) * limit)
         .limit(limit);
 
-    return sendResponse(
-        {
-            permissions,
-            totalPermissions,
-            totalPages,
-            currentPage: page,
-            pageSize: limit,
-            sort,
-        },
-        permissions.length
-            ? `${permissions.length} permissions fetched successfully.`
-            : 'No permissions found.',
-        httpStatus.OK
-    );
+    if (!permissions.length) {
+        return sendResponse(
+            {}, 'No permissions found.', httpStatus.NOT_FOUND);
+    }
+
+    return sendResponse({
+        permissions,
+        totalPermissions,
+        totalPages,
+        currentPage: page,
+        pageSize: limit,
+        sort,
+    }, `${roles.length} permissions fetched successfully.`, httpStatus.OK);
 };
 
 const getPermission = async (requester, permissionId) => {

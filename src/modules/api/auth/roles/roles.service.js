@@ -1,207 +1,186 @@
 import validatePermissions from '../../../../shared/validatePermissions.js';
 import RolesModel from './roles.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import logger from '../../../../utilities/logger.js';
+import errorResponse from '../../../../utilities/errorResponse.js';
+import validateUserRequest from '../../../../utilities/validateUserRequest.js';
+import sendResponse from '../../../../utilities/sendResponse.js';
+import PermissionsModel from '../permissions/permissions.model.js';
 
-const createRole = async (roleData) => {
-    try {
-        const oldDetails = await RolesModel.findOne({
-            name: roleData.name,
-        }).lean();
-
-        if (oldDetails) {
-            throw new Error(`Role name "${roleData.name}" already exists.`);
-        }
-
-        const arePermissionsValid = await validatePermissions(
-            roleData.permissions
+const createRole = async (requester, newRoleData) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to create role.',
+            httpStatus.FORBIDDEN
         );
-
-        if (!arePermissionsValid) {
-            throw new Error('Invalid permissions provided.');
-        }
-
-        roleData.createdBy = 'Admin'; // Hardcoded for now, will be dynamic in future
-
-        const newRole = await RolesModel.create(roleData);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: newRole,
-            message: 'Role created successfully.',
-            status: httpStatus.CREATED,
-        };
-    } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error creating the role.',
-            status: httpStatus.BAD_REQUEST,
-        };
     }
+
+    const oldDetails = await RolesModel.findOne({ name: newRoleData.name }).lean();
+    if (oldDetails) {
+        return errorResponse(`Role name "${newRoleData.name}" already exists.`, httpStatus.BAD_REQUEST);
+    }
+
+    const arePermissionsValid = await validatePermissions(newRoleData.permissions);
+    if (!arePermissionsValid) {
+        return errorResponse('Invalid permissions provided.', httpStatus.BAD_REQUEST);
+    }
+
+    newRoleData.createdBy = requester;
+
+    const newRole = await RolesModel.create(newRoleData);
+
+    return sendResponse(newRole, 'Role created successfully.', httpStatus.CREATED);
 };
 
-const getRoles = async (params) => {
+const getRoles = async (requester, params) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to create role.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
     const {
         page = 1,
         limit = 10,
-        sort = '-createdAt', // Default sort by most recent creation
+        sort = '-createdAt',
         name,
         createdBy,
         updatedBy,
-        ...otherFilters
+        createdAt,
+        updatedAt,
     } = params;
-
-    const query = {};
-
-    // Constructing query filters based on parameters
-    if (name) query.name = { $regex: name, $options: 'i' };
-    if (createdBy) query.createdBy = { $regex: createdBy, $options: 'i' };
-    if (updatedBy) query.updatedBy = { $regex: updatedBy, $options: 'i' };
-
-    try {
-        const totalRoles = await RolesModel.countDocuments(query);
-        const totalPages = Math.ceil(totalRoles / limit);
-
-        // Adjust the limit if it exceeds the total number of roles
-        const adjustedLimit = Math.min(limit, totalRoles - (page - 1) * limit);
-
-        const roles = await RolesModel.find(query)
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(adjustedLimit);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {
-                roles,
-                totalRoles,
-                totalPages,
-                currentPage: page,
-                pageSize: adjustedLimit,
-                sort,
-            },
-            message: roles.length
-                ? `${roles.length} roles fetched successfully.`
-                : 'No roles found.',
-            status: httpStatus.OK,
-        };
-    } catch (error) {
-        logger.error('Error fetching roles:', error);
-
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Failed to fetch roles.',
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-        };
-    }
-};
-
-const getRole = async (roleId) => {
-    const role = await RolesModel.findById(roleId);
-
-    if (!role) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Role not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: role,
-        message: 'Role fetched successfully.',
-        status: httpStatus.OK,
+    const query = {
+        ...(name && { name: new RegExp(name, 'i') }),
+        ...(createdBy && { createdBy }),
+        ...(updatedBy && { updatedBy }),
+        ...(createdAt && { createdAt }),
+        ...(updatedAt && { updatedAt }),
     };
+
+    const totalRoles = await RolesModel.countDocuments(query);
+    const totalPages = Math.ceil(totalRoles / limit);
+    const roles = await RolesModel.find(query)
+        .sort(sort)
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+    if (!roles.length) {
+        return sendResponse(
+            {}, 'No roles found.', httpStatus.NOT_FOUND);
+    }
+
+    return sendResponse({
+        roles,
+        totalRoles,
+        totalPages,
+        currentPage: page,
+        pageSize: limit,
+        sort,
+    }, `${roles.length} roles fetched successfully.`, httpStatus.OK);
 };
 
-const updateRole = async (roleId, updateData) => {
-    updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
+const getRole = async (requester, roleId) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to create role.',
+            httpStatus.FORBIDDEN
+        );
+    }
 
-    const updatedRole = await RolesModel.findByIdAndUpdate(roleId, updateData, {
-        new: true,
-    });
+    const role = await RolesModel.findById(roleId);
+    if (!role) {
+        return errorResponse('Role not found.', httpStatus.NOT_FOUND);
+    }
+
+    return sendResponse(role, 'Role fetched successfully.', httpStatus.OK);
+};
+
+const updateRole = async (requester, roleId, updateData) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to update permissions.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    updateData.updatedBy = requester;
+
+    const updatedRole = await RolesModel.findByIdAndUpdate(
+        roleId,
+        updateData,
+        { new: true}
+    );
 
     if (!updatedRole) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Role not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+        return sendResponse({}, 'Role not found.', httpStatus.NOT_FOUND);
     }
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: updatedRole,
-        message: 'Role updated successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(updatedRole, 'Role updated successfully.', httpStatus.OK);
 };
 
-const deleteRoles = async (roleIds) => {
+const deleteRoles = async (requester, roleIds) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to delete role.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    // First, check which permissions exist
+    const existingPermissions = await RolesModel.find({
+        _id: { $in: roleIds },
+    })
+        .select('_id')
+        .lean();
+
+    const existingIds = existingPermissions.map((p) => p._id.toString());
+    const notFoundIds = roleIds.filter((id) => !existingIds.includes(id));
+
+    // Perform deletion on existing permissions only
+    const deletionResult = await RolesModel.deleteMany({
+        _id: { $in: existingIds },
+    });
+
     const results = {
-        deleted: [],
-        notFound: [],
-        failed: [],
+        deleted: deletionResult.deletedCount,
+        notFound: notFoundIds.length,
+        failed:
+            roleIds.length -
+            deletionResult.deletedCount -
+            notFoundIds.length,
     };
 
-    // Process each roleId
-    for (const roleId of roleIds) {
-        try {
-            const role = await RolesModel.findByIdAndDelete(roleId);
-            if (role) {
-                results.deleted.push(roleId);
-            } else {
-                results.notFound.push(roleId);
-            }
-        } catch (error) {
-            // Log the error and mark this ID as failed
-            logger.error(`Failed to delete role with ID ${roleId}: ${error}`);
-            results.failed.push(roleId);
-        }
+    // Custom message to summarize the outcome
+    const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
+
+    if (results.deleted <= 0) {
+        return errorResponse(message, httpStatus.OK);
     }
 
-    return {
-        timeStamp: new Date(),
-        success: results.failed.length === 0, // Success only if there were no failures
-        data: results,
-        message: `Deleted ${results.deleted.length}, Not found ${results.notFound.length}, Failed ${results.failed.length}`,
-        status: httpStatus.OK,
-    };
+    return sendResponse({}, message, httpStatus.OK);
 };
 
-const deleteRole = async (roleId) => {
-    const role = await RolesModel.findByIdAndDelete(roleId);
-
-    if (!role) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Role not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+const deleteRole = async (requester, roleId) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to delete role.',
+            httpStatus.FORBIDDEN
+        );
     }
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: {},
-        message: 'Role deleted successfully.',
-        status: httpStatus.OK,
-    };
+    const deletedRole =
+        await PermissionsModel.findByIdAndDelete(roleId);
+    if (!deletedRole) {
+        return sendResponse({}, 'Role not found.', httpStatus.NOT_FOUND);
+    }
+
+    return sendResponse({}, 'Role deleted successfully.', httpStatus.OK);
 };
 
 const rolesService = {

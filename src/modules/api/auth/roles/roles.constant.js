@@ -3,8 +3,13 @@ const lengths = {
     NAME_MAX: 100,
 };
 
+const pattern = {
+    name: /^[A-Z][a-z]+ [a-z]+$/,
+};
+
 const rolesConstants = {
     lengths,
+    pattern
 };
 
 export default rolesConstants;

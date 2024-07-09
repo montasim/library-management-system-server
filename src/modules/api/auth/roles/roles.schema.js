@@ -2,26 +2,43 @@ import Joi from 'joi';
 
 import rolesConstants from './roles.constant.js';
 import customValidationMessage from '../../../../shared/customValidationMessage.js';
-import customObjectIdValidator from '../../../../shared/customObjectIdValidator.js';
+import validationService from '../../../../service/validation.service.js';
 
 // Define base schema for roles
 const roleSchemaBase = Joi.object({
-    name: Joi.string()
-        .trim()
-        .required()
-        .min(rolesConstants.lengths.NAME_MIN)
-        .max(rolesConstants.lengths.NAME_MAX)
-        .messages(customValidationMessage),
+    name: validationService
+        .createStringField(
+            rolesConstants.lengths.NAME_MIN,
+            rolesConstants.lengths.NAME_MAX
+        )
+        .regex(rolesConstants.pattern.name)
+            .messages({
+                'string.pattern.base': `{#label} with value {#value} must start with an uppercase letter followed by lowercase letters, and must not include numbers or special characters.`,
+            }),
     permissions: Joi.array()
         .items(
-            Joi.string().trim().custom(customObjectIdValidator('permission'))
+            validationService.objectIdsField.required(),
         )
         .required()
         .messages({
             'any.custom': 'Invalid permission ID format.',
             ...customValidationMessage,
         }),
-    isActive: Joi.boolean().required().messages(customValidationMessage),
+    isActive: validationService.booleanField,
+    page: Joi.string()
+        .min(1)
+        .default(1)
+        .custom((value, helpers) => parseInt(value)),
+    limit: Joi.string()
+        .min(1)
+        .max(100)
+        .default(10)
+        .custom((value, helpers) => parseInt(value)),
+    sort: Joi.string().trim().default('createdAt'),
+    createdBy: validationService.objectIdField,
+    updatedBy: validationService.objectIdField,
+    createdAt: validationService.dateField,
+    updatedAt: validationService.dateField,
 }).strict();
 
 // Schema for creating a role, making specific fields required
@@ -38,71 +55,29 @@ const updateRoleSchema = roleSchemaBase
 
 // Schema for validating multiple role IDs
 const roleIdsParamSchema = Joi.object({
-    ids: Joi.string()
-        .custom((value, helpers) => {
-            const ids = value.split(',');
-            ids.forEach((id) => {
-                const { error } = Joi.string().alphanum().validate(id);
-                if (error) {
-                    throw new Error(`Invalid ID provided.`);
-                }
-            });
-            return value; // Return original value if validation passes
-        })
-        .required()
-        .messages(customValidationMessage),
-}).required();
-
-const getRolesQuerySchema = Joi.object({
-    page: Joi.string()
-        .min(1)
-        .default(1)
-        .custom((value, helpers) => parseInt(value)),
-    limit: Joi.string()
-        .min(1)
-        .max(100)
-        .default(10)
-        .custom((value, helpers) => parseInt(value)),
-    sort: Joi.string().trim().default('createdAt'),
-    name: Joi.string()
-        .trim()
-        .min(rolesConstants.lengths.NAME_MIN)
-        .max(rolesConstants.lengths.NAME_MAX),
-    permissions: Joi.array()
-        .items(
-            Joi.string().trim().custom(customObjectIdValidator('permission'))
-        )
-        .messages({
-            'any.custom': 'Invalid permission ID format.',
-            ...customValidationMessage,
-        }),
-    isActive: Joi.string()
-        .valid('true', 'false', '1', '0')
-        .custom((value, helpers) => {
-            if (value === 'true' || value === '1') {
-                return true;
-            } else if (value === 'false' || value === '0') {
-                return false;
-            }
-            return helpers.error('any.invalid');
-        })
-        .messages({
-            'any.only':
-                'isActive must be a boolean value represented as true/false or 1/0.',
-            ...customValidationMessage,
-        }),
-    createdBy: Joi.string().trim(),
-    updatedBy: Joi.string().trim(),
+    ids: validationService.objectIdsField.required(),
 })
-    .strict()
+    .required()
     .messages(customValidationMessage);
+
+const getRolesQuerySchema = roleSchemaBase.fork([
+    'name',
+    'permissions',
+    'isActive',
+    'page',
+    'limit',
+    'sort',
+    'createdBy',
+    'updatedBy',
+    'createdAt',
+    'updatedBy',
+    ], (field) =>
+    field.optional()
+);
 
 // Schema for single role ID validation
 const roleIdParamSchema = Joi.object({
-    roleId: Joi.string()
-        .alphanum()
-        .required()
-        .messages(customValidationMessage),
+    roleId: validationService.objectIdField.required(),
 }).strict();
 
 const rolesSchema = {
