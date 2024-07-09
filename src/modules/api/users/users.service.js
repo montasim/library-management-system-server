@@ -4,6 +4,11 @@ import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperati
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
+import validateFile from '../../../utilities/validateFile.js';
+import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
+import fileExtensionsConstants
+    from '../../../constant/fileExtensions.constants.js';
+import userConstants from './users.constants.js';
 
 const getUser = async (userId) => {
     const user = await UsersModel.findById(userId).lean();
@@ -42,6 +47,14 @@ const updateUser = async (requester, updateData, userImage) => {
     if (isEmptyObject(updateData)) {
         return errorResponse(
             'Please provide update data.',
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    const fileValidationResults = validateFile(userImage, userConstants.imageSize, [mimeTypesConstants.JPG, mimeTypesConstants.PNG], [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]);
+    if (!fileValidationResults.isValid) {
+        return errorResponse(
+            fileValidationResults.message,
             httpStatus.BAD_REQUEST
         );
     }

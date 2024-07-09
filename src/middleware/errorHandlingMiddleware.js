@@ -57,6 +57,14 @@ const errorHandlingMiddleware = (error, req, res, next) => {
             status = httpStatus.NOT_FOUND;
             message = error.message || 'The requested resource was not found.';
             break;
+        case 'MulterError':
+            if (error.code === 'LIMIT_FILE_SIZE') {
+                status = httpStatus.BAD_REQUEST;
+                message = 'File too large: The file you are trying to upload exceeds the maximum allowed size.';
+            } else {
+                message = error.message || 'Error occurred during file upload.';
+            }
+            break;
         default:
             message =
                 process.env.NODE_ENV === environment.PRODUCTION

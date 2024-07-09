@@ -4,12 +4,9 @@ import usersConstants from '../users/users.constants.js';
 import validationService from '../../../service/validation.service.js';
 import customValidationMessage
     from '../../../shared/customValidationMessage.js';
-import fileExtensionsConstants
-    from '../../../constant/fileExtensions.constants.js';
-import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
 
 // Define base schema for subjects
-const authSchemaBase = Joi.object({
+const userSchemaBase = Joi.object({
     name: validationService
         .createStringField(
             usersConstants.lengths.NAME_MIN,
@@ -36,17 +33,12 @@ const authSchemaBase = Joi.object({
         ).messages(customValidationMessage),
 }).strict();
 
-const image = Joi.object({
-    image: validationService.fileField("image", [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG], [mimeTypesConstants.JPG, mimeTypesConstants.PNG], 1024 * 1024 * 1.1),
-}).required();
-
-const update = authSchemaBase
+const update = userSchemaBase
     .fork(['name', 'mobile', 'address', 'department', 'designation'], (field) => field.optional())
     .min(1);
 
 const usersSchema = {
     update,
-    image,
 };
 
 export default usersSchema;
