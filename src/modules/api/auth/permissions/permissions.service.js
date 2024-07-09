@@ -4,6 +4,7 @@ import logger from '../../../../utilities/logger.js';
 import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
+import deleteResourceById from '../../../../shared/deleteResourceById.js';
 
 // Centralized permission fetching with error handling
 const fetchPermissionById = async (permissionId) => {
@@ -189,21 +190,7 @@ const deletePermissions = async (requester, permissionIds) => {
 };
 
 const deletePermission = async (requester, permissionId) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
-        return errorResponse(
-            'You are not authorized to delete permissions.',
-            httpStatus.FORBIDDEN
-        );
-    }
-
-    const deletedPermission =
-        await PermissionsModel.findByIdAndDelete(permissionId);
-    if (!deletedPermission) {
-        return sendResponse({}, 'Permission not found.', httpStatus.NOT_FOUND);
-    }
-
-    return sendResponse({}, 'Permission deleted successfully.', httpStatus.OK);
+    return deleteResourceById(requester, permissionId, PermissionsModel, 'permission');
 };
 
 const permissionsService = {

@@ -4,7 +4,7 @@ import httpStatus from '../../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
-import PermissionsModel from '../permissions/permissions.model.js';
+import deleteResourceById from '../../../../shared/deleteResourceById.js';
 
 const createRole = async (requester, newRoleData) => {
     const isAuthorized = await validateUserRequest(requester);
@@ -166,21 +166,7 @@ const deleteRoles = async (requester, roleIds) => {
 };
 
 const deleteRole = async (requester, roleId) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
-        return errorResponse(
-            'You are not authorized to delete role.',
-            httpStatus.FORBIDDEN
-        );
-    }
-
-    const deletedRole =
-        await PermissionsModel.findByIdAndDelete(roleId);
-    if (!deletedRole) {
-        return sendResponse({}, 'Role not found.', httpStatus.NOT_FOUND);
-    }
-
-    return sendResponse({}, 'Role deleted successfully.', httpStatus.OK);
+    return deleteResourceById(requester, roleId, RolesModel, 'role');
 };
 
 const rolesService = {
