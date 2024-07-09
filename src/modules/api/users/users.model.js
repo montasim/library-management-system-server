@@ -168,7 +168,7 @@ const userSchema = new mongoose.Schema(
 userSchema.pre(['updateOne', 'findOneAndUpdate'], function (next) {
     const update = this.getUpdate();
 
-    if (update.$set && (update.$set.email)) {
+    if (update.$set && update.$set.email) {
         throw new Error('updating email is not allowed.');
     }
 

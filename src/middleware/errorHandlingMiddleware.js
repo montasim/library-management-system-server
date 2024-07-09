@@ -60,7 +60,8 @@ const errorHandlingMiddleware = (error, req, res, next) => {
         case 'MulterError':
             if (error.code === 'LIMIT_FILE_SIZE') {
                 status = httpStatus.BAD_REQUEST;
-                message = 'File too large: The file you are trying to upload exceeds the maximum allowed size.';
+                message =
+                    'File too large: The file you are trying to upload exceeds the maximum allowed size.';
             } else {
                 message = error.message || 'Error occurred during file upload.';
             }

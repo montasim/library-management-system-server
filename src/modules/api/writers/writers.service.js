@@ -8,8 +8,7 @@ import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import validateFile from '../../../utilities/validateFile.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
-import fileExtensionsConstants
-    from '../../../constant/fileExtensions.constants.js';
+import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import writersConstant from './writers.constant.js';
 
 const createWriter = async (requester, writerData, writerImage) => {
@@ -32,7 +31,12 @@ const createWriter = async (requester, writerData, writerImage) => {
         );
     }
 
-    const fileValidationResults = validateFile(writerImage, writersConstant.imageSize, [mimeTypesConstants.JPG, mimeTypesConstants.PNG], [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]);
+    const fileValidationResults = validateFile(
+        writerImage,
+        writersConstant.imageSize,
+        [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
+        [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
+    );
     if (!fileValidationResults.isValid) {
         return errorResponse(
             fileValidationResults.message,
@@ -113,17 +117,10 @@ const getWriters = async (params) => {
 const getWriter = async (writerId) => {
     const writer = await WritersModel.findById(writerId);
     if (!writer) {
-        return errorResponse(
-            'Writer not found.',
-            httpStatus.NOT_FOUND
-        );
+        return errorResponse('Writer not found.', httpStatus.NOT_FOUND);
     }
 
-    return sendResponse(
-        writer,
-        'Writer fetched successfully.',
-        httpStatus.OK
-    );
+    return sendResponse(writer, 'Writer fetched successfully.', httpStatus.OK);
 };
 
 const updateWriter = async (requester, writerId, updateData, writerImage) => {
@@ -142,7 +139,12 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
         );
     }
 
-    const fileValidationResults = validateFile(writerImage, writersConstant.imageSize, [mimeTypesConstants.JPG, mimeTypesConstants.PNG], [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]);
+    const fileValidationResults = validateFile(
+        writerImage,
+        writersConstant.imageSize,
+        [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
+        [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
+    );
     if (!fileValidationResults.isValid) {
         return errorResponse(
             fileValidationResults.message,
@@ -269,10 +271,7 @@ const deleteWriter = async (requester, writerId) => {
 
     const existingWriter = await WritersModel.findById(writerId).lean();
     if (!existingWriter) {
-        return errorResponse(
-            'Writer not found.',
-            httpStatus.NOT_FOUND
-        );
+        return errorResponse('Writer not found.', httpStatus.NOT_FOUND);
     }
 
     // Delete the old file from Google Drive if it exists
@@ -282,11 +281,7 @@ const deleteWriter = async (requester, writerId) => {
     }
 
     const writer = await WritersModel.findByIdAndDelete(writerId);
-    return sendResponse(
-        {},
-        'Writer deleted successfully.',
-        httpStatus.OK
-    );
+    return sendResponse({}, 'Writer deleted successfully.', httpStatus.OK);
 };
 
 const writersService = {

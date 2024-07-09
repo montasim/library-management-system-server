@@ -8,15 +8,13 @@ const createStringField = (min, max) =>
     Joi.string().trim().min(min).max(max).messages(customValidationMessage);
 
 const mobileField = Joi.object({
-    mobileNumber: Joi.string()
-        .pattern(patterns.MOBILE)
-        .required()
-        .messages({
-            'string.base': 'Mobile number must be a string.',
-            'string.empty': 'Mobile number cannot be empty.',
-            'string.pattern.base': 'Please provide a valid Bangladeshi mobile number. Valid formats are 01XXXXXXXXX or +8801XXXXXXXXX, where X is a digit.',
-            'any.required': 'Mobile number is required and cannot be omitted.'
-        })
+    mobileNumber: Joi.string().pattern(patterns.MOBILE).required().messages({
+        'string.base': 'Mobile number must be a string.',
+        'string.empty': 'Mobile number cannot be empty.',
+        'string.pattern.base':
+            'Please provide a valid Bangladeshi mobile number. Valid formats are 01XXXXXXXXX or +8801XXXXXXXXX, where X is a digit.',
+        'any.required': 'Mobile number is required and cannot be omitted.',
+    }),
 });
 
 const emailField = createStringField(
@@ -97,11 +95,11 @@ const dateField = Joi.string()
         ...customValidationMessage,
     });
 
-const generateExtensionRegexPattern = ( allowedExtensions ) => {
+const generateExtensionRegexPattern = (allowedExtensions) => {
     return `(${allowedExtensions.join('|')})$`;
 };
 
-const createFileNameSchema = ( allowedExtensions ) => {
+const createFileNameSchema = (allowedExtensions) => {
     const regexPattern = generateExtensionRegexPattern(allowedExtensions);
 
     return Joi.string()
@@ -126,11 +124,16 @@ const fileBufferValidationSchema = () => {
         .messages({
             'binary.base': 'Buffer must be a valid binary buffer',
             'binary.max': 'Buffer size must not exceed 25MB',
-            'any.required': 'Buffer is a required field'
-        })
+            'any.required': 'Buffer is a required field',
+        });
 };
 
-const fileField = (allowedFieldName, allowedExtensions, validMimeTypes, maxSize) => {
+const fileField = (
+    allowedFieldName,
+    allowedExtensions,
+    validMimeTypes,
+    maxSize
+) => {
     return Joi.object({
         fieldname: Joi.string()
             .valid(allowedFieldName)
@@ -138,39 +141,32 @@ const fileField = (allowedFieldName, allowedExtensions, validMimeTypes, maxSize)
             .messages({
                 'string.base': `"fieldname" should be a type of 'text'`,
                 'any.only': `"File should be one of [${allowedFieldName}]`,
-                'any.required': `Invalid or empty file`
+                'any.required': `Invalid or empty file`,
             }),
-        originalname: createFileNameSchema(allowedExtensions)
-            .messages({
-                'string.pattern.base': `File should have one of the following extensions: ${allowedExtensions.join(', ')}`,
-                'any.required': `Invalid or empty file`
-            }),
-        encoding: Joi.string()
-            .valid('7bit')
-            .required()
-            .messages({
-                'string.base': `"encoding" should be a type of 'text'`,
-                'any.only': `Invalid or empty file`,
-                'any.required': `Invalid or empty file`
-            }),
+        originalname: createFileNameSchema(allowedExtensions).messages({
+            'string.pattern.base': `File should have one of the following extensions: ${allowedExtensions.join(', ')}`,
+            'any.required': `Invalid or empty file`,
+        }),
+        encoding: Joi.string().valid('7bit').required().messages({
+            'string.base': `"encoding" should be a type of 'text'`,
+            'any.only': `Invalid or empty file`,
+            'any.required': `Invalid or empty file`,
+        }),
         mimetype: Joi.string()
             .valid(...validMimeTypes)
             .required()
             .messages({
                 'string.base': `"mimetype" should be a type of 'text'`,
                 'any.only': `Invalid or empty file`,
-                'any.required': `Invalid or empty file`
+                'any.required': `Invalid or empty file`,
             }),
         buffer: fileBufferValidationSchema(),
-        size: Joi.number()
-            .max(maxSize)
-            .required()
-            .messages({
-                'number.base': `"size" should be a number`,
-                'number.max': `"size" must not exceed 1.1MB`,
-                'any.required': `File must not exceed 1.1MB`
-            })
-    }).description('File to be uploaded with validated MIME type and size.')
+        size: Joi.number().max(maxSize).required().messages({
+            'number.base': `"size" should be a number`,
+            'number.max': `"size" must not exceed 1.1MB`,
+            'any.required': `File must not exceed 1.1MB`,
+        }),
+    }).description('File to be uploaded with validated MIME type and size.');
 };
 
 const validationService = {

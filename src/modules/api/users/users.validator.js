@@ -5,11 +5,11 @@ const update = validateWithSchema([
     {
         schema: usersSchema.update,
         property: 'body',
-    }
+    },
 ]);
 
 const authValidator = {
-    update
+    update,
 };
 
 export default authValidator;

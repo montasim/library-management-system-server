@@ -10,7 +10,7 @@ const imageSize = 1.1 * 1024 * 1024; // 1.1 MB
 
 const writersConstants = {
     lengths,
-    imageSize
+    imageSize,
 };
 
 export default writersConstants;

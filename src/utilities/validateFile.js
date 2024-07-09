@@ -12,7 +12,7 @@ const validateFile = (file, maxSize, allowedTypes, allowedExtensions = []) => {
     if (!allowedTypes.includes(file.mimetype)) {
         return {
             isValid: false,
-            message: `Invalid file type. Allowed types are: ${allowedTypes.join(", ")}.`
+            message: `Invalid file type. Allowed types are: ${allowedTypes.join(', ')}.`,
         };
     }
 
@@ -20,7 +20,7 @@ const validateFile = (file, maxSize, allowedTypes, allowedExtensions = []) => {
     if (file.size > maxSize) {
         return {
             isValid: false,
-            message: `File size should not exceed ${maxSize / 1024 / 1024}MB.`
+            message: `File size should not exceed ${maxSize / 1024 / 1024}MB.`,
         };
     }
 
@@ -30,14 +30,14 @@ const validateFile = (file, maxSize, allowedTypes, allowedExtensions = []) => {
         if (!allowedExtensions.includes(extension.toLowerCase())) {
             return {
                 isValid: false,
-                message: `Invalid file extension. Allowed extensions are: ${allowedExtensions.join(", ")}.`
+                message: `Invalid file extension. Allowed extensions are: ${allowedExtensions.join(', ')}.`,
             };
         }
     }
 
     return {
         isValid: true,
-        message: 'File is valid.'
+        message: 'File is valid.',
     };
 };
 

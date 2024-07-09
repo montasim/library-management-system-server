@@ -30,7 +30,7 @@ const imageSize = 1.1 * 1024 * 1024; // 1.1 MB
 const userConstants = {
     lengths,
     pattern,
-    imageSize
+    imageSize,
 };
 
 export default userConstants;

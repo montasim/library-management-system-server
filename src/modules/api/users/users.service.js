@@ -6,17 +6,13 @@ import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import validateFile from '../../../utilities/validateFile.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
-import fileExtensionsConstants
-    from '../../../constant/fileExtensions.constants.js';
+import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import userConstants from './users.constants.js';
 
 const getUser = async (userId) => {
     const user = await UsersModel.findById(userId).lean();
     if (!user) {
-        return errorResponse(
-            'Please login first.',
-            httpStatus.UNAUTHORIZED
-        );
+        return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
     }
 
     // Remove sensitive data
@@ -28,20 +24,13 @@ const getUser = async (userId) => {
     delete user.resetPasswordVerifyToken;
     delete user.resetPasswordVerifyTokenExpires;
 
-    return sendResponse(
-        user,
-        'User fetched successfully.',
-        httpStatus.OK
-    );
+    return sendResponse(user, 'User fetched successfully.', httpStatus.OK);
 };
 
 const updateUser = async (requester, updateData, userImage) => {
     const existingUser = await UsersModel.findById(requester).lean();
     if (!existingUser) {
-        return errorResponse(
-            'Please login first.',
-            httpStatus.UNAUTHORIZED
-        );
+        return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
     }
 
     if (isEmptyObject(updateData)) {
@@ -51,7 +40,12 @@ const updateUser = async (requester, updateData, userImage) => {
         );
     }
 
-    const fileValidationResults = validateFile(userImage, userConstants.imageSize, [mimeTypesConstants.JPG, mimeTypesConstants.PNG], [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]);
+    const fileValidationResults = validateFile(
+        userImage,
+        userConstants.imageSize,
+        [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
+        [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
+    );
     if (!fileValidationResults.isValid) {
         return errorResponse(
             fileValidationResults.message,
@@ -91,9 +85,13 @@ const updateUser = async (requester, updateData, userImage) => {
         }
     }
 
-    const updatedUser = await UsersModel.findByIdAndUpdate(requester, updateData, {
-        new: true,
-    }).lean();
+    const updatedUser = await UsersModel.findByIdAndUpdate(
+        requester,
+        updateData,
+        {
+            new: true,
+        }
+    ).lean();
 
     // Remove sensitive data
     delete updatedUser.password;
@@ -114,10 +112,7 @@ const updateUser = async (requester, updateData, userImage) => {
 const deleteUser = async (userId) => {
     const existingUser = await UsersModel.findById(userId).lean();
     if (!existingUser) {
-        return errorResponse(
-            'Please login first.',
-            httpStatus.UNAUTHORIZED
-        );
+        return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
     }
 
     // Delete the old file from Google Drive if it exists
