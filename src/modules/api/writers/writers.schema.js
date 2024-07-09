@@ -3,20 +3,21 @@ import Joi from 'joi';
 import writersConstants from './writers.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
 import validationService from '../../../service/validation.service.js';
+import permissionsConstants from '../auth/permissions/permissions.constant.js';
 
 // Define base schema for writers
 const writerSchemaBase = Joi.object({
-    name: Joi.string()
-        .trim()
-        .min(writersConstants.lengths.NAME_MIN)
-        .max(writersConstants.lengths.NAME_MAX)
-        .messages(customValidationMessage),
+    name: validationService
+        .createStringField(
+            writersConstants.lengths.NAME_MIN,
+            writersConstants.lengths.NAME_MAX
+        ),
     review: Joi.number().min(0).max(5).messages(customValidationMessage),
-    summary: Joi.string()
-        .trim()
-        .min(writersConstants.lengths.SUMMARY_MIN)
-        .max(writersConstants.lengths.SUMMARY_MAX)
-        .messages(customValidationMessage),
+    summary: validationService
+        .createStringField(
+            writersConstants.lengths.SUMMARY_MIN,
+            writersConstants.lengths.SUMMARY_MAX
+        ),
     isActive: validationService.booleanField,
     page: Joi.string()
         .min(1)

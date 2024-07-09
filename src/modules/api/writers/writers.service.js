@@ -11,7 +11,6 @@ import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import writersConstant from './writers.constant.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
-import PermissionsModel from '../auth/permissions/permissions.model.js';
 
 const createWriter = async (requester, writerData, writerImage) => {
     const isAuthorized = await validateUserRequest(requester);
