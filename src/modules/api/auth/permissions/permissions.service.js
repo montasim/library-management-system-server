@@ -5,6 +5,7 @@ import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../../shared/deleteResourceById.js';
+import getResourceById from '../../../../shared/getResourceById.js';
 
 // Centralized permission fetching with error handling
 const fetchPermissionById = async (permissionId) => {
@@ -99,24 +100,7 @@ const getPermissions = async (requester, params) => {
 };
 
 const getPermission = async (requester, permissionId) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
-        return errorResponse(
-            'You are not authorized to view permissions.',
-            httpStatus.FORBIDDEN
-        );
-    }
-
-    const permission = await PermissionsModel.findById(permissionId);
-    if (!permission) {
-        return errorResponse('Permission not found.', httpStatus.NOT_FOUND);
-    }
-
-    return sendResponse(
-        permission,
-        'Permission fetched successfully.',
-        httpStatus.OK
-    );
+    return getResourceById(requester, permissionId, PermissionsModel, 'permission');
 };
 
 const updatePermission = async (requester, permissionId, updateData) => {

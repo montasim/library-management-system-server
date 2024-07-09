@@ -5,6 +5,7 @@ import errorResponse from '../../../../utilities/errorResponse.js';
 import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../../shared/deleteResourceById.js';
+import getResourceById from '../../../../shared/getResourceById.js';
 
 const createRole = async (requester, newRoleData) => {
     const isAuthorized = await validateUserRequest(requester);
@@ -82,20 +83,7 @@ const getRoles = async (requester, params) => {
 };
 
 const getRole = async (requester, roleId) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
-        return errorResponse(
-            'You are not authorized to create role.',
-            httpStatus.FORBIDDEN
-        );
-    }
-
-    const role = await RolesModel.findById(roleId);
-    if (!role) {
-        return errorResponse('Role not found.', httpStatus.NOT_FOUND);
-    }
-
-    return sendResponse(role, 'Role fetched successfully.', httpStatus.OK);
+    return getResourceById(requester, roleId, RolesModel, 'role');
 };
 
 const updateRole = async (requester, roleId, updateData) => {
