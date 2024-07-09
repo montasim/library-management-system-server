@@ -5,175 +5,147 @@ import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperati
 import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import errorResponse from '../../../utilities/errorResponse.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import validateFile from '../../../utilities/validateFile.js';
+import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
+import fileExtensionsConstants
+    from '../../../constant/fileExtensions.constants.js';
+import writersConstant from './writers.constant.js';
 
 const createWriter = async (requester, writerData, writerImage) => {
-    try {
-        const isAuthorized = await validateUserRequest(requester);
-
-        if (!isAuthorized) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'User not authorized.',
-                status: httpStatus.FORBIDDEN,
-            };
-        }
-
-        const oldDetails = await WritersModel.findOne({
-            name: writerData.name,
-        }).lean();
-
-        if (oldDetails) {
-            throw new Error(`Writers "${writerData.name}" already exists.`);
-        }
-
-        let writerImageData = {};
-
-        if (writerImage) {
-            writerImageData =
-                await GoogleDriveFileOperations.uploadFile(writerImage);
-
-            if (!writerImageData || writerImageData instanceof Error) {
-                return {
-                    timeStamp: new Date(),
-                    success: true,
-                    data: {},
-                    message: 'Failed to save image.',
-                    status: httpStatus.INTERNAL_SERVER_ERROR,
-                };
-            }
-        }
-
-        writerData.createdBy = requester;
-
-        const newWriter = await WritersModel.create({
-            ...writerData,
-            image: writerImageData,
-        });
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: newWriter,
-            message: 'Writer created successfully.',
-            status: httpStatus.CREATED,
-        };
-    } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error creating the writer.',
-            status: httpStatus.BAD_REQUEST,
-        };
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to create writer.',
+            httpStatus.FORBIDDEN
+        );
     }
+
+    const exists = await WritersModel.findOne({
+        name: writerData.name,
+    }).lean();
+    if (exists) {
+        return sendResponse(
+            {},
+            `Writers name "${writerData.name}" already exists.`,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    const fileValidationResults = validateFile(writerImage, writersConstant.imageSize, [mimeTypesConstants.JPG, mimeTypesConstants.PNG], [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]);
+    if (!fileValidationResults.isValid) {
+        return errorResponse(
+            fileValidationResults.message,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    let writerImageData = {};
+
+    if (writerImage) {
+        writerImageData =
+            await GoogleDriveFileOperations.uploadFile(writerImage);
+        if (!writerImageData || writerImageData instanceof Error) {
+            return errorResponse(
+                'Failed to save image.',
+                httpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    writerData.createdBy = requester;
+
+    const newWriter = await WritersModel.create({
+        ...writerData,
+        image: writerImageData,
+    });
+
+    return sendResponse(
+        newWriter,
+        'Writer created successfully.',
+        httpStatus.CREATED
+    );
 };
 
 const getWriters = async (params) => {
     const {
         page = 1,
         limit = 10,
-        sort = '-createdAt', // Default sort by most recent creation
+        sort = '-createdAt',
         name,
-        review,
-        summary,
         createdBy,
         updatedBy,
-        ...otherFilters
+        createdAt,
+        updatedAt,
     } = params;
+    const query = {
+        ...(name && { name: new RegExp(name, 'i') }),
+        ...(createdBy && { createdBy }),
+        ...(updatedBy && { updatedBy }),
+        ...(createdAt && { createdAt }),
+        ...(updatedAt && { updatedAt }),
+    };
+    const totalWriters = await WritersModel.countDocuments(query);
+    const totalPages = Math.ceil(totalWriters / limit);
+    const writers = await WritersModel.find(query)
+        .sort(sort)
+        .skip((page - 1) * limit)
+        .limit(limit);
 
-    const query = {};
-
-    // Constructing query filters based on parameters
-    if (name) query.name = { $regex: name, $options: 'i' };
-    if (review) query.review = review;
-    if (summary) query.summary = { $regex: summary, $options: 'i' };
-    if (createdBy) query.createdBy = { $regex: createdBy, $options: 'i' };
-    if (updatedBy) query.updatedBy = { $regex: updatedBy, $options: 'i' };
-
-    try {
-        const totalWriters = await WritersModel.countDocuments(query);
-        const totalPages = Math.ceil(totalWriters / limit);
-
-        // Adjust the limit if it exceeds the total number of writers
-        const adjustedLimit = Math.min(
-            limit,
-            totalWriters - (page - 1) * limit
-        );
-
-        const writers = await WritersModel.find(query)
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(adjustedLimit);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {
-                writers,
-                totalWriters,
-                totalPages,
-                currentPage: page,
-                pageSize: adjustedLimit,
-                sort,
-            },
-            message: writers.length
-                ? `${writers.length} writers fetched successfully.`
-                : 'No writers found.',
-            status: httpStatus.OK,
-        };
-    } catch (error) {
-        logger.error('Error fetching writers:', error);
-
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Failed to fetch writers.',
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-        };
+    if (!writers.length) {
+        return sendResponse({}, 'No writer found.', httpStatus.NOT_FOUND);
     }
+
+    return sendResponse(
+        {
+            permissions: writers,
+            totalPermissions: totalWriters,
+            totalPages,
+            currentPage: page,
+            pageSize: limit,
+            sort,
+        },
+        `${writers.length} writers fetched successfully.`,
+        httpStatus.OK
+    );
 };
 
 const getWriter = async (writerId) => {
     const writer = await WritersModel.findById(writerId);
-
     if (!writer) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Writer not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+        return errorResponse(
+            'Writer not found.',
+            httpStatus.NOT_FOUND
+        );
     }
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: writer,
-        message: 'Writer fetched successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        writer,
+        'Writer fetched successfully.',
+        httpStatus.OK
+    );
 };
 
 const updateWriter = async (requester, writerId, updateData, writerImage) => {
     const isAuthorized = await validateUserRequest(requester);
-
     if (!isAuthorized) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'User not authorized.',
-            status: httpStatus.FORBIDDEN,
-        };
+        return errorResponse(
+            'You are not authorized to update writer.',
+            httpStatus.FORBIDDEN
+        );
     }
 
     if (isEmptyObject(updateData)) {
         return errorResponse(
             'Please provide update data.',
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    const fileValidationResults = validateFile(writerImage, writersConstant.imageSize, [mimeTypesConstants.JPG, mimeTypesConstants.PNG], [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]);
+    if (!fileValidationResults.isValid) {
+        return errorResponse(
+            fileValidationResults.message,
             httpStatus.BAD_REQUEST
         );
     }
@@ -196,13 +168,10 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
             await GoogleDriveFileOperations.uploadFile(writerImage);
 
         if (!writerImageData || writerImageData instanceof Error) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'Failed to save image.',
-                status: httpStatus.INTERNAL_SERVER_ERROR,
-            };
+            return errorResponse(
+                'Failed to save image.',
+                httpStatus.INTERNAL_SERVER_ERROR
+            );
         }
 
         writerImageData = {
@@ -224,23 +193,11 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
         }
     );
 
-    if (!updatedWriter) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Writer not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: updatedWriter,
-        message: 'Writer updated successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        updatedWriter,
+        'Writer updated successfully.',
+        httpStatus.OK
+    );
 };
 
 const deleteWriters = async (requester, writerIds) => {
@@ -303,18 +260,20 @@ const deleteWriters = async (requester, writerIds) => {
 
 const deleteWriter = async (requester, writerId) => {
     const isAuthorized = await validateUserRequest(requester);
-
     if (!isAuthorized) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'User not authorized.',
-            status: httpStatus.FORBIDDEN,
-        };
+        return errorResponse(
+            'You are not authorized to delete writer.',
+            httpStatus.FORBIDDEN
+        );
     }
 
     const existingWriter = await WritersModel.findById(writerId).lean();
+    if (!existingWriter) {
+        return errorResponse(
+            'Writer not found.',
+            httpStatus.NOT_FOUND
+        );
+    }
 
     // Delete the old file from Google Drive if it exists
     const oldFileId = existingWriter.image?.fileId;
@@ -323,24 +282,11 @@ const deleteWriter = async (requester, writerId) => {
     }
 
     const writer = await WritersModel.findByIdAndDelete(writerId);
-
-    if (!writer) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Writer not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: {},
-        message: 'Writer deleted successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        {},
+        'Writer deleted successfully.',
+        httpStatus.OK
+    );
 };
 
 const writersService = {

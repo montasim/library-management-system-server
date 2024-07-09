@@ -2,28 +2,61 @@ import validateWithSchema from '../../../shared/validateWithSchema.js';
 import writersSchema from './writers.schema.js';
 
 const createWriter = validateWithSchema(
-    writersSchema.createWriterSchema,
-    'body'
+    [
+        {
+            schema: writersSchema.createWriterSchema,
+            property: 'body'
+        }
+    ]
 );
+
 const getWriters = validateWithSchema(
-    writersSchema.getWritersQuerySchema,
-    'query'
+    [
+        {
+            schema: writersSchema.getWritersQuerySchema,
+            property: 'query'
+        }
+    ]
 );
+
 const getWriter = validateWithSchema(
-    writersSchema.writerIdParamSchema,
-    'params'
+    [
+        {
+            schema: writersSchema.writerIdParamSchema,
+            property: 'params'
+        }
+    ]
 );
+
 const updateWriter = validateWithSchema(
-    writersSchema.updateWriterSchema,
-    'body'
+    [
+        {
+            schema: writersSchema.writerIdParamSchema,
+            property: 'params'
+        },
+        {
+            schema: writersSchema.updateWriterSchema,
+            property: 'body'
+        }
+    ]
 );
+
 const deleteWriters = validateWithSchema(
-    writersSchema.writerIdsParamSchema,
-    'query'
+    [
+        {
+            schema: writersSchema.writerIdsParamSchema,
+            property: 'query'
+        }
+    ]
 );
+
 const deleteWriter = validateWithSchema(
-    writersSchema.writerIdParamSchema,
-    'params'
+    [
+        {
+            schema: writersSchema.writerIdParamSchema,
+            property: 'params'
+        }
+    ]
 );
 
 const writersValidator = {

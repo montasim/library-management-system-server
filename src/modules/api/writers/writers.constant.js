@@ -6,8 +6,11 @@ const lengths = {
     SUMMARY_MAX: 5000,
 };
 
+const imageSize = 1.1 * 1024 * 1024; // 1.1 MB
+
 const writersConstants = {
     lengths,
+    imageSize
 };
 
 export default writersConstants;

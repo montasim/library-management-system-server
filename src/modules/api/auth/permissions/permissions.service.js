@@ -1,25 +1,11 @@
 import PermissionsModel from './permissions.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import logger from '../../../../utilities/logger.js';
 import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../../shared/deleteResourceById.js';
 import getResourceById from '../../../../shared/getResourceById.js';
 import isEmptyObject from '../../../../utilities/isEmptyObject.js';
-
-// Centralized permission fetching with error handling
-const fetchPermissionById = async (permissionId) => {
-    try {
-        return await PermissionsModel.findById(permissionId);
-    } catch (error) {
-        logger.error(
-            `Error fetching permission with ID ${permissionId}: ${error}`
-        );
-
-        throw new Error('Error fetching permission details.');
-    }
-};
 
 const createPermission = async (requester, newPermissionData) => {
     const isAuthorized = await validateUserRequest(requester);
@@ -98,7 +84,7 @@ const getPermissions = async (requester, params) => {
             pageSize: limit,
             sort,
         },
-        `${roles.length} permissions fetched successfully.`,
+        `${permissions.length} permissions fetched successfully.`,
         httpStatus.OK
     );
 };
