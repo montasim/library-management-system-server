@@ -21,6 +21,10 @@ const getRole = validateWithSchema([
 
 const updateRole = validateWithSchema([
     {
+        schema: rolesSchema.roleIdParamSchema,
+        property: 'params',
+    },
+    {
         schema: rolesSchema.updateRoleSchema,
         property: 'body',
     },
