@@ -6,7 +6,8 @@ import validationService from '../../../service/validation.service.js';
 
 // Define base schema for subjects
 const subjectSchemaBase = Joi.object({
-    name: validationService.createStringField(
+    name: validationService
+        .createStringField(
             subjectsConstants.lengths.NAME_MIN,
             subjectsConstants.lengths.NAME_MAX
         )
@@ -29,15 +30,14 @@ const subjectSchemaBase = Joi.object({
 }).strict();
 
 // Schema for creating a subject, making specific fields required
-const createSubjectSchema = subjectSchemaBase.fork(['name', 'isActive'], (field) =>
-    field.required()
+const createSubjectSchema = subjectSchemaBase.fork(
+    ['name', 'isActive'],
+    (field) => field.required()
 );
 
 // Schema for updating a subject
 const updateSubjectSchema = subjectSchemaBase
-    .fork(['name', 'isActive'], (field) =>
-        field.optional()
-    )
+    .fork(['name', 'isActive'], (field) => field.optional())
     .min(1);
 
 // Schema for validating multiple subject IDs

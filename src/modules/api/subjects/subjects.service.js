@@ -149,9 +149,7 @@ const deleteSubjects = async (requester, subjectIds) => {
         .lean();
 
     const existingIds = existingSubjects.map((p) => p._id.toString());
-    const notFoundIds = subjectIds.filter(
-        (id) => !existingIds.includes(id)
-    );
+    const notFoundIds = subjectIds.filter((id) => !existingIds.includes(id));
 
     // Perform deletion on existing permissions only
     const deletionResult = await SubjectsModel.deleteMany({
@@ -178,12 +176,7 @@ const deleteSubjects = async (requester, subjectIds) => {
 };
 
 const deleteSubject = async (requester, subjectId) => {
-    return deleteResourceById(
-        requester,
-        subjectId,
-        SubjectsModel,
-        'subject'
-    );
+    return deleteResourceById(requester, subjectId, SubjectsModel, 'subject');
 };
 
 const subjectsService = {

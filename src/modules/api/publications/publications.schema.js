@@ -6,10 +6,11 @@ import validationService from '../../../service/validation.service.js';
 
 // Define base schema for publications
 const publicationSchemaBase = Joi.object({
-    name: validationService.createStringField(
-        publicationsConstants.lengths.NAME_MIN,
-        publicationsConstants.lengths.NAME_MAX
-    )
+    name: validationService
+        .createStringField(
+            publicationsConstants.lengths.NAME_MIN,
+            publicationsConstants.lengths.NAME_MAX
+        )
         .messages(customValidationMessage),
     isActive: validationService.booleanField,
     page: Joi.string()
