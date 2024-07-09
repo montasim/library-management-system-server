@@ -1,5 +1,6 @@
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import configuration from '../../../configuration/configuration.js';
+import sendResponse from '../../../utilities/sendResponse.js';
 
 const homeService = async () => {
     const homeData = {
@@ -29,13 +30,11 @@ const homeService = async () => {
         },
     };
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: homeData,
-        message: 'Home data fetched successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        homeData,
+        'Home data fetched successfully.',
+        httpStatus.OK
+    );
 };
 
 export default homeService;
