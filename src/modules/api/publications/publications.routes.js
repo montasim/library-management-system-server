@@ -3,8 +3,7 @@ import express from 'express';
 import publicationsController from './publications.controller.js';
 import publicationsValidator from './publications.validator.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
-import authenticateMiddleware
-    from '../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 
 const router = express.Router();
 

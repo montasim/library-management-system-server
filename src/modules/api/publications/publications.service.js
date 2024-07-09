@@ -82,10 +82,7 @@ const getPublications = async (params) => {
 const getPublication = async (publicationId) => {
     const publication = await PublicationsModel.findById(publicationId);
     if (!publication) {
-        return errorResponse(
-            'Publication not found.',
-            httpStatus.NOT_FOUND
-        );
+        return errorResponse('Publication not found.', httpStatus.NOT_FOUND);
     }
 
     return sendResponse(
@@ -141,7 +138,9 @@ const deletePublications = async (requester, publicationIds) => {
         .lean();
 
     const existingIds = existingPermissions.map((p) => p._id.toString());
-    const notFoundIds = publicationIds.filter((id) => !existingIds.includes(id));
+    const notFoundIds = publicationIds.filter(
+        (id) => !existingIds.includes(id)
+    );
 
     // Perform deletion on existing permissions only
     const deletionResult = await PublicationsModel.deleteMany({

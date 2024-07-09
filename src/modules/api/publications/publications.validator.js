@@ -1,63 +1,51 @@
 import validateWithSchema from '../../../shared/validateWithSchema.js';
 import publicationsSchema from './publications.schema.js';
 
-const createPublication = validateWithSchema(
-    [
-        {
-            schema: publicationsSchema.createPublicationSchema,
-            property: 'body'
-        }
-    ]
-);
+const createPublication = validateWithSchema([
+    {
+        schema: publicationsSchema.createPublicationSchema,
+        property: 'body',
+    },
+]);
 
-const getPublications = validateWithSchema(
-    [
-        {
-            schema: publicationsSchema.getPublicationsQuerySchema,
-            property: 'query'
-        }
-    ]
-);
+const getPublications = validateWithSchema([
+    {
+        schema: publicationsSchema.getPublicationsQuerySchema,
+        property: 'query',
+    },
+]);
 
-const getPublication = validateWithSchema(
-    [
-        {
-            schema: publicationsSchema.publicationIdParamSchema,
-            property: 'params'
-        }
-    ]
-);
+const getPublication = validateWithSchema([
+    {
+        schema: publicationsSchema.publicationIdParamSchema,
+        property: 'params',
+    },
+]);
 
-const updatePublication = validateWithSchema(
-    [
-        {
-            schema: publicationsSchema.publicationIdParamSchema,
-            property: 'params'
-        },
-        {
-            schema: publicationsSchema.updatePublicationSchema,
-            property: 'body'
-        }
-    ]
-);
+const updatePublication = validateWithSchema([
+    {
+        schema: publicationsSchema.publicationIdParamSchema,
+        property: 'params',
+    },
+    {
+        schema: publicationsSchema.updatePublicationSchema,
+        property: 'body',
+    },
+]);
 
-const deletePublications = validateWithSchema(
-    [
-        {
-            schema: publicationsSchema.publicationIdsParamSchema,
-            property: 'query'
-        }
-    ]
-);
+const deletePublications = validateWithSchema([
+    {
+        schema: publicationsSchema.publicationIdsParamSchema,
+        property: 'query',
+    },
+]);
 
-const deletePublication = validateWithSchema(
-    [
-        {
-            schema: publicationsSchema.publicationIdParamSchema,
-            property: 'params'
-        }
-    ]
-);
+const deletePublication = validateWithSchema([
+    {
+        schema: publicationsSchema.publicationIdParamSchema,
+        property: 'params',
+    },
+]);
 
 const publicationsValidator = {
     createPublication,
