@@ -3,12 +3,15 @@ import express from 'express';
 import publicationsController from './publications.controller.js';
 import publicationsValidator from './publications.validator.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
+import authenticateMiddleware
+    from '../../../middleware/authenticate.middleware.js';
 
 const router = express.Router();
 
 router
     .route('/')
     .post(
+        authenticateMiddleware,
         publicationsValidator.createPublication,
         publicationsController.createPublication
     )
@@ -17,6 +20,7 @@ router
         publicationsController.getPublications
     )
     .delete(
+        authenticateMiddleware,
         publicationsValidator.deletePublications,
         publicationsController.deletePublications
     )
@@ -29,10 +33,12 @@ router
         publicationsController.getPublication
     )
     .put(
+        authenticateMiddleware,
         publicationsValidator.updatePublication,
         publicationsController.updatePublication
     )
     .delete(
+        authenticateMiddleware,
         publicationsValidator.deletePublication,
         publicationsController.deletePublication
     )

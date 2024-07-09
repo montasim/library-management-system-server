@@ -1,8 +1,11 @@
 import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
 import publicationsService from './publications.service.js';
+import getRequesterId from '../../../utilities/getRequesterId.js';
 
 const createPublication = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const newPublicationData = await publicationsService.createPublication(
+        requester,
         req.body
     );
 
@@ -32,7 +35,9 @@ const getPublication = asyncErrorHandler(async (req, res) => {
 });
 
 const updatePublication = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const updatedPublicationData = await publicationsService.updatePublication(
+        requester,
         req.params.publicationId,
         req.body
     );
@@ -43,9 +48,10 @@ const updatePublication = asyncErrorHandler(async (req, res) => {
 });
 
 const deletePublications = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const publicationIds = req.query.ids.split(',');
     const deletedPublicationsData =
-        await publicationsService.deletePublications(publicationIds);
+        await publicationsService.deletePublications(requester, publicationIds);
 
     deletedPublicationsData.route = req.originalUrl;
 
@@ -53,7 +59,9 @@ const deletePublications = asyncErrorHandler(async (req, res) => {
 });
 
 const deletePublication = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const deletedPublicationData = await publicationsService.deletePublication(
+        requester,
         req.params.publicationId
     );
 

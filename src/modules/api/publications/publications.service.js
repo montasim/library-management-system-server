@@ -1,127 +1,110 @@
 import PublicationsModel from './publications.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import logger from '../../../utilities/logger.js';
+import errorResponse from '../../../utilities/errorResponse.js';
+import validateUserRequest from '../../../utilities/validateUserRequest.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import deleteResourceById from '../../../shared/deleteResourceById.js';
 
-const createPublication = async (publicationData) => {
-    try {
-        const oldDetails = await PublicationsModel.findOne({
-            name: publicationData.name,
-        }).lean();
-
-        if (oldDetails) {
-            throw new Error(
-                `Publication name "${publicationData.name}" already exists.`
-            );
-        }
-
-        publicationData.createdBy = 'Admin'; // Hardcoded for now, will be dynamic in future
-
-        const newPublication = await PublicationsModel.create(publicationData);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: newPublication,
-            message: 'Publication created successfully.',
-            status: httpStatus.CREATED,
-        };
-    } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error creating the publication.',
-            status: httpStatus.BAD_REQUEST,
-        };
+const createPublication = async (requester, publicationData) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to create publications.',
+            httpStatus.FORBIDDEN
+        );
     }
+
+    const exists = await PublicationsModel.findOne({
+        name: publicationData.name,
+    }).lean();
+    if (exists) {
+        return sendResponse(
+            {},
+            `Publication name "${publicationData.name}" already exists.`,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    publicationData.createdBy = requester;
+
+    const newPublication = await PublicationsModel.create(publicationData);
+
+    return sendResponse(
+        newPublication,
+        'Publication created successfully.',
+        httpStatus.CREATED
+    );
 };
 
 const getPublications = async (params) => {
     const {
         page = 1,
         limit = 10,
-        sort = '-createdAt', // Default sort by most recent creation
+        sort = '-createdAt',
         name,
         createdBy,
         updatedBy,
-        ...otherFilters
+        createdAt,
+        updatedAt,
     } = params;
+    const query = {
+        ...(name && { name: new RegExp(name, 'i') }),
+        ...(createdBy && { createdBy }),
+        ...(updatedBy && { updatedBy }),
+        ...(createdAt && { createdAt }),
+        ...(updatedAt && { updatedAt }),
+    };
+    const totalPublications = await PublicationsModel.countDocuments(query);
+    const totalPages = Math.ceil(totalPublications / limit);
+    const publications = await PublicationsModel.find(query)
+        .sort(sort)
+        .skip((page - 1) * limit)
+        .limit(limit);
 
-    const query = {};
-
-    // Constructing query filters based on parameters
-    if (name) query.name = { $regex: name, $options: 'i' };
-    if (createdBy) query.createdBy = { $regex: createdBy, $options: 'i' };
-    if (updatedBy) query.updatedBy = { $regex: updatedBy, $options: 'i' };
-
-    try {
-        const totalPublications = await PublicationsModel.countDocuments(query);
-        const totalPages = Math.ceil(totalPublications / limit);
-
-        // Adjust the limit if it exceeds the total number of publications
-        const adjustedLimit = Math.min(
-            limit,
-            totalPublications - (page - 1) * limit
-        );
-
-        const publications = await PublicationsModel.find(query)
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(adjustedLimit);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {
-                publications,
-                totalPublications,
-                totalPages,
-                currentPage: page,
-                pageSize: adjustedLimit,
-                sort,
-            },
-            message: publications.length
-                ? `${publications.length} publications fetched successfully.`
-                : 'No publications found.',
-            status: httpStatus.OK,
-        };
-    } catch (error) {
-        logger.error('Error fetching publications:', error);
-
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Failed to fetch publications.',
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-        };
+    if (!publications.length) {
+        return sendResponse({}, 'No publication found.', httpStatus.NOT_FOUND);
     }
+
+    return sendResponse(
+        {
+            publications,
+            totalPublications,
+            totalPages,
+            currentPage: page,
+            pageSize: limit,
+            sort,
+        },
+        `${publications.length} publications fetched successfully.`,
+        httpStatus.OK
+    );
 };
 
 const getPublication = async (publicationId) => {
     const publication = await PublicationsModel.findById(publicationId);
-
     if (!publication) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Publication not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+        return errorResponse(
+            'Publication not found.',
+            httpStatus.NOT_FOUND
+        );
     }
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: publication,
-        message: 'Publication fetched successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        publication,
+        'Publication fetched successfully.',
+        httpStatus.OK
+    );
 };
 
-const updatePublication = async (publicationId, updateData) => {
-    updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
+const updatePublication = async (requester, publicationId, updateData) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to update publication.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    updateData.updatedBy = requester;
 
     const updatedPublication = await PublicationsModel.findByIdAndUpdate(
         publicationId,
@@ -130,82 +113,67 @@ const updatePublication = async (publicationId, updateData) => {
             new: true,
         }
     );
-
     if (!updatedPublication) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Publication not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+        return sendResponse({}, 'Publication not found.', httpStatus.NOT_FOUND);
     }
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: updatedPublication,
-        message: 'Publication updated successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        updatedPublication,
+        'Publication updated successfully.',
+        httpStatus.OK
+    );
 };
 
-const deletePublications = async (publicationIds) => {
+const deletePublications = async (requester, publicationIds) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to delete permissions.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    // First, check which permissions exist
+    const existingPermissions = await PublicationsModel.find({
+        _id: { $in: publicationIds },
+    })
+        .select('_id')
+        .lean();
+
+    const existingIds = existingPermissions.map((p) => p._id.toString());
+    const notFoundIds = publicationIds.filter((id) => !existingIds.includes(id));
+
+    // Perform deletion on existing permissions only
+    const deletionResult = await PublicationsModel.deleteMany({
+        _id: { $in: existingIds },
+    });
+
     const results = {
-        deleted: [],
-        notFound: [],
-        failed: [],
+        deleted: deletionResult.deletedCount,
+        notFound: notFoundIds.length,
+        failed:
+            publicationIds.length -
+            deletionResult.deletedCount -
+            notFoundIds.length,
     };
 
-    // Process each publicationId
-    for (const publicationId of publicationIds) {
-        try {
-            const publication =
-                await PublicationsModel.findByIdAndDelete(publicationId);
-            if (publication) {
-                results.deleted.push(publicationId);
-            } else {
-                results.notFound.push(publicationId);
-            }
-        } catch (error) {
-            // Log the error and mark this ID as failed
-            logger.error(
-                `Failed to delete publication with ID ${publicationId}: ${error}`
-            );
-            results.failed.push(publicationId);
-        }
+    // Custom message to summarize the outcome
+    const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
+
+    if (results.deleted <= 0) {
+        return errorResponse(message, httpStatus.OK);
     }
 
-    return {
-        timeStamp: new Date(),
-        success: results.failed.length === 0, // Success only if there were no failures
-        data: results,
-        message: `Deleted ${results.deleted.length}, Not found ${results.notFound.length}, Failed ${results.failed.length}`,
-        status: httpStatus.OK,
-    };
+    return sendResponse({}, message, httpStatus.OK);
 };
 
-const deletePublication = async (publicationId) => {
-    const publication =
-        await PublicationsModel.findByIdAndDelete(publicationId);
-
-    if (!publication) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Publication not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: {},
-        message: 'Publication deleted successfully.',
-        status: httpStatus.OK,
-    };
+const deletePublication = async (requester, publicationId) => {
+    return deleteResourceById(
+        requester,
+        publicationId,
+        PublicationsModel,
+        'publication'
+    );
 };
 
 const publicationsService = {

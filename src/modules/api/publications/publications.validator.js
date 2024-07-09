@@ -2,28 +2,61 @@ import validateWithSchema from '../../../shared/validateWithSchema.js';
 import publicationsSchema from './publications.schema.js';
 
 const createPublication = validateWithSchema(
-    publicationsSchema.createPublicationSchema,
-    'body'
+    [
+        {
+            schema: publicationsSchema.createPublicationSchema,
+            property: 'body'
+        }
+    ]
 );
+
 const getPublications = validateWithSchema(
-    publicationsSchema.getPublicationsQuerySchema,
-    'query'
+    [
+        {
+            schema: publicationsSchema.getPublicationsQuerySchema,
+            property: 'query'
+        }
+    ]
 );
+
 const getPublication = validateWithSchema(
-    publicationsSchema.publicationIdParamSchema,
-    'params'
+    [
+        {
+            schema: publicationsSchema.publicationIdParamSchema,
+            property: 'params'
+        }
+    ]
 );
+
 const updatePublication = validateWithSchema(
-    publicationsSchema.updatePublicationSchema,
-    'body'
+    [
+        {
+            schema: publicationsSchema.publicationIdParamSchema,
+            property: 'params'
+        },
+        {
+            schema: publicationsSchema.updatePublicationSchema,
+            property: 'body'
+        }
+    ]
 );
+
 const deletePublications = validateWithSchema(
-    publicationsSchema.publicationIdsParamSchema,
-    'query'
+    [
+        {
+            schema: publicationsSchema.publicationIdsParamSchema,
+            property: 'query'
+        }
+    ]
 );
+
 const deletePublication = validateWithSchema(
-    publicationsSchema.publicationIdParamSchema,
-    'params'
+    [
+        {
+            schema: publicationsSchema.publicationIdParamSchema,
+            property: 'params'
+        }
+    ]
 );
 
 const publicationsValidator = {
