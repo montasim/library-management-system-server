@@ -10,6 +10,8 @@ import validateFile from '../../../utilities/validateFile.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import writersConstant from './writers.constant.js';
+import deleteResourceById from '../../../shared/deleteResourceById.js';
+import PermissionsModel from '../auth/permissions/permissions.model.js';
 
 const createWriter = async (requester, writerData, writerImage) => {
     const isAuthorized = await validateUserRequest(requester);
@@ -261,27 +263,12 @@ const deleteWriters = async (requester, writerIds) => {
 };
 
 const deleteWriter = async (requester, writerId) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
-        return errorResponse(
-            'You are not authorized to delete writer.',
-            httpStatus.FORBIDDEN
-        );
-    }
-
-    const existingWriter = await WritersModel.findById(writerId).lean();
-    if (!existingWriter) {
-        return errorResponse('Writer not found.', httpStatus.NOT_FOUND);
-    }
-
-    // Delete the old file from Google Drive if it exists
-    const oldFileId = existingWriter.image?.fileId;
-    if (oldFileId) {
-        await GoogleDriveFileOperations.deleteFile(oldFileId);
-    }
-
-    const writer = await WritersModel.findByIdAndDelete(writerId);
-    return sendResponse({}, 'Writer deleted successfully.', httpStatus.OK);
+    return deleteResourceById(
+        requester,
+        writerId,
+        WritersModel,
+        'writer'
+    );
 };
 
 const writersService = {
