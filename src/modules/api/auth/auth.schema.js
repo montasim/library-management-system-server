@@ -3,7 +3,6 @@ import Joi from 'joi';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
 import userConstants from '../users/users.constants.js';
 import validationService from '../../../service/validation.service.js';
-import authConstant from './auth.constant.js';
 
 // Define base schema for subjects
 const authSchemaBase = Joi.object({
@@ -12,7 +11,7 @@ const authSchemaBase = Joi.object({
             userConstants.lengths.NAME_MIN,
             userConstants.lengths.NAME_MAX
         )
-        .regex(authConstant.pattern.name)
+        .regex(userConstants.pattern.name)
         .messages({
             'string.pattern.base': `{#label} with value "{#value}" must start with an uppercase letter followed by lowercase letters for each word, separated by a single space if multiple words. No numbers or special characters are allowed.`,
         }),

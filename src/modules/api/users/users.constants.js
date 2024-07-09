@@ -21,8 +21,13 @@ const lengths = {
     PASSWORD_MAX: 30,
 };
 
+const pattern = {
+    name: /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/,
+};
+
 const userConstants = {
     lengths,
+    pattern
 };
 
 export default userConstants;

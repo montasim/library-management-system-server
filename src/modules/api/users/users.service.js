@@ -2,18 +2,16 @@ import UsersModel from './users.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
+import errorResponse from '../../../utilities/errorResponse.js';
+import sendResponse from '../../../utilities/sendResponse.js';
 
 const getUser = async (userId) => {
     const user = await UsersModel.findById(userId).lean();
-
     if (!user) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Please login first.',
-            status: httpStatus.FORBIDDEN,
-        };
+        return errorResponse(
+            'Please login first.',
+            httpStatus.UNAUTHORIZED
+        );
     }
 
     // Remove sensitive data
@@ -25,39 +23,30 @@ const getUser = async (userId) => {
     delete user.resetPasswordVerifyToken;
     delete user.resetPasswordVerifyTokenExpires;
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: user,
-        message: 'User fetched successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        user,
+        'User fetched successfully.',
+        httpStatus.OK
+    );
 };
 
-const updateUser = async (userId, updateData, userImage) => {
-    const existingUser = await UsersModel.findById(userId).lean();
-
+const updateUser = async (requester, updateData, userImage) => {
+    const existingUser = await UsersModel.findById(requester).lean();
     if (!existingUser) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Please login first.',
-            status: httpStatus.FORBIDDEN,
-        };
+        return errorResponse(
+            'Please login first.',
+            httpStatus.UNAUTHORIZED
+        );
     }
 
     if (isEmptyObject(updateData)) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Please provide update data.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        return errorResponse(
+            'Please provide update data.',
+            httpStatus.BAD_REQUEST
+        );
     }
 
-    updateData.updatedBy = userId;
+    updateData.updatedBy = requester;
 
     let userImageData = {};
 
@@ -72,13 +61,10 @@ const updateUser = async (userId, updateData, userImage) => {
         userImageData = await GoogleDriveFileOperations.uploadFile(userImage);
 
         if (!userImageData || userImageData instanceof Error) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'Failed to save image.',
-                status: httpStatus.INTERNAL_SERVER_ERROR,
-            };
+            return errorResponse(
+                'Failed to save image.',
+                httpStatus.INTERNAL_SERVER_ERROR
+            );
         }
 
         userImageData = {
@@ -92,19 +78,9 @@ const updateUser = async (userId, updateData, userImage) => {
         }
     }
 
-    const updatedUser = await UsersModel.findByIdAndUpdate(userId, updateData, {
+    const updatedUser = await UsersModel.findByIdAndUpdate(requester, updateData, {
         new: true,
-    });
-
-    if (!updatedUser) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'User not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
+    }).lean();
 
     // Remove sensitive data
     delete updatedUser.password;
@@ -115,26 +91,20 @@ const updateUser = async (userId, updateData, userImage) => {
     delete updatedUser.resetPasswordVerifyToken;
     delete updatedUser.resetPasswordVerifyTokenExpires;
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: updatedUser,
-        message: 'User updated successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        updatedUser,
+        'User updated successfully.',
+        httpStatus.OK
+    );
 };
 
 const deleteUser = async (userId) => {
     const existingUser = await UsersModel.findById(userId).lean();
-
     if (!existingUser) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Please login first.',
-            status: httpStatus.FORBIDDEN,
-        };
+        return errorResponse(
+            'Please login first.',
+            httpStatus.UNAUTHORIZED
+        );
     }
 
     // Delete the old file from Google Drive if it exists
@@ -143,25 +113,13 @@ const deleteUser = async (userId) => {
         await GoogleDriveFileOperations.deleteFile(oldFileId);
     }
 
-    const user = await UsersModel.findByIdAndDelete(userId);
+    await UsersModel.findByIdAndDelete(userId);
 
-    if (!user) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'User not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: {},
-        message: 'User deleted successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        {},
+        'User deleted successfully.',
+        httpStatus.BAD_REQUEST
+    );
 };
 
 const usersService = {
