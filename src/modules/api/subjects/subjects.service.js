@@ -4,6 +4,7 @@ import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
+import isEmptyObject from '../../../utilities/isEmptyObject.js';
 
 const createSubject = async (requester, subjectData) => {
     const isAuthorized = await validateUserRequest(requester);
@@ -98,6 +99,13 @@ const updateSubject = async (requester, subjectId, updateData) => {
         return errorResponse(
             'You are not authorized to update subjects.',
             httpStatus.FORBIDDEN
+        );
+    }
+
+    if (isEmptyObject(updateData)) {
+        return errorResponse(
+            'Please provide update data.',
+            httpStatus.BAD_REQUEST
         );
     }
 

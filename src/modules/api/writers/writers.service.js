@@ -3,6 +3,8 @@ import httpStatus from '../../../constant/httpStatus.constants.js';
 import logger from '../../../utilities/logger.js';
 import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
 import validateUserRequest from '../../../utilities/validateUserRequest.js';
+import isEmptyObject from '../../../utilities/isEmptyObject.js';
+import errorResponse from '../../../utilities/errorResponse.js';
 
 const createWriter = async (requester, writerData, writerImage) => {
     try {
@@ -167,6 +169,13 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
             message: 'User not authorized.',
             status: httpStatus.FORBIDDEN,
         };
+    }
+
+    if (isEmptyObject(updateData)) {
+        return errorResponse(
+            'Please provide update data.',
+            httpStatus.BAD_REQUEST
+        );
     }
 
     const existingWriter = await WritersModel.findById(writerId).lean();

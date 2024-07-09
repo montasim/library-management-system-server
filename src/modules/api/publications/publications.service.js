@@ -4,6 +4,7 @@ import errorResponse from '../../../utilities/errorResponse.js';
 import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
+import isEmptyObject from '../../../utilities/isEmptyObject.js';
 
 const createPublication = async (requester, publicationData) => {
     const isAuthorized = await validateUserRequest(requester);
@@ -98,6 +99,13 @@ const updatePublication = async (requester, publicationId, updateData) => {
         return errorResponse(
             'You are not authorized to update publication.',
             httpStatus.FORBIDDEN
+        );
+    }
+
+    if (isEmptyObject(updateData)) {
+        return errorResponse(
+            'Please provide update data.',
+            httpStatus.BAD_REQUEST
         );
     }
 

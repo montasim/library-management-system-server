@@ -4,6 +4,8 @@ import PublicationsModel from '../publications/publications.model.js';
 import BooksModel from './books.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import logger from '../../../utilities/logger.js';
+import isEmptyObject from '../../../utilities/isEmptyObject.js';
+import errorResponse from '../../../utilities/errorResponse.js';
 
 // Helper function to validate IDs
 const validateIds = async (writer, publication) => {
@@ -185,6 +187,13 @@ const getBook = async (bookId) => {
 
 const updateBook = async (bookId, updateData) => {
     try {
+        if (isEmptyObject(updateData)) {
+            return errorResponse(
+                'Please provide update data.',
+                httpStatus.BAD_REQUEST
+            );
+        }
+
         const { writer, addSubject, deleteSubject, publication } = updateData;
         const errors = await validateIds(writer, publication);
 

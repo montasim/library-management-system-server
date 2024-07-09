@@ -6,6 +6,7 @@ import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../../shared/deleteResourceById.js';
 import getResourceById from '../../../../shared/getResourceById.js';
+import isEmptyObject from '../../../../utilities/isEmptyObject.js';
 
 // Centralized permission fetching with error handling
 const fetchPermissionById = async (permissionId) => {
@@ -117,6 +118,13 @@ const updatePermission = async (requester, permissionId, updateData) => {
         return errorResponse(
             'You are not authorized to update permissions.',
             httpStatus.FORBIDDEN
+        );
+    }
+
+    if (isEmptyObject(updateData)) {
+        return errorResponse(
+            'Please provide update data.',
+            httpStatus.BAD_REQUEST
         );
     }
 
