@@ -34,7 +34,8 @@ const userSchema = new mongoose.Schema(
         },
         mobile: {
             type: String,
-            unique: [true, 'mobile number already taken'],
+            unique: true,
+            sparse: true, // The index will only be applied to documents with non-null values for mobile
             match: [
                 patterns.MOBILE,
                 'Please enter a valid Bangladeshi mobile number',
@@ -42,11 +43,11 @@ const userSchema = new mongoose.Schema(
             minlength: [
                 userConstants.lengths.MOBILE_MIN,
                 `mobile number must be at least ${userConstants.lengths.MOBILE_MIN} digits long`,
-            ], // Including country code can extend the length
+            ],
             maxlength: [
                 userConstants.lengths.MOBILE_MAX,
                 `mobile number must be less than ${userConstants.lengths.MOBILE_MAX} digits long`,
-            ], // Considering potential country code and formatting
+            ],
         },
         address: {
             type: String,
