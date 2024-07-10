@@ -1,6 +1,15 @@
 import validateWithSchema from '../../../../shared/validateWithSchema.js';
 import favouriteBooksSchema from './booksHistory.schema.js';
 
+const booksQueryParamSchema = validateWithSchema(
+    [
+        {
+            schema: favouriteBooksSchema.booksQueryParamSchema,
+            property: 'params'
+        }
+    ]
+);
+
 const bookIdParamSchema = validateWithSchema(
     [
         {
@@ -11,6 +20,7 @@ const bookIdParamSchema = validateWithSchema(
 );
 
 const booksHistoryValidator = {
+    booksQueryParamSchema,
     bookIdParamSchema,
 };
 

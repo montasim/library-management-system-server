@@ -21,7 +21,7 @@ const permissionSchemaBase = Joi.object({
     updatedAt: validationService.dateField,
 }).strict();
 
-const booksQueryParamSchema = permissionSchemaBase.fork(
+const getDesiredBooksQuerySchema = permissionSchemaBase.fork(
     [
         'isActive',
         'page',
@@ -35,14 +35,8 @@ const booksQueryParamSchema = permissionSchemaBase.fork(
     (field) => field.optional()
 );
 
-// Schema for single book ID validation
-const bookIdParamSchema = Joi.object({
-    bookId: validationService.objectIdField.required(),
-}).strict();
-
-const booksSchema = {
-    booksQueryParamSchema,
-    bookIdParamSchema
+const desiredBooksSchema = {
+    getDesiredBooksQuerySchema,
 };
 
-export default booksSchema;
+export default desiredBooksSchema;

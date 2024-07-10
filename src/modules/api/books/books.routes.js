@@ -12,6 +12,10 @@ import favouriteBooksValidator from './favourite/favouriteBooks.validator.js';
 import requestBooksController from './request/requestBooks.controller.js';
 import lendBooksController from './lend/lendBooks.controller.js';
 import returnBooksController from './return/returnBooks.controller.js';
+import booksHistoryValidator from './history/booksHistory.validator.js';
+import desiredBooksValidator from './desired/desiredBooks.validator.js';
+import lendBooksValidator from './lend/lendBooks.validator.js';
+import returnBooksValidator from './return/returnBooks.validator.js';
 
 const router = express.Router();
 
@@ -29,7 +33,7 @@ router
 
 router
     .route('/desired')
-    .get(desiredBooksController.getDesiredBooks)
+    .get(desiredBooksValidator.getDesiredBooks, desiredBooksController.getDesiredBooks)
     .all(methodNotSupported);
 
 router
@@ -41,30 +45,30 @@ router
     .route('/favourite/:favouriteBookId')
     .post(
         authenticateMiddleware,
-        favouriteBooksValidator.createFavouriteBook,
+        favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.createFavouriteBook
     )
     .delete(
         authenticateMiddleware,
-        favouriteBooksValidator.deleteFavouriteBook,
+        favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.deleteFavouriteBook
     )
     .all(methodNotSupported);
 
 router
     .route('/history')
-    .get(authenticateMiddleware, booksHistoryController.getBooks)
+    .get(authenticateMiddleware, booksHistoryValidator.booksQueryParamSchema, booksHistoryController.getBooksHistory)
     .all(methodNotSupported);
 
 router
     .route('/history/:bookId')
-    .get(authenticateMiddleware, booksHistoryController.getBook)
+    .get(authenticateMiddleware, booksHistoryValidator.bookIdParamSchema, booksHistoryController.getBookHistory)
     .all(methodNotSupported);
 
 router
     .route('/lend')
-    .post(authenticateMiddleware, lendBooksController.createLendBook)
-    .get(authenticateMiddleware, lendBooksController.getLendBooks)
+    .post(authenticateMiddleware, lendBooksValidator.createLendBooksSchema, lendBooksController.createLendBook)
+    .get(authenticateMiddleware, lendBooksValidator.getLendBooksQuerySchema, lendBooksController.getLendBooks)
     .all(methodNotSupported);
 
 router
@@ -81,7 +85,7 @@ router
 
 router
     .route('/return')
-    .delete(authenticateMiddleware, returnBooksController.returnBook)
+    .delete(authenticateMiddleware, returnBooksValidator.returnBooksSchema, returnBooksController.returnBook)
     .all(methodNotSupported);
 
 router

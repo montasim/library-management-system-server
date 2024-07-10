@@ -8,8 +8,7 @@ const favouriteBookIdParamSchema = Joi.object({
 }).strict();
 
 const booksSchema = {
-    createFavouriteBookSchema: favouriteBookIdParamSchema,
-    deleteFavouriteBookSchema: favouriteBookIdParamSchema,
+    favouriteBookIdParamSchema
 };
 
 export default booksSchema;
