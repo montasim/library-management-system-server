@@ -22,7 +22,6 @@ const roleSchemaBase = Joi.object({
             'any.custom': 'Invalid permission ID format.',
             ...customValidationMessage,
         }),
-    isActive: validationService.booleanField,
     page: Joi.string()
         .min(1)
         .default(1)
@@ -33,6 +32,7 @@ const roleSchemaBase = Joi.object({
         .default(10)
         .custom((value, helpers) => parseInt(value)),
     sort: Joi.string().trim().default('createdAt'),
+    isActive: validationService.booleanField,
     createdBy: validationService.objectIdField,
     updatedBy: validationService.objectIdField,
     createdAt: validationService.dateField,

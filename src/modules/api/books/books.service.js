@@ -1,11 +1,19 @@
-import WritersModel from '../writers/writers.model.js';
-import SubjectsModel from '../subjects/subjects.model.js';
-import PublicationsModel from '../publications/publications.model.js';
 import BooksModel from './books.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import logger from '../../../utilities/logger.js';
+import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
+import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import errorResponse from '../../../utilities/errorResponse.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import validateFile from '../../../utilities/validateFile.js';
+import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
+import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
+import booksConstant from './books.constant.js';
+import deleteResourceById from '../../../shared/deleteResourceById.js';
+import SubjectsModel from '../subjects/subjects.model.js';
+import PublicationsModel from '../publications/publications.model.js';
+import WritersModel from '../writers/writers.model.js';
 
 // Helper function to validate IDs
 const validateIds = async (writer, publication) => {
@@ -28,7 +36,7 @@ const validateIds = async (writer, publication) => {
 const validateSubjectIds = async (subjectIds) => {
     const subjectErrors = [];
 
-    if (subjectIds && subjectIds.length) {
+    if (subjectIds?.length) {
         for (const subjectId of subjectIds) {
             if (!(await SubjectsModel.findById(subjectId))) {
                 subjectErrors.push(`Invalid subject ID: ${subjectId}`);
@@ -39,153 +47,161 @@ const validateSubjectIds = async (subjectIds) => {
     return subjectErrors;
 };
 
-const createBook = async (bookData) => {
-    try {
-        const oldDetails = await BooksModel.findOne({
-            name: bookData.name,
-        }).lean();
-
-        if (oldDetails) {
-            throw new Error(`Book name "${bookData.name}" already exists.`);
-        }
-
-        const { writer, subject, publication } = bookData;
-        const errors = await validateIds(writer, publication);
-
-        if (errors.length) {
-            throw new Error(errors.join(' '));
-        }
-
-        const subjectErrors = await validateSubjectIds(subject);
-
-        if (subjectErrors.length) {
-            throw new Error(errors.join(' '));
-        }
-
-        bookData.createdBy = 'Admin'; // Hardcoded for now, will be dynamic in future
-
-        const newBook = await BooksModel.create(bookData);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: newBook,
-            message: 'Book created successfully.',
-            status: httpStatus.CREATED,
-        };
-    } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error creating the book.',
-            status: httpStatus.BAD_REQUEST,
-        };
+const createBook = async (requester, bookData, bookImage) => {
+    const isAuthorized = await validateUserRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to create book.',
+            httpStatus.FORBIDDEN
+        );
     }
+
+    const exists = await BooksModel.findOne({
+        name: bookData.name,
+    }).lean();
+    if (exists) {
+        return sendResponse(
+            {},
+            `Books name "${bookData.name}" already exists.`,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    const { writer, subject, publication } = bookData;
+    const errors = await validateIds(writer, publication);
+    if (errors.length) {
+        return sendResponse(
+            {},
+           errors.join(' '),
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    const subjectErrors = await validateSubjectIds(subject);
+    if (subjectErrors.length) {
+        return sendResponse(
+            {},
+            errors.join(' '),
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    if (!bookImage) {
+        return errorResponse(
+            'Please provide an image.',
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    const fileValidationResults = validateFile(
+        bookImage,
+        booksConstant.imageSize,
+        [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
+        [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
+    );
+    if (!fileValidationResults.isValid) {
+        return errorResponse(
+            fileValidationResults.message,
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    const bookImageData =
+        await GoogleDriveFileOperations.uploadFile(bookImage);
+    if (!bookImageData || bookImageData instanceof Error) {
+        return errorResponse(
+            'Failed to save image.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
+    bookData.createdBy = requester;
+
+    const newBook = await BooksModel.create({
+        ...bookData,
+        image: bookImageData,
+    });
+
+    return sendResponse(
+        newBook,
+        'Book created successfully.',
+        httpStatus.CREATED
+    );
 };
 
 const getBooks = async (params) => {
     const {
         page = 1,
         limit = 10,
-        sort = '-createdAt', // Default sort by most recent creation
+        sort = '-createdAt',
         name,
         bestSeller,
         review,
         writer,
         subject,
         publication,
-        pageNumber,
         edition,
         summary,
         price,
         stockAvailable,
+        isActive,
         createdBy,
         updatedBy,
-        ...otherFilters
+        createdAt,
+        updatedAt,
     } = params;
+    const query = {
+        ...(name && { name: new RegExp(name, 'i') }),
+        ...(bestSeller && { bestSeller: new RegExp(bestSeller, 'i') }),
+        ...(review && { review: new RegExp(review, 'i') }),
+        ...(writer && { writer: new RegExp(writer, 'i') }),
+        ...(subject && { subject: new RegExp(subject, 'i') }),
+        ...(publication && { publication: new RegExp(publication, 'i') }),
+        ...(edition && { edition: new RegExp(edition, 'i') }),
+        ...(summary && { summary: new RegExp(summary, 'i') }),
+        ...(price && { price: new RegExp(price, 'i') }),
+        ...(stockAvailable && { stockAvailable: new RegExp(stockAvailable, 'i') }),
+        ...(isActive && { isActive: new RegExp(isActive, 'i') }),
+        ...(createdBy && { createdBy }),
+        ...(updatedBy && { updatedBy }),
+        ...(createdAt && { createdAt }),
+        ...(updatedAt && { updatedAt }),
+    };
+    const totalBooks = await BooksModel.countDocuments(query);
+    const totalPages = Math.ceil(totalBooks / limit);
+    const books = await BooksModel.find(query)
+        .sort(sort)
+        .skip((page - 1) * limit)
+        .limit(limit);
 
-    const query = {};
-
-    // Constructing query filters based on parameters
-    if (name) query.name = { $regex: name, $options: 'i' };
-    if (bestSeller) query.bestSeller = bestSeller;
-    if (review) query.review = review;
-    if (writer) query.writer = { $regex: writer, $options: 'i' };
-    if (subject) query.subject = { $in: subject.split(',') };
-    if (publication) query.publication = { $regex: publication, $options: 'i' };
-    if (pageNumber) query.page = pageNumber;
-    if (edition) query.edition = { $regex: edition, $options: 'i' };
-    if (summary) query.summary = { $regex: summary, $options: 'i' };
-    if (price) query.price = price;
-    if (stockAvailable) query.stockAvailable = stockAvailable;
-    if (createdBy) query.createdBy = { $regex: createdBy, $options: 'i' };
-    if (updatedBy) query.updatedBy = { $regex: updatedBy, $options: 'i' };
-
-    try {
-        const totalBooks = await BooksModel.countDocuments(query);
-        const totalPages = Math.ceil(totalBooks / limit);
-
-        // Adjust the limit if it exceeds the total number of books
-        const adjustedLimit = Math.min(limit, totalBooks - (page - 1) * limit);
-
-        const books = await BooksModel.find(query)
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(adjustedLimit);
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {
-                books,
-                totalBooks,
-                totalPages,
-                currentPage: page,
-                pageSize: adjustedLimit,
-                sort,
-            },
-            message: books.length
-                ? `${books.length} books fetched successfully.`
-                : 'No books found.',
-            status: httpStatus.OK,
-        };
-    } catch (error) {
-        logger.error('Error fetching books:', error);
-
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Failed to fetch books.',
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-        };
+    if (!books.length) {
+        return sendResponse({}, 'No book found.', httpStatus.NOT_FOUND);
     }
+
+    return sendResponse(
+        {
+            books,
+            totalBooks,
+            totalPages,
+            currentPage: page,
+            pageSize: limit,
+            sort,
+        },
+        `${books.length} books fetched successfully.`,
+        httpStatus.OK
+    );
 };
 
 const getBook = async (bookId) => {
     const book = await BooksModel.findById(bookId);
-
     if (!book) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Book not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+        return errorResponse('Book not found.', httpStatus.NOT_FOUND);
     }
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: book,
-        message: 'Book fetched successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(book, 'Book fetched successfully.', httpStatus.OK);
 };
 
-const updateBook = async (bookId, updateData) => {
+const updateBook = async (requester, bookId, updateData, bookImage) => {
     try {
         if (isEmptyObject(updateData)) {
             return errorResponse(
@@ -223,7 +239,7 @@ const updateBook = async (bookId, updateData) => {
             }
         }
 
-        updateData.updatedBy = 'Admin'; // Hardcoded for now, will be dynamic in future
+        updateData.updatedBy = requester;
 
         // Find the current book
         const book = await BooksModel.findById(bookId);
@@ -247,7 +263,7 @@ const updateBook = async (bookId, updateData) => {
         const newSubjects = [];
 
         // Handle adding subjects
-        if (addSubject && addSubject.length) {
+        if (addSubject?.length) {
             addSubject.forEach((subject) => {
                 if (book.subject.includes(subject)) {
                     existingSubjects.push(subject);
@@ -281,6 +297,50 @@ const updateBook = async (bookId, updateData) => {
 
         Object.assign(book, otherUpdates);
 
+        let bookImageData = {};
+
+        // Handle file update
+        if (bookImage) {
+            const fileValidationResults = validateFile(
+                bookImage,
+                booksConstant.imageSize,
+                [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
+                [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
+            );
+            if (!fileValidationResults.isValid) {
+                return errorResponse(
+                    fileValidationResults.message,
+                    httpStatus.BAD_REQUEST
+                );
+            }
+
+            // Delete the old file from Google Drive if it exists
+            const oldFileId = book.image?.fileId;
+            if (oldFileId) {
+                await GoogleDriveFileOperations.deleteFile(oldFileId);
+            }
+
+            bookImageData =
+                await GoogleDriveFileOperations.uploadFile(bookImage);
+
+            if (!bookImageData || bookImageData instanceof Error) {
+                return errorResponse(
+                    'Failed to save image.',
+                    httpStatus.INTERNAL_SERVER_ERROR
+                );
+            }
+
+            bookImageData = {
+                fileId: bookImageData.fileId,
+                shareableLink: bookImageData.shareableLink,
+                downloadLink: bookImageData.downloadLink,
+            };
+
+            if (bookImageData) {
+                updateData.image = bookImageData;
+            }
+        }
+
         const updatedBook = await book.save();
 
         return {
@@ -301,7 +361,19 @@ const updateBook = async (bookId, updateData) => {
     }
 };
 
-const deleteBooks = async (bookIds) => {
+const deleteBooks = async (requester, bookIds) => {
+    const isAuthorized = await validateUserRequest(requester);
+
+    if (!isAuthorized) {
+        return {
+            timeStamp: new Date(),
+            success: false,
+            data: {},
+            message: 'User not authorized.',
+            status: httpStatus.FORBIDDEN,
+        };
+    }
+
     const results = {
         deleted: [],
         notFound: [],
@@ -311,15 +383,29 @@ const deleteBooks = async (bookIds) => {
     // Process each bookId
     for (const bookId of bookIds) {
         try {
-            const book = await BooksModel.findByIdAndDelete(bookId);
-            if (book) {
-                results.deleted.push(bookId);
-            } else {
+            const book = await BooksModel.findById(bookId).lean();
+
+            if (!book) {
                 results.notFound.push(bookId);
+            }
+
+            // Delete the old file from Google Drive if it exists
+            const oldFileId = book.image?.fileId;
+            if (oldFileId) {
+                await GoogleDriveFileOperations.deleteFile(oldFileId);
+            }
+
+            const deletedBook =
+                await BooksModel.findByIdAndDelete(bookId);
+
+            if (deletedBook) {
+                results.deleted.push(bookId);
             }
         } catch (error) {
             // Log the error and mark this ID as failed
-            logger.error(`Failed to delete book with ID ${bookId}: ${error}`);
+            logger.error(
+                `Failed to delete book with ID ${bookId}: ${error}`
+            );
             results.failed.push(bookId);
         }
     }
@@ -333,26 +419,13 @@ const deleteBooks = async (bookIds) => {
     };
 };
 
-const deleteBook = async (bookId) => {
-    const book = await BooksModel.findByIdAndDelete(bookId);
-
-    if (!book) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Book not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: {},
-        message: 'Book deleted successfully.',
-        status: httpStatus.OK,
-    };
+const deleteBook = async (requester, bookId) => {
+    return deleteResourceById(
+        requester,
+        bookId,
+        BooksModel,
+        'book'
+    );
 };
 
 const booksService = {

@@ -20,19 +20,33 @@ const bookSchema = new mongoose.Schema(
                 'Name cannot be more than 100 characters long.',
             ],
         },
+        image: {
+            fileId: {
+                type: String,
+                maxlength: [
+                    100,
+                    'Picture fileId must be less than 100 characters long',
+                ],
+            },
+            shareableLink: {
+                type: String,
+                maxlength: [
+                    500,
+                    'Picture shareableLink must be less than 500 characters long',
+                ],
+            },
+            downloadLink: {
+                type: String,
+                maxlength: [
+                    500,
+                    'Picture downloadLink must be less than 500 characters long',
+                ],
+            },
+        },
         bestSeller: {
             type: Number,
             enum: { values: [1], message: 'Best Seller must be 1.' },
-            required: [true, 'Best Seller is required.'],
-        },
-        image: {
-            type: String,
-            trim: true,
-            required: [true, 'Image URL is required.'],
-            match: [
-                /^https?:\/\/.*\.(jpg|jpeg|png)$/,
-                'Please provide a valid URL for an image ending with .jpg, .jpeg, or .png.',
-            ],
+            required: false
         },
         review: {
             type: Number,
@@ -40,9 +54,9 @@ const bookSchema = new mongoose.Schema(
             max: [5, 'Review cannot be more than 5.'],
             required: [true, 'Review is required.'],
         },
-        writer: {
+        book: {
             type: Schema.Types.ObjectId,
-            ref: 'WritersModel',
+            ref: 'BooksModel',
         },
         subject: [
             {
@@ -92,6 +106,10 @@ const bookSchema = new mongoose.Schema(
             type: Number,
             required: [true, 'Stock availability is required.'],
         },
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
         createdBy: {
             trim: true,
             type: Schema.Types.ObjectId,
@@ -109,9 +127,6 @@ const bookSchema = new mongoose.Schema(
     }
 );
 
-// Create a unique index on the name field
-bookSchema.index({ name: 1 }, { unique: true });
-
 // Pre-save middleware for creation
 bookSchema.pre('save', function (next) {
     if (this.isNew && !this.createdBy) {
@@ -128,23 +143,6 @@ bookSchema.pre('findOneAndUpdate', function (next) {
     } else {
         next();
     }
-});
-
-// Error handling middleware for unique constraint violations
-bookSchema.post('save', (error, doc, next) => {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        return next(new Error('Book name already exists.'));
-    }
-
-    next(error);
-});
-
-bookSchema.post('findOneAndUpdate', (error, res, next) => {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        return next(new Error('Book name already exists.'));
-    }
-
-    next(error);
 });
 
 const BooksModel = mongoose.model('Books', bookSchema);

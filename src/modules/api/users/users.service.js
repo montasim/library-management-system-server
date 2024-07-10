@@ -40,25 +40,25 @@ const updateUser = async (requester, updateData, userImage) => {
         );
     }
 
-    const fileValidationResults = validateFile(
-        userImage,
-        userConstants.imageSize,
-        [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
-        [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
-    );
-    if (!fileValidationResults.isValid) {
-        return errorResponse(
-            fileValidationResults.message,
-            httpStatus.BAD_REQUEST
-        );
-    }
-
     updateData.updatedBy = requester;
 
     let userImageData = {};
 
     // Handle file update
     if (userImage) {
+        const fileValidationResults = validateFile(
+            userImage,
+            userConstants.imageSize,
+            [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
+            [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
+        );
+        if (!fileValidationResults.isValid) {
+            return errorResponse(
+                fileValidationResults.message,
+                httpStatus.BAD_REQUEST
+            );
+        }
+
         // Delete the old file from Google Drive if it exists
         const oldFileId = existingUser.image?.fileId;
         if (oldFileId) {

@@ -62,6 +62,10 @@ const writerSchema = new mongoose.Schema(
                 'Summary cannot be more than 1000 characters long.',
             ],
         },
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
         createdBy: {
             trim: true,
             type: Schema.Types.ObjectId,

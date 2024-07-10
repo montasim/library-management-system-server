@@ -10,16 +10,12 @@ const bookSchemaBase = Joi.object({
         .createStringField(
             booksConstants.lengths.NAME_MIN,
             booksConstants.lengths.NAME_MAX
-        )
-        .messages(customValidationMessage),
+        ),
     bestSeller: Joi.number()
         .integer()
         .valid(1)
         .messages(customValidationMessage),
-    review: Joi.number()
-        .min(0)
-        .max(5)
-        .messages(customValidationMessage),
+    review: Joi.number().min(0).max(5).messages(customValidationMessage),
     writer: validationService.objectIdField
         .messages({
             'any.custom': 'Invalid writer ID format.',
@@ -52,19 +48,11 @@ const bookSchemaBase = Joi.object({
             'any.custom': 'Invalid publication ID format.',
             ...customValidationMessage,
         }),
-    page: Joi.number().integer().required().messages(customValidationMessage),
-    edition: validationService
-        .createStringField(
-            booksConstants.lengths.EDITION_MIN,
-            booksConstants.lengths.EDITION_MAX
-        )
-        .messages(customValidationMessage),
     summary: validationService
         .createStringField(
             booksConstants.lengths.SUMMARY_MIN,
             booksConstants.lengths.SUMMARY_MAX
-        )
-        .messages(customValidationMessage),
+        ),
     price: Joi.number()
         .precision(2)
         .messages(customValidationMessage),
@@ -72,13 +60,20 @@ const bookSchemaBase = Joi.object({
         .integer()
         .min(0)
         .messages(customValidationMessage),
-    isActive: validationService.booleanField,
+    page: Joi.number().integer().required().messages(customValidationMessage),
+    edition: validationService
+        .createStringField(
+            booksConstants.lengths.EDITION_MIN,
+            booksConstants.lengths.EDITION_MAX
+        )
+        .messages(customValidationMessage),
     limit: Joi.string()
         .min(1)
         .max(100)
         .default(10)
         .custom((value, helpers) => parseInt(value)),
     sort: Joi.string().trim().default('createdAt'),
+    isActive: validationService.booleanField,
     createdBy: validationService.objectIdField,
     updatedBy: validationService.objectIdField,
     createdAt: validationService.dateField,
@@ -89,8 +84,6 @@ const bookSchemaBase = Joi.object({
 const createBookSchema = bookSchemaBase.fork(
     [
         'name',
-        'bestSeller',
-        'review',
         'writer',
         'subject',
         'publication',
@@ -111,7 +104,8 @@ const updateBookSchema = bookSchemaBase
             'bestSeller',
             'review',
             'writer',
-            'subject',
+            'addSubject',
+            'deleteSubject',
             'publication',
             'page',
             'edition',
@@ -131,19 +125,19 @@ const bookIdsParamSchema = Joi.object({
     .required()
     .messages(customValidationMessage);
 
-const getBooksQuerySchema = bookSchemaBase
-    .fork([
-            'name',
-            'bestSeller',
-            'review',
-            'writer',
-            'subject',
-            'publication',
-            'page',
-            'edition',
-            'summary',
-            'price',
-            'stockAvailable',
+const getBooksQuerySchema = bookSchemaBase.fork(
+    [
+        'name',
+        'bestSeller',
+        'review',
+        'writer',
+        'subject',
+        'publication',
+        'page',
+        'edition',
+        'summary',
+        'price',
+        'stockAvailable',
         'isActive',
         'limit',
         'sort',
@@ -151,9 +145,9 @@ const getBooksQuerySchema = bookSchemaBase
         'updatedBy',
         'createdAt',
         'updatedBy',
-        ], (field) =>
-            field.optional()
-    )
+    ],
+    (field) => field.optional()
+);
 
 // Schema for single book ID validation
 const bookIdParamSchema = Joi.object({

@@ -32,6 +32,13 @@ const createWriter = async (requester, writerData, writerImage) => {
         );
     }
 
+    if (!writerImage) {
+        return errorResponse(
+            'Please provide an image.',
+            httpStatus.BAD_REQUEST
+        );
+    }
+
     const fileValidationResults = validateFile(
         writerImage,
         writersConstant.imageSize,
@@ -45,17 +52,13 @@ const createWriter = async (requester, writerData, writerImage) => {
         );
     }
 
-    let writerImageData = {};
-
-    if (writerImage) {
-        writerImageData =
-            await GoogleDriveFileOperations.uploadFile(writerImage);
-        if (!writerImageData || writerImageData instanceof Error) {
-            return errorResponse(
-                'Failed to save image.',
-                httpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
+    const writerImageData =
+        await GoogleDriveFileOperations.uploadFile(writerImage);
+    if (!writerImageData || writerImageData instanceof Error) {
+        return errorResponse(
+            'Failed to save image.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     writerData.createdBy = requester;
@@ -140,6 +143,13 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
         );
     }
 
+    if (!writerImage) {
+        return errorResponse(
+            'Please provide an image.',
+            httpStatus.BAD_REQUEST
+        );
+    }
+
     const fileValidationResults = validateFile(
         writerImage,
         writersConstant.imageSize,
@@ -158,34 +168,30 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
     updateData.updatedBy = requester;
 
     let writerImageData = {};
+    // Delete the old file from Google Drive if it exists
+    const oldFileId = existingWriter.image?.fileId;
+    if (oldFileId) {
+        await GoogleDriveFileOperations.deleteFile(oldFileId);
+    }
 
-    // Handle file update
-    if (writerImage) {
-        // Delete the old file from Google Drive if it exists
-        const oldFileId = existingWriter.image?.fileId;
-        if (oldFileId) {
-            await GoogleDriveFileOperations.deleteFile(oldFileId);
-        }
+    writerImageData =
+        await GoogleDriveFileOperations.uploadFile(writerImage);
 
-        writerImageData =
-            await GoogleDriveFileOperations.uploadFile(writerImage);
+    if (!writerImageData || writerImageData instanceof Error) {
+        return errorResponse(
+            'Failed to save image.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 
-        if (!writerImageData || writerImageData instanceof Error) {
-            return errorResponse(
-                'Failed to save image.',
-                httpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
+    writerImageData = {
+        fileId: writerImageData.fileId,
+        shareableLink: writerImageData.shareableLink,
+        downloadLink: writerImageData.downloadLink,
+    };
 
-        writerImageData = {
-            fileId: writerImageData.fileId,
-            shareableLink: writerImageData.shareableLink,
-            downloadLink: writerImageData.downloadLink,
-        };
-
-        if (writerImageData) {
-            updateData.image = writerImageData;
-        }
+    if (writerImageData) {
+        updateData.image = writerImageData;
     }
 
     const updatedWriter = await WritersModel.findByIdAndUpdate(

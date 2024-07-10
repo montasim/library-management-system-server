@@ -18,12 +18,13 @@ const router = express.Router();
 router
     .route('/')
     .post(
+        authenticateMiddleware,
         booksValidator.createBook,
         uploadMiddleware.single('image'),
         booksController.createBook
     )
     .get(booksValidator.getBooks, booksController.getBooks)
-    .delete(booksValidator.deleteBooks, booksController.deleteBooks)
+    .delete(authenticateMiddleware, booksValidator.deleteBooks, booksController.deleteBooks)
     .all(methodNotSupported);
 
 router
@@ -87,11 +88,12 @@ router
     .route('/:bookId')
     .get(booksValidator.getBook, booksController.getBook)
     .put(
+        authenticateMiddleware,
         booksValidator.updateBook,
         uploadMiddleware.single('image'),
         booksController.updateBook
     )
-    .delete(booksValidator.deleteBook, booksController.deleteBook)
+    .delete(authenticateMiddleware, booksValidator.deleteBook, booksController.deleteBook)
     .all(methodNotSupported);
 
 export default router;

@@ -26,7 +26,6 @@ const permissionSchemaBase = Joi.object({
             'any.only': `Name must be one of the following: ${validNames.join(', ')}`,
             'string.pattern.base': 'Name must be one of above.',
         }),
-    isActive: validationService.booleanField,
     page: Joi.string()
         .min(1)
         .default(1)
@@ -37,6 +36,7 @@ const permissionSchemaBase = Joi.object({
         .default(10)
         .custom((value, helpers) => parseInt(value)),
     sort: Joi.string().trim().default('createdAt'),
+    isActive: validationService.booleanField,
     createdBy: validationService.objectIdField,
     updatedBy: validationService.objectIdField,
     createdAt: validationService.dateField,
