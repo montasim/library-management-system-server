@@ -6,21 +6,19 @@ import validationService from '../../../service/validation.service.js';
 
 // Define base schema for books
 const bookSchemaBase = Joi.object({
-    name: validationService
-        .createStringField(
-            booksConstants.lengths.NAME_MIN,
-            booksConstants.lengths.NAME_MAX
-        ),
+    name: validationService.createStringField(
+        booksConstants.lengths.NAME_MIN,
+        booksConstants.lengths.NAME_MAX
+    ),
     bestSeller: Joi.number()
         .integer()
         .valid(1)
         .messages(customValidationMessage),
     review: Joi.number().min(0).max(5).messages(customValidationMessage),
-    writer: validationService.objectIdField
-        .messages({
-            'any.custom': 'Invalid writer ID format.',
-            ...customValidationMessage,
-        }),
+    writer: validationService.objectIdField.messages({
+        'any.custom': 'Invalid writer ID format.',
+        ...customValidationMessage,
+    }),
     subject: Joi.array()
         .items(validationService.objectIdField)
         .messages({
@@ -28,34 +26,26 @@ const bookSchemaBase = Joi.object({
             ...customValidationMessage,
         }),
     addSubject: Joi.array()
-        .items(
-            validationService.objectIdField
-        )
+        .items(validationService.objectIdField)
         .messages({
             'any.custom': 'Invalid subject ID format.',
             ...customValidationMessage,
         }),
     deleteSubject: Joi.array()
-        .items(
-            validationService.objectIdField
-        )
+        .items(validationService.objectIdField)
         .messages({
             'any.custom': 'Invalid subject ID format.',
             ...customValidationMessage,
         }),
-    publication: validationService.objectIdField
-        .messages({
-            'any.custom': 'Invalid publication ID format.',
-            ...customValidationMessage,
-        }),
-    summary: validationService
-        .createStringField(
-            booksConstants.lengths.SUMMARY_MIN,
-            booksConstants.lengths.SUMMARY_MAX
-        ),
-    price: Joi.number()
-        .precision(2)
-        .messages(customValidationMessage),
+    publication: validationService.objectIdField.messages({
+        'any.custom': 'Invalid publication ID format.',
+        ...customValidationMessage,
+    }),
+    summary: validationService.createStringField(
+        booksConstants.lengths.SUMMARY_MIN,
+        booksConstants.lengths.SUMMARY_MAX
+    ),
+    price: Joi.number().precision(2).messages(customValidationMessage),
     stockAvailable: Joi.number()
         .integer()
         .min(0)
@@ -99,7 +89,8 @@ const createBookSchema = bookSchemaBase.fork(
 
 // Schema for updating a book
 const updateBookSchema = bookSchemaBase
-    .fork([
+    .fork(
+        [
             'name',
             'bestSeller',
             'review',
@@ -113,8 +104,8 @@ const updateBookSchema = bookSchemaBase
             'price',
             'stockAvailable',
             'isActive',
-        ], (field) =>
-        field.optional()
+        ],
+        (field) => field.optional()
     )
     .min(1);
 

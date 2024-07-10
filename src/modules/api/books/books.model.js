@@ -46,7 +46,7 @@ const bookSchema = new mongoose.Schema(
         bestSeller: {
             type: Number,
             enum: { values: [1], message: 'Best Seller must be 1.' },
-            required: false
+            required: false,
         },
         review: {
             type: Number,

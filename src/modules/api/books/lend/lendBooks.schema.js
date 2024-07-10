@@ -7,24 +7,21 @@ import lendBooksConstants from './lendBooks.constant.js';
 const lendBookSchemaBase = Joi.object({
     user: validationService.objectIdField,
     bookId: validationService.objectIdField,
-    from: Joi.string()
-        .messages({
-            'date.base': '"from" must be a valid date in ISO 8601 format',
-            'date.iso': '"from" date must strictly follow ISO 8601 format',
-            'any.required': '"from" date is required'
-        }),
-    to: Joi.string()
-        .messages({
-            'date.base': '"to" must be a valid date in ISO 8601 format',
-            'date.iso': '"to" date must strictly follow ISO 8601 format',
-            'date.greater': '"to" date must be greater than "from" date',
-            'any.required': '"to" date is required'
-        }),
-    remarks: validationService
-        .createStringField(
-            lendBooksConstants.lengths.REMARKS_MIN,
-            lendBooksConstants.lengths.REMARKS_MAX
-        ),
+    from: Joi.string().messages({
+        'date.base': '"from" must be a valid date in ISO 8601 format',
+        'date.iso': '"from" date must strictly follow ISO 8601 format',
+        'any.required': '"from" date is required',
+    }),
+    to: Joi.string().messages({
+        'date.base': '"to" must be a valid date in ISO 8601 format',
+        'date.iso': '"to" date must strictly follow ISO 8601 format',
+        'date.greater': '"to" date must be greater than "from" date',
+        'any.required': '"to" date is required',
+    }),
+    remarks: validationService.createStringField(
+        lendBooksConstants.lengths.REMARKS_MIN,
+        lendBooksConstants.lengths.REMARKS_MAX
+    ),
     page: Joi.string()
         .min(1)
         .default(1)
@@ -42,13 +39,7 @@ const lendBookSchemaBase = Joi.object({
 }).strict();
 
 const createLendBooksSchema = lendBookSchemaBase.fork(
-    [
-        'user',
-        'bookId',
-        'from',
-        'to',
-        'remarks',
-    ],
+    ['user', 'bookId', 'from', 'to', 'remarks'],
     (field) => field.required()
 );
 
@@ -72,7 +63,7 @@ const getLendBooksQuerySchema = lendBookSchemaBase.fork(
 
 const booksSchema = {
     createLendBooksSchema,
-    getLendBooksQuerySchema
+    getLendBooksQuerySchema,
 };
 
 export default booksSchema;

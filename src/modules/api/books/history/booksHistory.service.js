@@ -37,10 +37,7 @@ const getBooksHistory = async (requester, params) => {
     const totalPages = Math.ceil(totalHistory / limit);
 
     // Adjust the limit if it exceeds the total number of history records
-    const adjustedLimit = Math.min(
-        limit,
-        totalHistory - (page - 1) * limit
-    );
+    const adjustedLimit = Math.min(limit, totalHistory - (page - 1) * limit);
 
     const booksHistory = await BooksHistoryModel.find(query)
         .sort(sort)
@@ -73,10 +70,7 @@ const getBooksHistory = async (requester, params) => {
         });
 
     if (!booksHistory || booksHistory.length === 0) {
-        return errorResponse(
-            'No books history found.',
-            httpStatus.NOT_FOUND
-        );
+        return errorResponse('No books history found.', httpStatus.NOT_FOUND);
     }
 
     return sendResponse(
@@ -106,10 +100,7 @@ const getBookHistory = async (requester, bookId) => {
 
     const bookHistory = await BooksHistoryModel.findOne({ book: bookId });
     if (!bookHistory) {
-        return errorResponse(
-            'No books history found.',
-            httpStatus.NOT_FOUND
-        );
+        return errorResponse('No books history found.', httpStatus.NOT_FOUND);
     }
 
     return sendResponse(

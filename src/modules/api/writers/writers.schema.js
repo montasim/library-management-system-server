@@ -7,17 +7,15 @@ import permissionsConstants from '../auth/permissions/permissions.constant.js';
 
 // Define base schema for writers
 const writerSchemaBase = Joi.object({
-    name: validationService
-        .createStringField(
-            writersConstants.lengths.NAME_MIN,
-            writersConstants.lengths.NAME_MAX
-        ),
+    name: validationService.createStringField(
+        writersConstants.lengths.NAME_MIN,
+        writersConstants.lengths.NAME_MAX
+    ),
     review: Joi.number().min(0).max(5).messages(customValidationMessage),
-    summary: validationService
-        .createStringField(
-            writersConstants.lengths.SUMMARY_MIN,
-            writersConstants.lengths.SUMMARY_MAX
-        ),
+    summary: validationService.createStringField(
+        writersConstants.lengths.SUMMARY_MIN,
+        writersConstants.lengths.SUMMARY_MAX
+    ),
     page: Joi.string()
         .min(1)
         .default(1)

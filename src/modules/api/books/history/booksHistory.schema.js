@@ -42,7 +42,7 @@ const bookIdParamSchema = Joi.object({
 
 const booksSchema = {
     booksQueryParamSchema,
-    bookIdParamSchema
+    bookIdParamSchema,
 };
 
 export default booksSchema;

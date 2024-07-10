@@ -174,8 +174,7 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
         await GoogleDriveFileOperations.deleteFile(oldFileId);
     }
 
-    writerImageData =
-        await GoogleDriveFileOperations.uploadFile(writerImage);
+    writerImageData = await GoogleDriveFileOperations.uploadFile(writerImage);
 
     if (!writerImageData || writerImageData instanceof Error) {
         return errorResponse(
@@ -268,12 +267,7 @@ const deleteWriters = async (requester, writerIds) => {
 };
 
 const deleteWriter = async (requester, writerId) => {
-    return deleteResourceById(
-        requester,
-        writerId,
-        WritersModel,
-        'writer'
-    );
+    return deleteResourceById(requester, writerId, WritersModel, 'writer');
 };
 
 const writersService = {

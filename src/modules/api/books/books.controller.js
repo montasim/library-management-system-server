@@ -50,10 +50,7 @@ const updateBook = asyncErrorHandler(async (req, res) => {
 const deleteBooks = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
     const bookIds = req.query.ids.split(',');
-    const deletedBooksData = await booksService.deleteBooks(
-        requester,
-        bookIds
-    );
+    const deletedBooksData = await booksService.deleteBooks(requester, bookIds);
 
     deletedBooksData.route = req.originalUrl;
 

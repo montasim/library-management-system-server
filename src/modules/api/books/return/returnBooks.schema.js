@@ -7,24 +7,19 @@ import returnBookConstants from './returnBooks.constant.js';
 const returnBookSchemaBase = Joi.object({
     user: validationService.objectIdField,
     bookId: validationService.objectIdField,
-    remarks: validationService
-        .createStringField(
-            returnBookConstants.lengths.REMARKS_MIN,
-            returnBookConstants.lengths.REMARKS_MAX
-        ),
+    remarks: validationService.createStringField(
+        returnBookConstants.lengths.REMARKS_MIN,
+        returnBookConstants.lengths.REMARKS_MAX
+    ),
 }).strict();
 
 const returnSchema = returnBookSchemaBase.fork(
-    [
-        'user',
-        'bookId',
-        'remarks',
-    ],
+    ['user', 'bookId', 'remarks'],
     (field) => field.required()
 );
 
 const returnBookSchema = {
-    returnSchema
+    returnSchema,
 };
 
 export default returnBookSchema;

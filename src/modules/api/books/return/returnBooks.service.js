@@ -59,9 +59,7 @@ const returnBook = async (requester, bookData) => {
 
     // Add to lend history if not already present
     if (
-        !bookHistory.lend.some(
-            (lend) => lend.user.toString() === bookData.user
-        )
+        !bookHistory.lend.some((lend) => lend.user.toString() === bookData.user)
     ) {
         bookHistory.lend.push({
             user: bookData.user,
@@ -80,11 +78,7 @@ const returnBook = async (requester, bookData) => {
 
     await bookHistory.save();
 
-    return sendResponse(
-        {},
-        'Book returned successfully.',
-        httpStatus.OK
-    );
+    return sendResponse({}, 'Book returned successfully.', httpStatus.OK);
 };
 
 const writersService = {

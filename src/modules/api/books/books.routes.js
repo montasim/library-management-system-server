@@ -28,12 +28,19 @@ router
         booksController.createBook
     )
     .get(booksValidator.getBooks, booksController.getBooks)
-    .delete(authenticateMiddleware, booksValidator.deleteBooks, booksController.deleteBooks)
+    .delete(
+        authenticateMiddleware,
+        booksValidator.deleteBooks,
+        booksController.deleteBooks
+    )
     .all(methodNotSupported);
 
 router
     .route('/desired')
-    .get(desiredBooksValidator.getDesiredBooks, desiredBooksController.getDesiredBooks)
+    .get(
+        desiredBooksValidator.getDesiredBooks,
+        desiredBooksController.getDesiredBooks
+    )
     .all(methodNotSupported);
 
 router
@@ -57,18 +64,34 @@ router
 
 router
     .route('/history')
-    .get(authenticateMiddleware, booksHistoryValidator.booksQueryParamSchema, booksHistoryController.getBooksHistory)
+    .get(
+        authenticateMiddleware,
+        booksHistoryValidator.booksQueryParamSchema,
+        booksHistoryController.getBooksHistory
+    )
     .all(methodNotSupported);
 
 router
     .route('/history/:bookId')
-    .get(authenticateMiddleware, booksHistoryValidator.bookIdParamSchema, booksHistoryController.getBookHistory)
+    .get(
+        authenticateMiddleware,
+        booksHistoryValidator.bookIdParamSchema,
+        booksHistoryController.getBookHistory
+    )
     .all(methodNotSupported);
 
 router
     .route('/lend')
-    .post(authenticateMiddleware, lendBooksValidator.createLendBooksSchema, lendBooksController.createLendBook)
-    .get(authenticateMiddleware, lendBooksValidator.getLendBooksQuerySchema, lendBooksController.getLendBooks)
+    .post(
+        authenticateMiddleware,
+        lendBooksValidator.createLendBooksSchema,
+        lendBooksController.createLendBook
+    )
+    .get(
+        authenticateMiddleware,
+        lendBooksValidator.getLendBooksQuerySchema,
+        lendBooksController.getLendBooks
+    )
     .all(methodNotSupported);
 
 router
@@ -85,7 +108,11 @@ router
 
 router
     .route('/return')
-    .delete(authenticateMiddleware, returnBooksValidator.returnBooksSchema, returnBooksController.returnBook)
+    .delete(
+        authenticateMiddleware,
+        returnBooksValidator.returnBooksSchema,
+        returnBooksController.returnBook
+    )
     .all(methodNotSupported);
 
 router
@@ -97,7 +124,11 @@ router
         uploadMiddleware.single('image'),
         booksController.updateBook
     )
-    .delete(authenticateMiddleware, booksValidator.deleteBook, booksController.deleteBook)
+    .delete(
+        authenticateMiddleware,
+        booksValidator.deleteBook,
+        booksController.deleteBook
+    )
     .all(methodNotSupported);
 
 export default router;

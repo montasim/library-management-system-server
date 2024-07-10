@@ -70,20 +70,12 @@ const createBook = async (requester, bookData, bookImage) => {
     const { writer, subject, publication } = bookData;
     const errors = await validateIds(writer, publication);
     if (errors.length) {
-        return sendResponse(
-            {},
-           errors.join(' '),
-            httpStatus.BAD_REQUEST
-        );
+        return sendResponse({}, errors.join(' '), httpStatus.BAD_REQUEST);
     }
 
     const subjectErrors = await validateSubjectIds(subject);
     if (subjectErrors.length) {
-        return sendResponse(
-            {},
-            errors.join(' '),
-            httpStatus.BAD_REQUEST
-        );
+        return sendResponse({}, errors.join(' '), httpStatus.BAD_REQUEST);
     }
 
     if (!bookImage) {
@@ -106,8 +98,7 @@ const createBook = async (requester, bookData, bookImage) => {
         );
     }
 
-    const bookImageData =
-        await GoogleDriveFileOperations.uploadFile(bookImage);
+    const bookImageData = await GoogleDriveFileOperations.uploadFile(bookImage);
     if (!bookImageData || bookImageData instanceof Error) {
         return errorResponse(
             'Failed to save image.',
@@ -160,7 +151,9 @@ const getBooks = async (params) => {
         ...(edition && { edition: new RegExp(edition, 'i') }),
         ...(summary && { summary: new RegExp(summary, 'i') }),
         ...(price && { price: new RegExp(price, 'i') }),
-        ...(stockAvailable && { stockAvailable: new RegExp(stockAvailable, 'i') }),
+        ...(stockAvailable && {
+            stockAvailable: new RegExp(stockAvailable, 'i'),
+        }),
         ...(isActive && { isActive: new RegExp(isActive, 'i') }),
         ...(createdBy && { createdBy }),
         ...(updatedBy && { updatedBy }),
@@ -395,17 +388,14 @@ const deleteBooks = async (requester, bookIds) => {
                 await GoogleDriveFileOperations.deleteFile(oldFileId);
             }
 
-            const deletedBook =
-                await BooksModel.findByIdAndDelete(bookId);
+            const deletedBook = await BooksModel.findByIdAndDelete(bookId);
 
             if (deletedBook) {
                 results.deleted.push(bookId);
             }
         } catch (error) {
             // Log the error and mark this ID as failed
-            logger.error(
-                `Failed to delete book with ID ${bookId}: ${error}`
-            );
+            logger.error(`Failed to delete book with ID ${bookId}: ${error}`);
             results.failed.push(bookId);
         }
     }
@@ -420,12 +410,7 @@ const deleteBooks = async (requester, bookIds) => {
 };
 
 const deleteBook = async (requester, bookId) => {
-    return deleteResourceById(
-        requester,
-        bookId,
-        BooksModel,
-        'book'
-    );
+    return deleteResourceById(requester, bookId, BooksModel, 'book');
 };
 
 const booksService = {
