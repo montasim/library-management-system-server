@@ -15,8 +15,8 @@ router
     .post(
         authenticateMiddleware,
         writersValidator.createWriter,
-        cacheMiddleware.invalidate('writers'),
         uploadMiddleware.single('image'),
+        cacheMiddleware.invalidate('writers'),
         writersController.createWriter
     )
     .get(
@@ -42,8 +42,8 @@ router
     .put(
         authenticateMiddleware,
         writersValidator.updateWriter,
-        cacheMiddleware.invalidate('writers'),
         uploadMiddleware.single('image'),
+        cacheMiddleware.invalidate('writers'),
         writersController.updateWriter
     )
     .delete(
