@@ -388,22 +388,7 @@ Please read the [contribution guidelines](CONTRIBUTION.md) first.
 
 [![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
 
-To the extent possible under law,
-<table>
-  <tr>
-    <td align="center">
-        <img src="https://avatars.githubusercontent.com/u/95298623?v=4" width="100px" alt="Moon">
-        <br />
-        <a href="https://github.com/montasim">
-          <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=EB008B&center=true&vCenter=true&repeat=false&width=120&height=40&lines=MONTASIM" alt="MONTASIM" />
-        </a>
-    </td>
-  </tr>
-</table> has waived all copyright and related or neighboring rights to this work.
-
 <br/>
-<br/>
-
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=100&height=40&lines=CONTACT" alt="CONTACT" id="contact" />
 
