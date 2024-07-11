@@ -20,6 +20,7 @@
 - [SETUP](#setup)
 - [RUNNING THE SCRIPT](#running-the-script)
 - [ERROR HANDLING](#error-handling)
+- [HOSTING](#hosting)
 - [USED PACKAGES](#used-packages)
 - [TOOLS](#tools)
 - [ARTICLES](#articles)
@@ -251,7 +252,43 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
 <br/>
 
 
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=90&height=40&lines=HOSTING" alt="HOSTING" id="hosting" />
+
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/montasim/library-management-system-server)
+
+<details>
+    <summary>
+        Step-by-step guide on setting up your own Vercel instance:
+    </summary>
+
+Vercel is the recommended option for hosting the files since it is free and easy to set up.
+
+1.  Go to [vercel.com](https://vercel.com/).
+2.  Click on `Log in`.
+    ![Login page](https://files.catbox.moe/qwqrjn.png)
+3.  Sign in with GitHub by pressing `Continue with GitHub`.
+    ![Sign in with GitHub](https://files.catbox.moe/18vwjq.png)
+4.  Sign in to GitHub and allow access to all repositories if prompted.
+5.  [Fork this repo.](https://github.com/montasim/library-management-system-server/fork)
+6.  Go back to your [Vercel dashboard](https://vercel.com/dashboard).
+7.  To import a project, click the `Add New...` button and select the `Project` option.
+    ![Add new project](https://files.catbox.moe/h1a87z.png)
+8.  Click the `Continue with GitHub` button, search for the required Git Repository and import it by clicking the `Import` button. Alternatively, you can import a Third-Party Git Repository using the `Import Third-Party Git Repository ->` link at the bottom of the page.
+    ![Select GitHub project](https://files.catbox.moe/9ubkss.png)
+9.  Create a personal access token (PAT) [here](https://github.com/settings/tokens/new) and enable the `repo` and `user` permissions (this allows access to see private repo and user stats).
+10. Copy all the .env.development file as environment variables in the Vercel dashboard.
+11. Click deploy, and you're good to go. See your domains to use the API!
+</details>
+
+<br/>
+
+
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=165&height=40&lines=USED+PACKAGES" alt="USED PACKAGES" id="used-packages" />
+
+<details>
+    <summary>
+        List of used packages:
+    </summary>
 
 - `@googleapis/drive - ^8.11.0`
 - `bcrypt - ^5.1.1`
@@ -289,16 +326,23 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
 - `nodemon - ^3.1.4`
 - `prettier - ^3.3.2`
 - `standard-version - ^9.5.0`
+</details>
 
 <br/>
 
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=65&height=40&lines=TOOLS" alt="TOOLS" id="tools" />
 
+1. [WebStorm](https://www.jetbrains.com/webstorm/)
+2. [Postman](https://www.postman.com/)
+3. [Swagify.io](https://swagify.io/convert/)
+
 <br/>
 
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=95&height=40&lines=ARTICLES" alt="ARTICLES" id="articles" />
+
+1. [StackOverflow answer on file upload to Google Drive](https://stackoverflow.com/questions/65181932/how-i-can-upload-file-to-google-drive-with-google-drive-api).
 
 <br/>
 
@@ -309,6 +353,8 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
 
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=110&height=40&lines=TUTORIALS" alt="TUTORIALS" id="tutorials" />
+
+1. [Google Drive file upload tutorial](https://www.youtube.com/watch?v=bkaQTLCBBeo&t=600s).
 
 <br/>
 
