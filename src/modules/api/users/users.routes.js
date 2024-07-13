@@ -10,14 +10,14 @@ const router = express.Router();
 
 router
     .route('/profile')
-    .get(authenticateMiddleware, usersController.getUser)
+    .get(authenticateMiddleware.user, usersController.getUser)
     .put(
-        authenticateMiddleware,
+        authenticateMiddleware.user,
         uploadMiddleware.single('image'),
         usersValidator.update,
         usersController.updateUser
     )
-    .delete(authenticateMiddleware, usersController.deleteUser)
+    .delete(authenticateMiddleware.user, usersController.deleteUser)
     .all(methodNotSupported);
 
 export default router;

@@ -10,7 +10,7 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         publicationsValidator.createPublication,
         publicationsController.createPublication
     )
@@ -19,7 +19,7 @@ router
         publicationsController.getPublications
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         publicationsValidator.deletePublications,
         publicationsController.deletePublications
     )
@@ -32,12 +32,12 @@ router
         publicationsController.getPublication
     )
     .put(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         publicationsValidator.updatePublication,
         publicationsController.updatePublication
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         publicationsValidator.deletePublication,
         publicationsController.deletePublication
     )

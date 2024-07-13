@@ -22,14 +22,14 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         booksValidator.createBook,
         uploadMiddleware.single('image'),
         booksController.createBook
     )
     .get(booksValidator.getBooks, booksController.getBooks)
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         booksValidator.deleteBooks,
         booksController.deleteBooks
     )
@@ -45,18 +45,18 @@ router
 
 router
     .route('/favourite')
-    .get(authenticateMiddleware, favouriteBooksController.getFavouriteBooks)
+    .get(authenticateMiddleware.user, favouriteBooksController.getFavouriteBooks)
     .all(methodNotSupported);
 
 router
     .route('/favourite/:favouriteBookId')
     .post(
-        authenticateMiddleware,
+        authenticateMiddleware.user,
         favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.createFavouriteBook
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.user,
         favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.deleteFavouriteBook
     )
@@ -65,7 +65,7 @@ router
 router
     .route('/history')
     .get(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         booksHistoryValidator.booksQueryParamSchema,
         booksHistoryController.getBooksHistory
     )
@@ -74,7 +74,7 @@ router
 router
     .route('/history/:bookId')
     .get(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         booksHistoryValidator.bookIdParamSchema,
         booksHistoryController.getBookHistory
     )
@@ -83,12 +83,12 @@ router
 router
     .route('/lend')
     .post(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         lendBooksValidator.createLendBooksSchema,
         lendBooksController.createLendBook
     )
     .get(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         lendBooksValidator.getLendBooksQuerySchema,
         lendBooksController.getLendBooks
     )
@@ -96,20 +96,20 @@ router
 
 router
     .route('/request')
-    .post(authenticateMiddleware, requestBooksController.createRequestBook)
-    .get(authenticateMiddleware, requestBooksController.getRequestBooks)
+    .post(authenticateMiddleware.user, requestBooksController.createRequestBook)
+    .get(authenticateMiddleware.admin, requestBooksController.getRequestBooks)
     .all(methodNotSupported);
 
 router
     .route('/request/:requestedBookId')
-    .get(authenticateMiddleware, requestBooksController.getRequestBook)
-    .delete(authenticateMiddleware, requestBooksController.deleteRequestBook)
+    .get(authenticateMiddleware.admin, requestBooksController.getRequestBook)
+    .delete(authenticateMiddleware.admin, requestBooksController.deleteRequestBook)
     .all(methodNotSupported);
 
 router
     .route('/return')
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         returnBooksValidator.returnBooksSchema,
         returnBooksController.returnBook
     )
@@ -119,13 +119,13 @@ router
     .route('/:bookId')
     .get(booksValidator.getBook, booksController.getBook)
     .put(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         booksValidator.updateBook,
         uploadMiddleware.single('image'),
         booksController.updateBook
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         booksValidator.deleteBook,
         booksController.deleteBook
     )

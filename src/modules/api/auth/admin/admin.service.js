@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 
 import AdminModel from './admin.model.js';
@@ -28,24 +27,36 @@ import generateTempPassword
     from '../../../../utilities/generateTempPassword.js';
 import createAuthenticationToken
     from '../../../../utilities/createAuthenticationToken.js';
+import UsersModel from '../../users/users.model.js';
 
 const createAdmin = async (requester, adminData, hostData) => {
-    // const isAuthorized = await validateAdminRequest(requester);
-    // if (!isAuthorized) {
-    //     return errorResponse(
-    //         'You are not authorized.',
-    //         httpStatus.FORBIDDEN
-    //     );
-    // }
+    const isAuthorized = await validateAdminRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized.',
+            httpStatus.FORBIDDEN
+        );
+    }
 
-    const existingUser = await AdminModel.findOne({
+    const existingAdmin = await AdminModel.findOne({
+        email: adminData.email,
+    }).lean();
+    if (existingAdmin) {
+        return sendResponse(
+            {},
+            'This email address is already registered. Please log in or use the forgot password option if you need to recover your password.',
+            httpStatus.CONFLICT
+        );
+    }
+
+    const existingUser = await UsersModel.findOne({
         email: adminData.email,
     }).lean();
     if (existingUser) {
         return sendResponse(
             {},
-            'This email address is already registered. Please log in or use the forgot password option if you need to recover your password.',
-            httpStatus.CONFLICT
+            'This email address is already registered as user. Can not be a user and admin at the same time.',
+            httpStatus.FORBIDDEN
         );
     }
 

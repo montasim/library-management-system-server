@@ -16,8 +16,20 @@ import validateEmail from '../../../utilities/validateEmail.js';
 import validatePassword from '../../../utilities/validatePassword.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import errorResponse from '../../../utilities/errorResponse.js';
+import AdminModel from './admin/admin.model.js';
 
 const signup = async (userData, hostData) => {
+    const existingAdmin = await AdminModel.findOne({
+        email: userData.email,
+    }).lean();
+    if (existingAdmin) {
+        return sendResponse(
+            {},
+            'This email address is already registered as admin. Can not be a user and admin at the same time.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
     const existingUser = await UsersModel.findOne({
         email: userData.email,
     }).lean();

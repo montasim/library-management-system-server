@@ -16,7 +16,7 @@ const router = express.Router();
 
 router
     .route('/admin')
-    .post(authenticateMiddleware, adminValidator.createAdmin, adminController.createAdmin)
+    .post(authenticateMiddleware.admin, adminValidator.createAdmin, adminController.createAdmin)
     // .get(adminValidator.getAdmin, adminController.getAdmin)
     // .delete(adminValidator.deleteAdmin, adminController.deleteAdmin)
     .all(methodNotSupported);
@@ -64,17 +64,17 @@ router.route('/logout').get(authController.logout).all(methodNotSupported);
 router
     .route(`/${routesConstants.permissions.routes}`)
     .post(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         permissionsValidator.createPermission,
         permissionsController.createPermission
     )
     .get(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         permissionsValidator.getPermissions,
         permissionsController.getPermissions
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         permissionsValidator.deletePermissions,
         permissionsController.deletePermissions
     )
@@ -85,17 +85,17 @@ router
         `/${routesConstants.permissions.routes}/:${routesConstants.permissions.params}`
     )
     .get(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         permissionsValidator.getPermission,
         permissionsController.getPermission
     )
     .put(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         permissionsValidator.updatePermission,
         permissionsController.updatePermission
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         permissionsValidator.deletePermission,
         permissionsController.deletePermission
     )
@@ -119,17 +119,17 @@ router
 router
     .route(`/${routesConstants.roles.routes}`)
     .post(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         rolesValidator.createRole,
         rolesController.createRole
     )
     .get(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         rolesValidator.getRoles,
         rolesController.getRoles
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         rolesValidator.deleteRoles,
         rolesController.deleteRoles
     )
@@ -138,17 +138,17 @@ router
 router
     .route(`/${routesConstants.roles.routes}/:${routesConstants.roles.params}`)
     .get(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         rolesValidator.getRole,
         rolesController.getRole
     )
     .put(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         rolesValidator.updateRole,
         rolesController.updateRole
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         rolesValidator.deleteRole,
         rolesController.deleteRole
     )

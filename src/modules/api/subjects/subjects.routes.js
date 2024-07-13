@@ -10,13 +10,13 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         subjectsValidator.createSubject,
         subjectsController.createSubject
     )
     .get(subjectsValidator.getSubjects, subjectsController.getSubjects)
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         subjectsValidator.deleteSubjects,
         subjectsController.deleteSubjects
     )
@@ -26,12 +26,12 @@ router
     .route('/:subjectId')
     .get(subjectsValidator.getSubject, subjectsController.getSubject)
     .put(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         subjectsValidator.updateSubject,
         subjectsController.updateSubject
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         subjectsValidator.deleteSubject,
         subjectsController.deleteSubject
     )
