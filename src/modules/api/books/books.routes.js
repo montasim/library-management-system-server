@@ -5,17 +5,14 @@ import uploadMiddleware from '../../../middleware/upload.middleware.js';
 import booksController from './books.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
-import booksHistoryController from './history/booksHistory.controller.js';
-import desiredBooksController from './desired/desiredBooks.controller.js';
-import favouriteBooksController from './favourite/favouriteBooks.controller.js';
-import favouriteBooksValidator from './favourite/favouriteBooks.validator.js';
 import requestBooksController from './request/requestBooks.controller.js';
 import lendBooksController from './lend/lendBooks.controller.js';
 import returnBooksController from './return/returnBooks.controller.js';
-import booksHistoryValidator from './history/booksHistory.validator.js';
-import desiredBooksValidator from './desired/desiredBooks.validator.js';
 import lendBooksValidator from './lend/lendBooks.validator.js';
 import returnBooksValidator from './return/returnBooks.validator.js';
+import desiredBooksRoutes from './desired/desiredBooks.routes.js';
+import favouriteBooksRoutes from './favourite/favouriteBooks.routes.js';
+import booksHistoryRoutes from './history/booksHistory.routes.js';
 
 const router = express.Router();
 
@@ -35,50 +32,10 @@ router
     )
     .all(methodNotSupported);
 
-router
-    .route('/desired')
-    .get(
-        desiredBooksValidator.getDesiredBooks,
-        desiredBooksController.getDesiredBooks
-    )
-    .all(methodNotSupported);
 
-router
-    .route('/favourite')
-    .get(authenticateMiddleware.user, favouriteBooksController.getFavouriteBooks)
-    .all(methodNotSupported);
-
-router
-    .route('/favourite/:favouriteBookId')
-    .post(
-        authenticateMiddleware.user,
-        favouriteBooksValidator.favouriteBookIdParamSchema,
-        favouriteBooksController.createFavouriteBook
-    )
-    .delete(
-        authenticateMiddleware.user,
-        favouriteBooksValidator.favouriteBookIdParamSchema,
-        favouriteBooksController.deleteFavouriteBook
-    )
-    .all(methodNotSupported);
-
-router
-    .route('/history')
-    .get(
-        authenticateMiddleware.admin,
-        booksHistoryValidator.booksQueryParamSchema,
-        booksHistoryController.getBooksHistory
-    )
-    .all(methodNotSupported);
-
-router
-    .route('/history/:bookId')
-    .get(
-        authenticateMiddleware.admin,
-        booksHistoryValidator.bookIdParamSchema,
-        booksHistoryController.getBookHistory
-    )
-    .all(methodNotSupported);
+router.use('/desired', desiredBooksRoutes);
+router.use('/favourite', favouriteBooksRoutes);
+router.use('/history', booksHistoryRoutes);
 
 router
     .route('/lend')

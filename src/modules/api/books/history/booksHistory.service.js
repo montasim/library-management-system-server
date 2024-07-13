@@ -1,18 +1,9 @@
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import BooksHistoryModel from './booksHistory.model.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 
-const getBooksHistory = async (requester, params) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
-        return errorResponse(
-            'You are not authorized to get books history.',
-            httpStatus.FORBIDDEN
-        );
-    }
-
+const getBooksHistory = async (params) => {
     const {
         page = 1,
         limit = 10,
@@ -45,22 +36,22 @@ const getBooksHistory = async (requester, params) => {
         .limit(adjustedLimit)
         .populate({
             path: 'book',
-            select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt',
+            select: '-createdBy -updatedBy',
             populate: [
                 {
                     path: 'writer',
                     model: 'Writers',
-                    select: 'name',
+                    select: '-createdBy -updatedBy',
                 },
                 {
                     path: 'subject',
                     model: 'Subjects',
-                    select: 'name',
+                    select: '-createdBy -updatedBy',
                 },
                 {
                     path: 'publication',
                     model: 'Publications',
-                    select: 'name',
+                    select: '-createdBy -updatedBy',
                 },
             ],
         })
@@ -89,15 +80,7 @@ const getBooksHistory = async (requester, params) => {
     );
 };
 
-const getBookHistory = async (requester, bookId) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
-        return errorResponse(
-            'You are not authorized to get book history.',
-            httpStatus.FORBIDDEN
-        );
-    }
-
+const getBookHistory = async (bookId) => {
     const bookHistory = await BooksHistoryModel.findOne({ book: bookId });
     if (!bookHistory) {
         return errorResponse('No books history found.', httpStatus.NOT_FOUND);
