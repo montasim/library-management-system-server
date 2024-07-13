@@ -388,6 +388,13 @@ const login = async (userData, userAgent, device) => {
         );
     }
 
+    if (userDetails.mustChangePassword) {
+        return errorResponse(
+            'Please change your password first.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
     const isPasswordValid = await comparePassword(
         userData.password,
         userDetails.password
