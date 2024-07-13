@@ -152,6 +152,8 @@ const verify = async (token) => {
     );
 };
 
+// TODO: create a system for setting up admin password after email verification
+
 const resendVerification = async (adminId, hostData) => {
     const adminDetails = await AdminModel.findById(adminId);
     if (!adminDetails) {
