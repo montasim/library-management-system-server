@@ -223,7 +223,7 @@ const getBook = async (bookId) => {
 /**
  * Updates an existing book record with new data and possibly a new image.
  *
- * @param {string} requester - The ID of the user making the update request.
+ * @param {string} requester - The ID of the user making the update requestBooks.
  * @param {string} bookId - The ID of the book to update.
  * @param {Object} updateData - Data to update the book with.
  * @param {Object} bookImage - New image for the book, if provided.

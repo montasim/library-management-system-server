@@ -1,7 +1,7 @@
 import morgan from 'morgan';
 import logger from '../utilities/logger.js';
 
-// Custom token to log request bodies
+// Custom token to log requestBooks bodies
 morgan.token('body', (req) => JSON.stringify(req.body));
 
 const morganConfiguration = morgan(
@@ -14,7 +14,7 @@ const morganConfiguration = morgan(
             '-',
             tokens['response-time'](req, res),
             'ms',
-            // 'body:', tokens.body(req, res), // Log request body
+            // 'body:', tokens.body(req, res), // Log requestBooks body
             'from',
             tokens.referrer(req, res),
             'user-agent:',

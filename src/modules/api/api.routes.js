@@ -8,6 +8,8 @@ import subjectsRoutes from './subjects/subjects.routes.js';
 import trendingRoutes from './trending/trending.routes.js';
 import usersRoutes from './users/users.routes.js';
 import writersRoutes from './writers/writers.routes.js';
+import authenticateMiddleware
+    from '../../middleware/authenticate.middleware.js';
 
 const router = express.Router();
 
@@ -17,7 +19,7 @@ router.use('/detect', detectRoutes);
 router.use('/publications', publicationsRoutes);
 router.use('/subjects', subjectsRoutes);
 router.use('/trending', trendingRoutes);
-router.use('/users', usersRoutes);
+router.use('/users', authenticateMiddleware.user, usersRoutes);
 router.use('/writers', writersRoutes);
 
 export default router;

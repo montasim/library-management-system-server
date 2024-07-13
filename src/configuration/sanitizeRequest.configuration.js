@@ -32,7 +32,7 @@ const sanitize = (obj) => {
     recurSanitize(obj);
 };
 
-// Middleware to sanitize query, body, and params of a request
+// Middleware to sanitize query, body, and params of a requestBooks
 const sanitizeRequestConfiguration = (req, res, next) => {
     try {
         ['body', 'query', 'params'].forEach((part) => {
@@ -45,7 +45,7 @@ const sanitizeRequestConfiguration = (req, res, next) => {
 
         return res.status(500).json({
             success: false,
-            message: 'Error processing request, please try again later.',
+            message: 'Error processing requestBooks, please try again later.',
         });
     }
 

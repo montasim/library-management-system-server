@@ -1,18 +1,6 @@
 import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
-import requestBooksService from './requestBooks.service.js';
+import requestBooksService from './userRequestBooks.service.js';
 import getRequesterId from '../../../../utilities/getRequesterId.js';
-
-const createRequestBook = asyncErrorHandler(async (req, res) => {
-    const requester = getRequesterId(req);
-    const newRequestBookData = await requestBooksService.createRequestBook(
-        requester,
-        req.body
-    );
-
-    newRequestBookData.route = req.originalUrl;
-
-    res.status(newRequestBookData.status).send(newRequestBookData);
-});
 
 const getRequestBooks = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
@@ -48,11 +36,10 @@ const deleteRequestBook = asyncErrorHandler(async (req, res) => {
     res.status(deletedRequestBookData.status).send(deletedRequestBookData);
 });
 
-const requestBooksController = {
-    createRequestBook,
+const userRequestBooksController = {
     getRequestBooks,
     getRequestBook,
     deleteRequestBook,
 };
 
-export default requestBooksController;
+export default userRequestBooksController;

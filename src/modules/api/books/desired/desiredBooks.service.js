@@ -1,17 +1,17 @@
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import RequestBooksModel from '../request/requestBooks.model.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
+import RequestBooksModel from '../requestBooks/requestBooks.model.js';
 
 const getDesiredBooks = async () => {
     // Aggregate to find the most desired books across all users' requests
     const desiredBooks = await RequestBooksModel.aggregate([
         {
-            $unwind: '$request', // Unwind the array of requested books
+            $unwind: '$requestBooks', // Unwind the array of requested books
         },
         {
             $group: {
-                _id: '$request.name', // Group by the name of the book
+                _id: '$requestBooks.name', // Group by the name of the book
                 count: { $sum: 1 }, // Count how many times each book is requested
             },
         },

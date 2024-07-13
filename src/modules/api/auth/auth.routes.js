@@ -32,7 +32,7 @@ router
     .all(methodNotSupported);
 
 router
-    .route('/admin/request-new-password')
+    .route('/admin/requestBooks-new-password')
     .put(adminValidator.requestNewPassword, adminController.requestNewPassword)
     .all(methodNotSupported);
 
@@ -102,7 +102,7 @@ router
     .all(methodNotSupported);
 
 router
-    .route('/request-new-password')
+    .route('/requestBooks-new-password')
     .put(authValidator.requestNewPassword, authController.requestNewPassword)
     .all(methodNotSupported);
 
