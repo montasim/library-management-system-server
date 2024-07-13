@@ -18,7 +18,11 @@ const createAdmin = asyncErrorHandler(async (req, res) => {
 });
 
 const verify = asyncErrorHandler(async (req, res) => {
-    const verifyData = await adminService.verify(req.params.token);
+    const hostData = {
+        hostname: req.hostname,
+        port: req.port,
+    };
+    const verifyData = await adminService.verify(req.params.token, hostData);
 
     verifyData.route = req.originalUrl;
 

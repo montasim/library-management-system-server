@@ -116,6 +116,79 @@ const prepareEmailContent = (subject, emailData) => {
             `;
 
             break;
+        case 'Welcome Admin':
+            pageTitle = 'Welcome to Our Service!';
+            preheaderText = 'You are now an admin!';
+            heroSection = `
+                <tr>
+                  <td align="center" bgcolor="#e9ecef">
+                    <!--[if (gte mso 9)|(IE)]>
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+                    <tr>
+                    <td align="center" valign="top" width="600">
+                    <![endif]-->
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                      <tr>
+                        <td bgcolor="#ffffff" align="left">
+                          <img src="https://drive.google.com/file/d/1vZhJhh8meVW4IvijH5jUm8_23ptX6R_n/view?usp=sharing" alt="Welcome" width="600" style="display: block; width: 100%; max-width: 100%;">
+                        </td>
+                      </tr>
+                    </table>
+                    <!--[if (gte mso 9)|(IE)]>
+                    </td>
+                    </tr>
+                    </table>
+                    <![endif]-->
+                  </td>
+                </tr>
+            `;
+            mainSection = `
+                <tr>
+                  <td align="center" bgcolor="#e9ecef">
+                    <!--[if (gte mso 9)|(IE)]>
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+                    <tr>
+                    <td align="center" valign="top" width="600">
+                    <![endif]-->
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+
+                      <!-- start copy -->
+                      <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
+                          <h1 style="margin: 0 0 12px; font-size: 32px; font-weight: 400; line-height: 48px;">Welcome, ${emailData?.userName}!</h1>
+                          <p style="margin: 0;">We are thrilled to have you with us. Get ready to explore all our features.</p>
+                          <p style="margin: 0;">Your temporary password is <strong>${emailData.tempPassword}</strong>.</p>
+                          <p style="margin: 0;">Pleae use the below link to reset your password <a href="${emailData.emailVerificationLink}">Reset password</a>.</p>
+                        </td>
+                      </tr>
+                      <!-- end copy -->
+
+                      <!-- start copy -->
+                      <tr>
+                        <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
+                          <p style="margin: 0;">Cheers,<br> Library Management System</p>
+                        </td>
+                      </tr>
+                      <!-- end copy -->
+
+                    </table>
+                    <!--[if (gte mso 9)|(IE)]>
+                    </td>
+                    </tr>
+                    </table>
+                    <![endif]-->
+                  </td>
+                </tr>
+            `;
+            footerContent = `
+                <tr>
+                    <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
+                      <p style="margin: 0;">You received this email because we received a request for your account. If you didn't request your account you can safely delete this email.</p>
+                    </td>
+                </tr>
+            `;
+
+            break;
         case 'Welcome Email':
             pageTitle = 'Welcome to Our Service!';
             preheaderText = 'You are now a member!';

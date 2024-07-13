@@ -52,7 +52,7 @@ const __dirname = dirname(__filename);
  *   });
  */
 const loadCommonPasswords = async () => {
-    const filePath = join(__dirname, '../shared/commonPasswords.txt');
+    const filePath = join(__dirname, '../vendor/commonPasswords.txt');
 
     try {
         const data = await fs.readFile(filePath, { encoding: 'utf-8' });

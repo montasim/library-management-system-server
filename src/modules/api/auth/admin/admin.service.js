@@ -1,3 +1,6 @@
+import crypto from 'crypto';
+import bcrypt from 'bcrypt';
+
 import AdminModel from './admin.model.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
@@ -21,6 +24,10 @@ import getRequestedDeviceDetails
     from '../../../../utilities/getRequestedDeviceDetails.js';
 import decodeAuthenticationToken
     from '../../../../utilities/decodeAuthenticationToken.js';
+import generateTempPassword
+    from '../../../../utilities/generateTempPassword.js';
+import createAuthenticationToken
+    from '../../../../utilities/createAuthenticationToken.js';
 
 const createAdmin = async (requester, adminData, hostData) => {
     // const isAuthorized = await validateAdminRequest(requester);
@@ -99,7 +106,7 @@ const createAdmin = async (requester, adminData, hostData) => {
     );
 };
 
-const verify = async (token) => {
+const verify = async (token, hostData) => {
     // Hash the plain token to compare with the stored hash
     const hashedToken = await generateHashedToken(token);
     const adminDetails = await AdminModel.findOne({
@@ -119,11 +126,36 @@ const verify = async (token) => {
     adminDetails.emailVerifyToken = undefined;
     adminDetails.emailVerifyTokenExpires = undefined;
 
+    // Generate a temporary password
+    const tempPassword = generateTempPassword(8, 12);
+    const hashedTempPassword = await bcrypt.hash(tempPassword, 10);
+
+    // Save the hashed temporary password and set mustChangePassword to true
+    adminDetails.password = hashedTempPassword;
+    adminDetails.mustChangePassword = true;
+
+    const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
+        await generateVerificationToken();
+
+    // Update user with the reset password verification token and its expiry
+    adminDetails.resetPasswordVerifyToken = emailVerifyToken;
+    adminDetails.resetPasswordVerifyTokenExpires = emailVerifyTokenExpires;
+
     await adminDetails.save();
 
-    const subject = 'Welcome Email';
+    let emailVerificationLink;
+
+    if (configuration.env === environment.PRODUCTION) {
+        emailVerificationLink = `https://${hostData.hostname}/api/v1/auth/admin/reset-password/${plainToken}`;
+    } else {
+        emailVerificationLink = `http://${hostData.hostname}:${configuration.port}/api/v1/auth/admin/reset-password/${plainToken}`;
+    }
+
+    const subject = 'Welcome Admin';
     const emailData = {
         userName: adminDetails.name,
+        emailVerificationLink,
+        tempPassword,
     };
     const {
         pageTitle,
@@ -151,8 +183,6 @@ const verify = async (token) => {
         httpStatus.OK
     );
 };
-
-// TODO: create a system for setting up admin password after email verification
 
 const resendVerification = async (adminId, hostData) => {
     const adminDetails = await AdminModel.findById(adminId);
@@ -341,6 +371,7 @@ const resetPassword = async (hostData, token, adminData) => {
 
     // Update the user with new password and expiry
     adminDetails.password = await createHashedPassword(adminData.newPassword);
+    adminDetails.mustChangePassword = false;
     adminDetails.resetPasswordVerifyToken = undefined;
     adminDetails.resetPasswordVerifyTokenExpires = undefined;
 
@@ -394,6 +425,13 @@ const login = async (adminData, userAgent, device) => {
     if (!adminDetails.password) {
         return errorResponse(
             'Please set your password first.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    if (adminDetails.mustChangePassword) {
+        return errorResponse(
+            'Please change your password first.',
             httpStatus.FORBIDDEN
         );
     }
