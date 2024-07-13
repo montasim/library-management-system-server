@@ -2,7 +2,6 @@ import BooksModel from './books.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import logger from '../../../utilities/logger.js';
 import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
@@ -10,10 +9,10 @@ import validateFile from '../../../utilities/validateFile.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import booksConstant from './books.constant.js';
-import deleteResourceById from '../../../shared/deleteResourceById.js';
 import SubjectsModel from '../subjects/subjects.model.js';
 import PublicationsModel from '../publications/publications.model.js';
 import WritersModel from '../writers/writers.model.js';
+import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
 
 // Helper function to validate IDs
 const validateIds = async (writer, publication) => {
@@ -47,8 +46,17 @@ const validateSubjectIds = async (subjectIds) => {
     return subjectErrors;
 };
 
+/**
+ * Creates a new book in the database with image upload and detailed data validation.
+ *
+ * @param {string} requester - The ID of the user requesting the creation, used to verify admin permissions.
+ * @param {Object} bookData - The data of the book to be created. Should include fields like name, writer, publication, etc.
+ * @param {Object} bookImage - The image file associated with the book, which will be uploaded to Google Drive.
+ * @returns {Promise<Object>} - A promise that resolves to the response object indicating the result of the operation.
+ */
 const createBook = async (requester, bookData, bookImage) => {
-    const isAuthorized = await validateUserRequest(requester);
+    // Validate admin permission
+    const isAuthorized = await validateAdminRequest(requester);
     if (!isAuthorized) {
         return errorResponse(
             'You are not authorized to create book.',
@@ -56,6 +64,7 @@ const createBook = async (requester, bookData, bookImage) => {
         );
     }
 
+    // Check if book name already exists
     const exists = await BooksModel.findOne({
         name: bookData.name,
     }).lean();
@@ -67,17 +76,16 @@ const createBook = async (requester, bookData, bookImage) => {
         );
     }
 
-    const { writer, subject, publication } = bookData;
-    const errors = await validateIds(writer, publication);
-    if (errors.length) {
-        return sendResponse({}, errors.join(' '), httpStatus.BAD_REQUEST);
+    // Validate writer, publication, and subject IDs
+    const validationErrors = [
+        ...await validateIds(bookData.writer, bookData.publication),
+        ...await validateSubjectIds(bookData.subject)
+    ];
+    if (validationErrors.length) {
+        return sendResponse({}, validationErrors.join(' '), httpStatus.BAD_REQUEST);
     }
 
-    const subjectErrors = await validateSubjectIds(subject);
-    if (subjectErrors.length) {
-        return sendResponse({}, errors.join(' '), httpStatus.BAD_REQUEST);
-    }
-
+    // Validate the image file
     if (!bookImage) {
         return errorResponse(
             'Please provide an image.',
@@ -98,6 +106,7 @@ const createBook = async (requester, bookData, bookImage) => {
         );
     }
 
+    // Upload image and handle possible errors
     const bookImageData = await GoogleDriveFileOperations.uploadFile(bookImage);
     if (!bookImageData || bookImageData instanceof Error) {
         return errorResponse(
@@ -106,15 +115,23 @@ const createBook = async (requester, bookData, bookImage) => {
         );
     }
 
+    // Add the extra data
+    bookData.image = bookImageData;
     bookData.createdBy = requester;
 
-    const newBook = await BooksModel.create({
-        ...bookData,
-        image: bookImageData,
-    });
+    // Create the book
+    const newBook = await BooksModel.create(bookData);
 
+    // Get the populated book data
+    const newBookDetails = await BooksModel.findById(newBook._id)
+        .populate({ path: 'writer', select: '-createdBy -updatedBy' })
+        .populate({ path: 'publication', select: '-createdBy -updatedBy' })
+        .populate({ path: 'subject', select: '-createdBy -updatedBy' })
+        .select('-createdBy -updatedBy');
+
+    // Send success response
     return sendResponse(
-        newBook,
+        newBookDetails,
         'Book created successfully.',
         httpStatus.CREATED
     );
@@ -163,6 +180,10 @@ const getBooks = async (params) => {
     const totalBooks = await BooksModel.countDocuments(query);
     const totalPages = Math.ceil(totalBooks / limit);
     const books = await BooksModel.find(query)
+        .populate({ path: 'writer', select: '-createdBy -updatedBy' })
+        .populate({ path: 'publication', select: '-createdBy -updatedBy' })
+        .populate({ path: 'subject', select: '-createdBy -updatedBy' })
+        .select('-createdBy -updatedBy')
         .sort(sort)
         .skip((page - 1) * limit)
         .limit(limit);
@@ -186,7 +207,12 @@ const getBooks = async (params) => {
 };
 
 const getBook = async (bookId) => {
-    const book = await BooksModel.findById(bookId);
+    const book = await BooksModel.findById(bookId)
+        .populate({ path: 'writer', select: '-createdBy -updatedBy' })
+        .populate({ path: 'publication', select: '-createdBy -updatedBy' })
+        .populate({ path: 'subject', select: '-createdBy -updatedBy' })
+        .select('-createdBy -updatedBy');
+
     if (!book) {
         return errorResponse('Book not found.', httpStatus.NOT_FOUND);
     }
@@ -194,169 +220,187 @@ const getBook = async (bookId) => {
     return sendResponse(book, 'Book fetched successfully.', httpStatus.OK);
 };
 
+/**
+ * Updates an existing book record with new data and possibly a new image.
+ *
+ * @param {string} requester - The ID of the user making the update request.
+ * @param {string} bookId - The ID of the book to update.
+ * @param {Object} updateData - Data to update the book with.
+ * @param {Object} bookImage - New image for the book, if provided.
+ * @returns {Promise<Object>} - The updated book details or an error response.
+ */
 const updateBook = async (requester, bookId, updateData, bookImage) => {
-    try {
-        if (isEmptyObject(updateData)) {
+    // Validate admin permission
+    const isAuthorized = await validateAdminRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            'You are not authorized to create book.',
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    if (isEmptyObject(updateData)) {
+        return errorResponse(
+            'Please provide update data.',
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    const { writer, addSubject, deleteSubject, publication } = updateData;
+    const errors = await validateIds(writer, publication);
+
+    if (errors.length) {
+        return errorResponse(
+            errors.join(' '),
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    const addSubjectErrors = await validateSubjectIds(addSubject);
+    const deleteSubjectErrors = await validateSubjectIds(deleteSubject);
+
+    if (addSubjectErrors.length || deleteSubjectErrors.length) {
+        return errorResponse(
+            [...addSubjectErrors, ...deleteSubjectErrors].join(' '),
+            httpStatus.BAD_REQUEST
+        );
+    }
+
+    // Ensure no overlap between addSubject and deleteSubject
+    if (addSubject && deleteSubject) {
+        const overlappingSubjects = addSubject.filter((subject) =>
+            deleteSubject.includes(subject)
+        );
+        if (overlappingSubjects.length) {
             return errorResponse(
-                'Please provide update data.',
+                `The following subjects are in both addSubject and deleteSubject: ${overlappingSubjects.join(', ')}`,
                 httpStatus.BAD_REQUEST
             );
         }
+    }
 
-        const { writer, addSubject, deleteSubject, publication } = updateData;
-        const errors = await validateIds(writer, publication);
+    updateData.updatedBy = requester;
 
-        if (errors.length) {
-            throw new Error(errors.join(' '));
-        }
+    // Find the current book
+    const book = await BooksModel.findById(bookId);
 
-        const addSubjectErrors = await validateSubjectIds(addSubject);
-        const deleteSubjectErrors = await validateSubjectIds(deleteSubject);
-
-        if (addSubjectErrors.length || deleteSubjectErrors.length) {
-            throw new Error(
-                [...addSubjectErrors, ...deleteSubjectErrors].join(' ')
-            );
-        }
-
-        // Ensure no overlap between addSubject and deleteSubject
-        if (addSubject && deleteSubject) {
-            const overlappingSubjects = addSubject.filter((subject) =>
-                deleteSubject.includes(subject)
-            );
-
-            if (overlappingSubjects.length) {
-                throw new Error(
-                    `The following subjects are in both addSubject and deleteSubject: ${overlappingSubjects.join(', ')}`
-                );
-            }
-        }
-
-        updateData.updatedBy = requester;
-
-        // Find the current book
-        const book = await BooksModel.findById(bookId);
-
-        if (!book) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'Book not found.',
-                status: httpStatus.NOT_FOUND,
-            };
-        }
-
-        // Ensure book.subject is an array
-        if (!Array.isArray(book.subject)) {
-            book.subject = [];
-        }
-
-        const existingSubjects = [];
-        const newSubjects = [];
-
-        // Handle adding subjects
-        if (addSubject?.length) {
-            addSubject.forEach((subject) => {
-                if (book.subject.includes(subject)) {
-                    existingSubjects.push(subject);
-                } else {
-                    newSubjects.push(subject);
-                }
-            });
-
-            if (existingSubjects.length) {
-                throw new Error(
-                    `The following subjects already exist: ${existingSubjects.join(', ')}`
-                );
-            }
-
-            book.subject.push(...newSubjects);
-        }
-
-        // Handle deleting subjects
-        if (deleteSubject && deleteSubject.length) {
-            book.subject = book.subject.filter(
-                (subject) => !deleteSubject.includes(subject.toString())
-            );
-        }
-
-        // Update other fields
-        const {
-            addSubject: _,
-            deleteSubject: __,
-            ...otherUpdates
-        } = updateData;
-
-        Object.assign(book, otherUpdates);
-
-        let bookImageData = {};
-
-        // Handle file update
-        if (bookImage) {
-            const fileValidationResults = validateFile(
-                bookImage,
-                booksConstant.imageSize,
-                [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
-                [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
-            );
-            if (!fileValidationResults.isValid) {
-                return errorResponse(
-                    fileValidationResults.message,
-                    httpStatus.BAD_REQUEST
-                );
-            }
-
-            // Delete the old file from Google Drive if it exists
-            const oldFileId = book.image?.fileId;
-            if (oldFileId) {
-                await GoogleDriveFileOperations.deleteFile(oldFileId);
-            }
-
-            bookImageData =
-                await GoogleDriveFileOperations.uploadFile(bookImage);
-
-            if (!bookImageData || bookImageData instanceof Error) {
-                return errorResponse(
-                    'Failed to save image.',
-                    httpStatus.INTERNAL_SERVER_ERROR
-                );
-            }
-
-            bookImageData = {
-                fileId: bookImageData.fileId,
-                shareableLink: bookImageData.shareableLink,
-                downloadLink: bookImageData.downloadLink,
-            };
-
-            if (bookImageData) {
-                updateData.image = bookImageData;
-            }
-        }
-
-        const updatedBook = await book.save();
-
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: updatedBook,
-            message: 'Book updated successfully.',
-            status: httpStatus.OK,
-        };
-    } catch (error) {
+    if (!book) {
         return {
             timeStamp: new Date(),
             success: false,
             data: {},
-            message: error.message || 'Error updating the book.',
-            status: httpStatus.BAD_REQUEST,
+            message: 'Book not found.',
+            status: httpStatus.NOT_FOUND,
         };
     }
+
+    // Ensure book.subject is an array
+    if (!Array.isArray(book.subject)) {
+        book.subject = [];
+    }
+
+    const existingSubjects = [];
+    const newSubjects = [];
+
+    // Handle adding subjects
+    if (addSubject?.length) {
+        addSubject.forEach((subject) => {
+            if (book.subject.includes(subject)) {
+                existingSubjects.push(subject);
+            } else {
+                newSubjects.push(subject);
+            }
+        });
+
+        if (existingSubjects.length) {
+            return errorResponse(
+                `The following subjects already exist: ${existingSubjects.join(', ')}`,
+                httpStatus.BAD_REQUEST
+            );
+        }
+
+        book.subject.push(...newSubjects);
+    }
+
+    // Handle deleting subjects
+    if (deleteSubject && deleteSubject.length) {
+        book.subject = book.subject.filter(
+            (subject) => !deleteSubject.includes(subject.toString())
+        );
+    }
+
+    // Update other fields
+    const {
+        addSubject: _,
+        deleteSubject: __,
+        ...otherUpdates
+    } = updateData;
+
+    Object.assign(book, otherUpdates);
+
+    let bookImageData = {};
+
+    // Handle file update
+    if (bookImage) {
+        const fileValidationResults = validateFile(
+            bookImage,
+            booksConstant.imageSize,
+            [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
+            [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
+        );
+        if (!fileValidationResults.isValid) {
+            return errorResponse(
+                fileValidationResults.message,
+                httpStatus.BAD_REQUEST
+            );
+        }
+
+        // Delete the old file from Google Drive if it exists
+        const oldFileId = book.image?.fileId;
+        if (oldFileId) {
+            await GoogleDriveFileOperations.deleteFile(oldFileId);
+        }
+
+        bookImageData =
+            await GoogleDriveFileOperations.uploadFile(bookImage);
+
+        if (!bookImageData || bookImageData instanceof Error) {
+            return errorResponse(
+                'Failed to save image.',
+                httpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+
+        bookImageData = {
+            fileId: bookImageData.fileId,
+            shareableLink: bookImageData.shareableLink,
+            downloadLink: bookImageData.downloadLink,
+        };
+
+        if (bookImageData) {
+            updateData.image = bookImageData;
+        }
+    }
+
+    await book.save();
+
+    const updatedBookDetails = await BooksModel.findById(bookId)
+        .populate({ path: 'writer', select: '-createdBy -updatedBy' })
+        .populate({ path: 'publication', select: '-createdBy -updatedBy' })
+        .populate({ path: 'subject', select: '-createdBy -updatedBy' })
+        .select('-createdBy -updatedBy');
+
+    return {
+        timeStamp: new Date(),
+        success: true,
+        data: updatedBookDetails,
+        message: 'Book updated successfully.',
+        status: httpStatus.OK,
+    };
 };
 
 const deleteBooks = async (requester, bookIds) => {
-    const isAuthorized = await validateUserRequest(requester);
-
+    const isAuthorized = await validateAdminRequest(requester);
     if (!isAuthorized) {
         return {
             timeStamp: new Date(),
@@ -410,7 +454,28 @@ const deleteBooks = async (requester, bookIds) => {
 };
 
 const deleteBook = async (requester, bookId) => {
-    return deleteResourceById(requester, bookId, BooksModel, 'book');
+    const isAuthorized = await validateAdminRequest(requester);
+    if (!isAuthorized) {
+        return errorResponse(
+            `You are not authorized to delete book.`,
+            httpStatus.FORBIDDEN
+        );
+    }
+
+    const deletedResource = await BooksModel.findByIdAndDelete(bookId);
+    if (!deletedResource) {
+        return sendResponse(
+            {},
+            'Book not found.',
+            httpStatus.NOT_FOUND
+        );
+    }
+
+    return sendResponse(
+        {},
+        'Book deleted successfully.',
+        httpStatus.OK
+    );
 };
 
 const booksService = {

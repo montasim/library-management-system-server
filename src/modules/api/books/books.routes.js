@@ -23,7 +23,7 @@ router
     .route('/')
     .post(
         authenticateMiddleware.admin,
-        booksValidator.createBook,
+        // booksValidator.createBook,
         uploadMiddleware.single('image'),
         booksController.createBook
     )
