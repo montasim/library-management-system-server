@@ -9,8 +9,50 @@ import rolesValidator from './roles/roles.validator.js';
 import rolesController from './roles/roles.controller.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 import routesConstants from '../../../constant/routes.constants.js';
+import adminValidator from './admin/admin.validator.js';
+import adminController from './admin/admin.controller.js';
 
 const router = express.Router();
+
+router
+    .route('/admin')
+    .post(authenticateMiddleware, adminValidator.createAdmin, adminController.createAdmin)
+    // .get(adminValidator.getAdmin, adminController.getAdmin)
+    // .delete(adminValidator.deleteAdmin, adminController.deleteAdmin)
+    .all(methodNotSupported);
+
+router
+    .route('/admin/verify/:token')
+    .get(adminValidator.verify, adminController.verify)
+    .all(methodNotSupported);
+
+router
+    .route('/admin/resend-verification/:id')
+    .get(adminValidator.resendVerification, adminController.resendVerification)
+    .all(methodNotSupported);
+
+router
+    .route('/admin/request-new-password')
+    .put(adminValidator.requestNewPassword, adminController.requestNewPassword)
+    .all(methodNotSupported);
+
+router
+    .route('/admin/reset-password/:token')
+    .put(adminValidator.resetPassword, adminController.resetPassword)
+    .all(methodNotSupported);
+
+// router
+//     .route('/admin/:adminId')
+//     .get(adminValidator.adminId, adminController.getAdminById)
+//     .delete(adminValidator.adminId, adminController.deleteAdminById)
+//     .all(methodNotSupported);
+
+router
+    .route('/admin/login')
+    .post(adminValidator.login, adminController.login)
+    .all(methodNotSupported);
+
+router.route('/admin/logout').get(adminController.logout).all(methodNotSupported);
 
 router
     .route('/login')
