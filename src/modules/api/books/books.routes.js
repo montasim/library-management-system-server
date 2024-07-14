@@ -5,13 +5,12 @@ import uploadMiddleware from '../../../middleware/upload.middleware.js';
 import booksController from './books.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
-import returnBooksController from './return/returnBooks.controller.js';
-import returnBooksValidator from './return/returnBooks.validator.js';
 import desiredBooksRoutes from './desired/desiredBooks.routes.js';
 import favouriteBooksRoutes from './favourite/favouriteBooks.routes.js';
 import booksHistoryRoutes from './history/booksHistory.routes.js';
 import lendBooksRoutes from './lend/lendBooks.routes.js';
 import requestBooksRoutes from './requestBooks/requestBooks.routes.js';
+import returnBooksRoutes from './return/returnBooks.routes.js';
 
 const router = express.Router();
 
@@ -37,15 +36,7 @@ router.use('/favourite', favouriteBooksRoutes);
 router.use('/history', booksHistoryRoutes);
 router.use('/lend', lendBooksRoutes);
 router.use('/request', requestBooksRoutes);
-
-router
-    .route('/return')
-    .delete(
-        authenticateMiddleware.admin,
-        returnBooksValidator.returnBooksSchema,
-        returnBooksController.returnBook
-    )
-    .all(methodNotSupported);
+router.use('/return', returnBooksRoutes);
 
 router
     .route('/:bookId')
