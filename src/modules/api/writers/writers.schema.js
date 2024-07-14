@@ -3,7 +3,6 @@ import Joi from 'joi';
 import writersConstants from './writers.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
 import validationService from '../../../service/validation.service.js';
-import permissionsConstants from '../auth/permissions/permissions.constant.js';
 
 // Define base schema for writers
 const writerSchemaBase = Joi.object({

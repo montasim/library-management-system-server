@@ -1,11 +1,11 @@
 import PermissionsModel from './permissions.model.js';
-import httpStatus from '../../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../../utilities/validateUserRequest.js';
-import errorResponse from '../../../../utilities/errorResponse.js';
-import sendResponse from '../../../../utilities/sendResponse.js';
-import deleteResourceById from '../../../../shared/deleteResourceById.js';
-import getResourceById from '../../../../shared/getResourceById.js';
-import isEmptyObject from '../../../../utilities/isEmptyObject.js';
+import httpStatus from '../../../constant/httpStatus.constants.js';
+import validateUserRequest from '../../../utilities/validateUserRequest.js';
+import errorResponse from '../../../utilities/errorResponse.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import deleteResourceById from '../../../shared/deleteResourceById.js';
+import getResourceById from '../../../shared/getResourceById.js';
+import isEmptyObject from '../../../utilities/isEmptyObject.js';
 
 const createPermission = async (requester, newPermissionData) => {
     const isAuthorized = await validateUserRequest(requester);

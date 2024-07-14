@@ -3,8 +3,6 @@ import express from 'express';
 import authValidator from './auth.validator.js';
 import authController from './auth.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
-import permissionsValidator from './permissions/permissions.validator.js';
-import permissionsController from './permissions/permissions.controller.js';
 import rolesValidator from './roles/roles.validator.js';
 import rolesController from './roles/roles.controller.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
@@ -21,46 +19,6 @@ router
     .all(methodNotSupported);
 
 router.route('/logout').get(authController.logout).all(methodNotSupported);
-
-router
-    .route(`/${routesConstants.permissions.routes}`)
-    .post(
-        authenticateMiddleware.admin,
-        permissionsValidator.createPermission,
-        permissionsController.createPermission
-    )
-    .get(
-        authenticateMiddleware.admin,
-        permissionsValidator.getPermissions,
-        permissionsController.getPermissions
-    )
-    .delete(
-        authenticateMiddleware.admin,
-        permissionsValidator.deletePermissions,
-        permissionsController.deletePermissions
-    )
-    .all(methodNotSupported);
-
-router
-    .route(
-        `/${routesConstants.permissions.routes}/:${routesConstants.permissions.params}`
-    )
-    .get(
-        authenticateMiddleware.admin,
-        permissionsValidator.getPermission,
-        permissionsController.getPermission
-    )
-    .put(
-        authenticateMiddleware.admin,
-        permissionsValidator.updatePermission,
-        permissionsController.updatePermission
-    )
-    .delete(
-        authenticateMiddleware.admin,
-        permissionsValidator.deletePermission,
-        permissionsController.deletePermission
-    )
-    .all(methodNotSupported);
 
 router
     .route('/requestBooks-new-password')

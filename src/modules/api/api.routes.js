@@ -10,12 +10,15 @@ import usersRoutes from './users/users.routes.js';
 import writersRoutes from './writers/writers.routes.js';
 import authenticateMiddleware
     from '../../middleware/authenticate.middleware.js';
+import routesConstants from '../../constant/routes.constants.js';
+import permissionRoutes from './permissions/permission.routes.js';
 
 const router = express.Router();
 
 router.use('/auth', authRoutes);
 router.use('/books', booksRoutes);
 router.use('/detect', detectRoutes);
+router.use(`/${routesConstants.permissions.routes}`, authenticateMiddleware.admin, permissionRoutes);
 router.use('/publications', publicationsRoutes);
 router.use('/subjects', subjectsRoutes);
 router.use('/trending', trendingRoutes);

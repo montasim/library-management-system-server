@@ -1,9 +1,9 @@
 import Joi from 'joi';
 
 import permissionsConstants from './permissions.constant.js';
-import customValidationMessage from '../../../../shared/customValidationMessage.js';
-import validationService from '../../../../service/validation.service.js';
-import routesConstants from '../../../../constant/routes.constants.js';
+import customValidationMessage from '../../../shared/customValidationMessage.js';
+import validationService from '../../../service/validation.service.js';
+import routesConstants from '../../../constant/routes.constants.js';
 
 const actions = ['create', 'get', 'update', 'delete', 'modify'];
 // Collect valid route names from routesConstants
