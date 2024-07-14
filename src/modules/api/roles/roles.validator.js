@@ -1,4 +1,4 @@
-import validateWithSchema from '../../../../shared/validateWithSchema.js';
+import validateWithSchema from '../../../shared/validateWithSchema.js';
 import rolesSchema from './roles.schema.js';
 
 const createRole = validateWithSchema([

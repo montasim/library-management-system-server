@@ -46,6 +46,8 @@ router
     .post(adminValidator.login, adminController.login)
     .all(methodNotSupported);
 
-router.route('/logout').get(adminController.logout).all(methodNotSupported);
+router.route('/logout')
+    .get(authenticateMiddleware.admin, adminController.logout)
+    .all(methodNotSupported);
 
 export default router;

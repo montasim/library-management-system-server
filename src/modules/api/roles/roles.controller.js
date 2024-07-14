@@ -1,6 +1,6 @@
-import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
 import rolesService from './roles.service.js';
-import getRequesterId from '../../../../utilities/getRequesterId.js';
+import getRequesterId from '../../../utilities/getRequesterId.js';
 
 const createRole = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);

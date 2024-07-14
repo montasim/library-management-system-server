@@ -1,12 +1,12 @@
-import validatePermissions from '../../../../shared/validatePermissions.js';
+import validatePermissions from '../../../shared/validatePermissions.js';
 import RolesModel from './roles.model.js';
-import httpStatus from '../../../../constant/httpStatus.constants.js';
-import errorResponse from '../../../../utilities/errorResponse.js';
-import validateUserRequest from '../../../../utilities/validateUserRequest.js';
-import sendResponse from '../../../../utilities/sendResponse.js';
-import deleteResourceById from '../../../../shared/deleteResourceById.js';
-import getResourceById from '../../../../shared/getResourceById.js';
-import isEmptyObject from '../../../../utilities/isEmptyObject.js';
+import httpStatus from '../../../constant/httpStatus.constants.js';
+import errorResponse from '../../../utilities/errorResponse.js';
+import validateUserRequest from '../../../utilities/validateUserRequest.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import deleteResourceById from '../../../shared/deleteResourceById.js';
+import getResourceById from '../../../shared/getResourceById.js';
+import isEmptyObject from '../../../utilities/isEmptyObject.js';
 
 const createRole = async (requester, newRoleData) => {
     const isAuthorized = await validateUserRequest(requester);

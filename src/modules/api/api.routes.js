@@ -12,14 +12,18 @@ import authenticateMiddleware
     from '../../middleware/authenticate.middleware.js';
 import routesConstants from '../../constant/routes.constants.js';
 import permissionRoutes from './permissions/permission.routes.js';
+import rolesRoutes from './roles/roles.routes.js';
+import adminRoutes from './admin/admin.routes.js';
 
 const router = express.Router();
 
+router.use('/admin', adminRoutes);
 router.use('/auth', authRoutes);
 router.use('/books', booksRoutes);
 router.use('/detect', detectRoutes);
 router.use(`/${routesConstants.permissions.routes}`, authenticateMiddleware.admin, permissionRoutes);
 router.use('/publications', publicationsRoutes);
+router.use(`/${routesConstants.roles.routes}`, authenticateMiddleware.admin, rolesRoutes);
 router.use('/subjects', subjectsRoutes);
 router.use('/trending', trendingRoutes);
 router.use('/users', authenticateMiddleware.user, usersRoutes);
