@@ -285,13 +285,10 @@ const updateBook = async (requester, bookId, updateData, bookImage) => {
     const book = await BooksModel.findById(bookId);
 
     if (!book) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Book not found.',
-            status: httpStatus.NOT_FOUND,
-        };
+        return errorResponse(
+            'Book not found.',
+            httpStatus.NOT_FOUND
+        );
     }
 
     // Ensure book.subject is an array
@@ -390,25 +387,20 @@ const updateBook = async (requester, bookId, updateData, bookImage) => {
         .populate({ path: 'subject', select: '-createdBy -updatedBy' })
         .select('-createdBy -updatedBy');
 
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: updatedBookDetails,
-        message: 'Book updated successfully.',
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        updatedBookDetails,
+        'Book updated successfully.',
+        httpStatus.OK
+    );
 };
 
 const deleteBooks = async (requester, bookIds) => {
     const isAuthorized = await validateAdminRequest(requester);
     if (!isAuthorized) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'User not authorized.',
-            status: httpStatus.FORBIDDEN,
-        };
+        return errorResponse(
+            'User not authorized.',
+            httpStatus.FORBIDDEN
+        );
     }
 
     const results = {
@@ -444,13 +436,11 @@ const deleteBooks = async (requester, bookIds) => {
         }
     }
 
-    return {
-        timeStamp: new Date(),
-        success: results.failed.length === 0, // Success only if there were no failures
-        data: results,
-        message: `Deleted ${results.deleted.length}, Not found ${results.notFound.length}, Failed ${results.failed.length}`,
-        status: httpStatus.OK,
-    };
+    return sendResponse(
+        results,
+        `Deleted ${results.deleted.length}, Not found ${results.notFound.length}, Failed ${results.failed.length}`,
+        httpStatus.OK
+    );
 };
 
 const deleteBook = async (requester, bookId) => {

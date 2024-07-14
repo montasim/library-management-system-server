@@ -5,33 +5,40 @@ import sendResponse from '../../../../utilities/sendResponse.js';
 import RequestBooksModel from '../../books/requestBooks/requestBooks.model.js';
 
 const getRequestBooks = async (requester) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
+    try {
+        const isAuthorized = await validateUserRequest(requester);
+        if (!isAuthorized) {
+            return errorResponse(
+                'You are not authorized to get requestBooks book.',
+                httpStatus.FORBIDDEN
+            );
+        }
+
+        const requestBooks = await RequestBooksModel.findOne({
+            owner: requester,
+        });
+
+        if (!requestBooks || requestBooks.requestBooks.length === 0) {
+            return errorResponse(
+                'You have not requested any book yet.',
+                httpStatus.NOT_FOUND
+            );
+        }
+
+        return sendResponse(
+            {
+                total: requestBooks.requestBooks.length,
+                requestBooks: requestBooks.requestBooks,
+            },
+            'Successfully retrieved your requested books.',
+            httpStatus.OK
+        );
+    } catch (error) {
         return errorResponse(
-            'You are not authorized to get requestBooks book.',
-            httpStatus.FORBIDDEN
+            error.message || 'Failed to retrieve the requested books.',
+            httpStatus.INTERNAL_SERVER_ERROR
         );
     }
-
-    const requestBooks = await RequestBooksModel.findOne({
-        owner: requester,
-    });
-
-    if (!requestBooks || requestBooks.requestBooks.length === 0) {
-        return errorResponse(
-            'You have not requested any book yet.',
-            httpStatus.NOT_FOUND
-        );
-    }
-
-    return sendResponse(
-        {
-            total: requestBooks.requestBooks.length,
-            requestBooks: requestBooks.requestBooks,
-        },
-        'Successfully retrieved your requested books.',
-        httpStatus.OK
-    );
 };
 
 const getRequestBook = async (requester, requestBookId) => {
@@ -39,15 +46,9 @@ const getRequestBook = async (requester, requestBookId) => {
         const isAuthorized = await validateUserRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
-                'You have not requested any book yet.',
-                httpStatus.NOT_FOUND
+                'You are not authorized to access requested books.',
+                httpStatus.FORBIDDEN
             );
-            return {
-                timeStamp: new Date(),
-                success: false,
-                message: 'You are not authorized to access book requests.',
-                status: httpStatus.FORBIDDEN,
-            };
         }
 
         // Retrieve the whole document of requests from the specific user
@@ -55,12 +56,10 @@ const getRequestBook = async (requester, requestBookId) => {
             owner: requester,
         });
         if (!requestBooks) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                message: 'No book requests found for this user.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse(
+                'No book requests found for this user.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         // Find the specific book requestBooks in the array of requestBooks
@@ -70,29 +69,23 @@ const getRequestBook = async (requester, requestBookId) => {
             return book._id.toString() === requestBookId;
         });
         if (!bookRequest) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                message: 'Book requestBooks not found.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse(
+                'Book requestBooks not found.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         // Return the found book requestBooks
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: bookRequest,
-            message: 'Successfully retrieved the book requestBooks.',
-            status: httpStatus.OK,
-        };
+        return sendResponse(
+            bookRequest,
+            'Successfully retrieved the book requestBooks.',
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            message: error.message || 'Failed to retrieve the book requestBooks.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        return errorResponse(
+            error.message || 'Failed to retrieve the book requestBooks.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
@@ -100,24 +93,20 @@ const deleteRequestBook = async (requester, requestBookId) => {
     try {
         const isAuthorized = await validateUserRequest(requester);
         if (!isAuthorized) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                message: 'You are not authorized to delete book requests.',
-                status: httpStatus.FORBIDDEN,
-            };
+            return errorResponse(
+                'You are not authorized to delete book requests.',
+                httpStatus.FORBIDDEN
+            );
         }
 
         const requestBook = await RequestBooksModel.findOne({
             owner: requester,
         });
         if (!requestBook) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                message: 'No book requestBooks found to delete.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse(
+                'No book requestBooks found to delete.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         // Remove the requested book by ID from the array
@@ -126,29 +115,27 @@ const deleteRequestBook = async (requester, requestBookId) => {
         );
         if (index > -1) {
             requestBook.requestBooks.splice(index, 1);
+
             await requestBook.save();
-            return {
-                timeStamp: new Date(),
-                success: true,
-                data: { removedBookId: requestBookId },
-                message: 'Book requestBooks removed successfully.',
-                status: httpStatus.OK,
-            };
+
+            return sendResponse(
+                {
+                    removedBookId: requestBookId
+                },
+                'Book requestBooks removed successfully.',
+                httpStatus.OK
+            );
         } else {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                message: 'Book requestBooks not found in your records.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse(
+                'Book requestBooks not found in your records.',
+                httpStatus.NOT_FOUND
+            );
         }
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            message: 'Failed to remove the book requestBooks.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        return errorResponse(
+            error.message || 'Failed to remove the book requestBooks.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 

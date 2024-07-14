@@ -92,13 +92,11 @@ const createLendBook = async (requester, lendBookData) => {
         });
         await existingLend.save();
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: existingLend,
-            message: 'You have lent the book successfully.',
-            status: httpStatus.OK,
-        };
+        return sendResponse(
+            existingLend,
+            'You have lent the book successfully.',
+            httpStatus.OK
+        );
     } else {
         // Create a new document if none exists
         const newLendBook = await LendBooksModel.create({
