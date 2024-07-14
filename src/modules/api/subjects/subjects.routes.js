@@ -4,6 +4,7 @@ import subjectsController from './subjects.controller.js';
 import subjectsValidator from './subjects.validator.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
+import routesConstants from '../../../constant/routes.constants.js';
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ router
     .all(methodNotSupported);
 
 router
-    .route('/:subjectId')
+    .route(`/${routesConstants.subjects.params}`)
     .get(subjectsValidator.getSubject, subjectsController.getSubject)
     .put(
         authenticateMiddleware.admin,

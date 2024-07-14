@@ -19,14 +19,14 @@ const router = express.Router();
 
 router.use('/admin', adminRoutes);
 router.use('/auth', authRoutes);
-router.use('/books', booksRoutes);
+router.use(`/${routesConstants.books.routes}`, booksRoutes);
 router.use('/detect', detectRoutes);
 router.use(`/${routesConstants.permissions.routes}`, authenticateMiddleware.admin, permissionRoutes);
-router.use('/publications', publicationsRoutes);
+router.use(`/${routesConstants.publications.routes}`, publicationsRoutes);
 router.use(`/${routesConstants.roles.routes}`, authenticateMiddleware.admin, rolesRoutes);
-router.use('/subjects', subjectsRoutes);
+router.use(`/${routesConstants.subjects.routes}`, subjectsRoutes);
 router.use('/trending', trendingRoutes);
 router.use('/users', authenticateMiddleware.user, usersRoutes);
-router.use('/writers', writersRoutes);
+router.use(`/${routesConstants.writers.routes}`, writersRoutes);
 
 export default router;

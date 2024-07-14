@@ -4,6 +4,7 @@ import publicationsController from './publications.controller.js';
 import publicationsValidator from './publications.validator.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
+import routesConstants from '../../../constant/routes.constants.js';
 
 const router = express.Router();
 
@@ -26,7 +27,7 @@ router
     .all(methodNotSupported);
 
 router
-    .route('/:publicationId')
+    .route(`/${routesConstants.publications.params}`)
     .get(
         publicationsValidator.getPublication,
         publicationsController.getPublication

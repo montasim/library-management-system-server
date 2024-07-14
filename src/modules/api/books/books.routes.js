@@ -11,6 +11,7 @@ import booksHistoryRoutes from './history/booksHistory.routes.js';
 import lendBooksRoutes from './lend/lendBooks.routes.js';
 import requestBooksRoutes from './requestBooks/requestBooks.routes.js';
 import returnBooksRoutes from './return/returnBooks.routes.js';
+import routesConstants from '../../../constant/routes.constants.js';
 
 const router = express.Router();
 
@@ -39,7 +40,7 @@ router.use('/request', requestBooksRoutes);
 router.use('/return', returnBooksRoutes);
 
 router
-    .route('/:bookId')
+    .route(`/${routesConstants.books.params}`)
     .get(booksValidator.getBook, booksController.getBook)
     .put(
         authenticateMiddleware.admin,

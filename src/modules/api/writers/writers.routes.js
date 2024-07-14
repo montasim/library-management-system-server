@@ -7,6 +7,7 @@ import configuration from '../../../configuration/configuration.js';
 import uploadMiddleware from '../../../middleware/upload.middleware.js';
 import writersController from './writers.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
+import routesConstants from '../../../constant/routes.constants.js';
 
 const router = express.Router();
 
@@ -33,7 +34,7 @@ router
     .all(methodNotSupported);
 
 router
-    .route('/:writerId')
+    .route(`/${routesConstants.writers.params}`)
     .get(
         writersValidator.getWriter,
         cacheMiddleware.create(configuration.cache.timeout),
