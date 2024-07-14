@@ -18,7 +18,7 @@ router.route('/logout')
     .all(methodNotSupported);
 
 router
-    .route('/requestBooks-new-password')
+    .route('/request-new-password')
     .put(authValidator.requestNewPassword, authController.requestNewPassword)
     .all(methodNotSupported);
 
