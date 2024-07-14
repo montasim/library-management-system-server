@@ -195,7 +195,7 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
 
         updateData.updatedBy = requester;
 
-        let writerImageData = {};
+        let writerImageData;
         // Delete the old file from Google Drive if it exists
         const oldFileId = existingWriter.image?.fileId;
         if (oldFileId) {

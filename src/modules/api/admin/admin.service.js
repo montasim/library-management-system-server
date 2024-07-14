@@ -12,19 +12,16 @@ import prepareEmailContent from '../../../shared/prepareEmailContent.js';
 import EmailService from '../../../service/email.service.js';
 import prepareEmail from '../../../shared/prepareEmail.js';
 import errorResponse from '../../../utilities/errorResponse.js';
-import validateAdminRequest
-    from '../../../utilities/validateAdminRequest.js';
+import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
 import generateHashedToken from '../../../utilities/generateHashedToken.js';
 import comparePassword from '../../../utilities/comparePassword.js';
 import validatePassword from '../../../utilities/validatePassword.js';
-import createHashedPassword
-    from '../../../utilities/createHashedPassword.js';
+import createHashedPassword from '../../../utilities/createHashedPassword.js';
 import getRequestedDeviceDetails
     from '../../../utilities/getRequestedDeviceDetails.js';
 import decodeAuthenticationToken
     from '../../../utilities/decodeAuthenticationToken.js';
-import generateTempPassword
-    from '../../../utilities/generateTempPassword.js';
+import generateTempPassword from '../../../utilities/generateTempPassword.js';
 import createAuthenticationToken
     from '../../../utilities/createAuthenticationToken.js';
 import UsersModel from '../users/users.model.js';
@@ -150,10 +147,8 @@ const verify = async (token, hostData) => {
 
         // Generate a temporary password
         const tempPassword = generateTempPassword(8, 12);
-        const hashedTempPassword = await bcrypt.hash(tempPassword, 10);
-
         // Save the hashed temporary password and set mustChangePassword to true
-        adminDetails.password = hashedTempPassword;
+        adminDetails.password = await bcrypt.hash(tempPassword, 10);
         adminDetails.mustChangePassword = true;
 
         const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
@@ -524,7 +519,7 @@ const login = async (adminData, userAgent, device) => {
         //     };
         // }
 
-        const { token, tokenDetails } = await createAuthenticationToken(
+        const { token } = await createAuthenticationToken(
             adminDetails,
             device
         );
@@ -589,7 +584,7 @@ const login = async (adminData, userAgent, device) => {
 const logout = async (req) => {
     try {
         // Assuming these functions are well-defined and return relevant details or throw an error if something goes wrong.
-        const device = await getRequestedDeviceDetails(req);
+        // const device = await getRequestedDeviceDetails(req);
         const jwtToken = req?.headers['authorization']
             ? req.headers['authorization'].split(' ')[1]
             : null;
@@ -601,7 +596,7 @@ const logout = async (req) => {
             );
         }
 
-        const tokenData = await decodeAuthenticationToken(jwtToken);
+        // const tokenData = await decodeAuthenticationToken(jwtToken);
 
         // You might want to perform actions here such as invalidating the token.
         // Since this is a logout, we need to ensure the token is invalidated if you maintain a list of active tokens.

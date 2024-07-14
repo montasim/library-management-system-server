@@ -3,7 +3,6 @@ import express from 'express';
 import userRequestBooksController from './userRequestBooks.controller.js';
 import methodNotSupported from '../../../../shared/methodNotSupported.js';
 import userRequestBooksValidator from './userRequestBooks.validator.js';
-import uploadMiddleware from '../../../../middleware/upload.middleware.js';
 
 const router = express.Router();
 

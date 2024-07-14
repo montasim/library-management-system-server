@@ -484,7 +484,7 @@ const login = async (userData, userAgent, device) => {
         //     };
         // }
 
-        const { token, tokenDetails } = await createAuthenticationToken(
+        const { token } = await createAuthenticationToken(
             userDetails,
             device
         );
@@ -549,7 +549,7 @@ const login = async (userData, userAgent, device) => {
 const logout = async (req) => {
     try {
         // Assuming these functions are well-defined and return relevant details or throw an error if something goes wrong.
-        const device = await getRequestedDeviceDetails(req);
+        // const device = await getRequestedDeviceDetails(req);
         const jwtToken = req?.headers['authorization']
             ? req.headers['authorization'].split(' ')[1]
             : null;
@@ -561,7 +561,7 @@ const logout = async (req) => {
             );
         }
 
-        const tokenData = await decodeAuthenticationToken(jwtToken);
+        // const tokenData = await decodeAuthenticationToken(jwtToken);
 
         // You might want to perform actions here such as invalidating the token.
         // Since this is a logout, we need to ensure the token is invalidated if you maintain a list of active tokens.

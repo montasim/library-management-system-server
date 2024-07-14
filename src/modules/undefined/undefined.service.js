@@ -3,7 +3,7 @@ import errorResponse from '../../utilities/errorResponse.js';
 import sendResponse from '../../utilities/sendResponse.js';
 import logger from '../../utilities/logger.js';
 
-const undefinedService = (req) => {
+const undefinedService = () => {
     try {
         return sendResponse(
             {},
