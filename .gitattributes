@@ -6,12 +6,12 @@
 # Ensures automatic text handling, which normalizes line endings on commit and converts them on checkout.
 
 # Specify line ending settings for specific file types to ensure consistency across platforms.
-*.js text eol=crlf    # Ensure JavaScript files use CRLF line endings in Windows environments.
-*.jsx text eol=crlf   # Ensure JSX files use CRLF line endings in Windows environments.
-*.ts text eol=crlf    # Ensure TypeScript files use CRLF line endings in Windows environments.
-*.tsx text eol=crlf   # Ensure TSX files use CRLF line endings in Windows environments.
-*.json text eol=crlf  # Ensure JSON files use CRLF line endings in Windows environments.
-*.md text eol=crlf    # Ensure Markdown files use CRLF line endings in Windows environments.
+*.js text eol=crlf
+*.jsx text eol=crlf
+*.ts text eol=crlf
+*.tsx text eol=crlf
+*.json text eol=crlf
+*.md text eol=crlf
 
 # Set UTF-8 encoding for certain file types to prevent encoding issues across different environments.
 *.js charset=utf-8
@@ -22,12 +22,12 @@
 
 # Special handling for markdown files to prevent issues with formatting that uses trailing whitespace.
 *.md text=auto eol=crlf
-*.md -trim_trailing_whitespace   # Disable trimming of trailing whitespace in Markdown files.
+*.md -trim_trailing_whitespace
 
 # Define binary files to prevent Git from attempting to auto-correct line endings or apply text transformations.
-*.png binary   # Treat PNG files as binary to avoid corrupting their content.
-*.jpg binary   # Treat JPEG files as binary to avoid corrupting their content.
-*.gif binary   # Treat GIF files as binary to avoid corrupting their content.
+*.png binary
+*.jpg binary
+*.gif binary
 
 # Explanation of binary setting
 # 'binary' attribute is used to tell Git to treat the file as a binary data, preventing any automatic end-of-line conversion,
