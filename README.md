@@ -62,17 +62,24 @@
         - Remove a book from favorite
         - Get all favorite books
 2. Admin
-    - Auth
-        - Permission
-            - Create permission
-            - Get all permissions
-            - Update permission
-            - Delete permission
-        - Role
-            - Create role
-            - Get all roles
-            - Update role
-            - Delete role
+    - Admin
+       - Create admin
+       - Verify admin request using email
+       - Admin Login
+       - Request password reset email
+       - Resend password reset email
+       - Reset password
+       - Logout
+    - Permission
+       - Create permission
+       - Get all permissions
+       - Update permission
+       - Delete permission
+    - Role
+       - Create role
+       - Get all roles
+       - Update role
+       - Delete role
     - Books
         - Add a book
         - Update a book
