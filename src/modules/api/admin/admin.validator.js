@@ -1,5 +1,5 @@
 import adminSchema from './admin.schema.js';
-import validateWithSchema from '../../../../shared/validateWithSchema.js';
+import validateWithSchema from '../../../shared/validateWithSchema.js';
 
 const createAdmin = validateWithSchema([
     {

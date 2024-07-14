@@ -16,7 +16,7 @@ import validateEmail from '../../../utilities/validateEmail.js';
 import validatePassword from '../../../utilities/validatePassword.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import errorResponse from '../../../utilities/errorResponse.js';
-import AdminModel from './admin/admin.model.js';
+import AdminModel from '../admin/admin.model.js';
 
 const signup = async (userData, hostData) => {
     const existingAdmin = await AdminModel.findOne({

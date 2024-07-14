@@ -1,8 +1,8 @@
 import Joi from 'joi';
-import validationService from '../../../../service/validation.service.js';
+import validationService from '../../../service/validation.service.js';
 import adminConstants from './admin.constants.js';
 import customValidationMessage
-    from '../../../../shared/customValidationMessage.js';
+    from '../../../shared/customValidationMessage.js';
 
 // Define base schema for subjects
 const authSchemaBase = Joi.object({

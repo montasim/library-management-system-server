@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
-import getRequesterId from '../../../../utilities/getRequesterId.js';
+import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import getRequesterId from '../../../utilities/getRequesterId.js';
 import adminService from './admin.service.js';
 import getRequestedDeviceDetails
-    from '../../../../utilities/getRequestedDeviceDetails.js';
+    from '../../../utilities/getRequestedDeviceDetails.js';
 
 const createAdmin = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);

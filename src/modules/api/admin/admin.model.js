@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
 import adminConstants from './admin.constants.js';
-import patterns from '../../../../constant/patterns.constants.js';
+import patterns from '../../../constant/patterns.constants.js';
 
 // Schema definition
 const adminSchema = new mongoose.Schema(

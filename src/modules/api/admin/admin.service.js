@@ -1,33 +1,33 @@
 import bcrypt from 'bcrypt';
 
 import AdminModel from './admin.model.js';
-import sendResponse from '../../../../utilities/sendResponse.js';
-import httpStatus from '../../../../constant/httpStatus.constants.js';
-import validateEmail from '../../../../utilities/validateEmail.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import httpStatus from '../../../constant/httpStatus.constants.js';
+import validateEmail from '../../../utilities/validateEmail.js';
 import generateVerificationToken
-    from '../../../../utilities/generateVerificationToken.js';
-import configuration from '../../../../configuration/configuration.js';
-import environment from '../../../../constant/envTypes.constants.js';
-import prepareEmailContent from '../../../../shared/prepareEmailContent.js';
-import EmailService from '../../../../service/email.service.js';
-import prepareEmail from '../../../../shared/prepareEmail.js';
-import errorResponse from '../../../../utilities/errorResponse.js';
+    from '../../../utilities/generateVerificationToken.js';
+import configuration from '../../../configuration/configuration.js';
+import environment from '../../../constant/envTypes.constants.js';
+import prepareEmailContent from '../../../shared/prepareEmailContent.js';
+import EmailService from '../../../service/email.service.js';
+import prepareEmail from '../../../shared/prepareEmail.js';
+import errorResponse from '../../../utilities/errorResponse.js';
 import validateAdminRequest
-    from '../../../../utilities/validateAdminRequest.js';
-import generateHashedToken from '../../../../utilities/generateHashedToken.js';
-import comparePassword from '../../../../utilities/comparePassword.js';
-import validatePassword from '../../../../utilities/validatePassword.js';
+    from '../../../utilities/validateAdminRequest.js';
+import generateHashedToken from '../../../utilities/generateHashedToken.js';
+import comparePassword from '../../../utilities/comparePassword.js';
+import validatePassword from '../../../utilities/validatePassword.js';
 import createHashedPassword
-    from '../../../../utilities/createHashedPassword.js';
+    from '../../../utilities/createHashedPassword.js';
 import getRequestedDeviceDetails
-    from '../../../../utilities/getRequestedDeviceDetails.js';
+    from '../../../utilities/getRequestedDeviceDetails.js';
 import decodeAuthenticationToken
-    from '../../../../utilities/decodeAuthenticationToken.js';
+    from '../../../utilities/decodeAuthenticationToken.js';
 import generateTempPassword
-    from '../../../../utilities/generateTempPassword.js';
+    from '../../../utilities/generateTempPassword.js';
 import createAuthenticationToken
-    from '../../../../utilities/createAuthenticationToken.js';
-import UsersModel from '../../users/users.model.js';
+    from '../../../utilities/createAuthenticationToken.js';
+import UsersModel from '../users/users.model.js';
 
 const createAdmin = async (requester, adminData, hostData) => {
     const isAuthorized = await validateAdminRequest(requester);
