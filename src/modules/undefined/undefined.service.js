@@ -1,6 +1,7 @@
 import httpStatus from '../../constant/httpStatus.constants.js';
 import errorResponse from '../../utilities/errorResponse.js';
 import sendResponse from '../../utilities/sendResponse.js';
+import logger from '../../utilities/logger.js';
 
 const undefinedService = (req) => {
     try {
@@ -10,6 +11,8 @@ const undefinedService = (req) => {
             httpStatus.NOT_FOUND
         );
     } catch (error) {
+        logger.error(`Failed to process request: ${error}`);
+
         return errorResponse(
             error.message || 'Failed to process request.',
             httpStatus.INTERNAL_SERVER_ERROR

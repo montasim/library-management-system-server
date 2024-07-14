@@ -75,6 +75,8 @@ const createWriter = async (requester, writerData, writerImage) => {
             httpStatus.CREATED
         );
     } catch (error) {
+        logger.error(`Failed to create writer: ${error}`);
+
         return errorResponse(
             error.message || 'Failed to create writer.',
             httpStatus.INTERNAL_SERVER_ERROR
@@ -125,8 +127,10 @@ const getWriters = async (params) => {
             httpStatus.OK
         );
     } catch (error) {
+        logger.error(`Failed to get writers: ${error}`);
+
         return errorResponse(
-            error.message || 'Failed to retrieve writers.',
+            error.message || 'Failed to get writers.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
@@ -141,8 +145,10 @@ const getWriter = async (writerId) => {
 
         return sendResponse(writer, 'Writer fetched successfully.', httpStatus.OK);
     } catch (error) {
+        logger.error(`Failed to get writer: ${error}`);
+
         return errorResponse(
-            error.message || 'Failed to retrieve writer.',
+            error.message || 'Failed to get writer.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
@@ -229,6 +235,8 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
             httpStatus.OK
         );
     } catch (error) {
+        logger.error(`Failed to update writer: ${error}`);
+
         return errorResponse(
             error.message || 'Failed to update writer.',
             httpStatus.INTERNAL_SERVER_ERROR
@@ -289,15 +297,26 @@ const deleteWriters = async (requester, writerIds) => {
             httpStatus.OK
         );
     } catch (error) {
+        logger.error(`Failed to delete writers: ${error}`);
+
         return errorResponse(
-            error.message || 'Failed to delete writer.',
+            error.message || 'Failed to delete writers.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
 };
 
 const deleteWriter = async (requester, writerId) => {
-    return deleteResourceById(requester, writerId, WritersModel, 'writer');
+    try {
+        return deleteResourceById(requester, writerId, WritersModel, 'writer');
+    } catch (error) {
+        logger.error(`Failed to delete writer: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to delete writer.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 };
 
 const writersService = {

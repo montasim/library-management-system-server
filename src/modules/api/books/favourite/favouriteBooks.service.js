@@ -4,141 +4,169 @@ import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import BooksModel from '../books.model.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
+import logger from '../../../../utilities/logger.js';
 
 const createFavouriteBook = async (requester, favouriteBookId) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
-        return errorResponse(
-            'You are not authorized to create favourite book.',
-            httpStatus.FORBIDDEN
-        );
-    }
-
-    // Assuming BooksModel contains the book details
-    const bookDetails = await BooksModel.findById(favouriteBookId);
-    if (!bookDetails) {
-        return errorResponse(
-            'No book found with the provided ID.',
-            httpStatus.NOT_FOUND
-        );
-    }
-
-    // Find existing document for the user
-    const existingFavourite = await FavouriteBooksModel.findOne({
-        owner: requester,
-    });
-    if (existingFavourite) {
-        // Prevent adding duplicate book IDs
-        if (existingFavourite.favouriteBooks.includes(favouriteBookId)) {
+    try {
+        const isAuthorized = await validateUserRequest(requester);
+        if (!isAuthorized) {
             return errorResponse(
-                'This book is already in your favourites.',
-                httpStatus.CONFLICT
+                'You are not authorized to create favourite book.',
+                httpStatus.FORBIDDEN
             );
         }
 
-        existingFavourite.favouriteBooks.push(favouriteBookId);
-        await existingFavourite.save();
+        // Assuming BooksModel contains the book details
+        const bookDetails = await BooksModel.findById(favouriteBookId);
+        if (!bookDetails) {
+            return errorResponse(
+                'No book found with the provided ID.',
+                httpStatus.NOT_FOUND
+            );
+        }
+
+        // Find existing document for the user
+        const existingFavourite = await FavouriteBooksModel.findOne({
+            owner: requester,
+        });
+        if (existingFavourite) {
+            // Prevent adding duplicate book IDs
+            if (existingFavourite.favouriteBooks.includes(favouriteBookId)) {
+                return errorResponse(
+                    'This book is already in your favourites.',
+                    httpStatus.CONFLICT
+                );
+            }
+
+            existingFavourite.favouriteBooks.push(favouriteBookId);
+            await existingFavourite.save();
+
+            return sendResponse(
+                existingFavourite,
+                'Book added to your favourites successfully.',
+                httpStatus.OK
+            );
+        }
+
+        // Create a new document if none exists
+        const newFavouriteBook = await FavouriteBooksModel.create({
+            owner: requester,
+            favouriteBooks: [favouriteBookId],
+        });
 
         return sendResponse(
-            existingFavourite,
-            'Book added to your favourites successfully.',
-            httpStatus.OK
+            newFavouriteBook,
+            'Book added to your favourites.',
+            httpStatus.CREATED
+        );
+    } catch (error) {
+        logger.error(`Failed to create favourite book: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to create favourite book.',
+            httpStatus.INTERNAL_SERVER_ERROR
         );
     }
-
-    // Create a new document if none exists
-    const newFavouriteBook = await FavouriteBooksModel.create({
-        owner: requester,
-        favouriteBooks: [favouriteBookId],
-    });
-
-    return sendResponse(
-        newFavouriteBook,
-        'Book added to your favourites.',
-        httpStatus.CREATED
-    );
 };
 
 const getFavouriteBooks = async (requester) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
+    try {
+        const isAuthorized = await validateUserRequest(requester);
+        if (!isAuthorized) {
+            return errorResponse(
+                'You are not authorized to get favourite books.',
+                httpStatus.FORBIDDEN
+            );
+        }
+
+        const favouriteBooks = await FavouriteBooksModel.findOne({
+            owner: requester,
+        }).populate({
+            path: 'favouriteBooks',
+            select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt',
+            populate: [
+                {
+                    path: 'subject',
+                    model: 'Subjects',
+                    select: 'name -_id',
+                },
+                {
+                    path: 'publication',
+                    model: 'Publications',
+                    select: 'name -_id',
+                },
+            ],
+        });
+
+        if (!favouriteBooks || favouriteBooks.favouriteBooks.length === 0) {
+            return errorResponse(
+                'You have no favourite books.',
+                httpStatus.NOT_FOUND
+            );
+        }
+
+        return sendResponse(
+            {
+                total: favouriteBooks.favouriteBooks.length,
+                favouriteBooks: favouriteBooks.favouriteBooks,
+            },
+            'Successfully retrieved your favourite books.',
+            httpStatus.OK
+        );
+    } catch (error) {
+        logger.error(`Failed to get favourite book: ${error}`);
+
         return errorResponse(
-            'You are not authorized to get favourite books.',
-            httpStatus.FORBIDDEN
+            error.message || 'Failed to get favourite book.',
+            httpStatus.INTERNAL_SERVER_ERROR
         );
     }
-
-    const favouriteBooks = await FavouriteBooksModel.findOne({
-        owner: requester,
-    }).populate({
-        path: 'favouriteBooks',
-        select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt',
-        populate: [
-            {
-                path: 'subject',
-                model: 'Subjects',
-                select: 'name -_id',
-            },
-            {
-                path: 'publication',
-                model: 'Publications',
-                select: 'name -_id',
-            },
-        ],
-    });
-
-    if (!favouriteBooks || favouriteBooks.favouriteBooks.length === 0) {
-        return errorResponse(
-            'You have no favourite books.',
-            httpStatus.NOT_FOUND
-        );
-    }
-
-    return sendResponse(
-        {
-            total: favouriteBooks.favouriteBooks.length,
-            favouriteBooks: favouriteBooks.favouriteBooks,
-        },
-        'Successfully retrieved your favourite books.',
-        httpStatus.OK
-    );
 };
 
 const deleteFavouriteBook = async (requester, favouriteBookId) => {
-    const isAuthorized = await validateUserRequest(requester);
-    if (!isAuthorized) {
-        return errorResponse(
-            'You are not authorized to delete favourite books.',
-            httpStatus.FORBIDDEN
-        );
-    }
+    try {
+        const isAuthorized = await validateUserRequest(requester);
+        if (!isAuthorized) {
+            return errorResponse(
+                'You are not authorized to delete favourite books.',
+                httpStatus.FORBIDDEN
+            );
+        }
 
-    const favouriteBooks = await FavouriteBooksModel.findOne({
-        owner: requester,
-    });
-    if (!favouriteBooks) {
+        const favouriteBooks = await FavouriteBooksModel.findOne({
+            owner: requester,
+        });
+        if (!favouriteBooks) {
+            return errorResponse(
+                'No favourite books found to remove.',
+                httpStatus.NOT_FOUND
+            );
+        }
+
+        const index = favouriteBooks.favouriteBooks.indexOf(favouriteBookId);
+        if (index > -1) {
+            favouriteBooks.favouriteBooks.splice(index, 1);
+            await favouriteBooks.save();
+
+            return sendResponse(
+                { removedBookId: favouriteBookId },
+                'Book removed from your favourites successfully.',
+                httpStatus.OK
+            );
+        }
+
         return errorResponse(
-            'No favourite books found to remove.',
+            'Book not found in your favourites.',
             httpStatus.NOT_FOUND
         );
-    }
+    } catch (error) {
+        logger.error(`Failed to delete favourite book: ${error}`);
 
-    const index = favouriteBooks.favouriteBooks.indexOf(favouriteBookId);
-    if (index > -1) {
-        favouriteBooks.favouriteBooks.splice(index, 1);
-        await favouriteBooks.save();
-
-        return sendResponse(
-            { removedBookId: favouriteBookId },
-            'Book removed from your favourites successfully.',
-            httpStatus.OK
+        return errorResponse(
+            error.message || 'Failed to delete favourite book.',
+            httpStatus.INTERNAL_SERVER_ERROR
         );
     }
-
-    return errorResponse(
-        'Book not found in your favourites.',
-        httpStatus.NOT_FOUND
-    );
 };
 
 const writersService = {

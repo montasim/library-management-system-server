@@ -3,6 +3,7 @@ import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import RequestBooksModel from '../../books/requestBooks/requestBooks.model.js';
+import logger from '../../../../utilities/logger.js';
 
 const getRequestBooks = async (requester) => {
     try {
@@ -34,8 +35,10 @@ const getRequestBooks = async (requester) => {
             httpStatus.OK
         );
     } catch (error) {
+        logger.error(`Failed to get requested books: ${error}`);
+
         return errorResponse(
-            error.message || 'Failed to retrieve the requested books.',
+            error.message || 'Failed to get requested books.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
@@ -82,8 +85,10 @@ const getRequestBook = async (requester, requestBookId) => {
             httpStatus.OK
         );
     } catch (error) {
+        logger.error(`Failed to get requested book: ${error}`);
+
         return errorResponse(
-            error.message || 'Failed to retrieve the book requestBooks.',
+            error.message || 'Failed to get requested book.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
@@ -132,8 +137,10 @@ const deleteRequestBook = async (requester, requestBookId) => {
             );
         }
     } catch (error) {
+        logger.error(`Failed to delete requested book: ${error}`);
+
         return errorResponse(
-            error.message || 'Failed to remove the book requestBooks.',
+            error.message || 'Failed to delete requested book.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
