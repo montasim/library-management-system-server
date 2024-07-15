@@ -1,12 +1,51 @@
 import validateWithSchema from '../../../shared/validateWithSchema.js';
 import booksSchema from './books.schema.js';
 
-const createBook = validateWithSchema(booksSchema.createBookSchema, 'body');
-const getBooks = validateWithSchema(booksSchema.getBooksQuerySchema, 'query');
-const getBook = validateWithSchema(booksSchema.bookIdParamSchema, 'params');
-const updateBook = validateWithSchema(booksSchema.updateBookSchema, 'body');
-const deleteBooks = validateWithSchema(booksSchema.bookIdsParamSchema, 'query');
-const deleteBook = validateWithSchema(booksSchema.bookIdParamSchema, 'params');
+const createBook = validateWithSchema([
+    {
+        schema: booksSchema.createBookSchema,
+        property: 'body',
+    },
+]);
+
+const getBooks = validateWithSchema([
+    {
+        schema: booksSchema.getBooksQuerySchema,
+        property: 'query',
+    },
+]);
+
+const getBook = validateWithSchema([
+    {
+        schema: booksSchema.bookIdParamSchema,
+        property: 'params',
+    },
+]);
+
+const updateBook = validateWithSchema([
+    {
+        schema: booksSchema.bookIdParamSchema,
+        property: 'params',
+    },
+    {
+        schema: booksSchema.updateBookSchema,
+        property: 'body',
+    },
+]);
+
+const deleteBooks = validateWithSchema([
+    {
+        schema: booksSchema.bookIdsParamSchema,
+        property: 'query',
+    },
+]);
+
+const deleteBook = validateWithSchema([
+    {
+        schema: booksSchema.bookIdParamSchema,
+        property: 'params',
+    },
+]);
 
 const booksValidator = {
     createBook,

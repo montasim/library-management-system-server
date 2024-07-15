@@ -3,6 +3,9 @@ import requestIp from 'request-ip';
 import geoip from 'geoip-lite';
 
 import httpStatus from '../../../constant/httpStatus.constants.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import errorResponse from '../../../utilities/errorResponse.js';
+import logger from '../../../utilities/logger.js';
 
 const detectService = async (req) => {
     try {
@@ -22,10 +25,10 @@ const detectService = async (req) => {
             device: userAgent.isDesktop
                 ? 'Desktop'
                 : userAgent.isTablet
-                  ? 'Tablet'
-                  : userAgent.isMobile
-                    ? 'Mobile'
-                    : 'Unknown',
+                    ? 'Tablet'
+                    : userAgent.isMobile
+                        ? 'Mobile'
+                        : 'Unknown',
             browser: userAgent.browser,
             browserVersion: userAgent.version,
             timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -38,28 +41,24 @@ const detectService = async (req) => {
         const filteredData =
             Object.keys(queryParams).length > 0
                 ? Object.fromEntries(
-                      Object.entries(detectedData).filter(
-                          ([key]) => queryParams[key] === 'true'
-                      )
-                  )
+                    Object.entries(detectedData).filter(
+                        ([key]) => queryParams[key] === 'true'
+                    )
+                )
                 : detectedData;
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: filteredData,
-            message: 'Detected successfully.',
-            status: httpStatus.OK,
-        };
+        return sendResponse(
+            filteredData,
+            'Detected successfully.',
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message:
-                'Failed to detect browser details. Please try again later.',
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-        };
+        logger.error(`Failed to process request: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to process request.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 

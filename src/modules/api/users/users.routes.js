@@ -3,19 +3,29 @@ import express from 'express';
 import uploadMiddleware from '../../../middleware/upload.middleware.js';
 import usersController from './users.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
-import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
+import usersValidator from './users.validator.js';
+import usersBooksHistoryRoutes
+    from './userBookHistory/usersBooksHistory.routes.js';
+import userRequestBooksRoutes
+    from './userRequestBooks/userRequestBooks.routes.js';
+import recentlyVisitedBooksRoutes
+    from './recentlyVisitedBooks/recentlyVisitedBooks.routes.js';
 
 const router = express.Router();
 
 router
     .route('/profile')
-    .get(authenticateMiddleware, usersController.getUser)
+    .get(usersController.getUser)
     .put(
-        authenticateMiddleware,
         uploadMiddleware.single('image'),
+        usersValidator.update,
         usersController.updateUser
     )
-    .delete(authenticateMiddleware, usersController.deleteUser)
+    .delete(usersController.deleteUser)
     .all(methodNotSupported);
+
+router.use('/history', usersBooksHistoryRoutes);
+router.use('/recently-visited', recentlyVisitedBooksRoutes);
+router.use('/requested', userRequestBooksRoutes);
 
 export default router;

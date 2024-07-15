@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import patterns from '../../../constant/patterns.constants.js';
 import userConstants from './users.constants.js';
@@ -18,6 +18,29 @@ const userSchema = new mongoose.Schema(
                 `name must be less than ${userConstants.lengths.NAME_MAX} characters long`,
             ],
         },
+        image: {
+            fileId: {
+                type: String,
+                maxlength: [
+                    100,
+                    'Picture fileId must be less than 100 characters long',
+                ],
+            },
+            shareableLink: {
+                type: String,
+                maxlength: [
+                    500,
+                    'Picture shareableLink must be less than 500 characters long',
+                ],
+            },
+            downloadLink: {
+                type: String,
+                maxlength: [
+                    500,
+                    'Picture downloadLink must be less than 500 characters long',
+                ],
+            },
+        },
         email: {
             type: String,
             unique: [true, 'email address already taken'],
@@ -34,7 +57,8 @@ const userSchema = new mongoose.Schema(
         },
         mobile: {
             type: String,
-            unique: [true, 'mobile number already taken'],
+            unique: true,
+            sparse: true, // The index will only be applied to documents with non-null values for mobile
             match: [
                 patterns.MOBILE,
                 'Please enter a valid Bangladeshi mobile number',
@@ -42,11 +66,11 @@ const userSchema = new mongoose.Schema(
             minlength: [
                 userConstants.lengths.MOBILE_MIN,
                 `mobile number must be at least ${userConstants.lengths.MOBILE_MIN} digits long`,
-            ], // Including country code can extend the length
+            ],
             maxlength: [
                 userConstants.lengths.MOBILE_MAX,
                 `mobile number must be less than ${userConstants.lengths.MOBILE_MAX} digits long`,
-            ], // Considering potential country code and formatting
+            ],
         },
         address: {
             type: String,
@@ -126,14 +150,14 @@ const userSchema = new mongoose.Schema(
             default: true,
         },
         createdBy: {
-            type: String,
             trim: true,
-            required: false,
+            type: Schema.Types.ObjectId,
+            ref: 'UsersModel',
         },
         updatedBy: {
-            type: String,
             trim: true,
-            required: false,
+            type: Schema.Types.ObjectId,
+            ref: 'UsersModel',
         },
     },
     {
@@ -144,8 +168,8 @@ const userSchema = new mongoose.Schema(
 userSchema.pre(['updateOne', 'findOneAndUpdate'], function (next) {
     const update = this.getUpdate();
 
-    if (update.$set && (update.$set.email || update.$set.mobile)) {
-        throw new Error('updating email or mobile number is not allowed.');
+    if (update.$set && update.$set.email) {
+        throw new Error('updating email is not allowed.');
     }
 
     next();

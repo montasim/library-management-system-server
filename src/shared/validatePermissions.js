@@ -1,4 +1,4 @@
-import PermissionModel from '../modules/api/auth/permissions/permissions.model.js';
+import PermissionModel from '../modules/api/permissions/permissions.model.js';
 
 const validatePermissions = async (permissions) => {
     const validPermissions = await PermissionModel.find({

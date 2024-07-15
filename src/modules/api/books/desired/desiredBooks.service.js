@@ -1,16 +1,19 @@
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import RequestBooksModel from '../request/requestBooks.model.js';
+import errorResponse from '../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../utilities/sendResponse.js';
+import RequestBooksModel from '../requestBooks/requestBooks.model.js';
+import logger from '../../../../utilities/logger.js';
 
 const getDesiredBooks = async () => {
     try {
         // Aggregate to find the most desired books across all users' requests
         const desiredBooks = await RequestBooksModel.aggregate([
             {
-                $unwind: '$request', // Unwind the array of requested books
+                $unwind: '$requestBooks', // Unwind the array of requested books
             },
             {
                 $group: {
-                    _id: '$request.name', // Group by the name of the book
+                    _id: '$requestBooks.name', // Group by the name of the book
                     count: { $sum: 1 }, // Count how many times each book is requested
                 },
             },
@@ -45,31 +48,25 @@ const getDesiredBooks = async () => {
             },
         ]);
 
-        if (desiredBooks.length === 0) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'No desired books found at the moment.',
-                status: httpStatus.NOT_FOUND,
-            };
+        if (desiredBooks?.length === 0) {
+            return errorResponse(
+                'No desired books found at the moment.',
+                httpStatus.NOT_FOUND
+            );
         }
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: desiredBooks,
-            message: `Successfully retrieved the top ${desiredBooks.length < 10 ? desiredBooks.length : '10'} desired books.`,
-            status: httpStatus.OK,
-        };
+        return sendResponse(
+            desiredBooks,
+            `Successfully retrieved the top ${desiredBooks?.length} desired books.`,
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Failed to retrieve desired books.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error('Failed to get desired books:', error);
+
+        return errorResponse(
+            error.message || 'Failed to get desired books.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 

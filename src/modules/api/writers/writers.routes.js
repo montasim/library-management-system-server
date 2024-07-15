@@ -7,16 +7,17 @@ import configuration from '../../../configuration/configuration.js';
 import uploadMiddleware from '../../../middleware/upload.middleware.js';
 import writersController from './writers.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
+import routesConstants from '../../../constant/routes.constants.js';
 
 const router = express.Router();
 
 router
     .route('/')
     .post(
-        authenticateMiddleware,
-        // writersValidator.createWriter,
-        cacheMiddleware.invalidate('writers'),
+        authenticateMiddleware.admin,
+        writersValidator.createWriter,
         uploadMiddleware.single('image'),
+        cacheMiddleware.invalidate('writers'),
         writersController.createWriter
     )
     .get(
@@ -25,7 +26,7 @@ router
         writersController.getWriters
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         writersValidator.deleteWriters,
         cacheMiddleware.invalidate('writers'),
         writersController.deleteWriters
@@ -33,21 +34,21 @@ router
     .all(methodNotSupported);
 
 router
-    .route('/:writerId')
+    .route(`/${routesConstants.writers.params}`)
     .get(
         writersValidator.getWriter,
         cacheMiddleware.create(configuration.cache.timeout),
         writersController.getWriter
     )
     .put(
-        authenticateMiddleware,
-        // writersValidator.updateWriter,
-        cacheMiddleware.invalidate('writers'),
+        authenticateMiddleware.admin,
+        writersValidator.updateWriter,
         uploadMiddleware.single('image'),
+        cacheMiddleware.invalidate('writers'),
         writersController.updateWriter
     )
     .delete(
-        authenticateMiddleware,
+        authenticateMiddleware.admin,
         writersValidator.deleteWriter,
         cacheMiddleware.invalidate('writers'),
         writersController.deleteWriter

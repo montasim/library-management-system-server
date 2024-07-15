@@ -1,30 +1,51 @@
 import validateWithSchema from '../../../shared/validateWithSchema.js';
 import subjectsSchema from './subjects.schema.js';
 
-const createSubject = validateWithSchema(
-    subjectsSchema.createSubjectSchema,
-    'body'
-);
-const getSubjects = validateWithSchema(
-    subjectsSchema.getSubjectsQuerySchema,
-    'query'
-);
-const getSubject = validateWithSchema(
-    subjectsSchema.subjectIdParamSchema,
-    'params'
-);
-const updateSubject = validateWithSchema(
-    subjectsSchema.updateSubjectSchema,
-    'body'
-);
-const deleteSubjects = validateWithSchema(
-    subjectsSchema.subjectIdsParamSchema,
-    'query'
-);
-const deleteSubject = validateWithSchema(
-    subjectsSchema.subjectIdParamSchema,
-    'params'
-);
+const createSubject = validateWithSchema([
+    {
+        schema: subjectsSchema.createSubjectSchema,
+        property: 'body',
+    },
+]);
+
+const getSubjects = validateWithSchema([
+    {
+        schema: subjectsSchema.getSubjectsQuerySchema,
+        property: 'query',
+    },
+]);
+
+const getSubject = validateWithSchema([
+    {
+        schema: subjectsSchema.subjectIdParamSchema,
+        property: 'params',
+    },
+]);
+
+const updateSubject = validateWithSchema([
+    {
+        schema: subjectsSchema.subjectIdParamSchema,
+        property: 'params',
+    },
+    {
+        schema: subjectsSchema.updateSubjectSchema,
+        property: 'body',
+    },
+]);
+
+const deleteSubjects = validateWithSchema([
+    {
+        schema: subjectsSchema.subjectIdsParamSchema,
+        property: 'query',
+    },
+]);
+
+const deleteSubject = validateWithSchema([
+    {
+        schema: subjectsSchema.subjectIdParamSchema,
+        property: 'params',
+    },
+]);
 
 const subjectsValidator = {
     createSubject,

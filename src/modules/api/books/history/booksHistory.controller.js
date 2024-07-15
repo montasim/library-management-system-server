@@ -1,11 +1,8 @@
 import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
 import booksHistoryService from './booksHistory.service.js';
-import getRequesterId from '../../../../utilities/getRequesterId.js';
 
-const getBooks = asyncErrorHandler(async (req, res) => {
-    const requester = getRequesterId(req);
+const getBooksHistory = asyncErrorHandler(async (req, res) => {
     const booksHistoryData = await booksHistoryService.getBooksHistory(
-        requester,
         req.query
     );
 
@@ -14,10 +11,8 @@ const getBooks = asyncErrorHandler(async (req, res) => {
     res.status(booksHistoryData.status).send(booksHistoryData);
 });
 
-const getBook = asyncErrorHandler(async (req, res) => {
-    const requester = getRequesterId(req);
+const getBookHistory = asyncErrorHandler(async (req, res) => {
     const booksHistoryData = await booksHistoryService.getBookHistory(
-        requester,
         req.params.bookId
     );
 
@@ -27,8 +22,8 @@ const getBook = asyncErrorHandler(async (req, res) => {
 });
 
 const booksHistoryController = {
-    getBooks,
-    getBook,
+    getBooksHistory,
+    getBookHistory,
 };
 
 export default booksHistoryController;

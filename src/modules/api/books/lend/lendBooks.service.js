@@ -2,31 +2,36 @@ import LendBooksModel from './lendBooks.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import BooksModel from '../books.model.js';
+import errorResponse from '../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../utilities/sendResponse.js';
+import UsersModel from '../../users/users.model.js';
+import logger from '../../../../utilities/logger.js';
 
 const createLendBook = async (requester, lendBookData) => {
     try {
         // Step 1: Validate if the requester is authorized
         const isAuthorized = await validateUserRequest(requester);
         if (!isAuthorized) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'You are not authorized to add lend books.',
-                status: httpStatus.FORBIDDEN,
-            };
+            return errorResponse(
+                'You are not authorized to lend books.',
+                httpStatus.FORBIDDEN
+            );
         }
 
-        // Step 2: Validate if the book exists
+        const lenderDetails = await UsersModel.findById(lendBookData.user);
+        if (!lenderDetails) {
+            return errorResponse(
+                'No book found with the provided ID.',
+                httpStatus.NOT_FOUND
+            );
+        }
+
         const bookDetails = await BooksModel.findById(lendBookData.bookId);
         if (!bookDetails) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'No book found with the provided ID.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse(
+                'No book found with the provided ID.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         // Step 3: Check if the book is already lent by someone else
@@ -34,13 +39,10 @@ const createLendBook = async (requester, lendBookData) => {
             'books.id': lendBookData.bookId,
         });
         if (isBookLent) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'This book is already lent by someone else.',
-                status: httpStatus.CONFLICT,
-            };
+            return errorResponse(
+                'This book is already lent by someone else.',
+                httpStatus.CONFLICT
+            );
         }
 
         // Step 4: Validate the 'from' and 'to' dates
@@ -51,32 +53,25 @@ const createLendBook = async (requester, lendBookData) => {
         const toDate = new Date(lendBookData.to);
 
         if (fromDate < today) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'The "from" date cannot be earlier than today.',
-                status: httpStatus.BAD_REQUEST,
-            };
+            return errorResponse(
+                'The "from" date cannot be earlier than today.',
+                httpStatus.BAD_REQUEST
+            );
         }
 
         const maxToDate = new Date(fromDate);
         maxToDate.setDate(fromDate.getDate() + 30); // Adding 30 days to 'from' date
 
         if (toDate > maxToDate) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'The "to" date cannot be more than 30 days from the "from" date.',
-                status: httpStatus.BAD_REQUEST,
-            };
+            return errorResponse(
+                'The "to" date cannot be more than 30 days from the "from" date.',
+                httpStatus.BAD_REQUEST
+            );
         }
 
         // Step 5: Find existing document for the user or create a new one
         const existingLend = await LendBooksModel.findOne({
-            lender: requester,
+            lender: lendBookData.user,
         });
         if (existingLend) {
             // Prevent adding duplicate book IDs
@@ -85,13 +80,10 @@ const createLendBook = async (requester, lendBookData) => {
                     (book) => book.id.toString() === lendBookData.bookId
                 )
             ) {
-                return {
-                    timeStamp: new Date(),
-                    success: false,
-                    data: {},
-                    message: 'This book is already in your lend list.',
-                    status: httpStatus.CONFLICT,
-                };
+                return errorResponse(
+                    'This book is already in your lend list.',
+                    httpStatus.CONFLICT
+                );
             }
 
             existingLend.books.push({
@@ -102,17 +94,15 @@ const createLendBook = async (requester, lendBookData) => {
             });
             await existingLend.save();
 
-            return {
-                timeStamp: new Date(),
-                success: true,
-                data: existingLend,
-                message: 'You have lent the book successfully.',
-                status: httpStatus.OK,
-            };
+            return sendResponse(
+                existingLend,
+                'You have lent the book successfully.',
+                httpStatus.OK
+            );
         } else {
             // Create a new document if none exists
             const newLendBook = await LendBooksModel.create({
-                lender: requester,
+                lender: lendBookData.user,
                 books: [
                     {
                         id: lendBookData.bookId,
@@ -123,24 +113,19 @@ const createLendBook = async (requester, lendBookData) => {
                 ],
             });
 
-            return {
-                timeStamp: new Date(),
-                success: true,
-                data: newLendBook,
-                message: 'Book added to your lend list.',
-                status: httpStatus.CREATED,
-            };
+            return sendResponse(
+                newLendBook,
+                'Book added to your lend list.',
+                httpStatus.CREATED
+            );
         }
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message:
-                error.message ||
-                'Failed to process your request to add a lend book.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error(`Failed to lend book: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to lend book.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
@@ -149,13 +134,10 @@ const getLendBooks = async (requester) => {
         // Step 1: Validate if the requester is authorized
         const isAuthorized = await validateUserRequest(requester);
         if (!isAuthorized) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'You are not authorized to get lend books.',
-                status: httpStatus.FORBIDDEN,
-            };
+            return errorResponse(
+                'You are not authorized to get lend books.',
+                httpStatus.FORBIDDEN
+            );
         }
 
         // Step 2: Fetch the lend books for the requester
@@ -180,13 +162,7 @@ const getLendBooks = async (requester) => {
 
         // Step 3: Check if the requester has any lend books
         if (!lendBooks || lendBooks.books.length === 0) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'You have no lend books.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse('You have no lend books.', httpStatus.NOT_FOUND);
         }
 
         // Step 4: Transform the data to rename 'id' to 'book'
@@ -197,25 +173,21 @@ const getLendBooks = async (requester) => {
         }));
 
         // Step 5: Return the lend books with the transformed structure
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {
+        return sendResponse(
+            {
                 total: transformedLendBooks.length,
                 lendBooks: transformedLendBooks,
             },
-            message: 'Successfully retrieved your lend books.',
-            status: httpStatus.OK,
-        };
+            'Successfully retrieved your lend books.',
+            httpStatus.OK
+        );
     } catch (error) {
-        // Step 6: Handle any errors that occur during the process
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Failed to retrieve lend books.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error(`Failed to get lend book: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to get lend book.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 

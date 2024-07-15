@@ -1,6 +1,5 @@
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import UsersModel from '../users/users.model.js';
-import userConstants from '../users/users.constants.js';
 import generateVerificationToken from '../../../utilities/generateVerificationToken.js';
 import createAuthenticationToken from '../../../utilities/createAuthenticationToken.js';
 import prepareEmailContent from '../../../shared/prepareEmailContent.js';
@@ -12,55 +11,58 @@ import createHashedPassword from '../../../utilities/createHashedPassword.js';
 import comparePassword from '../../../utilities/comparePassword.js';
 import decodeAuthenticationToken from '../../../utilities/decodeAuthenticationToken.js';
 import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
-import getAuthenticationToken from '../../../utilities/getAuthenticationToken.js';
 import environment from '../../../constant/envTypes.constants.js';
+import validateEmail from '../../../utilities/validateEmail.js';
+import validatePassword from '../../../utilities/validatePassword.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import errorResponse from '../../../utilities/errorResponse.js';
+import AdminModel from '../admin/admin.model.js';
+import logger from '../../../utilities/logger.js';
 
 const signup = async (userData, hostData) => {
     try {
+        const existingAdmin = await AdminModel.findOne({
+            email: userData.email,
+        }).lean();
+        if (existingAdmin) {
+            return sendResponse(
+                {},
+                'This email address is already registered as admin. Can not be a user and admin at the same time.',
+                httpStatus.FORBIDDEN
+            );
+        }
+
         const existingUser = await UsersModel.findOne({
             email: userData.email,
         }).lean();
-
         if (existingUser) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'This email address is already registered. Please log in or use the forgot password option if you need to recover your password.',
-                status: httpStatus.CONFLICT,
-            };
+            return sendResponse(
+                {},
+                'This email address is already registered. Please log in or use the forgot password option if you need to recover your password.',
+                httpStatus.CONFLICT
+            );
+        }
+
+        const emailValidationResult = await validateEmail(userData.email);
+        if (emailValidationResult !== 'Valid') {
+            return sendResponse({}, emailValidationResult, httpStatus.BAD_REQUEST);
         }
 
         if (userData.password !== userData.confirmPassword) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'The passwords you entered do not match. Please try again.',
-                status: httpStatus.BAD_REQUEST,
-            };
+            return sendResponse(
+                {},
+                'The passwords you entered do not match. Please try again.',
+                httpStatus.BAD_REQUEST
+            );
         }
 
-        if (userData.password.length < userConstants.lengths.PASSWORD_MIN) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: `Your password must be between ${userConstants.lengths.PASSWORD_MIN} and ${userConstants.lengths.PASSWORD_MAX} characters.`,
-                status: httpStatus.BAD_REQUEST,
-            };
-        }
-
-        if (userData.password.length > userConstants.lengths.PASSWORD_MAX) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: `Your password must be between ${userConstants.lengths.PASSWORD_MIN} and ${userConstants.lengths.PASSWORD_MAX} characters.`,
-                status: httpStatus.BAD_REQUEST,
-            };
+        const passwordValidationResult = await validatePassword(userData.password);
+        if (passwordValidationResult !== 'Valid') {
+            return sendResponse(
+                {},
+                passwordValidationResult,
+                httpStatus.BAD_REQUEST
+            );
         }
 
         const hashedPassword = await createHashedPassword(userData.password);
@@ -110,21 +112,18 @@ const signup = async (userData, hostData) => {
             )
         );
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: { ...newUser.toObject() },
-            message: 'User created successfully. Please verify your email.',
-            status: httpStatus.CREATED,
-        };
+        return sendResponse(
+            newUser,
+            'User created successfully. Please verify your email.',
+            httpStatus.CREATED
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error creating the user.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error(`Failed to signup: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to signup.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
@@ -138,14 +137,10 @@ const verify = async (token) => {
         });
 
         if (!userDetails) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'The verification link is invalid or has expired. Please request a new verification email.',
-                status: httpStatus.FORBIDDEN,
-            };
+            return errorResponse(
+                'The verification link is invalid or has expired. Please requestBooks a new verification email.',
+                httpStatus.FORBIDDEN
+            );
         }
 
         // Set the email verified flag to true and clear the verification token fields
@@ -179,47 +174,33 @@ const verify = async (token) => {
             )
         );
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {},
-            message: 'Email has been successfully verified.',
-            status: httpStatus.OK,
-        };
+        return sendResponse(
+            {},
+            'Email has been successfully verified.',
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error verifying the token.',
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-        };
+        logger.error(`Failed to verify user: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to verify user.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
 const resendVerification = async (userId, hostData) => {
     try {
         const userDetails = await UsersModel.findById(userId);
-
         if (!userDetails) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'User not found.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse('User not found.', httpStatus.NOT_FOUND);
         }
 
         if (userDetails.isEmailVerified) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'This email address has already been verified. No further action is required.',
-                status: httpStatus.FORBIDDEN,
-            };
+            return errorResponse(
+                'This email address has already been verified. No further action is required.',
+                httpStatus.FORBIDDEN
+            );
         }
 
         const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
@@ -267,21 +248,18 @@ const resendVerification = async (userId, hostData) => {
             )
         );
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {},
-            message: 'Verification email resent successfully.',
-            status: httpStatus.OK,
-        };
+        return sendResponse(
+            {},
+            'Verification email resent successfully.',
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error processing your request.',
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-        };
+        logger.error(`Failed to resend verification email: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to resend verification email.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
@@ -290,27 +268,18 @@ const requestNewPassword = async (email, hostData) => {
         const userDetails = await UsersModel.findOne({
             email,
         }).lean();
-
         if (!userDetails) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'No account found with that email address. Please check your email address or register for a new account.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse(
+                'No account found with that email address. Please check your email address or register for a new account.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         if (!userDetails.isEmailVerified) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'Your email address has not been verified yet. Please verify your email to proceed with password reset.',
-                status: httpStatus.UNAUTHORIZED,
-            };
+            return errorResponse(
+                'Your email address has not been verified yet. Please verify your email to proceed with password reset.',
+                httpStatus.UNAUTHORIZED
+            );
         }
 
         const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
@@ -358,22 +327,18 @@ const requestNewPassword = async (email, hostData) => {
             )
         );
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {},
-            message:
-                'Password reset email sent successfully. Please check your email.',
-            status: httpStatus.OK,
-        };
+        return sendResponse(
+            {},
+            'Password reset email sent successfully. Please check your email.',
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error processing your request.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error(`Failed to request new password: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to request new password.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
@@ -385,67 +350,44 @@ const resetPassword = async (hostData, token, userData) => {
             resetPasswordVerifyToken: hashedToken,
             resetPasswordVerifyTokenExpires: { $gt: Date.now() }, // Check if the token hasn't expired
         });
-
         if (!userDetails) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'Your password reset link is invalid or has expired. Please request a new password reset link.',
-                status: httpStatus.FORBIDDEN,
-            };
+            return errorResponse(
+                'Your password reset link is invalid or has expired. Please requestBooks a new password reset link.',
+                httpStatus.FORBIDDEN
+            );
         }
 
         const isPasswordValid = await comparePassword(
             userData.oldPassword,
             userDetails.password
         );
-
         if (!isPasswordValid) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'Invalid credentials.',
-                status: httpStatus.UNAUTHORIZED,
-            };
+            return errorResponse(
+                'Wrong old password. Please try again.',
+                httpStatus.BAD_REQUEST
+            );
         }
 
         if (userData.newPassword !== userData.confirmNewPassword) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'The new passwords do not match. Please try again.',
-                status: httpStatus.BAD_REQUEST,
-            };
+            return errorResponse(
+                'The new passwords do not match. Please try again.',
+                httpStatus.BAD_REQUEST
+            );
         }
 
-        if (userData.newPassword.length < userConstants.lengths.PASSWORD_MIN) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: `Your password must be between ${userConstants.lengths.PASSWORD_MIN} and ${userConstants.lengths.PASSWORD_MAX} characters.`,
-                status: httpStatus.BAD_REQUEST,
-            };
+        const passwordValidationResult = await validatePassword(
+            userData.newPassword
+        );
+        if (passwordValidationResult !== 'Valid') {
+            return sendResponse(
+                {},
+                passwordValidationResult,
+                httpStatus.BAD_REQUEST
+            );
         }
-
-        if (userData.newPassword.length > userConstants.lengths.PASSWORD_MAX) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: `Password must be less than ${userConstants.lengths.PASSWORD_MAX} characters long.`,
-                status: httpStatus.BAD_REQUEST,
-            };
-        }
-
-        const hashedPassword = await createHashedPassword(userData.newPassword);
 
         // Update the user with new password and expiry
-        userDetails.password = hashedPassword;
+        userDetails.password = await createHashedPassword(userData.newPassword);
         userDetails.resetPasswordVerifyToken = undefined;
         userDetails.resetPasswordVerifyTokenExpires = undefined;
 
@@ -475,21 +417,14 @@ const resetPassword = async (hostData, token, userData) => {
             )
         );
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {},
-            message: 'Reset Password Successful.',
-            status: httpStatus.OK,
-        };
+        return sendResponse({}, 'Reset Password Successful.', httpStatus.OK);
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error processing your request.',
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-        };
+        logger.error(`Failed to reset password: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to reset password.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
@@ -498,34 +433,31 @@ const login = async (userData, userAgent, device) => {
         const userDetails = await UsersModel.findOne({
             email: userData.email,
         }).lean();
-
         if (!userDetails) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'No account found with that email address. Please check your email address or register for a new account.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse(
+                'No account found with that email address. Please check your email address or register for a new account.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         if (!userDetails.isEmailVerified) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'Please verify your email address to proceed with logging in.',
-                status: httpStatus.UNAUTHORIZED,
-            };
+            return errorResponse(
+                'Please verify your email address to proceed with logging in.',
+                httpStatus.UNAUTHORIZED
+            );
+        }
+
+        if (userDetails.mustChangePassword) {
+            return errorResponse(
+                'Please change your password first.',
+                httpStatus.FORBIDDEN
+            );
         }
 
         const isPasswordValid = await comparePassword(
             userData.password,
             userDetails.password
         );
-
         if (!isPasswordValid) {
             userDetails.login.failed.device.push({
                 details: userAgent, // Assuming userAgent is a string
@@ -536,14 +468,10 @@ const login = async (userData, userAgent, device) => {
                 $set: { 'login.failed': userDetails.login.failed },
             }).lean();
 
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message:
-                    'Incorrect password. Please try again or use the forgot password option to reset it.',
-                status: httpStatus.UNAUTHORIZED,
-            };
+            return errorResponse(
+                'Incorrect password. Please try again or use the forgot password option to reset it.',
+                httpStatus.UNAUTHORIZED
+            );
         }
 
         // if (userDetails.login.successful.device.length >= configuration.auth.activeSessions) {
@@ -556,7 +484,7 @@ const login = async (userData, userAgent, device) => {
         //     };
         // }
 
-        const { token, tokenDetails } = await createAuthenticationToken(
+        const { token } = await createAuthenticationToken(
             userDetails,
             device
         );
@@ -603,49 +531,53 @@ const login = async (userData, userAgent, device) => {
         delete userDetails.resetPasswordVerifyToken;
         delete userDetails.resetPasswordVerifyTokenExpires;
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: { ...userDetails, token },
-            message: 'User logged in successfully.',
-            status: httpStatus.OK,
-        };
+        return sendResponse(
+            { ...userDetails, token },
+            'User logged in successfully.',
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Error creating the user.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error(`Failed to login: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to login.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
 const logout = async (req) => {
     try {
-        const device = await getRequestedDeviceDetails(req);
-        const jwtToken = await getAuthenticationToken(
-            req?.headers['authorization']
-        );
-        const tokenData = await decodeAuthenticationToken(jwtToken);
+        // Assuming these functions are well-defined and return relevant details or throw an error if something goes wrong.
+        // const device = await getRequestedDeviceDetails(req);
+        const jwtToken = req?.headers['authorization']
+            ? req.headers['authorization'].split(' ')[1]
+            : null;
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {},
-            message: 'You have been logged out successfully.',
-            status: httpStatus.OK,
-        };
+        if (!jwtToken) {
+            return errorResponse(
+                'No authentication token provided.',
+                httpStatus.UNAUTHORIZED
+            );
+        }
+
+        // const tokenData = await decodeAuthenticationToken(jwtToken);
+
+        // You might want to perform actions here such as invalidating the token.
+        // Since this is a logout, we need to ensure the token is invalidated if you maintain a list of active tokens.
+
+        return sendResponse(
+            {}, // No additional data needed in the successful response.
+            'You have been logged out successfully.',
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message:
-                error.message ||
-                'There was an issue logging you out. Please try again.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error(`Failed to logout: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to logout.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 

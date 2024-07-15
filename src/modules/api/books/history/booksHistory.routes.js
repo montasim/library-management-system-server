@@ -1,19 +1,29 @@
 import express from 'express';
 
 import methodNotSupported from '../../../../shared/methodNotSupported.js';
-import authenticateMiddleware from '../../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware
+    from '../../../../middleware/authenticate.middleware.js';
+import booksHistoryValidator from './booksHistory.validator.js';
 import booksHistoryController from './booksHistory.controller.js';
 
 const router = express.Router();
 
 router
     .route('/')
-    .get(authenticateMiddleware, booksHistoryController.getBooks)
+    .get(
+        authenticateMiddleware.user,
+        booksHistoryValidator.booksQueryParamSchema,
+        booksHistoryController.getBooksHistory
+    )
     .all(methodNotSupported);
 
 router
     .route('/:bookId')
-    .get(authenticateMiddleware, booksHistoryController.getBook)
+    .get(
+        authenticateMiddleware.user,
+        booksHistoryValidator.bookIdParamSchema,
+        booksHistoryController.getBookHistory
+    )
     .all(methodNotSupported);
 
 export default router;

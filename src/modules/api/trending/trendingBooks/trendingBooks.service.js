@@ -1,5 +1,8 @@
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import FavouriteBooksModel from '../../books/favourite/favouriteBooks.model.js';
+import errorResponse from '../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../utilities/sendResponse.js';
+import logger from '../../../../utilities/logger.js';
 
 const getTrendingBooks = async () => {
     try {
@@ -45,30 +48,24 @@ const getTrendingBooks = async () => {
         ]);
 
         if (trendingBooks.length === 0) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'No trending books found at the moment.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse(
+                'No trending books found at the moment.',
+                httpStatus.NOT_FOUND
+            );
         }
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: trendingBooks,
-            message: `Successfully retrieved the top ${trendingBooks.length < 10 ? trendingBooks.length : '10'} trending books.`,
-            status: httpStatus.OK,
-        };
+        return sendResponse(
+            trendingBooks,
+            `Successfully retrieved the top ${trendingBooks.length < 10 ? trendingBooks.length : '10'} trending books.`,
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Failed to retrieve trending books.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error(`Failed to get trending books: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to get trending books.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 

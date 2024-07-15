@@ -2,48 +2,16 @@ import Joi from 'joi';
 
 import publicationsConstants from './publications.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
+import validationService from '../../../service/validation.service.js';
 
 // Define base schema for publications
 const publicationSchemaBase = Joi.object({
-    name: Joi.string()
-        .trim()
-        .required()
-        .min(publicationsConstants.lengths.NAME_MIN)
-        .max(publicationsConstants.lengths.NAME_MAX)
+    name: validationService
+        .createStringField(
+            publicationsConstants.lengths.NAME_MIN,
+            publicationsConstants.lengths.NAME_MAX
+        )
         .messages(customValidationMessage),
-    isActive: Joi.boolean().required().messages(customValidationMessage),
-}).strict();
-
-// Schema for creating a publication, making specific fields required
-const createPublicationSchema = publicationSchemaBase.fork(['name'], (field) =>
-    field.required()
-);
-
-// Schema for updating a publication
-const updatePublicationSchema = publicationSchemaBase
-    .fork(Object.keys(publicationSchemaBase.describe().keys), (field) =>
-        field.optional()
-    )
-    .min(1);
-
-// Schema for validating multiple publication IDs
-const publicationIdsParamSchema = Joi.object({
-    ids: Joi.string()
-        .custom((value, helpers) => {
-            const ids = value.split(',');
-            ids.forEach((id) => {
-                const { error } = Joi.string().alphanum().validate(id);
-                if (error) {
-                    throw new Error(`Invalid ID provided.`);
-                }
-            });
-            return value; // Return original value if validation passes
-        })
-        .required()
-        .messages(customValidationMessage),
-}).required();
-
-const getPublicationsQuerySchema = Joi.object({
     page: Joi.string()
         .min(1)
         .default(1)
@@ -54,37 +22,49 @@ const getPublicationsQuerySchema = Joi.object({
         .default(10)
         .custom((value, helpers) => parseInt(value)),
     sort: Joi.string().trim().default('createdAt'),
-    name: Joi.string()
-        .trim()
-        .min(publicationsConstants.lengths.NAME_MIN)
-        .max(publicationsConstants.lengths.NAME_MAX),
-    isActive: Joi.string()
-        .valid('true', 'false', '1', '0')
-        .custom((value, helpers) => {
-            if (value === 'true' || value === '1') {
-                return true;
-            } else if (value === 'false' || value === '0') {
-                return false;
-            }
-            return helpers.error('any.invalid');
-        })
-        .messages({
-            'any.only':
-                'isActive must be a boolean value represented as true/false or 1/0.',
-            ...customValidationMessage,
-        }),
-    createdBy: Joi.string().trim(),
-    updatedBy: Joi.string().trim(),
+    isActive: validationService.booleanField,
+    createdBy: validationService.objectIdField,
+    updatedBy: validationService.objectIdField,
+    createdAt: validationService.dateField,
+    updatedAt: validationService.dateField,
+}).strict();
+
+// Schema for creating a publication, making specific fields required
+const createPublicationSchema = publicationSchemaBase.fork(
+    ['name', 'isActive'],
+    (field) => field.required()
+);
+
+// Schema for updating a publication
+const updatePublicationSchema = publicationSchemaBase
+    .fork(['name', 'isActive'], (field) => field.optional())
+    .min(1);
+
+// Schema for validating multiple publication IDs
+const publicationIdsParamSchema = Joi.object({
+    ids: validationService.objectIdsField.required(),
 })
-    .strict()
+    .required()
     .messages(customValidationMessage);
+
+const getPublicationsQuerySchema = publicationSchemaBase.fork(
+    [
+        'name',
+        'isActive',
+        'page',
+        'limit',
+        'sort',
+        'createdBy',
+        'updatedBy',
+        'createdAt',
+        'updatedBy',
+    ],
+    (field) => field.optional()
+);
 
 // Schema for single publication ID validation
 const publicationIdParamSchema = Joi.object({
-    publicationId: Joi.string()
-        .alphanum()
-        .required()
-        .messages(customValidationMessage),
+    publicationId: validationService.objectIdField.required(),
 }).strict();
 
 const publicationsSchema = {

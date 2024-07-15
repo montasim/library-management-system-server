@@ -7,10 +7,23 @@ const lengths = {
 
     SUMMARY_MIN: 100,
     SUMMARY_MAX: 5000,
+
+    FILE_ID: 100,
+    SHAREABLE_LINK: 500,
+    DOWNLOAD_LINK: 500,
+
+    BEST_SELLER_MIN: 0,
+    BEST_SELLER_MAX: 10,
+
+    REVIEW_MIN: 0,
+    REVIEW_MAX: 5,
 };
+
+const imageSize = 1.1 * 1024 * 1024; // 1.1 MB
 
 const booksConstants = {
     lengths,
+    imageSize,
 };
 
 export default booksConstants;

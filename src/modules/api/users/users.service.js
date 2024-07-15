@@ -2,166 +2,160 @@ import UsersModel from './users.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
+import errorResponse from '../../../utilities/errorResponse.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import validateFile from '../../../utilities/validateFile.js';
+import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
+import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
+import userConstants from './users.constants.js';
+import logger from '../../../utilities/logger.js';
 
 const getUser = async (userId) => {
-    const user = await UsersModel.findById(userId).lean();
+    try {
+        const user = await UsersModel.findById(userId).lean();
+        if (!user) {
+            return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
+        }
 
-    if (!user) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Please login first.',
-            status: httpStatus.FORBIDDEN,
-        };
+        // Remove sensitive data
+        delete user.password;
+        delete user.emailVerifyToken;
+        delete user.emailVerifyTokenExpires;
+        delete user.phoneVerifyToken;
+        delete user.phoneVerifyTokenExpires;
+        delete user.resetPasswordVerifyToken;
+        delete user.resetPasswordVerifyTokenExpires;
+
+        return sendResponse(user, 'User fetched successfully.', httpStatus.OK);
+    } catch (error) {
+        logger.error(`Failed to get user details: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to get user details.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
-
-    // Remove sensitive data
-    delete user.password;
-    delete user.emailVerifyToken;
-    delete user.emailVerifyTokenExpires;
-    delete user.phoneVerifyToken;
-    delete user.phoneVerifyTokenExpires;
-    delete user.resetPasswordVerifyToken;
-    delete user.resetPasswordVerifyTokenExpires;
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: user,
-        message: 'User fetched successfully.',
-        status: httpStatus.OK,
-    };
 };
 
-const updateUser = async (userId, updateData, userImage) => {
-    const existingUser = await UsersModel.findById(userId).lean();
+const updateUser = async (requester, updateData, userImage) => {
+    try {
+        const existingUser = await UsersModel.findById(requester).lean();
+        if (!existingUser) {
+            return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
+        }
 
-    if (!existingUser) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Please login first.',
-            status: httpStatus.FORBIDDEN,
-        };
+        if (isEmptyObject(updateData)) {
+            return errorResponse(
+                'Please provide update data.',
+                httpStatus.BAD_REQUEST
+            );
+        }
+
+        updateData.updatedBy = requester;
+
+        let userImageData = {};
+
+        // Handle file update
+        if (userImage) {
+            const fileValidationResults = validateFile(
+                userImage,
+                userConstants.imageSize,
+                [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
+                [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
+            );
+            if (!fileValidationResults.isValid) {
+                return errorResponse(
+                    fileValidationResults.message,
+                    httpStatus.BAD_REQUEST
+                );
+            }
+
+            // Delete the old file from Google Drive if it exists
+            const oldFileId = existingUser.image?.fileId;
+            if (oldFileId) {
+                await GoogleDriveFileOperations.deleteFile(oldFileId);
+            }
+
+            userImageData = await GoogleDriveFileOperations.uploadFile(userImage);
+
+            if (!userImageData || userImageData instanceof Error) {
+                return errorResponse(
+                    'Failed to save image.',
+                    httpStatus.INTERNAL_SERVER_ERROR
+                );
+            }
+
+            userImageData = {
+                fileId: userImageData.fileId,
+                shareableLink: userImageData.shareableLink,
+                downloadLink: userImageData.downloadLink,
+            };
+
+            if (userImageData) {
+                updateData.image = userImageData;
+            }
+        }
+
+        const updatedUser = await UsersModel.findByIdAndUpdate(
+            requester,
+            updateData,
+            {
+                new: true,
+            }
+        ).lean();
+
+        // Remove sensitive data
+        delete updatedUser.password;
+        delete updatedUser.emailVerifyToken;
+        delete updatedUser.emailVerifyTokenExpires;
+        delete updatedUser.phoneVerifyToken;
+        delete updatedUser.phoneVerifyTokenExpires;
+        delete updatedUser.resetPasswordVerifyToken;
+        delete updatedUser.resetPasswordVerifyTokenExpires;
+
+        return sendResponse(
+            updatedUser,
+            'User updated successfully.',
+            httpStatus.OK
+        );
+    } catch (error) {
+        logger.error(`Failed to update user data: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to update user data.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
+};
 
-    if (isEmptyObject(updateData)) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Please provide update data.',
-            status: httpStatus.BAD_REQUEST,
-        };
-    }
+const deleteUser = async (userId) => {
+    try {
+        const existingUser = await UsersModel.findById(userId).lean();
+        if (!existingUser) {
+            return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
+        }
 
-    updateData.updatedBy = userId;
-
-    let userImageData = {};
-
-    // Handle file update
-    if (userImage) {
         // Delete the old file from Google Drive if it exists
         const oldFileId = existingUser.image?.fileId;
         if (oldFileId) {
             await GoogleDriveFileOperations.deleteFile(oldFileId);
         }
 
-        userImageData = await GoogleDriveFileOperations.uploadFile(userImage);
+        await UsersModel.findByIdAndDelete(userId);
 
-        if (!userImageData || userImageData instanceof Error) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'Failed to save image.',
-                status: httpStatus.INTERNAL_SERVER_ERROR,
-            };
-        }
+        return sendResponse(
+            {},
+            'User deleted successfully.',
+            httpStatus.BAD_REQUEST
+        );
+    } catch (error) {
+        logger.error(`Failed to delete account: ${error}`);
 
-        userImageData = {
-            fileId: userImageData.fileId,
-            shareableLink: userImageData.shareableLink,
-            downloadLink: userImageData.downloadLink,
-        };
-
-        if (userImageData) {
-            updateData.image = userImageData;
-        }
+        return errorResponse(
+            error.message || 'Failed to delete account.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
-
-    const updatedUser = await UsersModel.findByIdAndUpdate(userId, updateData, {
-        new: true,
-    });
-
-    if (!updatedUser) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'User not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
-
-    // Remove sensitive data
-    delete updatedUser.password;
-    delete updatedUser.emailVerifyToken;
-    delete updatedUser.emailVerifyTokenExpires;
-    delete updatedUser.phoneVerifyToken;
-    delete updatedUser.phoneVerifyTokenExpires;
-    delete updatedUser.resetPasswordVerifyToken;
-    delete updatedUser.resetPasswordVerifyTokenExpires;
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: updatedUser,
-        message: 'User updated successfully.',
-        status: httpStatus.OK,
-    };
-};
-
-const deleteUser = async (userId) => {
-    const existingUser = await UsersModel.findById(userId).lean();
-
-    if (!existingUser) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Please login first.',
-            status: httpStatus.FORBIDDEN,
-        };
-    }
-
-    // Delete the old file from Google Drive if it exists
-    const oldFileId = existingUser.image?.fileId;
-    if (oldFileId) {
-        await GoogleDriveFileOperations.deleteFile(oldFileId);
-    }
-
-    const user = await UsersModel.findByIdAndDelete(userId);
-
-    if (!user) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'User not found.',
-            status: httpStatus.NOT_FOUND,
-        };
-    }
-
-    return {
-        timeStamp: new Date(),
-        success: true,
-        data: {},
-        message: 'User deleted successfully.',
-        status: httpStatus.OK,
-    };
 };
 
 const usersService = {

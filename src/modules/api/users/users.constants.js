@@ -21,8 +21,16 @@ const lengths = {
     PASSWORD_MAX: 30,
 };
 
+const pattern = {
+    name: /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/,
+};
+
+const imageSize = 1.1 * 1024 * 1024; // 1.1 MB
+
 const userConstants = {
     lengths,
+    pattern,
+    imageSize,
 };
 
 export default userConstants;

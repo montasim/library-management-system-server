@@ -1,27 +1,28 @@
 import express from 'express';
 
-import favouriteBooksValidator from './favouriteBooks.validator.js';
-import favouriteBooksController from './favouriteBooks.controller.js';
 import methodNotSupported from '../../../../shared/methodNotSupported.js';
-import authenticateMiddleware from '../../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware
+    from '../../../../middleware/authenticate.middleware.js';
+import favouriteBooksController from './favouriteBooks.controller.js';
+import favouriteBooksValidator from './favouriteBooks.validator.js';
 
 const router = express.Router();
 
 router
     .route('/')
-    .get(authenticateMiddleware, favouriteBooksController.getFavouriteBooks)
+    .get(authenticateMiddleware.user, favouriteBooksController.getFavouriteBooks)
     .all(methodNotSupported);
 
 router
     .route('/:favouriteBookId')
     .post(
-        authenticateMiddleware,
-        favouriteBooksValidator.createFavouriteBook,
+        authenticateMiddleware.user,
+        favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.createFavouriteBook
     )
     .delete(
-        authenticateMiddleware,
-        favouriteBooksValidator.deleteFavouriteBook,
+        authenticateMiddleware.user,
+        favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.deleteFavouriteBook
     )
     .all(methodNotSupported);

@@ -1,49 +1,36 @@
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import BooksHistoryModel from './booksHistory.model.js';
+import errorResponse from '../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../utilities/sendResponse.js';
+import logger from '../../../../utilities/logger.js';
 
-const getBooksHistory = async (requester, params) => {
-    const {
-        page = 1,
-        limit = 10,
-        sort = '-createdAt', // Default sort by most recent creation
-        bookId,
-        user,
-        from,
-        to,
-        ...otherFilters
-    } = params;
-
-    const query = {};
-
-    // Constructing query filters based on parameters
-    if (bookId) query.book = bookId;
-    if (user) query['lend.user'] = user;
-    if (from) query['lend.from'] = { $gte: new Date(from) };
-    if (to) query['lend.to'] = { $lte: new Date(to) };
-
+const getBooksHistory = async (params) => {
     try {
-        // Step 1: Validate if the requester is authorized
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'You are not authorized to get books history.',
-                status: httpStatus.FORBIDDEN,
-            };
-        }
+        const {
+            page = 1,
+            limit = 10,
+            sort = '-createdAt', // Default sort by most recent creation
+            bookId,
+            user,
+            from,
+            to,
+            ...otherFilters
+        } = params;
+
+        const query = {};
+
+        // Constructing query filters based on parameters
+        if (bookId) query.book = bookId;
+        if (user) query['lend.user'] = user;
+        if (from) query['lend.from'] = { $gte: new Date(from) };
+        if (to) query['lend.to'] = { $lte: new Date(to) };
 
         // Step 2: Fetch the books history based on the query
         const totalHistory = await BooksHistoryModel.countDocuments(query);
         const totalPages = Math.ceil(totalHistory / limit);
 
         // Adjust the limit if it exceeds the total number of history records
-        const adjustedLimit = Math.min(
-            limit,
-            totalHistory - (page - 1) * limit
-        );
+        const adjustedLimit = Math.min(limit, totalHistory - (page - 1) * limit);
 
         const booksHistory = await BooksHistoryModel.find(query)
             .sort(sort)
@@ -51,22 +38,22 @@ const getBooksHistory = async (requester, params) => {
             .limit(adjustedLimit)
             .populate({
                 path: 'book',
-                select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt',
+                select: '-createdBy -updatedBy',
                 populate: [
                     {
                         path: 'writer',
                         model: 'Writers',
-                        select: 'name',
+                        select: '-createdBy -updatedBy',
                     },
                     {
                         path: 'subject',
                         model: 'Subjects',
-                        select: 'name',
+                        select: '-createdBy -updatedBy',
                     },
                     {
                         path: 'publication',
                         model: 'Publications',
-                        select: 'name',
+                        select: '-createdBy -updatedBy',
                     },
                 ],
             })
@@ -76,19 +63,11 @@ const getBooksHistory = async (requester, params) => {
             });
 
         if (!booksHistory || booksHistory.length === 0) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'No books history found.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse('No books history found.', httpStatus.NOT_FOUND);
         }
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: {
+        return sendResponse(
+            {
                 booksHistory,
                 totalHistory,
                 totalPages,
@@ -96,63 +75,40 @@ const getBooksHistory = async (requester, params) => {
                 pageSize: adjustedLimit,
                 sort,
             },
-            message: booksHistory.length
+            booksHistory.length
                 ? `${booksHistory.length} books history records fetched successfully.`
                 : 'No books history found.',
-            status: httpStatus.OK,
-        };
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Failed to retrieve books history.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error(`Failed to get book history: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to get book history.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
-const getBookHistory = async (requester, bookId) => {
+const getBookHistory = async (bookId) => {
     try {
-        // Step 1: Validate if the requester is authorized
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'You are not authorized to get lend books.',
-                status: httpStatus.FORBIDDEN,
-            };
-        }
-
         const bookHistory = await BooksHistoryModel.findOne({ book: bookId });
-
         if (!bookHistory) {
-            return {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'No books history found.',
-                status: httpStatus.NOT_FOUND,
-            };
+            return errorResponse('No books history found.', httpStatus.NOT_FOUND);
         }
 
-        return {
-            timeStamp: new Date(),
-            success: true,
-            data: bookHistory,
-            message: 'Successfully retrieved book history.',
-            status: httpStatus.OK,
-        };
+        return sendResponse(
+            bookHistory,
+            'Successfully retrieved book history.',
+            httpStatus.OK
+        );
     } catch (error) {
-        return {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: error.message || 'Failed to retrieve lend books.',
-            status: httpStatus.BAD_REQUEST,
-        };
+        logger.error(`Failed to get book history: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to get book history.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 

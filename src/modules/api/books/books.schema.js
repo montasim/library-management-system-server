@@ -2,100 +2,151 @@ import Joi from 'joi';
 
 import booksConstants from './books.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
-import customObjectIdValidator from '../../../shared/customObjectIdValidator.js';
+import validationService from '../../../service/validation.service.js';
 
 // Define base schema for books
 const bookSchemaBase = Joi.object({
-    name: Joi.string()
-        .trim()
-        .required()
-        .min(booksConstants.lengths.NAME_MIN)
-        .max(booksConstants.lengths.NAME_MAX)
-        .messages(customValidationMessage),
+    name: validationService.createStringField(
+        booksConstants.lengths.NAME_MIN,
+        booksConstants.lengths.NAME_MAX
+    ).description('Defines the book\'s title. It must be unique within the database.'),
     bestSeller: Joi.number()
         .integer()
         .valid(1)
-        .messages(customValidationMessage),
-    image: Joi.string()
-        .uri()
-        .trim()
-        .required()
-        .messages(customValidationMessage),
-    review: Joi.number()
-        .min(0)
-        .max(5)
-        .required()
-        .messages(customValidationMessage),
-    writer: Joi.string()
-        .trim()
-        .required()
-        .custom(customObjectIdValidator('writer'))
+        .messages(customValidationMessage)
+        .description('Indicates if the book is a best seller. A value of 1 signifies it is a best seller.'),
+    review: Joi.number().min(0).max(5)
+        .messages(customValidationMessage)
+        .description('A numerical rating for the book, from 0 to 5.'),
+    writer: validationService.objectIdField
         .messages({
             'any.custom': 'Invalid writer ID format.',
             ...customValidationMessage,
-        }),
+        })
+        .description('The writer ID related to the book. Each ID must be a valid MongoDB ObjectId.'),
     subject: Joi.array()
-        .items(Joi.string().trim().custom(customObjectIdValidator('subject')))
-        .required()
+        .items(validationService.objectIdField)
         .messages({
             'any.custom': 'Invalid subject ID format.',
             ...customValidationMessage,
-        }),
+        })
+        .description('List of subject IDs related to the book. Each ID must be a valid MongoDB ObjectId.'),
     addSubject: Joi.array()
-        .items(
-            Joi.string().trim().custom(customObjectIdValidator('addSubject'))
-        )
+        .items(validationService.objectIdField)
         .messages({
             'any.custom': 'Invalid subject ID format.',
             ...customValidationMessage,
-        }),
+        })
+        .description('List of the subject IDs related to the book that will be added. Each ID must be a valid MongoDB ObjectId.'),
     deleteSubject: Joi.array()
-        .items(
-            Joi.string().trim().custom(customObjectIdValidator('deleteSubject'))
-        )
+        .items(validationService.objectIdField)
         .messages({
             'any.custom': 'Invalid subject ID format.',
             ...customValidationMessage,
-        }),
-    publication: Joi.string()
-        .trim()
-        .required()
-        .custom(customObjectIdValidator('publication'))
-        .messages({
-            'any.custom': 'Invalid publication ID format.',
-            ...customValidationMessage,
-        }),
-    page: Joi.number().integer().required().messages(customValidationMessage),
-    edition: Joi.string()
-        .trim()
-        .required()
-        .min(booksConstants.lengths.EDITION_MIN)
-        .max(booksConstants.lengths.EDITION_MAX)
-        .messages(customValidationMessage),
-    summary: Joi.string()
-        .trim()
-        .required()
-        .min(booksConstants.lengths.SUMMARY_MIN)
-        .max(booksConstants.lengths.SUMMARY_MAX)
-        .messages(customValidationMessage),
-    price: Joi.number()
-        .required()
-        .precision(2)
-        .messages(customValidationMessage),
+        })
+        .description('List of the subject IDs related to the book that will be deleted. Each ID must be a valid MongoDB ObjectId.'),
+    publication: validationService.objectIdField.messages({
+        'any.custom': 'Invalid publication ID format.',
+        ...customValidationMessage,
+    })
+        .description('The publication ID related to the book. Each ID must be a valid MongoDB ObjectId.'),
+    summary: validationService.createStringField(
+        booksConstants.lengths.SUMMARY_MIN,
+        booksConstants.lengths.SUMMARY_MAX
+    ).description('A concise description of the book, outlining the main points and features.'),
+    price: Joi.number().precision(2)
+        .messages(customValidationMessage)
+        .description('The selling price of the book, allowing up to two decimal places.'),
     stockAvailable: Joi.number()
         .integer()
-        .required()
         .min(0)
-        .messages(customValidationMessage),
-    isActive: Joi.boolean().required().messages(customValidationMessage),
+        .messages({
+            'number.integer': 'Stock available must be a whole number.',
+            'number.min': 'Stock available cannot be negative.',
+            ...customValidationMessage
+        })
+        .description('The number of copies of the book currently available for sale.'),
+    page: Joi.number().integer()
+        .messages({
+            'number.base': 'Page count must be a number.',
+            'number.integer': 'Page count must be an integer.',
+            'any.required': 'Page count is required.',
+            ...customValidationMessage
+        })
+        .description('Total number of pages in the book.'),
+    edition: validationService
+        .createStringField(
+            booksConstants.lengths.EDITION_MIN,
+            booksConstants.lengths.EDITION_MAX
+        )
+        .description('Indicates the edition of the book, which may correspond to updates or revisions.'),
+    limit: Joi.string()
+        .min(1)
+        .max(100)
+        .default(10)
+        .custom((value, helpers) => parseInt(value))
+        .description('Limit for query results, used in pagination to specify how many items to return.'),
+    sort: Joi.string().trim()
+        .default('createdAt')
+        .description('Sorting parameter for the query results, defaulting to the creation date.'),
+    isActive: validationService.booleanField,
+    createdBy: validationService.objectIdField,
+    updatedBy: validationService.objectIdField,
+    createdAt: validationService.dateField,
+    updatedAt: validationService.dateField,
 }).strict();
 
 // Schema for creating a book, making specific fields required
 const createBookSchema = bookSchemaBase.fork(
     [
         'name',
+        'writer',
+        'subject',
+        'publication',
+        'page',
+        'edition',
+        'summary',
+        'price',
+        'stockAvailable',
+        'isActive',
+    ],
+    (field) => field.required()
+);
+
+// Schema for updating a book
+const updateBookSchema = bookSchemaBase
+    .fork(
+        [
+            'name',
+            'bestSeller',
+            'review',
+            'writer',
+            'addSubject',
+            'deleteSubject',
+            'publication',
+            'page',
+            'edition',
+            'summary',
+            'price',
+            'stockAvailable',
+            'isActive',
+        ],
+        (field) => field.optional()
+    )
+    .min(1);
+
+// Schema for validating multiple book IDs
+const bookIdsParamSchema = Joi.object({
+    ids: validationService.objectIdsField.required()
+        .description('List of the book ID(s). Each ID(s) must be a valid MongoDB ObjectId.'),
+})
+    .required()
+    .messages(customValidationMessage);
+
+const getBooksQuerySchema = bookSchemaBase.fork(
+    [
+        'name',
         'bestSeller',
-        'image',
         'review',
         'writer',
         'subject',
@@ -105,115 +156,22 @@ const createBookSchema = bookSchemaBase.fork(
         'summary',
         'price',
         'stockAvailable',
+        'isActive',
+        'limit',
+        'sort',
+        'createdBy',
+        'updatedBy',
+        'createdAt',
+        'updatedBy',
     ],
-    (field) => field.required()
+    (field) => field.optional()
 );
-
-// Schema for updating a book
-const updateBookSchema = bookSchemaBase
-    .fork(Object.keys(bookSchemaBase.describe().keys), (field) =>
-        field.optional()
-    )
-    .min(1);
-
-// Schema for validating multiple book IDs
-const bookIdsParamSchema = Joi.object({
-    ids: Joi.string()
-        .custom((value, helpers) => {
-            const ids = value.split(',');
-            ids.forEach((id) => {
-                const { error } = Joi.string().alphanum().validate(id);
-                if (error) {
-                    throw new Error(`Invalid ID provided.`);
-                }
-            });
-            return value; // Return original value if validation passes
-        })
-        .required()
-        .messages(customValidationMessage),
-}).required();
-
-const getBooksQuerySchema = Joi.object({
-    page: Joi.string()
-        .min(1)
-        .default(1)
-        .custom((value, helpers) => parseInt(value)),
-    limit: Joi.string()
-        .min(1)
-        .max(100)
-        .default(10)
-        .custom((value, helpers) => parseInt(value)),
-    sort: Joi.string().trim().default('createdAt'),
-    name: Joi.string()
-        .trim()
-        .min(booksConstants.lengths.NAME_MIN)
-        .max(booksConstants.lengths.NAME_MAX),
-    bestSeller: Joi.string()
-        .valid('1')
-        .custom((value, helpers) => parseInt(value)),
-    review: Joi.string()
-        .custom((value, helpers) => parseFloat(value))
-        .min(0)
-        .max(5),
-    writer: Joi.string()
-        .trim()
-        .custom(customObjectIdValidator('writer'))
-        .messages({
-            'any.custom': 'Invalid writer ID format.',
-            ...customValidationMessage,
-        }),
-    subject: Joi.array()
-        .items(Joi.string().trim().custom(customObjectIdValidator('subject')))
-        .messages({
-            'any.custom': 'Invalid subject ID format.',
-            ...customValidationMessage,
-        }),
-    publication: Joi.string()
-        .trim()
-        .custom(customObjectIdValidator('publication'))
-        .messages({
-            'any.custom': 'Invalid publication ID format.',
-            ...customValidationMessage,
-        }),
-    edition: Joi.string()
-        .trim()
-        .min(booksConstants.lengths.EDITION_MIN)
-        .max(booksConstants.lengths.EDITION_MAX),
-    summary: Joi.string()
-        .trim()
-        .min(booksConstants.lengths.SUMMARY_MIN)
-        .max(booksConstants.lengths.SUMMARY_MAX),
-    price: Joi.string().custom((value, helpers) => parseFloat(value)),
-    stockAvailable: Joi.string()
-        .custom((value, helpers) => parseInt(value))
-        .min(0),
-    isActive: Joi.string()
-        .valid('true', 'false', '1', '0')
-        .custom((value, helpers) => {
-            if (value === 'true' || value === '1') {
-                return true;
-            } else if (value === 'false' || value === '0') {
-                return false;
-            }
-            return helpers.error('any.invalid');
-        })
-        .messages({
-            'any.only':
-                'isActive must be a boolean value represented as true/false or 1/0.',
-            ...customValidationMessage,
-        }),
-    createdBy: Joi.string().trim(),
-    updatedBy: Joi.string().trim(),
-})
-    .strict()
-    .messages(customValidationMessage);
 
 // Schema for single book ID validation
 const bookIdParamSchema = Joi.object({
-    bookId: Joi.string()
-        .alphanum()
+    bookId: validationService.objectIdField
         .required()
-        .messages(customValidationMessage),
+        .description('The book ID. ID must be a valid MongoDB ObjectId.'),
 }).strict();
 
 const booksSchema = {

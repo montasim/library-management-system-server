@@ -1,8 +1,13 @@
 import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
 import subjectsService from './subjects.service.js';
+import getRequesterId from '../../../utilities/getRequesterId.js';
 
 const createSubject = asyncErrorHandler(async (req, res) => {
-    const newSubjectData = await subjectsService.createSubject(req.body);
+    const requester = getRequesterId(req);
+    const newSubjectData = await subjectsService.createSubject(
+        requester,
+        req.body
+    );
 
     newSubjectData.route = req.originalUrl;
 
@@ -26,7 +31,9 @@ const getSubject = asyncErrorHandler(async (req, res) => {
 });
 
 const updateSubject = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const updatedSubjectData = await subjectsService.updateSubject(
+        requester,
         req.params.subjectId,
         req.body
     );
@@ -37,9 +44,12 @@ const updateSubject = asyncErrorHandler(async (req, res) => {
 });
 
 const deleteSubjects = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const subjectIds = req.query.ids.split(',');
-    const deletedSubjectsData =
-        await subjectsService.deleteSubjects(subjectIds);
+    const deletedSubjectsData = await subjectsService.deleteSubjects(
+        requester,
+        subjectIds
+    );
 
     deletedSubjectsData.route = req.originalUrl;
 
@@ -47,7 +57,9 @@ const deleteSubjects = asyncErrorHandler(async (req, res) => {
 });
 
 const deleteSubject = asyncErrorHandler(async (req, res) => {
+    const requester = getRequesterId(req);
     const deletedSubjectData = await subjectsService.deleteSubject(
+        requester,
         req.params.subjectId
     );
 
