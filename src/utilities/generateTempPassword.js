@@ -11,7 +11,10 @@ const generateTempPassword = (min, max) => {
 
     // Helper function to get a random character from a pattern
     const getRandomCharFromPattern = (pattern) => {
-        const matchingChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}:"<>?`~[];,./|\\-='.match(pattern);
+        const matchingChars =
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}:"<>?`~[];,./|\\-='.match(
+                pattern
+            );
         return matchingChars[Math.floor(Math.random() * matchingChars.length)];
     };
 
@@ -23,13 +26,22 @@ const generateTempPassword = (min, max) => {
 
     // Fill the rest of the password with random characters from all possible patterns
     while (password.length < length) {
-        const allPatterns = [patterns.UPPERCASE, patterns.LOWERCASE, patterns.DIGITS, patterns.SPECIAL_CHARACTERS];
-        const randomPattern = allPatterns[Math.floor(Math.random() * allPatterns.length)];
+        const allPatterns = [
+            patterns.UPPERCASE,
+            patterns.LOWERCASE,
+            patterns.DIGITS,
+            patterns.SPECIAL_CHARACTERS,
+        ];
+        const randomPattern =
+            allPatterns[Math.floor(Math.random() * allPatterns.length)];
         password += getRandomCharFromPattern(randomPattern);
     }
 
     // Shuffle the password to avoid predictable sequences
-    password = password.split('').sort(() => 0.5 - Math.random()).join('');
+    password = password
+        .split('')
+        .sort(() => 0.5 - Math.random())
+        .join('');
 
     return password;
 };

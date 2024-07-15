@@ -83,7 +83,11 @@ const getPermissions = async (requester, params) => {
             .limit(limit);
 
         if (!permissions.length) {
-            return sendResponse({}, 'No permissions found.', httpStatus.NOT_FOUND);
+            return sendResponse(
+                {},
+                'No permissions found.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         return sendResponse(
@@ -162,7 +166,11 @@ const updatePermission = async (requester, permissionId, updateData) => {
             { new: true }
         );
         if (!updatedPermission) {
-            return sendResponse({}, 'Permission not found.', httpStatus.NOT_FOUND);
+            return sendResponse(
+                {},
+                'Permission not found.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         return sendResponse(
@@ -198,7 +206,9 @@ const deletePermissions = async (requester, permissionIds) => {
             .lean();
 
         const existingIds = existingPermissions.map((p) => p._id.toString());
-        const notFoundIds = permissionIds.filter((id) => !existingIds.includes(id));
+        const notFoundIds = permissionIds.filter(
+            (id) => !existingIds.includes(id)
+        );
 
         // Perform deletion on existing permissions only
         const deletionResult = await PermissionsModel.deleteMany({

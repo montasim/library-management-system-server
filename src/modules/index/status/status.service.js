@@ -5,11 +5,7 @@ import sendResponse from '../../../utilities/sendResponse.js';
 
 const statusService = (req) => {
     try {
-        return sendResponse(
-            {},
-            'Success',
-            httpStatus.OK
-        );
+        return sendResponse({}, 'Success', httpStatus.OK);
     } catch (error) {
         loggerService.error(`Failed to get roles: ${error}`);
 

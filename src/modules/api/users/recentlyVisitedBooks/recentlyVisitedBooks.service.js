@@ -18,14 +18,21 @@ const add = async (requester, bookId) => {
         }
 
         // Fetch or initialize the recently visited books document
-        let recentlyVisitedBooks = await RecentlyVisitedBooksModel.findOne({ user: requester });
+        let recentlyVisitedBooks = await RecentlyVisitedBooksModel.findOne({
+            user: requester,
+        });
 
         if (!recentlyVisitedBooks) {
-            recentlyVisitedBooks = new RecentlyVisitedBooksModel({ user: requester, books: [] });
+            recentlyVisitedBooks = new RecentlyVisitedBooksModel({
+                user: requester,
+                books: [],
+            });
         }
 
         // Check if the book is already in the recently visited list
-        const existingBook = recentlyVisitedBooks.books.find(book => book.id.toString() === bookId.toString());
+        const existingBook = recentlyVisitedBooks.books.find(
+            (book) => book.id.toString() === bookId.toString()
+        );
 
         if (existingBook) {
             return errorResponse(
@@ -42,10 +49,7 @@ const add = async (requester, bookId) => {
             .select('-createdBy -updatedBy');
 
         if (!book) {
-            return errorResponse(
-                'Book not found.',
-                httpStatus.NOT_FOUND
-            );
+            return errorResponse('Book not found.', httpStatus.NOT_FOUND);
         }
 
         // Add new book to the end of the array
@@ -84,15 +88,17 @@ const get = async (requester) => {
         }
 
         // Fetch recently visited books for the user
-        const recentlyVisitedBooks = await RecentlyVisitedBooksModel.findOne({ user: requester })
+        const recentlyVisitedBooks = await RecentlyVisitedBooksModel.findOne({
+            user: requester,
+        })
             .populate({
                 path: 'books.id',
                 select: '-createdBy -updatedBy',
                 populate: [
                     { path: 'writer', select: 'name' },
                     { path: 'publication', select: 'name' },
-                    { path: 'subject', select: 'name' }
-                ]
+                    { path: 'subject', select: 'name' },
+                ],
             })
             .select('books')
             .lean();
@@ -105,7 +111,9 @@ const get = async (requester) => {
         }
 
         // Extract populated books array from the document
-        const populatedBooks = recentlyVisitedBooks.books.map(book => book.id);
+        const populatedBooks = recentlyVisitedBooks.books.map(
+            (book) => book.id
+        );
 
         return sendResponse(
             populatedBooks,

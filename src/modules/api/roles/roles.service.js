@@ -161,9 +161,13 @@ const updateRole = async (requester, roleId, updateData) => {
 
         updateData.updatedBy = requester;
 
-        const updatedRole = await RolesModel.findByIdAndUpdate(roleId, updateData, {
-            new: true,
-        });
+        const updatedRole = await RolesModel.findByIdAndUpdate(
+            roleId,
+            updateData,
+            {
+                new: true,
+            }
+        );
 
         if (!updatedRole) {
             return sendResponse({}, 'Role not found.', httpStatus.NOT_FOUND);
@@ -213,7 +217,9 @@ const deleteRoles = async (requester, roleIds) => {
             deleted: deletionResult.deletedCount,
             notFound: notFoundIds.length,
             failed:
-                roleIds.length - deletionResult.deletedCount - notFoundIds.length,
+                roleIds.length -
+                deletionResult.deletedCount -
+                notFoundIds.length,
         };
 
         // Custom message to summarize the outcome

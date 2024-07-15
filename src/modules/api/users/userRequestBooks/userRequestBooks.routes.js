@@ -8,9 +8,7 @@ const router = express.Router();
 
 router
     .route('/')
-    .get(
-        userRequestBooksController.getRequestBooks
-    )
+    .get(userRequestBooksController.getRequestBooks)
     .all(methodNotSupported);
 
 router
@@ -19,7 +17,10 @@ router
         userRequestBooksValidator.requestBookId,
         userRequestBooksController.getRequestBook
     )
-    .delete(userRequestBooksValidator.requestBookId, userRequestBooksController.deleteRequestBook)
+    .delete(
+        userRequestBooksValidator.requestBookId,
+        userRequestBooksController.deleteRequestBook
+    )
     .all(methodNotSupported);
 
 export default router;

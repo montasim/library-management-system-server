@@ -79,11 +79,15 @@ const createBook = async (requester, bookData, bookImage) => {
 
         // Validate writer, publication, and subject IDs
         const validationErrors = [
-            ...await validateIds(bookData.writer, bookData.publication),
-            ...await validateSubjectIds(bookData.subject)
+            ...(await validateIds(bookData.writer, bookData.publication)),
+            ...(await validateSubjectIds(bookData.subject)),
         ];
         if (validationErrors.length) {
-            return sendResponse({}, validationErrors.join(' '), httpStatus.BAD_REQUEST);
+            return sendResponse(
+                {},
+                validationErrors.join(' '),
+                httpStatus.BAD_REQUEST
+            );
         }
 
         // Validate the image file
@@ -108,7 +112,8 @@ const createBook = async (requester, bookData, bookImage) => {
         }
 
         // Upload image and handle possible errors
-        const bookImageData = await GoogleDriveFileOperations.uploadFile(bookImage);
+        const bookImageData =
+            await GoogleDriveFileOperations.uploadFile(bookImage);
         if (!bookImageData || bookImageData instanceof Error) {
             return errorResponse(
                 'Failed to save image.',
@@ -278,10 +283,7 @@ const updateBook = async (requester, bookId, updateData, bookImage) => {
         const errors = await validateIds(writer, publication);
 
         if (errors.length) {
-            return errorResponse(
-                errors.join(' '),
-                httpStatus.BAD_REQUEST
-            );
+            return errorResponse(errors.join(' '), httpStatus.BAD_REQUEST);
         }
 
         const addSubjectErrors = await validateSubjectIds(addSubject);
@@ -313,10 +315,7 @@ const updateBook = async (requester, bookId, updateData, bookImage) => {
         const book = await BooksModel.findById(bookId);
 
         if (!book) {
-            return errorResponse(
-                'Book not found.',
-                httpStatus.NOT_FOUND
-            );
+            return errorResponse('Book not found.', httpStatus.NOT_FOUND);
         }
 
         // Ensure book.subject is an array
@@ -434,10 +433,7 @@ const deleteBooks = async (requester, bookIds) => {
     try {
         const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
-            return errorResponse(
-                'User not authorized.',
-                httpStatus.FORBIDDEN
-            );
+            return errorResponse('User not authorized.', httpStatus.FORBIDDEN);
         }
 
         const results = {
@@ -468,7 +464,9 @@ const deleteBooks = async (requester, bookIds) => {
                 }
             } catch (error) {
                 // Log the error and mark this ID as failed
-                loggerService.error(`Failed to delete book with ID ${bookId}: ${error}`);
+                loggerService.error(
+                    `Failed to delete book with ID ${bookId}: ${error}`
+                );
                 results.failed.push(bookId);
             }
         }
@@ -500,18 +498,10 @@ const deleteBook = async (requester, bookId) => {
 
         const deletedResource = await BooksModel.findByIdAndDelete(bookId);
         if (!deletedResource) {
-            return sendResponse(
-                {},
-                'Book not found.',
-                httpStatus.NOT_FOUND
-            );
+            return sendResponse({}, 'Book not found.', httpStatus.NOT_FOUND);
         }
 
-        return sendResponse(
-            {},
-            'Book deleted successfully.',
-            httpStatus.OK
-        );
+        return sendResponse({}, 'Book deleted successfully.', httpStatus.OK);
     } catch (error) {
         loggerService.error(`Failed to delete book: ${error}`);
 

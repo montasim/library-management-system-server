@@ -11,27 +11,25 @@
 </div>
 <!-- repository summary badges end -->
 
-
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=120&height=40&lines=CONTENTS:" alt="CONTENTS:" />
 
-
-- [FEATURES](#features)
-- [PREREQUISITES](#prerequisites)
-- [SETUP](#setup)
-- [RUNNING THE SCRIPT](#running-the-script)
-- [ERROR HANDLING](#error-handling)
-- [HOSTING](#hosting)
-- [USED PACKAGES](#used-packages)
-- [TOOLS](#tools)
-- [ARTICLES](#articles)
-- [DO NOT FORGET TO DO](#do-not-forget-to-do)
-- [TUTORIALS](#tutorials)
-- [INSPIRATIONS](#inspirations)
-- [CONTRIBUTE](#contribute)
-- [CONTRIBUTORS](#contributors)
-- [SPECIAL THANKS](#special-thanks)
-- [LICENSE](#license)
-- [CONTACT](#contact)
+-   [FEATURES](#features)
+-   [PREREQUISITES](#prerequisites)
+-   [SETUP](#setup)
+-   [RUNNING THE SCRIPT](#running-the-script)
+-   [ERROR HANDLING](#error-handling)
+-   [HOSTING](#hosting)
+-   [USED PACKAGES](#used-packages)
+-   [TOOLS](#tools)
+-   [ARTICLES](#articles)
+-   [DO NOT FORGET TO DO](#do-not-forget-to-do)
+-   [TUTORIALS](#tutorials)
+-   [INSPIRATIONS](#inspirations)
+-   [CONTRIBUTE](#contribute)
+-   [CONTRIBUTORS](#contributors)
+-   [SPECIAL THANKS](#special-thanks)
+-   [LICENSE](#license)
+-   [CONTACT](#contact)
 
 <br/>
 
@@ -66,23 +64,23 @@
         - Get all recently visited books
 2. Admin
     - Admin
-       - Create admin
-       - Verify admin request using email
-       - Admin Login
-       - Request password reset email
-       - Resend password reset email
-       - Reset password
-       - Logout
+        - Create admin
+        - Verify admin request using email
+        - Admin Login
+        - Request password reset email
+        - Resend password reset email
+        - Reset password
+        - Logout
     - Permission
-       - Create permission
-       - Get all permissions
-       - Update permission
-       - Delete permission
+        - Create permission
+        - Get all permissions
+        - Update permission
+        - Delete permission
     - Role
-       - Create role
-       - Get all roles
-       - Update role
-       - Delete role
+        - Create role
+        - Get all roles
+        - Update role
+        - Delete role
     - Books
         - Add a book
         - Update a book
@@ -96,7 +94,7 @@
         - Add a writer
         - Get all writers
         - Update a writer
-        - Delete a writer 
+        - Delete a writer
     - Subjects
         - Add a subject
         - Get all subjects
@@ -126,51 +124,47 @@
 
 <br/>
 
-
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=148&height=40&lines=PREREQUISITES" alt="PREREQUISITES" id="prerequisites" />
 
 1. Node.js (v20.x or higher)
 2. Yarn (v1.22.x or higher)
 
-
 Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v` in your terminal. These commands will display the current version of each installed on your system. If these are not installed, follow the installation instructions on the [Node.js website](https://nodejs.org/) and the [Yarn website](https://classic.yarnpkg.com/en/).
 
 <br/>
-
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=60&height=40&lines=SETUP" alt="SETUP" id="setup" />
 
 1. **Clone the repository and navigate to the directory:**
 
-   ```bash
-   git clone https://github.com/montasim/library-management-system-server.git
-   cd library-management-system-server
-   ```
+    ```bash
+    git clone https://github.com/montasim/library-management-system-server.git
+    cd library-management-system-server
+    ```
 
 2. **Install the dependencies:**
 
-   ```bash
-   yarn install
-   ```
+    ```bash
+    yarn install
+    ```
 
 3. **Configuring the Environment:**
 
-   Create a `.env.development` or `.env.staging` or `.env.production` file in the root directory of the project and populate it with the necessary environment variables. See the [.env.example](.env.example) file for an example.
+    Create a `.env.development` or `.env.staging` or `.env.production` file in the root directory of the project and populate it with the necessary environment variables. See the [.env.example](.env.example) file for an example.
 
 <br/>
-
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=208&height=40&lines=RUNNING+THE+SCRIPT" alt="RUNNING THE SCRIPT" id="running-the-script" />
 
 1. **Running the Application:**
 
-   To start the application in development mode, use:
+    To start the application in development mode, use:
 
-   ```bash
-   yarn dev
-   ```
+    ```bash
+    yarn dev
+    ```
 
-   This will run the server with nodemon, automatically restarting when any changes are made.
+    This will run the server with nodemon, automatically restarting when any changes are made.
 
 2. **To build and run the application in production mode, use:**
 
@@ -178,89 +172,87 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
     yarn start
     ```
 
-   This will build the application and start the server using the built files.
+    This will build the application and start the server using the built files.
 
-   This script first builds the project by linting the code, fixing lint issues, running prettier, and then starts the application with pm2.
+    This script first builds the project by linting the code, fixing lint issues, running prettier, and then starts the application with pm2.
 
 3. **Testing:**
 
-   To run the tests configured with Jest, use:
+    To run the tests configured with Jest, use:
 
-   ```bash
-   yarn test
-   ```
+    ```bash
+    yarn test
+    ```
 
-   This will build the project and then run all the Jest tests.
+    This will build the project and then run all the Jest tests.
 
 4. **Linting and Code Formatting:**
 
-   - To check for linting errors:
+    - To check for linting errors:
 
-     ```bash
-     yarn lint:check
-     ```
+        ```bash
+        yarn lint:check
+        ```
 
-   - To fix linting errors:
+    - To fix linting errors:
 
-     ```bash
-     yarn lint:fix
-     ```
+        ```bash
+        yarn lint:fix
+        ```
 
-   - To check if files are formatted correctly:
+    - To check if files are formatted correctly:
 
-     ```bash
-     yarn prettier:check
-     ```
+        ```bash
+        yarn prettier:check
+        ```
 
-   - To format files:
+    - To format files:
 
-     ```bash
-     yarn prettier:fix
-     ```
+        ```bash
+        yarn prettier:fix
+        ```
 
 5. **Generating Documentation:**
 
-   To generate code documentation with JSDoc, run:
+    To generate code documentation with JSDoc, run:
 
-   ```bash
-   yarn generate-docs
-   ```
+    ```bash
+    yarn generate-docs
+    ```
 
-   This will create documentation based on your JSDoc comments.
+    This will create documentation based on your JSDoc comments.
 
 6. **Release Management:**
 
-   To create a new release, you can use:
+    To create a new release, you can use:
 
-   ```bash
-   yarn release
-   ```
+    ```bash
+    yarn release
+    ```
 
-   This will automatically bump the version, update the CHANGELOG, and create a commit and a tag.
+    This will automatically bump the version, update the CHANGELOG, and create a commit and a tag.
 
-   For minor or major releases:
+    For minor or major releases:
 
-   ```bash
-   yarn release:minor
-   yarn release:major
-   ```
-   
+    ```bash
+    yarn release:minor
+    yarn release:major
+    ```
+
 7. **Cleanup:**
 
-   To clean up dependencies and rebuild the project:
+    To clean up dependencies and rebuild the project:
 
-   ```bash
-   yarn clean
-   ```
+    ```bash
+    yarn clean
+    ```
 
-   This command initializes the auto cleanup process and then forces a rebuild.
-<br/>
-
+    This command initializes the auto cleanup process and then forces a rebuild.
+    <br/>
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=170&height=40&lines=ERROR+HANDLING" alt="ERROR HANDLING" id="error-handling" />
 
 <br/>
-
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=90&height=40&lines=HOSTING" alt="HOSTING" id="hosting" />
 
@@ -292,7 +284,6 @@ Vercel is the recommended option for hosting the files since it is free and easy
 
 <br/>
 
-
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=165&height=40&lines=USED+PACKAGES" alt="USED PACKAGES" id="used-packages" />
 
 <details>
@@ -300,46 +291,45 @@ Vercel is the recommended option for hosting the files since it is free and easy
         List of used packages:
     </summary>
 
-- `@googleapis/drive - ^8.11.0`
-- `bcrypt - ^5.1.1`
-- `compression - ^1.7.4`
-- `cors - ^2.8.5`
-- `dompurify - ^3.1.5`
-- `dotenv - ^16.4.5`
-- `express - ^4.19.2`
-- `express-useragent - ^1.0.15`
-- `geoip-lite - ^1.4.10`
-- `glob - ^10.4.2`
-- `helmet - ^7.1.0`
-- `hpp - ^0.2.3`
-- `jest - ^29.7.0`
-- `joi - ^17.13.3`
-- `jsdom - ^24.1.0`
-- `jsonwebtoken - ^9.0.2`
-- `mongodb - ^6.8.0`
-- `mongoose - ^8.4.4`
-- `morgan - ^1.10.0`
-- `multer - ^1.4.5-lts.1`
-- `node-cache - ^5.1.2`
-- `nodemailer - ^6.9.14`
-- `pm2 - ^5.4.1`
-- `request-ip - ^3.3.0`
-- `supertest - ^7.0.0`
-- `terser - ^5.31.1`
-- `uuid - ^10.0.0`
-- `winston - ^3.13.0`
-- `winston-daily-rotate-file - ^5.0.0`
-- `@babel/core - ^7.24.7`
-- `@babel/preset-env - ^7.24.7`
-- `eslint - ^9.5.0`
-- `jsdoc - ^4.0.3`
-- `nodemon - ^3.1.4`
-- `prettier - ^3.3.2`
-- `standard-version - ^9.5.0`
+-   `@googleapis/drive - ^8.11.0`
+-   `bcrypt - ^5.1.1`
+-   `compression - ^1.7.4`
+-   `cors - ^2.8.5`
+-   `dompurify - ^3.1.5`
+-   `dotenv - ^16.4.5`
+-   `express - ^4.19.2`
+-   `express-useragent - ^1.0.15`
+-   `geoip-lite - ^1.4.10`
+-   `glob - ^10.4.2`
+-   `helmet - ^7.1.0`
+-   `hpp - ^0.2.3`
+-   `jest - ^29.7.0`
+-   `joi - ^17.13.3`
+-   `jsdom - ^24.1.0`
+-   `jsonwebtoken - ^9.0.2`
+-   `mongodb - ^6.8.0`
+-   `mongoose - ^8.4.4`
+-   `morgan - ^1.10.0`
+-   `multer - ^1.4.5-lts.1`
+-   `node-cache - ^5.1.2`
+-   `nodemailer - ^6.9.14`
+-   `pm2 - ^5.4.1`
+-   `request-ip - ^3.3.0`
+-   `supertest - ^7.0.0`
+-   `terser - ^5.31.1`
+-   `uuid - ^10.0.0`
+-   `winston - ^3.13.0`
+-   `winston-daily-rotate-file - ^5.0.0`
+-   `@babel/core - ^7.24.7`
+-   `@babel/preset-env - ^7.24.7`
+-   `eslint - ^9.5.0`
+-   `jsdoc - ^4.0.3`
+-   `nodemon - ^3.1.4`
+-   `prettier - ^3.3.2`
+-   `standard-version - ^9.5.0`
 </details>
 
 <br/>
-
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=65&height=40&lines=TOOLS" alt="TOOLS" id="tools" />
 
@@ -349,18 +339,15 @@ Vercel is the recommended option for hosting the files since it is free and easy
 
 <br/>
 
-
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=95&height=40&lines=ARTICLES" alt="ARTICLES" id="articles" />
 
 1. [StackOverflow answer on file upload to Google Drive](https://stackoverflow.com/questions/65181932/how-i-can-upload-file-to-google-drive-with-google-drive-api).
 
 <br/>
 
-
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=230&height=40&lines=DO+NOT+FORGET+TO+DO" alt="DO NOT FORGET TO DO" id="do-not-forget-to-do" />
 
 <br/>
-
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=110&height=40&lines=TUTORIALS" alt="TUTORIALS" id="tutorials" />
 
@@ -368,11 +355,9 @@ Vercel is the recommended option for hosting the files since it is free and easy
 
 <br/>
 
-
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=140&height=40&lines=INSPIRATIONS" alt="INSPIRATIONS" id="inspirations" />
 
 <br/>
-
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=125&height=40&lines=CONTRIBUTE" alt="CONTRIBUTE" id="contribute" />
 
@@ -381,18 +366,15 @@ Please read the [contribution guidelines](CONTRIBUTION.md) first.
 
 <br/>
 
-
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=160&height=40&lines=CONTRIBUTORS" alt="CONTRIBUTORS" id="contributors" />
 
 <img loading="lazy" src="https://badges.pufler.dev/contributors/montasim/library-management-system-server?size=50&padding=5&perRow=10&bots=true" alt="contributors" />
 
 <br/>
 
-
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=168&height=40&lines=SPECIAL+THANKS" alt="SPECIAL THANKS" id="special-thanks" />
 
 <br/>
-
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=78&height=40&lines=LICENSE" alt="LICENSE" id="license" />
 

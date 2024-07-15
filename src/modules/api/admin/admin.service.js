@@ -4,8 +4,7 @@ import AdminModel from './admin.model.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import validateEmail from '../../../utilities/validateEmail.js';
-import generateVerificationToken
-    from '../../../utilities/generateVerificationToken.js';
+import generateVerificationToken from '../../../utilities/generateVerificationToken.js';
 import configuration from '../../../configuration/configuration.js';
 import environment from '../../../constant/envTypes.constants.js';
 import prepareEmailContent from '../../../shared/prepareEmailContent.js';
@@ -17,13 +16,10 @@ import generateHashedToken from '../../../utilities/generateHashedToken.js';
 import comparePassword from '../../../utilities/comparePassword.js';
 import validatePassword from '../../../utilities/validatePassword.js';
 import createHashedPassword from '../../../utilities/createHashedPassword.js';
-import getRequestedDeviceDetails
-    from '../../../utilities/getRequestedDeviceDetails.js';
-import decodeAuthenticationToken
-    from '../../../utilities/decodeAuthenticationToken.js';
+import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
+import decodeAuthenticationToken from '../../../utilities/decodeAuthenticationToken.js';
 import generateTempPassword from '../../../utilities/generateTempPassword.js';
-import createAuthenticationToken
-    from '../../../utilities/createAuthenticationToken.js';
+import createAuthenticationToken from '../../../utilities/createAuthenticationToken.js';
 import UsersModel from '../users/users.model.js';
 import loggerService from '../../../service/logger.service.js';
 
@@ -61,7 +57,11 @@ const createAdmin = async (requester, adminData, hostData) => {
 
         const emailValidationResult = await validateEmail(adminData.email);
         if (emailValidationResult !== 'Valid') {
-            return sendResponse({}, emailValidationResult, httpStatus.BAD_REQUEST);
+            return sendResponse(
+                {},
+                emailValidationResult,
+                httpStatus.BAD_REQUEST
+            );
         }
 
         const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
@@ -414,7 +414,9 @@ const resetPassword = async (hostData, token, adminData) => {
         }
 
         // Update the user with new password and expiry
-        adminDetails.password = await createHashedPassword(adminData.newPassword);
+        adminDetails.password = await createHashedPassword(
+            adminData.newPassword
+        );
         adminDetails.mustChangePassword = false;
         adminDetails.resetPasswordVerifyToken = undefined;
         adminDetails.resetPasswordVerifyTokenExpires = undefined;
@@ -519,10 +521,7 @@ const login = async (adminData, userAgent, device) => {
         //     };
         // }
 
-        const { token } = await createAuthenticationToken(
-            adminDetails,
-            device
-        );
+        const { token } = await createAuthenticationToken(adminDetails, device);
 
         adminDetails.login.successful.device.push({
             details: userAgent, // Assuming userAgent is a string

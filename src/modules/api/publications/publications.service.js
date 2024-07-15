@@ -74,7 +74,11 @@ const getPublications = async (params) => {
             .limit(limit);
 
         if (!publications.length) {
-            return sendResponse({}, 'No publication found.', httpStatus.NOT_FOUND);
+            return sendResponse(
+                {},
+                'No publication found.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         return sendResponse(
@@ -103,7 +107,10 @@ const getPublication = async (publicationId) => {
     try {
         const publication = await PublicationsModel.findById(publicationId);
         if (!publication) {
-            return errorResponse('Publication not found.', httpStatus.NOT_FOUND);
+            return errorResponse(
+                'Publication not found.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         return sendResponse(
@@ -159,7 +166,11 @@ const updatePublication = async (requester, publicationId, updateData) => {
             }
         );
         if (!updatedPublication) {
-            return sendResponse({}, 'Publication not found.', httpStatus.NOT_FOUND);
+            return sendResponse(
+                {},
+                'Publication not found.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         return sendResponse(

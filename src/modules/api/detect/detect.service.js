@@ -25,10 +25,10 @@ const detectService = async (req) => {
             device: userAgent.isDesktop
                 ? 'Desktop'
                 : userAgent.isTablet
-                    ? 'Tablet'
-                    : userAgent.isMobile
-                        ? 'Mobile'
-                        : 'Unknown',
+                  ? 'Tablet'
+                  : userAgent.isMobile
+                    ? 'Mobile'
+                    : 'Unknown',
             browser: userAgent.browser,
             browserVersion: userAgent.version,
             timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -41,10 +41,10 @@ const detectService = async (req) => {
         const filteredData =
             Object.keys(queryParams).length > 0
                 ? Object.fromEntries(
-                    Object.entries(detectedData).filter(
-                        ([key]) => queryParams[key] === 'true'
-                    )
-                )
+                      Object.entries(detectedData).filter(
+                          ([key]) => queryParams[key] === 'true'
+                      )
+                  )
                 : detectedData;
 
         return sendResponse(

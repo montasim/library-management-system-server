@@ -18,20 +18,22 @@ const getBooksHistory = async (requester) => {
 
         // Fetch all lending and returning records associated with the requester
         const bookHistories = await BooksHistoryModel.find({
-            $or: [
-                { 'lend.user': requester },
-                { 'return.user': requester }
-            ]
-        }).populate({
-            path: 'book',
-            select: '-createdBy -updatedBy'
-        }).populate({
-            path: 'lend.user return.user',
-            select: '-createdBy -updatedBy'
-        });
+            $or: [{ 'lend.user': requester }, { 'return.user': requester }],
+        })
+            .populate({
+                path: 'book',
+                select: '-createdBy -updatedBy',
+            })
+            .populate({
+                path: 'lend.user return.user',
+                select: '-createdBy -updatedBy',
+            });
 
         if (!bookHistories.length) {
-            return errorResponse('No book history found for this user.', httpStatus.NOT_FOUND);
+            return errorResponse(
+                'No book history found for this user.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         return sendResponse(
@@ -70,31 +72,34 @@ const getBookHistoryByBookId = async (requester, bookId) => {
         // Fetch the book's history with specific conditions on the user involved in the transactions
         const bookHistory = await BooksHistoryModel.findOne({
             book: bookId,
-            $or: [
-                { 'lend.user': requester },
-                { 'return.user': requester }
-            ]
+            $or: [{ 'lend.user': requester }, { 'return.user': requester }],
         })
             .populate({
                 path: 'book',
-                select: '-createdBy -updatedBy'
+                select: '-createdBy -updatedBy',
             })
             .populate({
                 path: 'lend.user return.user',
                 select: '-createdBy -updatedBy',
-                match: { _id: requester }
+                match: { _id: requester },
             })
             .populate({
                 path: 'lend return',
                 populate: {
                     path: 'user',
                     select: '-createdBy -updatedBy',
-                    match: { _id: requester }
-                }
+                    match: { _id: requester },
+                },
             });
 
-        if (!bookHistory || !bookHistory.lend.length && !bookHistory.return.length) {
-            return errorResponse('No relevant book history found for this book.', httpStatus.NOT_FOUND);
+        if (
+            !bookHistory ||
+            (!bookHistory.lend.length && !bookHistory.return.length)
+        ) {
+            return errorResponse(
+                'No relevant book history found for this book.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         // Send a successful response with the populated book history

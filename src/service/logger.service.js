@@ -59,8 +59,8 @@ const loggerService = winston.createLogger({
             format: winston.format.combine(
                 winston.format.timestamp(),
                 winston.format.json()
-            )
-        })
+            ),
+        }),
     ],
 });
 

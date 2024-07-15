@@ -3,8 +3,7 @@ import express from 'express';
 import authValidator from './auth.validator.js';
 import authController from './auth.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
-import authenticateMiddleware
-    from '../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 
 const router = express.Router();
 
@@ -13,7 +12,8 @@ router
     .post(authValidator.login, authController.login)
     .all(methodNotSupported);
 
-router.route('/logout')
+router
+    .route('/logout')
     .get(authenticateMiddleware.user, authController.logout)
     .all(methodNotSupported);
 

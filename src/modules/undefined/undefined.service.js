@@ -5,11 +5,7 @@ import loggerService from '../../service/logger.service.js';
 
 const undefinedService = () => {
     try {
-        return sendResponse(
-            {},
-            'Invalid route!',
-            httpStatus.NOT_FOUND
-        );
+        return sendResponse({}, 'Invalid route!', httpStatus.NOT_FOUND);
     } catch (error) {
         loggerService.error(`Failed to process request: ${error}`);
 
