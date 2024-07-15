@@ -1,6 +1,6 @@
 import WritersModel from './writers.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import logger from '../../../utilities/logger.js';
+import loggerService from '../../../service/logger.service.js';
 import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
 import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
@@ -75,7 +75,7 @@ const createWriter = async (requester, writerData, writerImage) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        logger.error(`Failed to create writer: ${error}`);
+        loggerService.error(`Failed to create writer: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to create writer.',
@@ -127,7 +127,7 @@ const getWriters = async (params) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get writers: ${error}`);
+        loggerService.error(`Failed to get writers: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get writers.',
@@ -145,7 +145,7 @@ const getWriter = async (writerId) => {
 
         return sendResponse(writer, 'Writer fetched successfully.', httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to get writer: ${error}`);
+        loggerService.error(`Failed to get writer: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get writer.',
@@ -235,7 +235,7 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to update writer: ${error}`);
+        loggerService.error(`Failed to update writer: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to update writer.',
@@ -284,7 +284,7 @@ const deleteWriters = async (requester, writerIds) => {
                 }
             } catch (error) {
                 // Log the error and mark this ID as failed
-                logger.error(
+                loggerService.error(
                     `Failed to delete writer with ID ${writerId}: ${error}`
                 );
                 results.failed.push(writerId);
@@ -297,7 +297,7 @@ const deleteWriters = async (requester, writerIds) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to delete writers: ${error}`);
+        loggerService.error(`Failed to delete writers: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete writers.',
@@ -310,7 +310,7 @@ const deleteWriter = async (requester, writerId) => {
     try {
         return deleteResourceById(requester, writerId, WritersModel, 'writer');
     } catch (error) {
-        logger.error(`Failed to delete writer: ${error}`);
+        loggerService.error(`Failed to delete writer: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete writer.',

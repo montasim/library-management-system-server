@@ -1,6 +1,6 @@
 import hpp from 'hpp';
 
-import logger from '../utilities/logger.js';
+import loggerService from '../service/logger.service.js';
 
 const hppConfiguration = (options) => {
     return (req, res, next) => {
@@ -9,7 +9,7 @@ const hppConfiguration = (options) => {
 
         sensitiveParams.forEach((param) => {
             if (req.query[param] && Array.isArray(req.query[param])) {
-                logger.warn(
+                loggerService.warn(
                     `HPP attempt detected on parameter: ${param}`,
                     req.query[param]
                 );

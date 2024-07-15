@@ -5,7 +5,7 @@ import BooksModel from '../books.model.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import UsersModel from '../../users/users.model.js';
-import logger from '../../../../utilities/logger.js';
+import loggerService from '../../../../service/logger.service.js';
 
 const createLendBook = async (requester, lendBookData) => {
     try {
@@ -120,7 +120,7 @@ const createLendBook = async (requester, lendBookData) => {
             );
         }
     } catch (error) {
-        logger.error(`Failed to lend book: ${error}`);
+        loggerService.error(`Failed to lend book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to lend book.',
@@ -182,7 +182,7 @@ const getLendBooks = async (requester) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get lend book: ${error}`);
+        loggerService.error(`Failed to get lend book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get lend book.',

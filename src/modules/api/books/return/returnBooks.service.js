@@ -4,7 +4,7 @@ import LendBooksModel from '../lend/lendBooks.model.js';
 import BooksHistoryModel from '../history/booksHistory.model.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
-import logger from '../../../../utilities/logger.js';
+import loggerService from '../../../../service/logger.service.js';
 
 const returnBook = async (requester, bookData) => {
     try {
@@ -82,7 +82,7 @@ const returnBook = async (requester, bookData) => {
 
         return sendResponse({}, 'Book returned successfully.', httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to return book: ${error}`);
+        loggerService.error(`Failed to return book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to return book.',

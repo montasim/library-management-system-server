@@ -2,7 +2,7 @@ import httpStatus from '../../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import RequestBooksModel from '../requestBooks/requestBooks.model.js';
-import logger from '../../../../utilities/logger.js';
+import loggerService from '../../../../service/logger.service.js';
 
 const getDesiredBooks = async () => {
     try {
@@ -61,7 +61,7 @@ const getDesiredBooks = async () => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error('Failed to get desired books:', error);
+        loggerService.error('Failed to get desired books:', error);
 
         return errorResponse(
             error.message || 'Failed to get desired books.',

@@ -1,8 +1,8 @@
-import logger from './logger.js';
+import loggerService from '../service/logger.service.js';
 import initiateGracefulShutdown from './initiateGracefulShutdown.js';
 
 const handleUnhandledRejection = async (error, server) => {
-    logger.error(
+    loggerService.error(
         `Unhandled Rejection: ${error instanceof Error ? error.message : error}`,
         error.stack
     );
@@ -10,7 +10,7 @@ const handleUnhandledRejection = async (error, server) => {
     try {
         await initiateGracefulShutdown('Unhandled Rejection', server, error);
     } catch (shutdownError) {
-        logger.error(`Failed to shutdown gracefully: ${shutdownError.message}`);
+        loggerService.error(`Failed to shutdown gracefully: ${shutdownError.message}`);
 
         process.exit(1);
     }

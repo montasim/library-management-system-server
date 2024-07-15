@@ -3,7 +3,7 @@ import errorResponse from '../../../../utilities/errorResponse.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import BooksHistoryModel from '../../books/history/booksHistory.model.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
-import logger from '../../../../utilities/logger.js';
+import loggerService from '../../../../service/logger.service.js';
 
 const getBooksHistory = async (requester) => {
     try {
@@ -40,7 +40,7 @@ const getBooksHistory = async (requester) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get books history: ${error}`);
+        loggerService.error(`Failed to get books history: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get books history.',
@@ -104,7 +104,7 @@ const getBookHistoryByBookId = async (requester, bookId) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get book history: ${error}`);
+        loggerService.error(`Failed to get book history: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get book history.',

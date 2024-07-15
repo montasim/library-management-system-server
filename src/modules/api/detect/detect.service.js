@@ -5,7 +5,7 @@ import geoip from 'geoip-lite';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import errorResponse from '../../../utilities/errorResponse.js';
-import logger from '../../../utilities/logger.js';
+import loggerService from '../../../service/logger.service.js';
 
 const detectService = async (req) => {
     try {
@@ -53,7 +53,7 @@ const detectService = async (req) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to process request: ${error}`);
+        loggerService.error(`Failed to process request: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to process request.',

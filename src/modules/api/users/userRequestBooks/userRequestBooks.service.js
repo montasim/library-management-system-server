@@ -3,7 +3,7 @@ import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import RequestBooksModel from '../../books/requestBooks/requestBooks.model.js';
-import logger from '../../../../utilities/logger.js';
+import loggerService from '../../../../service/logger.service.js';
 
 const getRequestBooks = async (requester) => {
     try {
@@ -35,7 +35,7 @@ const getRequestBooks = async (requester) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get requested books: ${error}`);
+        loggerService.error(`Failed to get requested books: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get requested books.',
@@ -85,7 +85,7 @@ const getRequestBook = async (requester, requestBookId) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get requested book: ${error}`);
+        loggerService.error(`Failed to get requested book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get requested book.',
@@ -137,7 +137,7 @@ const deleteRequestBook = async (requester, requestBookId) => {
             );
         }
     } catch (error) {
-        logger.error(`Failed to delete requested book: ${error}`);
+        loggerService.error(`Failed to delete requested book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete requested book.',

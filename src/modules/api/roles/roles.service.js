@@ -7,7 +7,7 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
 import getResourceById from '../../../shared/getResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
-import logger from '../../../utilities/logger.js';
+import loggerService from '../../../service/logger.service.js';
 
 const createRole = async (requester, newRoleData) => {
     try {
@@ -49,7 +49,7 @@ const createRole = async (requester, newRoleData) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        logger.error(`Failed to create role: ${error}`);
+        loggerService.error(`Failed to create role: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to create role.',
@@ -110,7 +110,7 @@ const getRoles = async (requester, params) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get roles: ${error}`);
+        loggerService.error(`Failed to get roles: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get roles.',
@@ -123,7 +123,7 @@ const getRole = async (requester, roleId) => {
     try {
         return getResourceById(requester, roleId, RolesModel, 'role');
     } catch (error) {
-        logger.error(`Failed to get role: ${error}`);
+        loggerService.error(`Failed to get role: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get role.',
@@ -175,7 +175,7 @@ const updateRole = async (requester, roleId, updateData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to update role: ${error}`);
+        loggerService.error(`Failed to update role: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to update role.',
@@ -225,7 +225,7 @@ const deleteRoles = async (requester, roleIds) => {
 
         return sendResponse({}, message, httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to delete roles: ${error}`);
+        loggerService.error(`Failed to delete roles: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete roles.',
@@ -238,7 +238,7 @@ const deleteRole = async (requester, roleId) => {
     try {
         return deleteResourceById(requester, roleId, RolesModel, 'role');
     } catch (error) {
-        logger.error(`Failed to delete role: ${error}`);
+        loggerService.error(`Failed to delete role: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete role.',

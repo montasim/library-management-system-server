@@ -2,7 +2,7 @@ import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
-import logger from '../../../../utilities/logger.js';
+import loggerService from '../../../../service/logger.service.js';
 import RecentlyVisitedBooksModel from './recentlyVisitedBooks.model.js';
 import BooksModel from '../../books/books.model.js';
 
@@ -63,7 +63,7 @@ const add = async (requester, bookId) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        logger.error(`Failed to save recently visited book: ${error}`);
+        loggerService.error(`Failed to save recently visited book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to save recently visited book.',
@@ -113,7 +113,7 @@ const get = async (requester) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get recently visited book: ${error}`);
+        loggerService.error(`Failed to get recently visited book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get recently visited book.',

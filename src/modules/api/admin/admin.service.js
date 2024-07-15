@@ -25,7 +25,7 @@ import generateTempPassword from '../../../utilities/generateTempPassword.js';
 import createAuthenticationToken
     from '../../../utilities/createAuthenticationToken.js';
 import UsersModel from '../users/users.model.js';
-import logger from '../../../utilities/logger.js';
+import loggerService from '../../../service/logger.service.js';
 
 const createAdmin = async (requester, adminData, hostData) => {
     try {
@@ -115,7 +115,7 @@ const createAdmin = async (requester, adminData, hostData) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        logger.error(`Failed to create admin: ${error}`);
+        loggerService.error(`Failed to create admin: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to create admin.',
@@ -200,7 +200,7 @@ const verify = async (token, hostData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to verify admin: ${error}`);
+        loggerService.error(`Failed to verify admin: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to verify admin.',
@@ -274,7 +274,7 @@ const resendVerification = async (adminId, hostData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to resend verification: ${error}`);
+        loggerService.error(`Failed to resend verification: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to resend verification.',
@@ -353,7 +353,7 @@ const requestNewPassword = async (email, hostData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to request password: ${error}`);
+        loggerService.error(`Failed to request password: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to request password.',
@@ -447,7 +447,7 @@ const resetPassword = async (hostData, token, adminData) => {
 
         return sendResponse({}, 'Reset Password Successful.', httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to reset password. ${error}`);
+        loggerService.error(`Failed to reset password. ${error}`);
 
         return errorResponse(
             error.message || 'Failed to reset password.',
@@ -572,7 +572,7 @@ const login = async (adminData, userAgent, device) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to login: ${error}`);
+        loggerService.error(`Failed to login: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to login.',
@@ -607,7 +607,7 @@ const logout = async (req) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to logout: ${error}`);
+        loggerService.error(`Failed to logout: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to logout.',
