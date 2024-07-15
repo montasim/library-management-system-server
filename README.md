@@ -61,6 +61,9 @@
         - Add a book to favorite
         - Remove a book from favorite
         - Get all favorite books
+    - Recently visited
+        - Add a book to recently visited
+        - Get all recently visited books
 2. Admin
     - Admin
        - Create admin
