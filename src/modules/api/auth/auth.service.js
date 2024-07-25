@@ -45,7 +45,11 @@ const signup = async (userData, hostData) => {
 
         const emailValidationResult = await validateEmail(userData.email);
         if (emailValidationResult !== 'Valid') {
-            return sendResponse({}, emailValidationResult, httpStatus.BAD_REQUEST);
+            return sendResponse(
+                {},
+                emailValidationResult,
+                httpStatus.BAD_REQUEST
+            );
         }
 
         if (userData.password !== userData.confirmPassword) {
@@ -56,7 +60,9 @@ const signup = async (userData, hostData) => {
             );
         }
 
-        const passwordValidationResult = await validatePassword(userData.password);
+        const passwordValidationResult = await validatePassword(
+            userData.password
+        );
         if (passwordValidationResult !== 'Valid') {
             return sendResponse(
                 {},
@@ -484,10 +490,7 @@ const login = async (userData, userAgent, device) => {
         //     };
         // }
 
-        const { token } = await createAuthenticationToken(
-            userDetails,
-            device
-        );
+        const { token } = await createAuthenticationToken(userDetails, device);
 
         userDetails.login.successful.device.push({
             details: userAgent, // Assuming userAgent is a string

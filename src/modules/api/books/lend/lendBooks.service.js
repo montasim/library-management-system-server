@@ -162,7 +162,10 @@ const getLendBooks = async (requester) => {
 
         // Step 3: Check if the requester has any lend books
         if (!lendBooks || lendBooks.books.length === 0) {
-            return errorResponse('You have no lend books.', httpStatus.NOT_FOUND);
+            return errorResponse(
+                'You have no lend books.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         // Step 4: Transform the data to rename 'id' to 'book'

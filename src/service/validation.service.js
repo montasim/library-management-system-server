@@ -26,9 +26,10 @@ const emailField = createStringField(
     .pattern(patterns.EMAIL)
     .messages({
         'string.pattern.name': '"email" must not be a temporary email address',
-        'string.regex.no-temp-email': '"email" must not be from a temporary email provider (like tempmail, mailinator, or yopmail)',
+        'string.regex.no-temp-email':
+            '"email" must not be from a temporary email provider (like tempmail, mailinator, or yopmail)',
         'string.pattern.base': 'Please fill a valid email address.',
-    })
+    });
 
 const passwordField = createStringField(
     userConstants.lengths.PASSWORD_MIN,
@@ -52,10 +53,13 @@ const booleanField = Joi.boolean()
         }
     })
     .messages({
-        'boolean.base': '{#label} should be either true or false. Acceptable values are true, false, "true", and "false".',
-        ...customValidationMessage
+        'boolean.base':
+            '{#label} should be either true or false. Acceptable values are true, false, "true", and "false".',
+        ...customValidationMessage,
     })
-    .description('A boolean value, which can be true or false, including string representations.');
+    .description(
+        'A boolean value, which can be true or false, including string representations.'
+    );
 
 const objectIdField = Joi.string()
     .length(24) // MongoDB ObjectId must be exactly 24 characters long
@@ -63,9 +67,11 @@ const objectIdField = Joi.string()
     .messages({
         'string.length': '{#label} must be exactly 24 characters long.',
         'string.hex': '{#label} must consist only of hexadecimal characters.',
-        ...customValidationMessage
+        ...customValidationMessage,
     })
-    .description('A valid MongoDB ObjectId, which must be 24 hexadecimal characters.');
+    .description(
+        'A valid MongoDB ObjectId, which must be 24 hexadecimal characters.'
+    );
 
 const objectIdsField = Joi.string().custom((value, helpers) => {
     const ids = value.split(',');
@@ -95,11 +101,15 @@ const dateField = Joi.string()
         return date.toISOString();
     })
     .messages({
-        'date.iso': '{#label} must be in valid ISO 8601 format, including a timezone.',
-        'string.pattern.name': '{#label} is not formatted correctly as an ISO 8601 date.',
+        'date.iso':
+            '{#label} must be in valid ISO 8601 format, including a timezone.',
+        'string.pattern.name':
+            '{#label} is not formatted correctly as an ISO 8601 date.',
         ...customValidationMessage,
     })
-    .description('An ISO 8601 formatted date string, including a timezone, e.g., 2021-03-19T04:00:00Z.');
+    .description(
+        'An ISO 8601 formatted date string, including a timezone, e.g., 2021-03-19T04:00:00Z.'
+    );
 
 const generateExtensionRegexPattern = (allowedExtensions) => {
     return `(${allowedExtensions.join('|')})$`;
@@ -115,13 +125,17 @@ const createFileNameSchema = (allowedExtensions) => {
         .required()
         .messages({
             'string.base': 'The file name must consist of text.',
-            'string.empty': 'The file name cannot be empty. Please provide a file name.',
-            'string.min': 'The file name must be at least {#limit} character long.',
+            'string.empty':
+                'The file name cannot be empty. Please provide a file name.',
+            'string.min':
+                'The file name must be at least {#limit} character long.',
             'string.max': 'The file name must not exceed {#limit} characters.',
             'any.required': 'A file name is required to proceed.',
             'string.pattern.base': `The file name is not in a valid format. It must end with one of the following extensions: ${allowedExtensions.join(', ')}. Please check your file and try again.`,
         })
-        .description('Validates the file name ensuring it has acceptable characters and extension.');
+        .description(
+            'Validates the file name ensuring it has acceptable characters and extension.'
+        );
 };
 
 const fileBufferValidationSchema = () => {
@@ -130,10 +144,13 @@ const fileBufferValidationSchema = () => {
         .required()
         .messages({
             'binary.base': 'The provided data must be a binary buffer.',
-            'binary.max': 'The buffer size must not exceed 25MB. Please reduce the file size before uploading.',
+            'binary.max':
+                'The buffer size must not exceed 25MB. Please reduce the file size before uploading.',
             'any.required': 'File data is required. Please upload a file.',
         })
-        .description('Validates the binary buffer of a file, ensuring it does not exceed the maximum allowed size.');
+        .description(
+            'Validates the binary buffer of a file, ensuring it does not exceed the maximum allowed size.'
+        );
 };
 
 const fileField = (
@@ -151,7 +168,9 @@ const fileField = (
                 'any.only': `The file should be uploaded under the field name "${allowedFieldName}".`,
                 'any.required': `A field name is required and must match "${allowedFieldName}".`,
             })
-            .description('Validates the form field name against expected values to ensure correct file categorization.'),
+            .description(
+                'Validates the form field name against expected values to ensure correct file categorization.'
+            ),
         originalname: createFileNameSchema(allowedExtensions),
         encoding: Joi.string()
             .valid('7bit')
@@ -161,7 +180,9 @@ const fileField = (
                 'any.only': `The encoding type must be "7bit".`,
                 'any.required': `File encoding information is required.`,
             })
-            .description('Validates the file encoding type, ensuring it is supported by the server.'),
+            .description(
+                'Validates the file encoding type, ensuring it is supported by the server.'
+            ),
         mimetype: Joi.string()
             .valid(...validMimeTypes)
             .required()
@@ -170,7 +191,9 @@ const fileField = (
                 'any.only': `The file type is not supported. Supported types include: ${validMimeTypes.join(', ')}.`,
                 'any.required': `MIME type information is required.`,
             })
-            .description('Checks the MIME type of the file against a set of valid MIME types to ensure compatibility.'),
+            .description(
+                'Checks the MIME type of the file against a set of valid MIME types to ensure compatibility.'
+            ),
         buffer: fileBufferValidationSchema(),
         size: Joi.number()
             .max(maxSize)
@@ -180,8 +203,12 @@ const fileField = (
                 'number.max': `"size" must not exceed ${maxSize / (1024 * 1024)}MB.`,
                 'any.required': `File size information is required.`,
             })
-            .description('Validates the file size, ensuring it does not exceed the maximum allowed limit.'),
-    }).description('A comprehensive file validation schema that includes checks for field name, file name, MIME type, and size.');
+            .description(
+                'Validates the file size, ensuring it does not exceed the maximum allowed limit.'
+            ),
+    }).description(
+        'A comprehensive file validation schema that includes checks for field name, file name, MIME type, and size.'
+    );
 };
 
 const validationService = {

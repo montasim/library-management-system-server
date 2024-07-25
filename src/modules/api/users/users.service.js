@@ -14,7 +14,10 @@ const getUser = async (userId) => {
     try {
         const user = await UsersModel.findById(userId).lean();
         if (!user) {
-            return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
+            return errorResponse(
+                'Please login first.',
+                httpStatus.UNAUTHORIZED
+            );
         }
 
         // Remove sensitive data
@@ -41,7 +44,10 @@ const updateUser = async (requester, updateData, userImage) => {
     try {
         const existingUser = await UsersModel.findById(requester).lean();
         if (!existingUser) {
-            return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
+            return errorResponse(
+                'Please login first.',
+                httpStatus.UNAUTHORIZED
+            );
         }
 
         if (isEmptyObject(updateData)) {
@@ -76,7 +82,8 @@ const updateUser = async (requester, updateData, userImage) => {
                 await GoogleDriveFileOperations.deleteFile(oldFileId);
             }
 
-            userImageData = await GoogleDriveFileOperations.uploadFile(userImage);
+            userImageData =
+                await GoogleDriveFileOperations.uploadFile(userImage);
 
             if (!userImageData || userImageData instanceof Error) {
                 return errorResponse(
@@ -132,7 +139,10 @@ const deleteUser = async (userId) => {
     try {
         const existingUser = await UsersModel.findById(userId).lean();
         if (!existingUser) {
-            return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
+            return errorResponse(
+                'Please login first.',
+                httpStatus.UNAUTHORIZED
+            );
         }
 
         // Delete the old file from Google Drive if it exists

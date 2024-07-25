@@ -143,7 +143,11 @@ const getWriter = async (writerId) => {
             return errorResponse('Writer not found.', httpStatus.NOT_FOUND);
         }
 
-        return sendResponse(writer, 'Writer fetched successfully.', httpStatus.OK);
+        return sendResponse(
+            writer,
+            'Writer fetched successfully.',
+            httpStatus.OK
+        );
     } catch (error) {
         logger.error(`Failed to get writer: ${error}`);
 
@@ -202,7 +206,8 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
             await GoogleDriveFileOperations.deleteFile(oldFileId);
         }
 
-        writerImageData = await GoogleDriveFileOperations.uploadFile(writerImage);
+        writerImageData =
+            await GoogleDriveFileOperations.uploadFile(writerImage);
 
         if (!writerImageData || writerImageData instanceof Error) {
             return errorResponse(
@@ -249,10 +254,7 @@ const deleteWriters = async (requester, writerIds) => {
         const isAuthorized = await validateUserRequest(requester);
 
         if (!isAuthorized) {
-            return errorResponse(
-                'User not authorized.',
-                httpStatus.FORBIDDEN
-            );
+            return errorResponse('User not authorized.', httpStatus.FORBIDDEN);
         }
 
         const results = {

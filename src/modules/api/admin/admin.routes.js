@@ -3,14 +3,17 @@ import express from 'express';
 import adminValidator from './admin.validator.js';
 import adminController from './admin.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
-import authenticateMiddleware
-    from '../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 
 const router = express.Router();
 
 router
     .route('/')
-    .post(authenticateMiddleware.admin, adminValidator.createAdmin, adminController.createAdmin)
+    .post(
+        authenticateMiddleware.admin,
+        adminValidator.createAdmin,
+        adminController.createAdmin
+    )
     // .get(adminValidator.getAdmin, adminController.getAdmin)
     // .delete(adminValidator.deleteAdmin, adminController.deleteAdmin)
     .all(methodNotSupported);
@@ -46,7 +49,8 @@ router
     .post(adminValidator.login, adminController.login)
     .all(methodNotSupported);
 
-router.route('/logout')
+router
+    .route('/logout')
     .get(authenticateMiddleware.admin, adminController.logout)
     .all(methodNotSupported);
 

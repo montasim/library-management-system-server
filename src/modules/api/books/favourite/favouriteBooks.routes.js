@@ -1,8 +1,7 @@
 import express from 'express';
 
 import methodNotSupported from '../../../../shared/methodNotSupported.js';
-import authenticateMiddleware
-    from '../../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../../middleware/authenticate.middleware.js';
 import favouriteBooksController from './favouriteBooks.controller.js';
 import favouriteBooksValidator from './favouriteBooks.validator.js';
 
@@ -10,7 +9,10 @@ const router = express.Router();
 
 router
     .route('/')
-    .get(authenticateMiddleware.user, favouriteBooksController.getFavouriteBooks)
+    .get(
+        authenticateMiddleware.user,
+        favouriteBooksController.getFavouriteBooks
+    )
     .all(methodNotSupported);
 
 router

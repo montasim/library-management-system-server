@@ -2,8 +2,7 @@ import express from 'express';
 
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import routesConstants from '../../../constant/routes.constants.js';
-import authenticateMiddleware
-    from '../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 import rolesValidator from './roles.validator.js';
 import rolesController from './roles.controller.js';
 

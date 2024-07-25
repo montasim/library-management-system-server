@@ -1,8 +1,7 @@
 import Joi from 'joi';
 import validationService from '../../../service/validation.service.js';
 import adminConstants from './admin.constants.js';
-import customValidationMessage
-    from '../../../shared/customValidationMessage.js';
+import customValidationMessage from '../../../shared/customValidationMessage.js';
 
 // Define base schema for subjects
 const authSchemaBase = Joi.object({
@@ -36,9 +35,8 @@ const authSchemaBase = Joi.object({
     id: validationService.objectIdField,
 }).strict();
 
-const createAdmin = authSchemaBase.fork(
-    ['name', 'email'],
-    (field) => field.required()
+const createAdmin = authSchemaBase.fork(['name', 'email'], (field) =>
+    field.required()
 );
 
 const verify = authSchemaBase.fork(['token'], (field) => field.required());

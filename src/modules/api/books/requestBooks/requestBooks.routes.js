@@ -16,9 +16,7 @@ router
         requestBooksValidator.createRequestBook,
         requestBooksController.createRequestBook
     )
-    .get(
-        requestBooksController.getRequestBooks
-    )
+    .get(requestBooksController.getRequestBooks)
     .all(methodNotSupported);
 
 router

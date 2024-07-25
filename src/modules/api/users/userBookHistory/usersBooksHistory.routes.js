@@ -8,12 +8,18 @@ const router = express.Router();
 
 router
     .route('/')
-    .get(userBookHistoryValidator.booksQueryParamSchema, userBookHistoryController.getBooksHistory)
+    .get(
+        userBookHistoryValidator.booksQueryParamSchema,
+        userBookHistoryController.getBooksHistory
+    )
     .all(methodNotSupported);
 
 router
     .route('/:bookId')
-    .get(userBookHistoryValidator.bookIdParamSchema, userBookHistoryController.getBookHistoryByBookId)
+    .get(
+        userBookHistoryValidator.bookIdParamSchema,
+        userBookHistoryController.getBookHistoryByBookId
+    )
     .all(methodNotSupported);
 
 export default router;

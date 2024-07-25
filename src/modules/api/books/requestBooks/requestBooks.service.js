@@ -4,10 +4,8 @@ import errorResponse from '../../../../utilities/errorResponse.js';
 import validateFile from '../../../../utilities/validateFile.js';
 import requestBooksConstant from './requestBooks.constant.js';
 import mimeTypesConstants from '../../../../constant/mimeTypes.constants.js';
-import fileExtensionsConstants
-    from '../../../../constant/fileExtensions.constants.js';
-import GoogleDriveFileOperations
-    from '../../../../utilities/googleDriveFileOperations.js';
+import fileExtensionsConstants from '../../../../constant/fileExtensions.constants.js';
+import GoogleDriveFileOperations from '../../../../utilities/googleDriveFileOperations.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import RequestBooksModel from './requestBooks.model.js';
 import logger from '../../../../utilities/logger.js';
@@ -61,7 +59,8 @@ const createRequestBook = async (requester, bookData, bookImage) => {
             }
 
             // Upload image and handle possible errors
-            const bookImageData = await GoogleDriveFileOperations.uploadFile(bookImage);
+            const bookImageData =
+                await GoogleDriveFileOperations.uploadFile(bookImage);
             if (!bookImageData || bookImageData instanceof Error) {
                 return errorResponse(
                     'Failed to save image.',
@@ -105,7 +104,8 @@ const createRequestBook = async (requester, bookData, bookImage) => {
             }
 
             // Upload image and handle possible errors
-            const bookImageData = await GoogleDriveFileOperations.uploadFile(bookImage);
+            const bookImageData =
+                await GoogleDriveFileOperations.uploadFile(bookImage);
             if (!bookImageData || bookImageData instanceof Error) {
                 return errorResponse(
                     'Failed to save image.',
@@ -142,12 +142,11 @@ const createRequestBook = async (requester, bookData, bookImage) => {
 const getRequestBooks = async () => {
     try {
         const requestBooks = await RequestBooksModel.find()
-            .populate(
-                {
-                    path: 'owner',
-                    select: 'name _id'
-                }
-            ).lean();
+            .populate({
+                path: 'owner',
+                select: 'name _id',
+            })
+            .lean();
 
         if (!requestBooks || requestBooks.length === 0) {
             return errorResponse(
@@ -159,7 +158,7 @@ const getRequestBooks = async () => {
         return sendResponse(
             {
                 total: requestBooks.length,
-                requestBooks: requestBooks,
+                requestBooks,
             },
             'Successfully retrieved your favourite books.',
             httpStatus.OK
@@ -178,12 +177,12 @@ const getRequestBook = async (bookId) => {
     try {
         // Attempt to find a request document that contains the specific book ID in its requestBooks array
         const request = await RequestBooksModel.findOne({
-            'requestBooks._id': bookId  // Adjust this path if your book ID is stored differently
+            'requestBooks._id': bookId, // Adjust this path if your book ID is stored differently
         })
-            .populate('owner', 'username email')  // Populate owner details; adjust fields as necessary.
+            .populate('owner', 'username email') // Populate owner details; adjust fields as necessary.
             .populate({
                 path: 'requestBooks.writer',
-                select: 'name biography'  // Populate writer details if it is stored as a reference.
+                select: 'name biography', // Populate writer details if it is stored as a reference.
             })
             .exec();
 
@@ -196,7 +195,9 @@ const getRequestBook = async (bookId) => {
         }
 
         // Extract the specific requested book from the requestBooks array
-        const requestedBook = request.requestBooks.find(book => book._id.toString() === bookId);
+        const requestedBook = request.requestBooks.find(
+            (book) => book._id.toString() === bookId
+        );
 
         // Return the requested book if found
         if (!requestedBook) {
@@ -225,10 +226,10 @@ const getRequestedBooksByOwnerId = async (ownerId) => {
     try {
         // Fetch all request documents for a specific owner
         const requests = await RequestBooksModel.find({ owner: ownerId })
-            .populate('owner', 'username email')  // Populate owner details; adjust fields as necessary.
+            .populate('owner', 'username email') // Populate owner details; adjust fields as necessary.
             .populate({
                 path: 'requestBooks.writer',
-                select: 'name biography'  // Populate writer details if it is stored as a reference.
+                select: 'name biography', // Populate writer details if it is stored as a reference.
             })
             .exec();
 
@@ -241,10 +242,12 @@ const getRequestedBooksByOwnerId = async (ownerId) => {
         }
 
         // Compile all requested books into one array
-        const allRequestBooks = requests.flatMap(request => request.requestBooks.map(book => ({
-            ...book.toObject(),
-            owner: request.owner.username  // Optionally include owner details in each book.
-        })));
+        const allRequestBooks = requests.flatMap((request) =>
+            request.requestBooks.map((book) => ({
+                ...book.toObject(),
+                owner: request.owner.username, // Optionally include owner details in each book.
+            }))
+        );
 
         return sendResponse(
             {
@@ -295,7 +298,7 @@ const deleteRequestBook = async (requester, requestBookId) => {
 
             return sendResponse(
                 {
-                    removedBookId: requestBookId
+                    removedBookId: requestBookId,
                 },
                 'Book requestBooks removed successfully.',
                 httpStatus.OK

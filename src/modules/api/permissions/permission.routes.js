@@ -24,9 +24,7 @@ router
     .all(methodNotSupported);
 
 router
-    .route(
-        `/:${routesConstants.permissions.params}`
-    )
+    .route(`/:${routesConstants.permissions.params}`)
     .get(
         permissionsValidator.getPermission,
         permissionsController.getPermission

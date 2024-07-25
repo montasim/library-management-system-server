@@ -23,6 +23,9 @@ const recentlyVisitedBookSchema = new mongoose.Schema(
     }
 );
 
-const recentlyVisitedBooksModel = mongoose.model('RecentlyVisitedBooks', recentlyVisitedBookSchema);
+const recentlyVisitedBooksModel = mongoose.model(
+    'RecentlyVisitedBooks',
+    recentlyVisitedBookSchema
+);
 
 export default recentlyVisitedBooksModel;

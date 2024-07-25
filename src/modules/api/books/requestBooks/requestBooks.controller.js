@@ -17,8 +17,7 @@ const createRequestBook = asyncErrorHandler(async (req, res) => {
 });
 
 const getRequestBooks = asyncErrorHandler(async (req, res) => {
-    const requestBooksData =
-        await requestBooksService.getRequestBooks();
+    const requestBooksData = await requestBooksService.getRequestBooks();
 
     requestBooksData.route = req.originalUrl;
 
@@ -36,9 +35,10 @@ const getRequestBookByBookId = asyncErrorHandler(async (req, res) => {
 });
 
 const getRequestedBooksByOwnerId = asyncErrorHandler(async (req, res) => {
-    const requestBooksData = await requestBooksService.getRequestedBooksByOwnerId(
-        req.params.ownerId
-    );
+    const requestBooksData =
+        await requestBooksService.getRequestedBooksByOwnerId(
+            req.params.ownerId
+        );
 
     requestBooksData.route = req.originalUrl;
 

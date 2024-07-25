@@ -125,7 +125,7 @@ const deleteRequestBook = async (requester, requestBookId) => {
 
             return sendResponse(
                 {
-                    removedBookId: requestBookId
+                    removedBookId: requestBookId,
                 },
                 'Book requestBooks removed successfully.',
                 httpStatus.OK

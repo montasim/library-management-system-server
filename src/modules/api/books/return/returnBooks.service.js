@@ -61,7 +61,9 @@ const returnBook = async (requester, bookData) => {
 
         // Add to lend history if not already present
         if (
-            !bookHistory.lend.some((lend) => lend.user.toString() === bookData.user)
+            !bookHistory.lend.some(
+                (lend) => lend.user.toString() === bookData.user
+            )
         ) {
             bookHistory.lend.push({
                 user: bookData.user,
