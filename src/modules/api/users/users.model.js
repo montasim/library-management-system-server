@@ -25,18 +25,59 @@ const userSchema = new mongoose.Schema(
         },
         // Core User Information
         name: {
-            type: String,
-            required: [true, 'Please enter your name to create your profile.'],
-            minlength: [
-                userConstants.lengths.NAME_MIN,
-                `Name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
-            ],
-            maxlength: [
-                userConstants.lengths.NAME_MAX,
-                `Name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
-            ],
-            description:
-                'User’s full name; must meet minimum and maximum length requirements.',
+            first: {
+                type: String,
+                required: [true, 'Please enter your name to create your profile.'],
+                minlength: [
+                    userConstants.lengths.NAME_MIN,
+                    `Name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
+                ],
+                maxlength: [
+                    userConstants.lengths.NAME_MAX,
+                    `Name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
+                ],
+                description:
+                    'User’s first name; must meet minimum and maximum length requirements.',
+            },
+            middle: {
+                type: String,
+                minlength: [
+                    userConstants.lengths.NAME_MIN,
+                    `Name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
+                ],
+                maxlength: [
+                    userConstants.lengths.NAME_MAX,
+                    `Name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
+                ],
+                description:
+                    'User’s middle name; must meet minimum and maximum length requirements.',
+            },
+            last: {
+                type: String,
+                minlength: [
+                    userConstants.lengths.NAME_MIN,
+                    `Name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
+                ],
+                maxlength: [
+                    userConstants.lengths.NAME_MAX,
+                    `Name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
+                ],
+                description:
+                    'User’s last name; must meet minimum and maximum length requirements.',
+            },
+            nick: {
+                type: String,
+                minlength: [
+                    userConstants.lengths.NAME_MIN,
+                    `Name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
+                ],
+                maxlength: [
+                    userConstants.lengths.NAME_MAX,
+                    `Name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
+                ],
+                description:
+                    'User’s nickname; must meet minimum and maximum length requirements.',
+            },
         },
         // TODO: validate unique username
         // TODO: suggest unique username when updating
@@ -113,6 +154,7 @@ const userSchema = new mongoose.Schema(
 
         // Contact Information
         emails: [
+            // TODO: create a syatem to idividually verify each email
             {
                 type: String,
                 required: [true, 'An email address is required.'],
@@ -131,6 +173,7 @@ const userSchema = new mongoose.Schema(
             },
         ],
         mobiles: [
+            // TODO: create a system to indivisually verify each mobile
             {
                 type: String,
                 unique: true,
@@ -223,6 +266,7 @@ const userSchema = new mongoose.Schema(
 
         // Professional Information
         company: {
+            // TODO: suggest company name when a user try to add company
             name: {
                 type: String,
                 minlength: [
@@ -293,9 +337,8 @@ const userSchema = new mongoose.Schema(
         },
 
         // Social and External Accounts
-        portfolio: {
+        url: {
             type: String,
-            unique: [true, 'This URL is already in use.'],
             maxlength: [
                 userConstants.lengths.URL_MAX,
                 'Your URL must be less than ${userConstants.lengths.URL_MAX} characters long.',
@@ -455,6 +498,7 @@ const userSchema = new mongoose.Schema(
             },
         ],
         privacySettings: {
+            // TODO: use VisibilityModel
             profileVisibility: {
                 type: String,
                 enum: ['public', 'private', 'friends'],
@@ -472,17 +516,20 @@ const userSchema = new mongoose.Schema(
             description:
                 'Flag to indicate whether the user’s account is active or deactivated.',
         },
+        // TODO: create a system to initialy create a new user
         createdBy: {
             type: Schema.Types.ObjectId,
-            ref: 'UsersModel',
+            ref: 'AdminsModel',
             description:
-                'Reference to the user who created this record, used for tracking record ownership.',
+                'Reference to the admin who created this record, used for tracking record ownership.',
         },
+        // TODO: create a system to update user data with limited access
+        // TODO: create a model to define what admin can update about the user
         updatedBy: {
             type: Schema.Types.ObjectId,
-            ref: 'UsersModel',
+            ref: 'AdminsModel',
             description:
-                'Reference to the user who last updated this record, used for tracking changes and record ownership.',
+                'Reference to the admin who last updated this record, used for tracking changes and record ownership.',
         },
     },
     {
