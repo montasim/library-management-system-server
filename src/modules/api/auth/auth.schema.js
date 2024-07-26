@@ -8,10 +8,10 @@ import validationService from '../../../service/validation.service.js';
 const authSchemaBase = Joi.object({
     name: validationService
         .createStringField(
-            userConstants.lengths.NAME_MIN,
-            userConstants.lengths.NAME_MAX
+            userConstants.lengths.NAME.FIRST_MIN,
+            userConstants.lengths.NAME.FIRST_MAX
         )
-        .regex(userConstants.pattern.name)
+        .regex(userConstants.pattern.NAME)
         .messages({
             'string.pattern.base': `{#label} with value "{#value}" must start with an uppercase letter followed by lowercase letters for each word, separated by a single space if multiple words. No numbers or special characters are allowed.`,
         }),

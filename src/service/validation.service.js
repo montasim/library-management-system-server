@@ -1,8 +1,8 @@
 import Joi from 'joi';
 
 import customValidationMessage from '../shared/customValidationMessage.js';
-import userConstants from '../modules/api/users/users.constants.js';
 import patterns from '../constant/patterns.constants.js';
+import constants from '../constant/constants.js';
 
 const createStringField = (min, max) =>
     Joi.string().trim().min(min).max(max).messages(customValidationMessage);
@@ -18,8 +18,8 @@ const mobileField = Joi.object({
 });
 
 const emailField = createStringField(
-    userConstants.lengths.EMAIL_MIN,
-    userConstants.lengths.EMAIL_MAX
+    constants.lengths.EMAIL_MIN,
+    constants.lengths.EMAIL_MAX
 )
     .email({ minDomainSegments: 2, tlds: { allow: true } })
     .regex(/^((?!tempmail|mailinator|yopmail).)*$/, 'no-temp-email')
@@ -32,8 +32,8 @@ const emailField = createStringField(
     });
 
 const passwordField = createStringField(
-    userConstants.lengths.PASSWORD_MIN,
-    userConstants.lengths.PASSWORD_MAX
+    constants.lengths.PASSWORD_MIN,
+    constants.lengths.PASSWORD_MAX
 )
     .pattern(patterns.PASSWORD)
     .messages({

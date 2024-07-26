@@ -13,7 +13,7 @@ const pronounsSchema = new mongoose.Schema(
             required: [true, 'Please provide a name for the pronouns.'],
             match: [
                 pronounsConstants.pattern.NAME,
-                'Invalid format for pronouns. Please use only alphabetic characters and spaces, e.g., "He/Him", "They/Them".'
+                'Invalid format for pronouns. Please use only alphabetic characters and spaces, e.g., "Male", "Female".'
             ],
             minlength: [
                 pronounsConstants.lengths.NAME_MIN,
@@ -51,41 +51,6 @@ const pronounsSchema = new mongoose.Schema(
             'Schema for storing user data with automatic timestamping for creation and updates.',
     }
 );
-
-// Pre-save middleware for creation
-pronounsSchema.pre('save', function (next) {
-    if (this.isNew && !this.createdBy) {
-        return next(new Error('Creator is required.'));
-    }
-
-    next();
-});
-
-// Pre-update middleware for updates
-pronounsSchema.pre('findOneAndUpdate', function (next) {
-    if (!this._update.updatedBy) {
-        return next(new Error('Updater is required.'));
-    }
-
-    next();
-});
-
-// Error handling middleware for unique constraint violations
-pronounsSchema.post('save', (error, doc, next) => {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        return next(new Error('Pronouns name already exists.'));
-    }
-
-    next(error);
-});
-
-pronounsSchema.post('findOneAndUpdate', (error, res, next) => {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        return next(new Error('Pronouns name already exists.'));
-    }
-
-    next(error);
-});
 
 const PronounsModel = mongoose.model('Pronouns', pronounsSchema);
 

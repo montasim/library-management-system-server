@@ -7,6 +7,10 @@ const routesConstants = {
         routes: 'permissions',
         params: 'permissionId',
     },
+    pronouns: {
+        routes: 'pronouns',
+        params: 'pronounsId',
+    },
     publications: {
         routes: 'publications',
         params: 'publicationId',

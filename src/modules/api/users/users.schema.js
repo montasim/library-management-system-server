@@ -8,8 +8,8 @@ import customValidationMessage from '../../../shared/customValidationMessage.js'
 const userSchemaBase = Joi.object({
     name: validationService
         .createStringField(
-            usersConstants.lengths.NAME_MIN,
-            usersConstants.lengths.NAME_MAX
+            usersConstants.lengths.NAME.FIRST_MIN,
+            usersConstants.lengths.NAME.FIRST_MAX
         )
         .pattern(new RegExp(usersConstants.pattern.name))
         .messages({
