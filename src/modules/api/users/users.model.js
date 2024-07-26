@@ -14,20 +14,25 @@ const userSchema = new mongoose.Schema(
             type: Number,
             unique: true,
             required: true,
-            description: 'Numeric part of the unique identifier, incremented automatically.'
+            description:
+                'Numeric part of the unique identifier, incremented automatically.',
         },
         // String field to hold the full ID with prefix
         userId: {
             type: String,
             unique: true,
             required: true,
-            description: 'User ID in the format user-X, where X is an auto-incremented number.'
+            description:
+                'User ID in the format user-X, where X is an auto-incremented number.',
         },
         // Core User Information
         name: {
             first: {
                 type: String,
-                required: [true, 'Please enter your name to create your profile.'],
+                required: [
+                    true,
+                    'Please enter your name to create your profile.',
+                ],
                 minlength: [
                     userConstants.lengths.NAME_MIN,
                     `Name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
@@ -278,7 +283,7 @@ const userSchema = new mongoose.Schema(
                     `Company name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
                 ],
                 description:
-                    'Optional field for storing the name of the user\'s employer, with validation on length.',
+                    "Optional field for storing the name of the user's employer, with validation on length.",
             },
             website: {
                 type: String,
