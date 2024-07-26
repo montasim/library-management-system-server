@@ -41,7 +41,6 @@ const pronounsSchema = new mongoose.Schema(
             type: Schema.Types.ObjectId,
             trim: true,
             ref: 'AdminsModel',
-            required: [true, 'Updater of the pronoun must be specified.'],
             description: 'The ID of the admin who last updated this pronoun entry.',
         },
     },

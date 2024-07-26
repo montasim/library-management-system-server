@@ -15,9 +15,7 @@ const createPronouns = asyncErrorHandler(async (req, res) => {
 });
 
 const getPronounses = asyncErrorHandler(async (req, res) => {
-    const requester = getRequesterId(req);
-    const pronounsData = await pronounsService.getPronouns(
-        requester,
+    const pronounsData = await pronounsService.getPronounses(
         req.query
     );
 
@@ -27,9 +25,7 @@ const getPronounses = asyncErrorHandler(async (req, res) => {
 });
 
 const getPronouns = asyncErrorHandler(async (req, res) => {
-    const requester = getRequesterId(req);
     const pronounsData = await pronounsService.getPronouns(
-        requester,
         req.params.pronounsId
     );
 

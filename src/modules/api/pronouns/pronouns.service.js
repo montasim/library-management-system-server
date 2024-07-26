@@ -1,16 +1,15 @@
 import PronounsModel from './pronouns.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
-import getResourceById from '../../../shared/getResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import logger from '../../../utilities/logger.js';
+import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
 
 const createPronouns = async (requester, newPronounsData) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to create pronouns.',
@@ -50,14 +49,6 @@ const createPronouns = async (requester, newPronounsData) => {
 
 const getPronounses = async (requester, params) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to view pronouns.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const {
             page = 1,
             limit = 10,
@@ -112,13 +103,20 @@ const getPronounses = async (requester, params) => {
     }
 };
 
-const getPronouns = async (requester, pronounsId) => {
+const getPronouns = async (pronounsId) => {
     try {
-        return getResourceById(
-            requester,
-            pronounsId,
-            PronounsModel,
-            'pronouns'
+        const resource = await PronounsModel.findById(pronounsId);
+        if (!resource) {
+            return errorResponse(
+                'Pronouns not found.',
+                httpStatus.NOT_FOUND
+            );
+        }
+
+        return sendResponse(
+            resource,
+            'Pronouns fetched successfully.',
+            httpStatus.OK
         );
     } catch (error) {
         logger.error(`Failed to get pronouns: ${error}`);
@@ -132,7 +130,7 @@ const getPronouns = async (requester, pronounsId) => {
 
 const updatePronouns = async (requester, pronounsId, updateData) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to update pronouns.',
@@ -190,13 +188,13 @@ const updatePronouns = async (requester, pronounsId, updateData) => {
 
 const deletePronounses = async (requester, pronounsIds) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete pronouns.',
-                httpStatus.FORBIDDEN
-            );
-        }
+        // const isAuthorized = await validateAdminRequest(requester);
+        // if (!isAuthorized) {
+        //     return errorResponse(
+        //         'You are not authorized to delete pronouns.',
+        //         httpStatus.FORBIDDEN
+        //     );
+        // }
 
         // First, check which pronouns exist
         const existingPronouns = await PronounsModel.find({

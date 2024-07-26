@@ -13,6 +13,7 @@ import routesConstants from '../../constant/routes.constants.js';
 import permissionRoutes from './permissions/permission.routes.js';
 import rolesRoutes from './roles/roles.routes.js';
 import adminRoutes from './admin/admin.routes.js';
+import pronounsRoutes from './pronouns/pronouns.routes.js';
 
 const router = express.Router();
 
@@ -20,6 +21,10 @@ router.use('/admin', adminRoutes);
 router.use('/auth', authRoutes);
 router.use(`/${routesConstants.books.routes}`, booksRoutes);
 router.use('/detect', detectRoutes);
+router.use(
+    `/${routesConstants.pronouns.routes}`,
+    pronounsRoutes
+);
 router.use(
     `/${routesConstants.permissions.routes}`,
     authenticateMiddleware.admin,
