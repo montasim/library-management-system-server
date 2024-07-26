@@ -3,6 +3,7 @@ import autoIncrement from 'mongoose-auto-increment';
 
 import patterns from '../../../constant/patterns.constants.js';
 import userConstants from './users.constants.js';
+import constants from '../../../constant/constants.js';
 
 // Schema definition
 const userSchema = new mongoose.Schema(
@@ -36,13 +37,17 @@ const userSchema = new mongoose.Schema(
                     true,
                     'Please enter your name to create your profile.',
                 ],
+                match: [
+                    userConstants.pattern.NAME,
+                    'Invalid name format. Names should only contain alphabetic characters and appropriate separators like spaces. For example, "John", "Mary Anne".'
+                ],
                 minlength: [
-                    userConstants.lengths.NAME_MIN,
-                    `Name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
+                    userConstants.lengths.NAME.FIRST_MIN,
+                    `Name should be at least ${userConstants.lengths.NAME.FIRST_MIN} characters.`,
                 ],
                 maxlength: [
-                    userConstants.lengths.NAME_MAX,
-                    `Name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
+                    userConstants.lengths.NAME.FIRST_MAX,
+                    `Name should not exceed ${userConstants.lengths.NAME.FIRST_MAX} characters.`,
                 ],
                 description:
                     'User’s name; must meet minimum and maximum length requirements.',
@@ -50,13 +55,17 @@ const userSchema = new mongoose.Schema(
             middle: {
                 type: String,
                 trim: true,
+                match: [
+                    userConstants.pattern.NAME,
+                    'Invalid middle name format. Names should only contain alphabetic characters and appropriate separators like spaces. For example, "John", "Mary Anne".'
+                ],
                 minlength: [
-                    userConstants.lengths.NAME_MIN,
-                    `Name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
+                    userConstants.lengths.NAME.MIDDLE_MIN,
+                    `Name should be at least ${userConstants.lengths.NAME.MIDDLE_MIN} characters.`,
                 ],
                 maxlength: [
-                    userConstants.lengths.NAME_MAX,
-                    `Name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
+                    userConstants.lengths.NAME.MIDDLE_MAX,
+                    `Name should not exceed ${userConstants.lengths.NAME.MIDDLE_MAX} characters.`,
                 ],
                 description:
                     'User’s middle name; must meet minimum and maximum length requirements.',
@@ -64,13 +73,17 @@ const userSchema = new mongoose.Schema(
             last: {
                 type: String,
                 trim: true,
+                match: [
+                    userConstants.pattern.NAME,
+                    'Invalid last name format. Names should only contain alphabetic characters and appropriate separators like spaces. For example, "John", "Mary Anne".'
+                ],
                 minlength: [
-                    userConstants.lengths.NAME_MIN,
-                    `Name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
+                    userConstants.lengths.NAME.LAST_MIN,
+                    `Name should be at least ${userConstants.lengths.NAME.LAST_MIN} characters.`,
                 ],
                 maxlength: [
-                    userConstants.lengths.NAME_MAX,
-                    `Name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
+                    userConstants.lengths.NAME.LAST_MAX
+                    `Name should not exceed ${userConstants.lengths.NAME.LAST_MAX} characters.`,
                 ],
                 description:
                     'User’s last name; must meet minimum and maximum length requirements.',
@@ -78,13 +91,17 @@ const userSchema = new mongoose.Schema(
             nick: {
                 type: String,
                 trim: true,
+                match: [
+                    userConstants.pattern.NAME,
+                    'Invalid nick name format. Names should only contain alphabetic characters and appropriate separators like spaces. For example, "John", "Mary Anne".'
+                ],
                 minlength: [
-                    userConstants.lengths.NAME_MIN,
-                    `Name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
+                    userConstants.lengths.NAME.NICK_MIN,
+                    `Name should be at least ${userConstants.lengths.NAME.NICK_MIN} characters.`,
                 ],
                 maxlength: [
-                    userConstants.lengths.NAME_MAX,
-                    `Name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
+                    userConstants.lengths.NAME.NICK_MAX,
+                    `Name should not exceed ${userConstants.lengths.NAME.NICK_MAX} characters.`,
                 ],
                 description:
                     'User’s nickname; must meet minimum and maximum length requirements.',
@@ -101,16 +118,16 @@ const userSchema = new mongoose.Schema(
                 'The username you chose is already in use. Please try a different one.',
             ],
             match: [
-                patterns.EMAIL,
+                userConstants.pattern.USERNAME,
                 'Please enter a valid email address for your username.',
             ],
             minlength: [
-                userConstants.lengths.EMAIL_MIN,
-                `Username should be at least ${userConstants.lengths.EMAIL_MIN} characters.`,
+                constants.lengths.USERNAME_MIN,
+                `Username should be at least ${constants.lengths.USERNAME_MIN} characters.`,
             ],
             maxlength: [
-                userConstants.lengths.EMAIL_MAX,
-                `Username should not exceed ${userConstants.lengths.EMAIL_MAX} characters.`,
+                constants.lengths.USERNAME_MAX,
+                `Username should not exceed ${constants.lengths.USERNAME_MAX} characters.`,
             ],
             description:
                 'Username, must be unique and formatted as an email address.',
@@ -119,7 +136,7 @@ const userSchema = new mongoose.Schema(
             fileId: {
                 type: String,
                 trim: true,
-                maxlength: [100, 'File ID should not exceed 100 characters.'],
+                maxlength: [constants.lengths.IMAGE.FILE_ID_MAX, `File ID should not exceed ${constants.lengths.IMAGE.FILE_ID_MAX} characters.`],
                 description:
                     'Identifier for an image file stored in a file system or external service.',
             },
@@ -127,8 +144,8 @@ const userSchema = new mongoose.Schema(
                 type: String,
                 trim: true,
                 maxlength: [
-                    500,
-                    'Shareable link should not exceed 500 characters.',
+                    constants.lengths.IMAGE.SHAREABLE_LINK,
+                    `Shareable link should not exceed ${constants.lengths.IMAGE.SHAREABLE_LINK} characters.`,
                 ],
                 description:
                     "URL link that allows others to access the user's image.",
@@ -137,8 +154,8 @@ const userSchema = new mongoose.Schema(
                 type: String,
                 trim: true,
                 maxlength: [
-                    500,
-                    'Download link should not exceed 500 characters.',
+                    constants.lengths.IMAGE.DOWNLOAD_LINK,
+                    `Download link should not exceed ${constants.lengths.IMAGE.DOWNLOAD_LINK} characters.`,
                 ],
                 description: "URL link to directly download the user's image.",
             },
@@ -182,12 +199,12 @@ const userSchema = new mongoose.Schema(
                 required: [true, 'An email address is required to register.'],
                 match: [patterns.EMAIL, 'Invalid email format. Please enter a valid email address.'],
                 minlength: [
-                    userConstants.lengths.EMAIL_MIN,
-                    `Email should be at least ${userConstants.lengths.EMAIL_MIN} characters long.`
+                    constants.lengths.EMAIL_MIN,
+                    `Email should be at least ${constants.lengths.EMAIL_MIN} characters long.`
                 ],
                 maxlength: [
-                    userConstants.lengths.EMAIL_MAX,
-                    `Email should not exceed ${userConstants.lengths.EMAIL_MAX} characters long.`
+                    constants.lengths.EMAIL_MAX,
+                    `Email should not exceed ${constants.lengths.EMAIL_MAX} characters long.`
                 ],
                 description: "User's email, each validated for uniqueness and proper format.",
 
@@ -231,12 +248,12 @@ const userSchema = new mongoose.Schema(
                     'Invalid mobile number format. Please enter a valid mobile number.'
                 ],
                 minlength: [
-                    userConstants.lengths.MOBILE_MIN,
-                    `Mobile number should have at least ${userConstants.lengths.MOBILE_MIN} digits.`
+                    constants.lengths.MOBILE_MIN,
+                    `Mobile number should have at least ${constants.lengths.MOBILE_MIN} digits.`
                 ],
                 maxlength: [
-                    userConstants.lengths.MOBILE_MAX,
-                    `Mobile number should not exceed ${userConstants.lengths.MOBILE_MAX} digits.`
+                    constants.lengths.MOBILE_MAX,
+                    `Mobile number should not exceed ${constants.lengths.MOBILE_MAX} digits.`
                 ],
                 description: "User's mobile number, must be unique and properly formatted.",
 
@@ -326,13 +343,9 @@ const userSchema = new mongoose.Schema(
             name: {
                 type: String,
                 trim: true,
-                minlength: [
-                    userConstants.lengths.NAME_MIN,
-                    `Company name should be at least ${userConstants.lengths.NAME_MIN} characters.`,
-                ],
                 maxlength: [
-                    userConstants.lengths.NAME_MAX,
-                    `Company name should not exceed ${userConstants.lengths.NAME_MAX} characters.`,
+                    userConstants.lengths.COMPANY.NAME_MAX,
+                    `Company name should not exceed ${userConstants.lengths.COMPANY.NAME_MAX} characters.`,
                 ],
                 description:
                     "Optional field for storing the name of the user's employer, with validation on length.",
@@ -340,9 +353,13 @@ const userSchema = new mongoose.Schema(
             website: {
                 type: String,
                 trim: true,
+                match: [
+                    patterns.URL,
+                    'Invalid website format. Please enter a valid website.'
+                ],
                 maxlength: [
-                    userConstants.lengths.URL_MAX,
-                    'Your URL must be less than ${userConstants.lengths.URL_MAX} characters long.',
+                    constants.lengths.WEBSITE_URL_MAX,
+                    `Your URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
                 ],
                 description:
                     'A unique URL associated with the user, typically for a personal or professional website.',
@@ -354,9 +371,13 @@ const userSchema = new mongoose.Schema(
                     true,
                     'This Facebook URL is already linked to another account.',
                 ],
+                match: [
+                    patterns.FACEBOOK_URL,
+                    'Invalid facebook url format. Please enter a valid facebook url.'
+                ],
                 maxlength: [
-                    userConstants.lengths.URL_MAX,
-                    'Your Facebook URL must be less than ${userConstants.lengths.URL_MAX} characters long.',
+                    constants.lengths.WEBSITE_URL_MAX,
+                    `Your Facebook URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
                 ],
             },
             twitter: {
@@ -366,9 +387,13 @@ const userSchema = new mongoose.Schema(
                     true,
                     'This Twitter handle is already linked to another account.',
                 ],
+                match: [
+                    patterns.TWITTER_URL,
+                    'Invalid twitter url format. Please enter a valid twitter url.'
+                ],
                 maxlength: [
-                    userConstants.lengths.URL_MAX,
-                    'Your Twitter handle must be less than ${userConstants.lengths.URL_MAX} characters long.',
+                    constants.lengths.WEBSITE_URL_MAX,
+                    `Your Twitter handle must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
                 ],
             },
             linkedIn: {
@@ -378,9 +403,13 @@ const userSchema = new mongoose.Schema(
                     true,
                     'This LinkedIn profile is already linked to another account.',
                 ],
+                match: [
+                    patterns.LINKEDIN_URL,
+                    'Invalid linkedIn url format. Please enter a valid linkedIn url.'
+                ],
                 maxlength: [
-                    userConstants.lengths.URL_MAX,
-                    'Your LinkedIn URL must be less than ${userConstants.lengths.URL_MAX} characters long.',
+                    constants.lengths.WEBSITE_URL_MAX,
+                    `Your LinkedIn URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
                 ],
             },
             github: {
@@ -390,9 +419,13 @@ const userSchema = new mongoose.Schema(
                     true,
                     'This GitHub username is already linked to another account.',
                 ],
+                match: [
+                    patterns.GITHUB_URL,
+                    'Invalid github url format. Please enter a valid github url.'
+                ],
                 maxlength: [
-                    userConstants.lengths.URL_MAX,
-                    'Your GitHub username must be less than ${userConstants.lengths.URL_MAX} characters long.',
+                    constants.lengths.WEBSITE_URL_MAX,
+                    `Your GitHub username must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
                 ],
             },
         },
@@ -401,9 +434,13 @@ const userSchema = new mongoose.Schema(
         url: {
             type: String,
             trim: true,
+            match: [
+                patterns.URL,
+                'Invalid url format. Please enter a valid url.'
+            ],
             maxlength: [
-                userConstants.lengths.URL_MAX,
-                'Your URL must be less than ${userConstants.lengths.URL_MAX} characters long.',
+                constants.lengths.WEBSITE_URL_MAX,
+                `Your URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
             ],
             description:
                 'A unique URL associated with the user, typically for a personal or professional website.',
@@ -416,9 +453,13 @@ const userSchema = new mongoose.Schema(
                     true,
                     'This Facebook URL is already linked to another account.',
                 ],
+                match: [
+                    patterns.FACEBOOK_URL,
+                    'Invalid facebook url format. Please enter a valid facebook url.'
+                ],
                 maxlength: [
-                    userConstants.lengths.URL_MAX,
-                    'Your Facebook URL must be less than ${userConstants.lengths.URL_MAX} characters long.',
+                    constants.lengths.WEBSITE_URL_MAX,
+                    `Your Facebook URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
                 ],
             },
             twitter: {
@@ -428,9 +469,13 @@ const userSchema = new mongoose.Schema(
                     true,
                     'This Twitter handle is already linked to another account.',
                 ],
+                match: [
+                    patterns.TWITTER_URL,
+                    'Invalid twitter url format. Please enter a valid twitter url.'
+                ],
                 maxlength: [
-                    userConstants.lengths.URL_MAX,
-                    'Your Twitter handle must be less than ${userConstants.lengths.URL_MAX} characters long.',
+                    constants.lengths.WEBSITE_URL_MAX,
+                    `Your Twitter handle must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
                 ],
             },
             linkedIn: {
@@ -440,9 +485,13 @@ const userSchema = new mongoose.Schema(
                     true,
                     'This LinkedIn profile is already linked to another account.',
                 ],
+                match: [
+                    patterns.LINKEDIN_URL,
+                    'Invalid linkedIn url format. Please enter a valid linkedIn url.'
+                ],
                 maxlength: [
-                    userConstants.lengths.URL_MAX,
-                    'Your LinkedIn URL must be less than ${userConstants.lengths.URL_MAX} characters long.',
+                    constants.lengths.WEBSITE_URL_MAX,
+                    `Your LinkedIn URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
                 ],
             },
             github: {
@@ -452,9 +501,13 @@ const userSchema = new mongoose.Schema(
                     true,
                     'This GitHub username is already linked to another account.',
                 ],
+                match: [
+                    patterns.GITHUB_URL,
+                    'Invalid github url format. Please enter a valid github url.'
+                ],
                 maxlength: [
-                    userConstants.lengths.URL_MAX,
-                    'Your GitHub username must be less than ${userConstants.lengths.URL_MAX} characters long.',
+                    constants.lengths.WEBSITE_URL_MAX,
+                    `Your GitHub username must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
                 ],
             },
             description:
@@ -467,8 +520,8 @@ const userSchema = new mongoose.Schema(
                 sparse: true,
                 unique: [true, 'This Google account is already registered.'],
                 maxlength: [
-                    100,
-                    'The Google ID must be less than 100 characters.',
+                    constants.lengths.EXTERNAL_AUTH_ID_MAX,
+                    `The Google ID must be less than ${constants.lengths.EXTERNAL_AUTH_ID_MAX} characters.`,
                 ],
             },
             facebookId: {
@@ -477,8 +530,8 @@ const userSchema = new mongoose.Schema(
                 sparse: true,
                 unique: [true, 'This Facebook account is already registered.'],
                 maxlength: [
-                    100,
-                    'The Facebook ID must be less than 100 characters.',
+                    constants.lengths.EXTERNAL_AUTH_ID_MAX,
+                    `The Facebook ID must be less than ${constants.lengths.EXTERNAL_AUTH_ID_MAX} characters.`,
                 ],
             },
             twitterId: {
@@ -487,8 +540,8 @@ const userSchema = new mongoose.Schema(
                 sparse: true,
                 unique: [true, 'This Twitter account is already registered.'],
                 maxlength: [
-                    100,
-                    'The Twitter ID must be less than 100 characters.',
+                    constants.lengths.EXTERNAL_AUTH_ID_MAX,
+                    `The Twitter ID must be less than ${constants.lengths.EXTERNAL_AUTH_ID_MAX} characters.`,
                 ],
             },
             linkedInId: {
@@ -497,8 +550,8 @@ const userSchema = new mongoose.Schema(
                 sparse: true,
                 unique: [true, 'This LinkedIn account is already registered.'],
                 maxlength: [
-                    100,
-                    'The LinkedIn ID must be less than 100 characters.',
+                    constants.lengths.EXTERNAL_AUTH_ID_MAX,
+                    `The LinkedIn ID must be less than ${constants.lengths.EXTERNAL_AUTH_ID_MAX} characters.`,
                 ],
             },
             githubId: {
@@ -507,8 +560,8 @@ const userSchema = new mongoose.Schema(
                 sparse: true,
                 unique: [true, 'This GitHub account is already registered.'],
                 maxlength: [
-                    100,
-                    'The GitHub ID must be less than 100 characters.',
+                    constants.lengths.EXTERNAL_AUTH_ID_MAX,
+                    `The GitHub ID must be less than ${constants.lengths.EXTERNAL_AUTH_ID_MAX} characters.`,
                 ],
             },
             description:
