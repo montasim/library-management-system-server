@@ -13,22 +13,24 @@ const pronounsSchema = new mongoose.Schema(
             required: [true, 'Please provide a name for the pronouns.'],
             match: [
                 pronounsConstants.pattern.NAME,
-                'Invalid format for pronouns. Please use only alphabetic characters and spaces, e.g., "Male", "Female".'
+                'Invalid format for pronouns. Please use only alphabetic characters and spaces, e.g., "Male", "Female".',
             ],
             minlength: [
                 pronounsConstants.lengths.NAME_MIN,
-                `Pronouns name must be at least ${pronounsConstants.lengths.NAME_MIN} characters long.`
+                `Pronouns name must be at least ${pronounsConstants.lengths.NAME_MIN} characters long.`,
             ],
             maxlength: [
                 pronounsConstants.lengths.NAME_MAX,
-                `Pronouns name cannot exceed ${pronounsConstants.lengths.NAME_MAX} characters in length.`
+                `Pronouns name cannot exceed ${pronounsConstants.lengths.NAME_MAX} characters in length.`,
             ],
-            description: 'The name of the pronouns, representing different gender identities.',
+            description:
+                'The name of the pronouns, representing different gender identities.',
         },
         isActive: {
             type: Boolean,
             default: true,
-            description: 'Indicates whether the pronouns are active and should be displayed in user options.',
+            description:
+                'Indicates whether the pronouns are active and should be displayed in user options.',
         },
         createdBy: {
             type: Schema.Types.ObjectId,
@@ -41,7 +43,8 @@ const pronounsSchema = new mongoose.Schema(
             type: Schema.Types.ObjectId,
             trim: true,
             ref: 'Admin',
-            description: 'The ID of the admin who last updated this pronoun entry.',
+            description:
+                'The ID of the admin who last updated this pronoun entry.',
         },
     },
     {

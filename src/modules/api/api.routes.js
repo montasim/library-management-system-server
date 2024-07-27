@@ -21,10 +21,7 @@ router.use('/admin', adminRoutes);
 router.use('/auth', authRoutes);
 router.use(`/${routesConstants.books.routes}`, booksRoutes);
 router.use('/detect', detectRoutes);
-router.use(
-    `/${routesConstants.pronouns.routes}`,
-    pronounsRoutes
-);
+router.use(`/${routesConstants.pronouns.routes}`, pronounsRoutes);
 router.use(
     `/${routesConstants.permissions.routes}`,
     authenticateMiddleware.admin,

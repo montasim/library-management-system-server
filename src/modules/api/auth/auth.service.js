@@ -18,9 +18,11 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import AdminModel from '../admin/admin.model.js';
 import logger from '../../../utilities/logger.js';
+import moment from 'moment';
 
 const signup = async (userData, hostData) => {
     try {
+        // Check if the email is registered as an admin
         const existingAdmin = await AdminModel.findOne({
             email: userData.email,
         }).lean();
@@ -32,8 +34,9 @@ const signup = async (userData, hostData) => {
             );
         }
 
+        // Check if the email is registered as a user
         const existingUser = await UsersModel.findOne({
-            email: userData.email,
+            'emails.email': userData.email, // Assuming 'emails' is an array of objects, each containing an 'email' field
         }).lean();
         if (existingUser) {
             return sendResponse(
@@ -71,13 +74,28 @@ const signup = async (userData, hostData) => {
             );
         }
 
-        const hashedPassword = await createHashedPassword(userData.password);
+        const name = {};
+        name.first = userData.name;
+
+        // Validate and convert dateOfBirth using moment
+        if (!moment(userData.dateOfBirth, 'DD-MM-YYYY', true).isValid()) {
+            return sendResponse(
+                {},
+                'Date of birth must be in the format DD-MM-YYYY and a valid date.',
+                httpStatus.BAD_REQUEST
+            );
+        }
+
+        const dateOfBirth = moment(userData.dateOfBirth, 'DD-MM-YYYY').toDate();
+        const passwordHash = await createHashedPassword(userData.password);
         const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
             await generateVerificationToken();
 
         const newUser = await UsersModel.create({
             ...userData,
-            password: hashedPassword,
+            name,
+            dateOfBirth,
+            passwordHash,
             emailVerifyToken,
             emailVerifyTokenExpires,
         });

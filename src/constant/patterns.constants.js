@@ -63,7 +63,8 @@ const URL = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
  * @param {string} url The Facebook URL to be validated.
  * @returns {boolean} Returns true if the URL is a valid Facebook URL, false otherwise.
  */
-const FACEBOOK_URL = /^(https?:\/\/)(www\.)?facebook\.com\/(profile\.php\?id=\d+|[a-zA-Z0-9\.-]+)$/;
+const FACEBOOK_URL =
+    /^(https?:\/\/)(www\.)?facebook\.com\/(profile\.php\?id=\d+|[a-zA-Z0-9\.-]+)$/;
 
 /**
  * Regular expression for validating Twitter URLs.
@@ -123,7 +124,8 @@ const TWITTER_URL = /^(https?:\/\/)(www\.)?twitter\.com\/([a-zA-Z0-9_]+)(\/)?$/;
  * @param {string} url The LinkedIn URL to be validated.
  * @returns {boolean} Returns true if the URL is a valid LinkedIn URL, false otherwise.
  */
-const LINKEDIN_URL = /^(https?:\/\/)(www\.)?linkedin\.com\/(in\/[a-zA-Z0-9_-]+|company\/[a-zA-Z0-9_-]+)$/;
+const LINKEDIN_URL =
+    /^(https?:\/\/)(www\.)?linkedin\.com\/(in\/[a-zA-Z0-9_-]+|company\/[a-zA-Z0-9_-]+)$/;
 
 /**
  * Regular expression for validating GitHub URLs.
@@ -154,7 +156,8 @@ const LINKEDIN_URL = /^(https?:\/\/)(www\.)?linkedin\.com\/(in\/[a-zA-Z0-9_-]+|c
  * @param {string} url The GitHub URL to be validated.
  * @returns {boolean} Returns true if the URL is a valid GitHub URL, false otherwise.
  */
-const GITHUB_URL = /^(https?:\/\/)(www\.)?github\.com\/([a-zA-Z0-9_-]+)(\/[a-zA-Z0-9_-]+)?\/?$/;
+const GITHUB_URL =
+    /^(https?:\/\/)(www\.)?github\.com\/([a-zA-Z0-9_-]+)(\/[a-zA-Z0-9_-]+)?\/?$/;
 
 const patterns = {
     EMAIL,

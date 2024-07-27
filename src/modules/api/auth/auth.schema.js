@@ -15,6 +15,11 @@ const authSchemaBase = Joi.object({
         .messages({
             'string.pattern.base': `{#label} with value "{#value}" must start with an uppercase letter followed by lowercase letters for each word, separated by a single space if multiple words. No numbers or special characters are allowed.`,
         }),
+    dateOfBirth: Joi.string()
+        .regex(userConstants.pattern.DATE_OF_BIRTH)
+        .message(
+            'Date of birth must be in the format DD-MM-YYYY and a valid date.'
+        ),
     email: validationService.emailField,
     password: validationService.passwordField,
     confirmPassword: Joi.valid(Joi.ref('password')).messages({
@@ -37,7 +42,7 @@ const authSchemaBase = Joi.object({
 }).strict();
 
 const signup = authSchemaBase.fork(
-    ['name', 'email', 'password', 'confirmPassword'],
+    ['name', 'dateOfBirth', 'email', 'password', 'confirmPassword'],
     (field) => field.required()
 );
 

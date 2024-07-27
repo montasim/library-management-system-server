@@ -16,7 +16,7 @@ const createPronouns = asyncErrorHandler(async (req, res) => {
 
 const getPronounses = asyncErrorHandler(async (req, res) => {
     const pronounsData = await pronounsService.getPronounses(
-        req.query  // This should correctly pass the query parameters
+        req.query // This should correctly pass the query parameters
     );
 
     pronounsData.route = req.originalUrl;

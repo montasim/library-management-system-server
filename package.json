@@ -67,6 +67,7 @@
     "joi": "^17.13.3",
     "jsdom": "^24.1.0",
     "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
     "mongodb": "^6.8.0",
     "mongoose": "^8.4.4",
     "mongoose-auto-increment": "^5.0.1",

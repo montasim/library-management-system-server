@@ -73,11 +73,7 @@ const getPronounses = async (params) => {
             .limit(limit);
 
         if (!pronouns.length) {
-            return sendResponse(
-                {},
-                'No pronouns found.',
-                httpStatus.NOT_FOUND
-            );
+            return sendResponse({}, 'No pronouns found.', httpStatus.NOT_FOUND);
         }
 
         return sendResponse(
@@ -106,10 +102,7 @@ const getPronouns = async (pronounsId) => {
     try {
         const resource = await PronounsModel.findById(pronounsId);
         if (!resource) {
-            return errorResponse(
-                'Pronouns not found.',
-                httpStatus.NOT_FOUND
-            );
+            return errorResponse('Pronouns not found.', httpStatus.NOT_FOUND);
         }
 
         return sendResponse(
@@ -250,18 +243,10 @@ const deletePronouns = async (requester, pronounsId) => {
 
     const deletedResource = await PronounsModel.findByIdAndDelete(pronounsId);
     if (!deletedResource) {
-        return sendResponse(
-            {},
-            'Pronouns not found.',
-            httpStatus.NOT_FOUND
-        );
+        return sendResponse({}, 'Pronouns not found.', httpStatus.NOT_FOUND);
     }
 
-    return sendResponse(
-        {},
-        'Pronouns deleted successfully.',
-        httpStatus.OK
-    );
+    return sendResponse({}, 'Pronouns deleted successfully.', httpStatus.OK);
 };
 
 const pronounsService = {

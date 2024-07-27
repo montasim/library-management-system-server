@@ -18,6 +18,7 @@
 import { promises as fs } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import logger from '../utilities/logger.js';
 
 // Derive the __dirname equivalent for ES6 module
 const __filename = fileURLToPath(import.meta.url);
@@ -59,7 +60,7 @@ const loadTempEmailDomains = async () => {
 
         return new Set(lines);
     } catch (err) {
-        console.error('Error loading the temporary email domain list:', err);
+        logger.error('Error loading the temporary email domain list:', err);
 
         return new Set(); // Return an empty set on error
     }

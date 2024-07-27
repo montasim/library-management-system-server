@@ -79,6 +79,35 @@ const pattern = {
      */
     USERNAME: /^[a-z][a-z0-9_]*$/,
 
+    /**
+     * Regular expression for validating dates of birth in the format DD-MM-YYYY.
+     *
+     * This pattern ensures that the date string conforms to a specific format:
+     * - DD: Two digits for the day, ranging from 01 to 31.
+     * - MM: Two digits for the month, ranging from 01 to 12.
+     * - YYYY: Four digits for the year, within the 20th or 21st century (1900-2099).
+     *
+     * The pattern accounts for most common date validations but does not check for the correctness of the day with respect to the month
+     * (e.g., it does not catch 31-02 as an invalid date) or leap years. It is recommended to use additional date validation logic
+     * if exact date correctness is crucial, such as in age verification processes.
+     *
+     * Examples of valid dates of birth:
+     * - 01-01-1990
+     * - 31-12-2000
+     * - 29-02-2004 (leap year)
+     *
+     * Examples of invalid dates of birth:
+     * - 31-02-2001 (February 31st does not exist)
+     * - 00-12-1990 (day cannot be zero)
+     * - 01-13-2020 (there is no 13th month)
+     *
+     * @example
+     * const dateOfBirthPattern = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\d{2}$/;
+     * console.log(dateOfBirthPattern.test("31-12-1998")); // true
+     * console.log(dateOfBirthPattern.test("29-02-2001")); // false (non-leap year)
+     * console.log(dateOfBirthPattern.test("01-13-2020")); // false (invalid month)
+     */
+    DATE_OF_BIRTH: /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\d{2}$/,
 };
 
 const imageSize = 1.1 * 1024 * 1024; // 1.1 MB

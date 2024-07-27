@@ -4,8 +4,7 @@ import pronounsValidator from './pronouns.validator.js';
 import pronounsController from './pronouns.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import routesConstants from '../../../constant/routes.constants.js';
-import authenticateMiddleware
-    from '../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 
 const router = express.Router();
 
@@ -16,10 +15,7 @@ router
         pronounsValidator.createPronouns,
         pronounsController.createPronouns
     )
-    .get(
-        pronounsValidator.getPronounses,
-        pronounsController.getPronounses
-    )
+    .get(pronounsValidator.getPronounses, pronounsController.getPronounses)
     .delete(
         authenticateMiddleware.admin,
         pronounsValidator.deletePronounses,
@@ -29,10 +25,7 @@ router
 
 router
     .route(`/:${routesConstants.pronouns.params}`)
-    .get(
-        pronounsValidator.getPronouns,
-        pronounsController.getPronouns
-    )
+    .get(pronounsValidator.getPronouns, pronounsController.getPronouns)
     .put(
         authenticateMiddleware.admin,
         pronounsValidator.updatePronouns,

@@ -16,7 +16,8 @@ const pronounsSchemaBase = Joi.object({
             'string.empty': 'Name cannot be empty.',
             'string.min': `Name must be at least ${pronounsConstants.lengths.NAME_MIN} characters long.`,
             'string.max': `Name cannot be more than ${pronounsConstants.lengths.NAME_MAX} characters long.`,
-            'string.pattern.base': 'Name must only contain alphabetic characters and appropriate separators like spaces. For example, "Male", "Female".',
+            'string.pattern.base':
+                'Name must only contain alphabetic characters and appropriate separators like spaces. For example, "Male", "Female".',
             'any.required': 'Name is required.',
         }),
     page: Joi.string()

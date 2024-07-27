@@ -31,7 +31,7 @@ const urls = {
 
 const constants = {
     lengths,
-    urls
+    urls,
 };
 
 export default constants;
