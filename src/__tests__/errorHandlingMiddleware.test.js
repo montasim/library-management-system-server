@@ -2,7 +2,7 @@ import request from 'supertest';
 import express from 'express';
 
 import httpStatus from '../constant/httpStatus.constants.js';
-import errorHandlingMiddleware from '../middleware/errorHandlingMiddleware.js';
+import errorHandlingService from '../service/errorHandling.service.js';
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use((req, res, next) => {
     next(error);
 });
 
-app.use(errorHandlingMiddleware);
+app.use(errorHandlingService);
 
 describe('Error Handling Middleware', () => {
     test('handles operational errors by sending proper status and message', async () => {

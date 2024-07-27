@@ -8,7 +8,7 @@ import compressionConfiguration from './configuration/compression.configuration.
 import sanitizeRequestConfiguration from './configuration/sanitizeRequest.configuration.js';
 
 import appRoutes from './routes.js';
-import errorHandlingMiddleware from './middleware/errorHandlingMiddleware.js';
+import errorHandlingService from './service/errorHandling.service.js';
 import hppConfiguration from './configuration/hpp.configuration.js';
 import morganConfiguration from './configuration/morgan.configuration.js';
 
@@ -34,6 +34,6 @@ app.use(sanitizeRequestConfiguration);
 app.use('/', appRoutes);
 
 // Error handling middleware
-app.use(errorHandlingMiddleware);
+app.use(errorHandlingService);
 
 export default app;

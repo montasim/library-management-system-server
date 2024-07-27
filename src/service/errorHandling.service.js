@@ -3,7 +3,7 @@ import logger from '../utilities/logger.js';
 import httpStatus from '../constant/httpStatus.constants.js';
 import errorCodes from '../constant/errorCodes.constants.js';
 
-const errorHandlingMiddleware = (error, req, res, next) => {
+const errorHandlingService = (error, req, res, next) => {
     let message;
     let status = error.status || httpStatus.INTERNAL_SERVER_ERROR;
 
@@ -111,4 +111,4 @@ const errorHandlingMiddleware = (error, req, res, next) => {
     res.status(status).send(response);
 };
 
-export default errorHandlingMiddleware;
+export default errorHandlingService;
