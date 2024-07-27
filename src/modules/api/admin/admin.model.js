@@ -18,6 +18,7 @@ const adminSchema = new mongoose.Schema(
                 `name must be less than ${adminConstants.lengths.NAME_MAX} characters long`,
             ],
         },
+        // TODO: set default image fpr admin
         image: {
             fileId: {
                 type: String,
