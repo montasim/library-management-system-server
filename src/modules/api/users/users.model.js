@@ -203,6 +203,7 @@ const userSchema = new mongoose.Schema(
             description:
                 'Username, must be unique and formatted as an email address.',
         },
+        // TODO: when user sign up set a default image for user
         image: {
             fileId: {
                 type: String,
