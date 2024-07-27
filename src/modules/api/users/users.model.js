@@ -276,6 +276,23 @@ const userSchema = new mongoose.Schema(
                 }
             }
         ],
+        address: {
+            country: {
+                type: String,
+                trim: true,
+                description: 'The country where the user resides. This field stores the name of the country as a string.'
+            },
+            state: {
+                type: String,
+                trim: true,
+                description: 'The state or region within the country where the user is located. This field is used to store the state or regional name.'
+            },
+            city: {
+                type: String,
+                trim: true,
+                description: 'The city or locality within the state where the user lives. This field captures the city name.'
+            },
+        },
 
         // Authentication and Security
         passwordHash: {
@@ -331,6 +348,23 @@ const userSchema = new mongoose.Schema(
                     `Company name should not exceed ${userConstants.lengths.COMPANY.NAME_MAX} characters.`,
                 ],
                 description: 'Optional field for storing the name of the user\'s employer, with validation on length.',
+            },
+            address: {
+                country: {
+                    type: String,
+                    trim: true,
+                    description: 'The country where the company resides. This field stores the name of the country as a string.'
+                },
+                state: {
+                    type: String,
+                    trim: true,
+                    description: 'The state or region within the country where the company is located. This field is used to store the state or regional name.'
+                },
+                city: {
+                    type: String,
+                    trim: true,
+                    description: 'The city or locality within the state where the company lives. This field captures the city name.'
+                },
             },
             website: {
                 type: String,
