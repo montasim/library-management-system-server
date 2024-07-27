@@ -20,12 +20,16 @@ const getUser = async (userId) => {
             );
         }
 
-        // Remove sensitive data
-        delete user.password;
-        delete user.emailVerifyToken;
-        delete user.emailVerifyTokenExpires;
-        delete user.phoneVerifyToken;
-        delete user.phoneVerifyTokenExpires;
+        // Remove sensitive data, considering the user may have multiple emails
+        user.emails.forEach(email => {
+            delete email.emailVerifyToken;
+            delete email.emailVerifyTokenExpires;
+        });
+        user.mobiles.forEach(mobile => {
+            delete mobile.phoneVerifyToken;
+            delete mobile.phoneVerifyTokenExpires;
+        });
+        delete user.passwordHash;
         delete user.resetPasswordVerifyToken;
         delete user.resetPasswordVerifyTokenExpires;
 
@@ -135,13 +139,13 @@ const updateUser = async (requester, updateData, userImage) => {
     }
 };
 
-const deleteUser = async (userId) => {
+const deleteUser = async (userId, confirmationData) => {
     try {
         const existingUser = await UsersModel.findById(userId).lean();
         if (!existingUser) {
             return errorResponse(
-                'Please login first.',
-                httpStatus.UNAUTHORIZED
+                'User not found.',
+                httpStatus.NOT_FOUND
             );
         }
 
@@ -156,7 +160,7 @@ const deleteUser = async (userId) => {
         return sendResponse(
             {},
             'User deleted successfully.',
-            httpStatus.BAD_REQUEST
+            httpStatus.OK
         );
     } catch (error) {
         logger.error(`Failed to delete account: ${error}`);

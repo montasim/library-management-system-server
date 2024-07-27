@@ -29,7 +29,7 @@ const deleteUser = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
     const deletedUserData = await usersService.deleteUser(
         requester,
-        req.params.userId
+        req.body,
     );
 
     deletedUserData.route = req.originalUrl;
