@@ -806,10 +806,10 @@ const userSchema = new mongoose.Schema(
 
 // Custom validation to check the uniqueness of the email
 userSchema.path('emails').validate(async function (emails) {
-    const emailAddresses = emails.map(email => email.email);
+    const emailAddresses = emails.map((email) => email.email);
     const userCount = await mongoose.model('Users').countDocuments({
         'emails.email': { $in: emailAddresses },
-        _id: { $ne: this._id } // Exclude the current document from the check if it's an update
+        _id: { $ne: this._id }, // Exclude the current document from the check if it's an update
     });
     return !userCount; // If there are no users with these emails, the validation passes
 }, 'Email already exists.');
@@ -817,7 +817,10 @@ userSchema.path('emails').validate(async function (emails) {
 userSchema.pre(['updateOne', 'findOneAndUpdate'], function (next) {
     const update = this.getUpdate();
     // Check for attempts to update any email field
-    if (update.$set && (update.$set['emails.$.email'] || update.$set['emails'])) {
+    if (
+        update.$set &&
+        (update.$set['emails.$.email'] || update.$set['emails'])
+    ) {
         throw new Error(
             'Email updates are not permitted after account creation.'
         );
@@ -825,7 +828,6 @@ userSchema.pre(['updateOne', 'findOneAndUpdate'], function (next) {
 
     next();
 });
-
 
 const UsersModel = mongoose.model('Users', userSchema);
 

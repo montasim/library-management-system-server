@@ -94,7 +94,7 @@ const signup = async (userData, hostData) => {
             isPrimaryEmail: true,
             isEmailVerified: false,
             emailVerifyToken,
-            emailVerifyTokenExpires
+            emailVerifyTokenExpires,
         };
 
         const newUser = await UsersModel.create({
@@ -162,7 +162,7 @@ const verify = async (token) => {
 
         // Find the user by the hashed token and ensure they exist
         const user = await UsersModel.findOne({
-            'emails.emailVerifyToken': hashedToken
+            'emails.emailVerifyToken': hashedToken,
         });
 
         if (!user) {
@@ -173,8 +173,8 @@ const verify = async (token) => {
         }
 
         // Find the specific email record that matches the hashed token
-        const emailDetails = user.emails.find(email =>
-            email.emailVerifyToken === hashedToken
+        const emailDetails = user.emails.find(
+            (email) => email.emailVerifyToken === hashedToken
         );
 
         if (!emailDetails) {
@@ -204,8 +204,8 @@ const verify = async (token) => {
                 $set: {
                     'emails.$.isEmailVerified': true,
                     'emails.$.emailVerifyToken': undefined,
-                    'emails.$.emailVerifyTokenExpires': undefined
-                }
+                    'emails.$.emailVerifyTokenExpires': undefined,
+                },
             }
         );
 
@@ -265,26 +265,37 @@ const resendVerification = async (userId, hostData) => {
             return errorResponse('User not found.', httpStatus.NOT_FOUND);
         }
 
-        const primaryEmail = userDetails.emails.find(email => email.isPrimaryEmail);
+        const primaryEmail = userDetails.emails.find(
+            (email) => email.isPrimaryEmail
+        );
         if (!primaryEmail) {
             logger.debug(`Primary email not set for user: ${userId}`);
 
-            return errorResponse('No primary email set for this account.', httpStatus.BAD_REQUEST);
+            return errorResponse(
+                'No primary email set for this account.',
+                httpStatus.BAD_REQUEST
+            );
         }
 
         if (primaryEmail.isEmailVerified) {
             logger.debug(`Email already verified for user: ${userId}`);
 
-            return errorResponse('This email address has already been verified.', httpStatus.FORBIDDEN);
+            return errorResponse(
+                'This email address has already been verified.',
+                httpStatus.FORBIDDEN
+            );
         }
 
-        const { emailVerifyToken, emailVerifyTokenExpires, plainToken } = await generateVerificationToken();
-        userDetails.emails = userDetails.emails.map(email =>
-            email.isPrimaryEmail ? {
-                ...email,
-                emailVerifyToken,
-                emailVerifyTokenExpires
-            } : email
+        const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
+            await generateVerificationToken();
+        userDetails.emails = userDetails.emails.map((email) =>
+            email.isPrimaryEmail
+                ? {
+                      ...email,
+                      emailVerifyToken,
+                      emailVerifyTokenExpires,
+                  }
+                : email
         );
 
         await userDetails.save();
@@ -335,9 +346,14 @@ const resendVerification = async (userId, hostData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to resend verification email for user ${userId}: ${error}`);
+        logger.error(
+            `Failed to resend verification email for user ${userId}: ${error}`
+        );
 
-        return errorResponse(error.message || 'Failed to resend verification email.', httpStatus.INTERNAL_SERVER_ERROR);
+        return errorResponse(
+            error.message || 'Failed to resend verification email.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
@@ -347,7 +363,7 @@ const requestNewPassword = async (email, hostData) => {
         // Find user by email in the nested 'emails' array and ensure the email is verified
         const user = await UsersModel.findOne({
             'emails.email': email.toLowerCase(), // Search in lowercase to match the stored format
-            'emails.isEmailVerified': true
+            'emails.isEmailVerified': true,
         }).lean();
 
         if (!user) {
@@ -357,7 +373,7 @@ const requestNewPassword = async (email, hostData) => {
             );
         }
 
-        const primaryEmail = user.emails.find(e => e.isPrimaryEmail);
+        const primaryEmail = user.emails.find((e) => e.isPrimaryEmail);
         if (!primaryEmail) {
             return errorResponse(
                 'No primary email found. Please contact support.',
@@ -442,7 +458,7 @@ const resetPassword = async (hostData, token, userData) => {
         }
 
         // Find the primary email to send the reset confirmation
-        const primaryEmail = user.emails.find(email => email.isPrimaryEmail);
+        const primaryEmail = user.emails.find((email) => email.isPrimaryEmail);
         if (!primaryEmail) {
             return errorResponse(
                 'No primary email found. Please contact support.',
@@ -450,7 +466,10 @@ const resetPassword = async (hostData, token, userData) => {
             );
         }
 
-        const isPasswordValid = await comparePassword(userData.oldPassword, user.passwordHash);
+        const isPasswordValid = await comparePassword(
+            userData.oldPassword,
+            user.passwordHash
+        );
         if (!isPasswordValid) {
             return errorResponse(
                 'Wrong old password. Please try again.',
@@ -465,7 +484,9 @@ const resetPassword = async (hostData, token, userData) => {
             );
         }
 
-        const passwordValidationResult = await validatePassword(userData.newPassword);
+        const passwordValidationResult = await validatePassword(
+            userData.newPassword
+        );
         if (passwordValidationResult !== 'Valid') {
             return sendResponse(
                 {},
@@ -520,7 +541,7 @@ const resetPassword = async (hostData, token, userData) => {
 const login = async (userData, userAgent, device) => {
     try {
         const user = await UsersModel.findOne({
-            'emails.email': userData.email
+            'emails.email': userData.email,
         }).lean();
 
         if (!user) {
@@ -531,7 +552,9 @@ const login = async (userData, userAgent, device) => {
         }
 
         // Find the primary email that is verified
-        const primaryEmail = user.emails.find(email => email.isPrimaryEmail && email.isEmailVerified);
+        const primaryEmail = user.emails.find(
+            (email) => email.isPrimaryEmail && email.isEmailVerified
+        );
         if (!primaryEmail) {
             return errorResponse(
                 'Please verify your email address to proceed with logging in.',
@@ -546,11 +569,21 @@ const login = async (userData, userAgent, device) => {
             );
         }
 
-        const isPasswordValid = await comparePassword(userData.password, user.passwordHash);
+        const isPasswordValid = await comparePassword(
+            userData.password,
+            user.passwordHash
+        );
         if (!isPasswordValid) {
             await UsersModel.updateOne(
                 { _id: user._id },
-                { $push: { 'login.failed.device': { details: userAgent, dateTime: new Date() } } }
+                {
+                    $push: {
+                        'login.failed.device': {
+                            details: userAgent,
+                            dateTime: new Date(),
+                        },
+                    },
+                }
             );
 
             return errorResponse(
@@ -563,7 +596,14 @@ const login = async (userData, userAgent, device) => {
 
         await UsersModel.updateOne(
             { _id: user._id },
-            { $push: { 'login.successful.device': { details: userAgent, dateTime: new Date() } } }
+            {
+                $push: {
+                    'login.successful.device': {
+                        details: userAgent,
+                        dateTime: new Date(),
+                    },
+                },
+            }
         );
 
         const subject = 'Login Successfully';

@@ -40,20 +40,28 @@ const connect = async () => {
             // Logging real connection details from the transporter
             const connectionDetails = transporter.options; // Accessing actual options used by the transporter
 
-            logger.info(`Email service connected successfully with: Host: ${connectionDetails.host}, Port: ${connectionDetails.port}, Secure: ${connectionDetails.secure}`);
-
+            logger.info(
+                `Email service connected successfully with: Host: ${connectionDetails.host}, Port: ${connectionDetails.port}, Secure: ${connectionDetails.secure}`
+            );
         } catch (error) {
-            logger.error(`Failed to connect to email service on attempt ${retryCount + 1}:`, error);
+            logger.error(
+                `Failed to connect to email service on attempt ${retryCount + 1}:`,
+                error
+            );
 
             if (retryCount < configuration.email.smtp.maxConnectionAttempts) {
                 retryCount++;
 
-                logger.info(`Retrying to connect (${retryCount}/${configuration.email.smtp.maxConnectionAttempts})...`);
+                logger.info(
+                    `Retrying to connect (${retryCount}/${configuration.email.smtp.maxConnectionAttempts})...`
+                );
 
-                await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds before retrying
+                await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 2 seconds before retrying
                 await connectTransporter();
             } else {
-                throw new Error('Failed to initialize email service after several attempts.');
+                throw new Error(
+                    'Failed to initialize email service after several attempts.'
+                );
             }
         }
     };
