@@ -123,6 +123,9 @@ const envVarsSchema = Joi.object({
     SMTP_PASSWORD: Joi.string()
         .required()
         .description('Password for email server.'),
+    SMTP_MAX_CONNECTION_RETRY_ATTEMPTS: Joi.number()
+        .required()
+        .description('Maximum number of connection retry attempts.'),
     EMAIL_FROM: Joi.string()
         .required()
         .description('The "from" field in the emails sent by the app.'),
@@ -221,6 +224,7 @@ const configuration = {
                 user: getEnvVar(envVars.SMTP_USERNAME, ''),
                 pass: getEnvVar(envVars.SMTP_PASSWORD, ''),
             },
+            maxConnectionAttempts: getInt(envVars.SMTP_MAX_CONNECTION_RETRY_ATTEMPTS, 587),
         },
         from: getEnvVar(envVars.EMAIL_FROM, 'no-reply@example.com'),
     },
