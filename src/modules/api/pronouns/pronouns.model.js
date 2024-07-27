@@ -33,14 +33,14 @@ const pronounsSchema = new mongoose.Schema(
         createdBy: {
             type: Schema.Types.ObjectId,
             trim: true,
-            ref: 'AdminsModel',
+            ref: 'Admin',
             required: [true, 'Creator of the pronoun must be specified.'],
             description: 'The ID of the admin who created this pronoun entry.',
         },
         updatedBy: {
             type: Schema.Types.ObjectId,
             trim: true,
-            ref: 'AdminsModel',
+            ref: 'Admin',
             description: 'The ID of the admin who last updated this pronoun entry.',
         },
     },

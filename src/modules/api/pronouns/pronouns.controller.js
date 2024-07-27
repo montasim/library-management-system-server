@@ -16,7 +16,7 @@ const createPronouns = asyncErrorHandler(async (req, res) => {
 
 const getPronounses = asyncErrorHandler(async (req, res) => {
     const pronounsData = await pronounsService.getPronounses(
-        req.query
+        req.query  // This should correctly pass the query parameters
     );
 
     pronounsData.route = req.originalUrl;
@@ -50,7 +50,7 @@ const updatePronouns = asyncErrorHandler(async (req, res) => {
 const deletePronounses = asyncErrorHandler(async (req, res) => {
     const requester = getRequesterId(req);
     const pronounsIds = req.query.ids.split(',');
-    const deletedPronounsData = await pronounsService.deletePronouns(
+    const deletedPronounsData = await pronounsService.deletePronounses(
         requester,
         pronounsIds
     );

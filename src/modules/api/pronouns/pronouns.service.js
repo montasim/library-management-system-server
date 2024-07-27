@@ -2,7 +2,6 @@ import PronounsModel from './pronouns.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
-import deleteResourceById from '../../../shared/deleteResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import logger from '../../../utilities/logger.js';
 import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
@@ -47,7 +46,7 @@ const createPronouns = async (requester, newPronounsData) => {
     }
 };
 
-const getPronounses = async (requester, params) => {
+const getPronounses = async (params) => {
     try {
         const {
             page = 1,
@@ -188,13 +187,13 @@ const updatePronouns = async (requester, pronounsId, updateData) => {
 
 const deletePronounses = async (requester, pronounsIds) => {
     try {
-        // const isAuthorized = await validateAdminRequest(requester);
-        // if (!isAuthorized) {
-        //     return errorResponse(
-        //         'You are not authorized to delete pronouns.',
-        //         httpStatus.FORBIDDEN
-        //     );
-        // }
+        const isAuthorized = await validateAdminRequest(requester);
+        if (!isAuthorized) {
+            return errorResponse(
+                'You are not authorized to delete pronouns.',
+                httpStatus.FORBIDDEN
+            );
+        }
 
         // First, check which pronouns exist
         const existingPronouns = await PronounsModel.find({
@@ -241,21 +240,28 @@ const deletePronounses = async (requester, pronounsIds) => {
 };
 
 const deletePronouns = async (requester, pronounsId) => {
-    try {
-        return deleteResourceById(
-            requester,
-            pronounsId,
-            PronounsModel,
-            'pronouns'
-        );
-    } catch (error) {
-        logger.error(`Failed to delete pronouns: ${error}`);
-
+    const isAuthorized = await validateAdminRequest(requester);
+    if (!isAuthorized) {
         return errorResponse(
-            error.message || 'Failed to delete pronouns.',
-            httpStatus.INTERNAL_SERVER_ERROR
+            'You are not authorized to delete pronouns.',
+            httpStatus.FORBIDDEN
         );
     }
+
+    const deletedResource = await PronounsModel.findByIdAndDelete(pronounsId);
+    if (!deletedResource) {
+        return sendResponse(
+            {},
+            'Pronouns not found.',
+            httpStatus.NOT_FOUND
+        );
+    }
+
+    return sendResponse(
+        {},
+        'Pronouns deleted successfully.',
+        httpStatus.OK
+    );
 };
 
 const pronounsService = {
