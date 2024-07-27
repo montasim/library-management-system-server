@@ -1,12 +1,12 @@
 import logger from './logger.js';
-import DatabaseMiddleware from '../middleware/database.middleware.js';
+import DatabaseService from '../service/database.service.js';
 import initiateGracefulShutdown from './initiateGracefulShutdown.js';
 
 const shutdownHandler = async (signal, server) => {
     logger.log(`Received ${signal}.`);
 
     try {
-        await DatabaseMiddleware.disconnect();
+        await DatabaseService.disconnect();
         await initiateGracefulShutdown(signal, server);
     } catch (shutdownError) {
         logger.error(
