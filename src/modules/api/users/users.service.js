@@ -149,6 +149,8 @@ const deleteUser = async (userId, confirmationData) => {
             );
         }
 
+        // TODO: create a system to verify confirmation from user before delete user account. can use github like system, confirm delete text.
+
         // Delete the old file from Google Drive if it exists
         const oldFileId = existingUser.image?.fileId;
         if (oldFileId) {
