@@ -169,13 +169,12 @@ const userSchema = new mongoose.Schema(
             ],
             description: 'A short description about the user, limited to a specified maximum length.',
         },
-        // TODO: create PronounsModel
         // TODO: set default pronouns
         pronouns: {
             type: Schema.Types.ObjectId,
             trim: true,
-            ref: 'PronounsModel',
-            required: [true, 'Please select your pronouns.'],
+            ref: 'Pronouns',
+            default: undefined,
             description: 'Reference to an external Pronouns model, ensuring pronouns are selected from a predefined list.',
         },
 
@@ -303,11 +302,11 @@ const userSchema = new mongoose.Schema(
         },
         // TODO: roles will be one of RolesModel
         role: {
-            type: String,
-            trim: true,
-            enum: ['user', 'admin', 'moderator'],
-            default: 'user',
-            description: 'Defines the user\'s role within the application, restricting access based on role.',
+            type: Schema.Types.ObjectId,
+            ref: 'Roles',
+            required: [true, 'User role is required.'],
+            default: undefined,
+            description: 'Defines the user\'s role within the application by referencing the RoleModel, restricting access based on the role defined in the RoleModel.'
         },
         twoFactorEnabled: {
             type: Boolean,
