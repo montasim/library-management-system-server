@@ -4,6 +4,8 @@ import patterns from '../../../constant/patterns.constants.js';
 import userConstants from './users.constants.js';
 import constants from '../../../constant/constants.js';
 
+// TODO: modular schema definition
+
 // Define the Email schema
 const emailSchema = new Schema({
     email: {
