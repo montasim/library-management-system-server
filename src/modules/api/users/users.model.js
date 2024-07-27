@@ -30,37 +30,37 @@ const emailSchema = new Schema({
         ],
         description:
             "User's email, each validated for uniqueness and proper format.",
+    },
 
-        // Flag to indicate primary email
-        isPrimaryEmail: {
-            type: Boolean,
-            default: false,
-            description:
-                'Indicates if this is the primary email for the user. Only one email should be set as primary at any time.',
-        },
+    // Flag to indicate primary email
+    isPrimaryEmail: {
+        type: Boolean,
+        default: false,
+        description:
+            'Indicates if this is the primary email for the user. Only one email should be set as primary at any time.',
+    },
 
-        // Verification status of the email
-        isEmailVerified: {
-            type: Boolean,
-            default: false,
-            description:
-                "Flag to indicate whether the user's email has been verified.",
-        },
+    // Verification status of the email
+    isEmailVerified: {
+        type: Boolean,
+        default: false,
+        description:
+            "Flag to indicate whether the user's email has been verified.",
+    },
 
-        // Token for email verification
-        emailVerifyToken: {
-            type: String,
-            trim: true,
-            description: 'Token used for email verification process.',
-        },
+    // Token for email verification
+    emailVerifyToken: {
+        type: String,
+        trim: true,
+        description: 'Token used for email verification process.',
+    },
 
-        // Expiry date for the email verification token
-        emailVerifyTokenExpires: {
-            type: Date,
-            trim: true,
-            description:
-                'Expiration date and time for the email verification token.',
-        },
+    // Expiry date for the email verification token
+    emailVerifyTokenExpires: {
+        type: Date,
+        trim: true,
+        description:
+            'Expiration date and time for the email verification token.',
     },
 });
 
@@ -814,16 +814,18 @@ userSchema.path('emails').validate(async function (emails) {
     return !userCount; // If there are no users with these emails, the validation passes
 }, 'Email already exists.');
 
-// Middleware to prevent email updates
 userSchema.pre(['updateOne', 'findOneAndUpdate'], function (next) {
     const update = this.getUpdate();
-    if (update.$set && update.$set.email) {
+    // Check for attempts to update any email field
+    if (update.$set && (update.$set['emails.$.email'] || update.$set['emails'])) {
         throw new Error(
             'Email updates are not permitted after account creation.'
         );
     }
+
     next();
 });
+
 
 const UsersModel = mongoose.model('Users', userSchema);
 

@@ -1,2 +1,4 @@
 tempmail.com
-example.com'
+example.com
+test.com
+etc.com

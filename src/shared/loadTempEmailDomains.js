@@ -59,8 +59,8 @@ const loadTempEmailDomains = async () => {
         const lines = data.split('\n').map((line) => line.trim().toLowerCase());
 
         return new Set(lines);
-    } catch (err) {
-        logger.error('Error loading the temporary email domain list:', err);
+    } catch (error) {
+        logger.error('Error loading the temporary email domain list:', error);
 
         return new Set(); // Return an empty set on error
     }

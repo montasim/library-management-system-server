@@ -47,8 +47,8 @@ const loadBlockedEmailDomains = async () => {
         const lines = data.split('\n').map((line) => line.trim().toLowerCase());
 
         return new Set(lines);
-    } catch (err) {
-        logger.error('Error loading the blocked email domain list:', err);
+    } catch (error) {
+        logger.error('Error loading the blocked email domain list:', error);
 
         return new Set(); // Return an empty set on error to allow continued operation
     }

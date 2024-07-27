@@ -74,9 +74,6 @@ const signup = async (userData, hostData) => {
             );
         }
 
-        const name = {};
-        name.first = userData.name;
-
         // Validate and convert dateOfBirth using moment
         if (!moment(userData.dateOfBirth, 'DD-MM-YYYY', true).isValid()) {
             return sendResponse(
@@ -91,13 +88,20 @@ const signup = async (userData, hostData) => {
         const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
             await generateVerificationToken();
 
+        // Construct the name object and email object
+        const emailObject = {
+            email: userData.email.toLowerCase(),
+            isPrimaryEmail: true,
+            isEmailVerified: false,
+            emailVerifyToken,
+            emailVerifyTokenExpires
+        };
+
         const newUser = await UsersModel.create({
-            ...userData,
-            name,
+            name: { first: userData.name },
+            emails: [emailObject],
             dateOfBirth,
             passwordHash,
-            emailVerifyToken,
-            emailVerifyTokenExpires,
         });
 
         const subject = 'Confirm Your Email Address';
@@ -155,28 +159,67 @@ const verify = async (token) => {
     try {
         // Hash the plain token to compare with the stored hash
         const hashedToken = await generateHashedToken(token);
-        const userDetails = await UsersModel.findOne({
-            emailVerifyToken: hashedToken,
-            emailVerifyTokenExpires: { $gt: Date.now() }, // Check if the token hasn't expired
+
+        // Find the user by the hashed token and ensure they exist
+        const user = await UsersModel.findOne({
+            'emails.emailVerifyToken': hashedToken
         });
 
-        if (!userDetails) {
+        if (!user) {
             return errorResponse(
-                'The verification link is invalid or has expired. Please requestBooks a new verification email.',
+                'The verification link is invalid.',
+                httpStatus.NOT_FOUND
+            );
+        }
+
+        // Find the specific email record that matches the hashed token
+        const emailDetails = user.emails.find(email =>
+            email.emailVerifyToken === hashedToken
+        );
+
+        if (!emailDetails) {
+            return errorResponse(
+                'The verification link is invalid. Please request a new verification email.',
                 httpStatus.FORBIDDEN
             );
         }
 
-        // Set the email verified flag to true and clear the verification token fields
-        userDetails.isEmailVerified = true;
-        userDetails.emailVerifyToken = undefined;
-        userDetails.emailVerifyTokenExpires = undefined;
+        // Check if the email has already been verified or if the token has expired
+        if (emailDetails.isEmailVerified) {
+            return errorResponse(
+                'This email has already been verified. No further action is required.',
+                httpStatus.BAD_REQUEST
+            );
+        } else if (emailDetails.emailVerifyTokenExpires < Date.now()) {
+            return errorResponse(
+                'The verification link has expired. Please request a new verification email.',
+                httpStatus.FORBIDDEN
+            );
+        }
 
-        await userDetails.save();
+        // All checks passed, update the user's document to set the email as verified
+        const updateResult = await UsersModel.updateOne(
+            { _id: user._id, 'emails.emailVerifyToken': hashedToken },
+            {
+                $set: {
+                    'emails.$.isEmailVerified': true,
+                    'emails.$.emailVerifyToken': undefined,
+                    'emails.$.emailVerifyTokenExpires': undefined
+                }
+            }
+        );
 
+        if (updateResult.modifiedCount !== 1) {
+            return errorResponse(
+                'Failed to verify the email. Please try again.',
+                httpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+
+        // Sending a welcome email to the user
         const subject = 'Welcome Email';
         const emailData = {
-            userName: userDetails.name,
+            userName: user.name.first,
         };
         const {
             pageTitle,
@@ -187,7 +230,7 @@ const verify = async (token) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            userDetails.email,
+            emailDetails.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -204,10 +247,10 @@ const verify = async (token) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to verify user: ${error}`);
+        logger.error(`Failed to verify email: ${error}`);
 
         return errorResponse(
-            error.message || 'Failed to verify user.',
+            error.message || 'Failed to verify email.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
@@ -217,24 +260,36 @@ const resendVerification = async (userId, hostData) => {
     try {
         const userDetails = await UsersModel.findById(userId);
         if (!userDetails) {
+            logger.debug(`User not found: ${userId}`);
+
             return errorResponse('User not found.', httpStatus.NOT_FOUND);
         }
 
-        if (userDetails.isEmailVerified) {
-            return errorResponse(
-                'This email address has already been verified. No further action is required.',
-                httpStatus.FORBIDDEN
-            );
+        const primaryEmail = userDetails.emails.find(email => email.isPrimaryEmail);
+        if (!primaryEmail) {
+            logger.debug(`Primary email not set for user: ${userId}`);
+
+            return errorResponse('No primary email set for this account.', httpStatus.BAD_REQUEST);
         }
 
-        const { emailVerifyToken, emailVerifyTokenExpires, plainToken } =
-            await generateVerificationToken();
+        if (primaryEmail.isEmailVerified) {
+            logger.debug(`Email already verified for user: ${userId}`);
 
-        // Update the user with new verification token and expiry
-        userDetails.emailVerifyToken = emailVerifyToken;
-        userDetails.emailVerifyTokenExpires = emailVerifyTokenExpires;
+            return errorResponse('This email address has already been verified.', httpStatus.FORBIDDEN);
+        }
+
+        const { emailVerifyToken, emailVerifyTokenExpires, plainToken } = await generateVerificationToken();
+        userDetails.emails = userDetails.emails.map(email =>
+            email.isPrimaryEmail ? {
+                ...email,
+                emailVerifyToken,
+                emailVerifyTokenExpires
+            } : email
+        );
 
         await userDetails.save();
+
+        logger.debug(`Verification token updated for user: ${userId}`);
 
         const subject = 'Confirm Your Email Address';
         let emailVerificationLink;
@@ -261,7 +316,7 @@ const resendVerification = async (userId, hostData) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            userDetails.email,
+            primaryEmail.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -272,37 +327,41 @@ const resendVerification = async (userId, hostData) => {
             )
         );
 
+        logger.info(`Verification email resent to ${primaryEmail.email}`);
+
         return sendResponse(
             {},
             'Verification email resent successfully.',
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to resend verification email: ${error}`);
+        logger.error(`Failed to resend verification email for user ${userId}: ${error}`);
 
-        return errorResponse(
-            error.message || 'Failed to resend verification email.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
+        return errorResponse(error.message || 'Failed to resend verification email.', httpStatus.INTERNAL_SERVER_ERROR);
     }
 };
 
 const requestNewPassword = async (email, hostData) => {
     try {
-        const userDetails = await UsersModel.findOne({
-            email,
+        // TODO: restrict too many password reset request
+        // Find user by email in the nested 'emails' array and ensure the email is verified
+        const user = await UsersModel.findOne({
+            'emails.email': email.toLowerCase(), // Search in lowercase to match the stored format
+            'emails.isEmailVerified': true
         }).lean();
-        if (!userDetails) {
+
+        if (!user) {
             return errorResponse(
-                'No account found with that email address. Please check your email address or register for a new account.',
+                'No account found with that email address, or the email address has not been verified. Please check your email address or register for a new account.',
                 httpStatus.NOT_FOUND
             );
         }
 
-        if (!userDetails.isEmailVerified) {
+        const primaryEmail = user.emails.find(e => e.isPrimaryEmail);
+        if (!primaryEmail) {
             return errorResponse(
-                'Your email address has not been verified yet. Please verify your email to proceed with password reset.',
-                httpStatus.UNAUTHORIZED
+                'No primary email found. Please contact support.',
+                httpStatus.BAD_REQUEST
             );
         }
 
@@ -311,7 +370,7 @@ const requestNewPassword = async (email, hostData) => {
 
         // Update user with the reset password verification token and its expiry
         await UsersModel.updateOne(
-            { _id: userDetails._id },
+            { _id: user._id, 'emails.email': primaryEmail.email },
             {
                 resetPasswordVerifyToken: emailVerifyToken,
                 resetPasswordVerifyTokenExpires: emailVerifyTokenExpires,
@@ -328,7 +387,7 @@ const requestNewPassword = async (email, hostData) => {
         }
 
         const emailData = {
-            userName: userDetails.name,
+            userName: user.name.first,
             resetPasswordVerificationLink: emailVerificationLink,
         };
         const {
@@ -339,8 +398,9 @@ const requestNewPassword = async (email, hostData) => {
             footerContent,
         } = prepareEmailContent(subject, emailData);
 
+        // Send the reset email to the primary email address
         await EmailService.sendEmail(
-            userDetails.email,
+            primaryEmail.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -370,21 +430,27 @@ const resetPassword = async (hostData, token, userData) => {
     try {
         // Hash the plain token to compare with the stored hash
         const hashedToken = await generateHashedToken(token);
-        const userDetails = await UsersModel.findOne({
+        const user = await UsersModel.findOne({
             resetPasswordVerifyToken: hashedToken,
             resetPasswordVerifyTokenExpires: { $gt: Date.now() }, // Check if the token hasn't expired
         });
-        if (!userDetails) {
+        if (!user) {
             return errorResponse(
-                'Your password reset link is invalid or has expired. Please requestBooks a new password reset link.',
+                'Your password reset link is invalid or has expired. Please request a new password reset link.',
                 httpStatus.FORBIDDEN
             );
         }
 
-        const isPasswordValid = await comparePassword(
-            userData.oldPassword,
-            userDetails.password
-        );
+        // Find the primary email to send the reset confirmation
+        const primaryEmail = user.emails.find(email => email.isPrimaryEmail);
+        if (!primaryEmail) {
+            return errorResponse(
+                'No primary email found. Please contact support.',
+                httpStatus.BAD_REQUEST
+            );
+        }
+
+        const isPasswordValid = await comparePassword(userData.oldPassword, user.passwordHash);
         if (!isPasswordValid) {
             return errorResponse(
                 'Wrong old password. Please try again.',
@@ -399,9 +465,7 @@ const resetPassword = async (hostData, token, userData) => {
             );
         }
 
-        const passwordValidationResult = await validatePassword(
-            userData.newPassword
-        );
+        const passwordValidationResult = await validatePassword(userData.newPassword);
         if (passwordValidationResult !== 'Valid') {
             return sendResponse(
                 {},
@@ -410,16 +474,16 @@ const resetPassword = async (hostData, token, userData) => {
             );
         }
 
-        // Update the user with new password and expiry
-        userDetails.password = await createHashedPassword(userData.newPassword);
-        userDetails.resetPasswordVerifyToken = undefined;
-        userDetails.resetPasswordVerifyTokenExpires = undefined;
+        // Update the user with new password and clear the reset token
+        user.passwordHash = await createHashedPassword(userData.newPassword);
+        user.resetPasswordVerifyToken = undefined;
+        user.resetPasswordVerifyTokenExpires = undefined;
 
-        await userDetails.save();
+        await user.save();
 
         const subject = 'Reset Password Successful';
         const emailData = {
-            userName: userDetails.name,
+            userName: user.name.first,
         };
         const {
             pageTitle,
@@ -429,8 +493,9 @@ const resetPassword = async (hostData, token, userData) => {
             footerContent,
         } = prepareEmailContent(subject, emailData);
 
+        // Send the reset confirmation to the primary email
         await EmailService.sendEmail(
-            userDetails.email,
+            primaryEmail.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -454,43 +519,39 @@ const resetPassword = async (hostData, token, userData) => {
 
 const login = async (userData, userAgent, device) => {
     try {
-        const userDetails = await UsersModel.findOne({
-            email: userData.email,
+        const user = await UsersModel.findOne({
+            'emails.email': userData.email
         }).lean();
-        if (!userDetails) {
+
+        if (!user) {
             return errorResponse(
                 'No account found with that email address. Please check your email address or register for a new account.',
                 httpStatus.NOT_FOUND
             );
         }
 
-        if (!userDetails.isEmailVerified) {
+        // Find the primary email that is verified
+        const primaryEmail = user.emails.find(email => email.isPrimaryEmail && email.isEmailVerified);
+        if (!primaryEmail) {
             return errorResponse(
                 'Please verify your email address to proceed with logging in.',
                 httpStatus.UNAUTHORIZED
             );
         }
 
-        if (userDetails.mustChangePassword) {
+        if (user.mustChangePassword) {
             return errorResponse(
                 'Please change your password first.',
                 httpStatus.FORBIDDEN
             );
         }
 
-        const isPasswordValid = await comparePassword(
-            userData.password,
-            userDetails.password
-        );
+        const isPasswordValid = await comparePassword(userData.password, user.passwordHash);
         if (!isPasswordValid) {
-            userDetails.login.failed.device.push({
-                details: userAgent, // Assuming userAgent is a string
-                dateTime: new Date(),
-            });
-
-            await UsersModel.findByIdAndUpdate(userDetails._id, {
-                $set: { 'login.failed': userDetails.login.failed },
-            }).lean();
+            await UsersModel.updateOne(
+                { _id: user._id },
+                { $push: { 'login.failed.device': { details: userAgent, dateTime: new Date() } } }
+            );
 
             return errorResponse(
                 'Incorrect password. Please try again or use the forgot password option to reset it.',
@@ -498,30 +559,16 @@ const login = async (userData, userAgent, device) => {
             );
         }
 
-        // if (userDetails.login.successful.device.length >= configuration.auth.activeSessions) {
-        //     return {
-        //         timeStamp: new Date(),
-        //         success: false,
-        //         data: {},
-        //         message: `Too many devices used. Can not login more than ${configuration.auth.activeSessions} device at a time. Please log out from an existing device.`,
-        //         status: httpStatus.UNAUTHORIZED,
-        //     };
-        // }
+        const { token } = await createAuthenticationToken(user, device);
 
-        const { token } = await createAuthenticationToken(userDetails, device);
-
-        userDetails.login.successful.device.push({
-            details: userAgent, // Assuming userAgent is a string
-            dateTime: new Date(),
-        });
-
-        await UsersModel.findByIdAndUpdate(userDetails._id, {
-            $set: { 'login.successful': userDetails.login.successful },
-        }).lean();
+        await UsersModel.updateOne(
+            { _id: user._id },
+            { $push: { 'login.successful.device': { details: userAgent, dateTime: new Date() } } }
+        );
 
         const subject = 'Login Successfully';
         const emailData = {
-            userName: userDetails.name,
+            userName: user.name.first,
         };
         const {
             pageTitle,
@@ -532,7 +579,7 @@ const login = async (userData, userAgent, device) => {
         } = prepareEmailContent(subject, emailData);
 
         await EmailService.sendEmail(
-            userDetails.email,
+            primaryEmail.email,
             subject,
             prepareEmail(
                 pageTitle,
@@ -543,17 +590,8 @@ const login = async (userData, userAgent, device) => {
             )
         );
 
-        // Remove sensitive data
-        delete userDetails.password;
-        delete userDetails.emailVerifyToken;
-        delete userDetails.emailVerifyTokenExpires;
-        delete userDetails.phoneVerifyToken;
-        delete userDetails.phoneVerifyTokenExpires;
-        delete userDetails.resetPasswordVerifyToken;
-        delete userDetails.resetPasswordVerifyTokenExpires;
-
         return sendResponse(
-            { ...userDetails, token },
+            { ...user, token },
             'User logged in successfully.',
             httpStatus.OK
         );
