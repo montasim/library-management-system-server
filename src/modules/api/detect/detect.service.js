@@ -1,6 +1,6 @@
 import expressUseragent from 'express-useragent';
 import requestIp from 'request-ip';
-import geoip from 'geoip-lite';
+// import geoip from 'geoip-lite';
 
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import sendResponse from '../../../utilities/sendResponse.js';
@@ -16,7 +16,7 @@ const detectService = async (req) => {
         const referrer = req.headers['referer'] || req.headers['referrer'];
         const cookies = req.headers['cookie']; // Requires parsing if needed
 
-        const geo = geoip.lookup(ip); // Optional: geolocation based on IP
+        // const geo = geoip.lookup(ip); // Optional: geolocation based on IP
 
         const detectedData = {
             language: languageHeader ? languageHeader.split(',')[0] : undefined,
@@ -34,7 +34,7 @@ const detectService = async (req) => {
             timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             referrer,
             cookies, // Parsing may be needed
-            geo, // Geolocation data
+            geo: null, // Geolocation data
         };
 
         const queryParams = req.query;
