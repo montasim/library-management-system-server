@@ -224,7 +224,10 @@ const configuration = {
                 user: getEnvVar(envVars.SMTP_USERNAME, ''),
                 pass: getEnvVar(envVars.SMTP_PASSWORD, ''),
             },
-            maxConnectionAttempts: getInt(envVars.SMTP_MAX_CONNECTION_RETRY_ATTEMPTS, 587),
+            maxConnectionAttempts: getInt(
+                envVars.SMTP_MAX_CONNECTION_RETRY_ATTEMPTS,
+                587
+            ),
         },
         from: getEnvVar(envVars.EMAIL_FROM, 'no-reply@example.com'),
     },

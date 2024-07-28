@@ -41,7 +41,7 @@ const userSchemaBase = Joi.object({
         .valid(constants.confirmationText.deleteUserAccount)
         .messages({
             'string.empty': 'Confirmation text cannot be empty.',
-            'any.only': `Confirmation text must be exactly: '${constants.confirmationText.deleteUserAccount}'`
+            'any.only': `Confirmation text must be exactly: '${constants.confirmationText.deleteUserAccount}'`,
         }),
 }).strict();
 
@@ -51,11 +51,9 @@ const updateUser = userSchemaBase
     )
     .min(1);
 
-const deleteUser = userSchemaBase
-    .fork(
-        ['confirmationText'],
-        (field) => field.required()
-    );
+const deleteUser = userSchemaBase.fork(['confirmationText'], (field) =>
+    field.required()
+);
 
 const usersSchema = {
     updateUser,

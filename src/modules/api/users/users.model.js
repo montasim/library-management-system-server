@@ -113,8 +113,7 @@ const mobileSchema = new Schema({
     mobileVerifyToken: {
         type: String,
         trim: true,
-        description:
-            'Token used for mobile number verification process.',
+        description: 'Token used for mobile number verification process.',
     },
 
     // Expiry date for the mobile verification token
