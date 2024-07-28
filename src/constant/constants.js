@@ -29,9 +29,14 @@ const urls = {
     GITHUB: 'https://github.com',
 };
 
+const confirmationText = {
+    deleteUserAccount: 'Delete my account',
+};
+
 const constants = {
     lengths,
     urls,
+    confirmationText,
 };
 
 export default constants;

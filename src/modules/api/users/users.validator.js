@@ -1,15 +1,22 @@
 import validateWithSchema from '../../../shared/validateWithSchema.js';
 import usersSchema from './users.schema.js';
 
-const update = validateWithSchema([
+const updateUser = validateWithSchema([
     {
-        schema: usersSchema.update,
+        schema: usersSchema.updateUser,
+        property: 'body',
+    },
+]);
+const deleteUser = validateWithSchema([
+    {
+        schema: usersSchema.deleteUser,
         property: 'body',
     },
 ]);
 
 const authValidator = {
-    update,
+    updateUser,
+    deleteUser,
 };
 
 export default authValidator;

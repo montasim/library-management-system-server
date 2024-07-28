@@ -15,10 +15,13 @@ router
     .get(usersController.getUser)
     .put(
         uploadMiddleware.single('image'),
-        usersValidator.update,
+        usersValidator.updateUser,
         usersController.updateUser
     )
-    .delete(usersController.deleteUser)
+    .delete(
+        usersValidator.deleteUser,
+        usersController.deleteUser
+    )
     .all(methodNotSupported);
 
 router.use('/history', usersBooksHistoryRoutes);

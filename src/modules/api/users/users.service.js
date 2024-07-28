@@ -9,6 +9,7 @@ import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import userConstants from './users.constants.js';
 import logger from '../../../utilities/logger.js';
+import constants from '../../../constant/constants.js';
 
 const getUser = async (userId) => {
     try {
@@ -46,14 +47,13 @@ const getUser = async (userId) => {
 
 const updateUser = async (requester, updateData, userImage) => {
     try {
-        const existingUser = await UsersModel.findById(requester).lean();
+        // Fetch the existing user; no need to lean() if updates are to be applied.
+        const existingUser = await UsersModel.findById(requester);
         if (!existingUser) {
-            return errorResponse(
-                'Please login first.',
-                httpStatus.UNAUTHORIZED
-            );
+            return errorResponse('Unauthorized. Please login first.', httpStatus.UNAUTHORIZED);
         }
 
+        // Validate provided update data
         if (isEmptyObject(updateData)) {
             return errorResponse(
                 'Please provide update data.',
@@ -61,11 +61,14 @@ const updateUser = async (requester, updateData, userImage) => {
             );
         }
 
-        updateData.updatedBy = requester;
+        // // Optionally, check if the updates are allowed based on the schema
+        // const updatesAllowed = ['name', 'bio', 'username']; // Example fields that can be updated
+        // const updates = Object.keys(updateData).filter(key => updatesAllowed.includes(key));
+        // if (updates.length === 0) {
+        //     return errorResponse('Invalid update fields.', httpStatus.BAD_REQUEST);
+        // }
 
-        let userImageData = {};
-
-        // Handle file update
+        // Handle image upload and update if provided
         if (userImage) {
             const fileValidationResults = validateFile(
                 userImage,
@@ -73,69 +76,47 @@ const updateUser = async (requester, updateData, userImage) => {
                 [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
                 [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
             );
+
             if (!fileValidationResults.isValid) {
-                return errorResponse(
-                    fileValidationResults.message,
-                    httpStatus.BAD_REQUEST
-                );
+                return errorResponse(fileValidationResults.message, httpStatus.BAD_REQUEST);
             }
 
-            // Delete the old file from Google Drive if it exists
+            // Remove the old image file if it exists
             const oldFileId = existingUser.image?.fileId;
             if (oldFileId) {
                 await GoogleDriveFileOperations.deleteFile(oldFileId);
             }
 
-            userImageData =
-                await GoogleDriveFileOperations.uploadFile(userImage);
-
-            if (!userImageData || userImageData instanceof Error) {
-                return errorResponse(
-                    'Failed to save image.',
-                    httpStatus.INTERNAL_SERVER_ERROR
-                );
+            // Upload new image file
+            const newImageData = await GoogleDriveFileOperations.uploadFile(userImage);
+            if (!newImageData || newImageData instanceof Error) {
+                return errorResponse('Failed to update image.', httpStatus.INTERNAL_SERVER_ERROR);
             }
 
-            userImageData = {
-                fileId: userImageData.fileId,
-                shareableLink: userImageData.shareableLink,
-                downloadLink: userImageData.downloadLink,
+            // Update image data in update object
+            updateData.image = {
+                fileId: newImageData.fileId,
+                shareableLink: newImageData.shareableLink,
+                downloadLink: newImageData.downloadLink,
             };
-
-            if (userImageData) {
-                updateData.image = userImageData;
-            }
         }
 
-        const updatedUser = await UsersModel.findByIdAndUpdate(
-            requester,
-            updateData,
-            {
-                new: true,
-            }
-        ).lean();
+        // Apply updates to the user document
+        updateData.updatedBy = requester;  // Track who made the update
+        const updatedUser = await UsersModel.findByIdAndUpdate(requester, { $set: updateData }, { new: true, runValidators: true }).lean();
 
-        // Remove sensitive data
-        delete updatedUser.password;
-        delete updatedUser.emailVerifyToken;
-        delete updatedUser.emailVerifyTokenExpires;
-        delete updatedUser.phoneVerifyToken;
-        delete updatedUser.phoneVerifyTokenExpires;
+        // Remove sensitive data before sending to client
+        delete updatedUser.passwordHash;
         delete updatedUser.resetPasswordVerifyToken;
         delete updatedUser.resetPasswordVerifyTokenExpires;
+        delete updatedUser.emailVerifyToken;
+        delete updatedUser.emailVerifyTokenExpires;
 
-        return sendResponse(
-            updatedUser,
-            'User updated successfully.',
-            httpStatus.OK
-        );
+        return sendResponse(updatedUser, 'User updated successfully.', httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to update user data: ${error}`);
+        logger.error(`Failed to update user: ${error}`);
 
-        return errorResponse(
-            error.message || 'Failed to update user data.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
+        return errorResponse('Failed to update user.', httpStatus.INTERNAL_SERVER_ERROR);
     }
 };
 
@@ -146,6 +127,13 @@ const deleteUser = async (userId, confirmationData) => {
             return errorResponse(
                 'User not found.',
                 httpStatus.NOT_FOUND
+            );
+        }
+
+        if (confirmationData.confirmationText !== constants.confirmationText.deleteUserAccount) {
+            return errorResponse(
+                'Confirmation text did not matched.',
+                httpStatus.BAD_REQUEST
             );
         }
 

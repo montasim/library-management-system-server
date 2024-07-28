@@ -3,6 +3,7 @@ import Joi from 'joi';
 import usersConstants from '../users/users.constants.js';
 import validationService from '../../../service/validation.service.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
+import constants from '../../../constant/constants.js';
 
 // Define base schema for subjects
 const userSchemaBase = Joi.object({
@@ -35,16 +36,30 @@ const userSchemaBase = Joi.object({
             usersConstants.lengths.DESIGNATION_MAX
         )
         .messages(customValidationMessage),
+    confirmationText: Joi.string()
+        .trim()
+        .valid(constants.confirmationText.deleteUserAccount)
+        .messages({
+            'string.empty': 'Confirmation text cannot be empty.',
+            'any.only': `Confirmation text must be exactly: '${constants.confirmationText.deleteUserAccount}'`
+        }),
 }).strict();
 
-const update = userSchemaBase
+const updateUser = userSchemaBase
     .fork(['name', 'mobile', 'address', 'department', 'designation'], (field) =>
         field.optional()
     )
     .min(1);
 
+const deleteUser = userSchemaBase
+    .fork(
+        ['confirmationText'],
+        (field) => field.required()
+    );
+
 const usersSchema = {
-    update,
+    updateUser,
+    deleteUser,
 };
 
 export default usersSchema;
