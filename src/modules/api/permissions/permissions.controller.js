@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import permissionsService from './permissions.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
 
-const createPermission = asyncErrorHandler(async (req, res) => {
+const createPermission = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const newPermissionData = await permissionsService.createPermission(
         requester,
@@ -14,7 +14,7 @@ const createPermission = asyncErrorHandler(async (req, res) => {
     res.status(newPermissionData.status).send(newPermissionData);
 });
 
-const getPermissions = asyncErrorHandler(async (req, res) => {
+const getPermissions = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const permissionsData = await permissionsService.getPermissions(
         requester,
@@ -26,7 +26,7 @@ const getPermissions = asyncErrorHandler(async (req, res) => {
     res.status(permissionsData.status).send(permissionsData);
 });
 
-const getPermission = asyncErrorHandler(async (req, res) => {
+const getPermission = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const permissionData = await permissionsService.getPermission(
         requester,
@@ -38,7 +38,7 @@ const getPermission = asyncErrorHandler(async (req, res) => {
     res.status(permissionData.status).send(permissionData);
 });
 
-const updatePermission = asyncErrorHandler(async (req, res) => {
+const updatePermission = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const updatedPermissionData = await permissionsService.updatePermission(
         requester,
@@ -51,7 +51,7 @@ const updatePermission = asyncErrorHandler(async (req, res) => {
     res.status(updatedPermissionData.status).send(updatedPermissionData);
 });
 
-const deletePermissions = asyncErrorHandler(async (req, res) => {
+const deletePermissions = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const permissionIds = req.query.ids.split(',');
     const deletedPermissionsData = await permissionsService.deletePermissions(
@@ -64,7 +64,7 @@ const deletePermissions = asyncErrorHandler(async (req, res) => {
     res.status(deletedPermissionsData.status).send(deletedPermissionsData);
 });
 
-const deletePermission = asyncErrorHandler(async (req, res) => {
+const deletePermission = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const deletedPermissionData = await permissionsService.deletePermission(
         requester,

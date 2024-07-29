@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../../service/asyncErrorHandler.service.js';
 import getRequesterId from '../../../../utilities/getRequesterId.js';
 import recentlyVisitedBooksService from './recentlyVisitedBooks.service.js';
 
-const add = asyncErrorHandler(async (req, res) => {
+const add = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const booksHistoryData = await recentlyVisitedBooksService.add(
         requester,
@@ -14,7 +14,7 @@ const add = asyncErrorHandler(async (req, res) => {
     res.status(booksHistoryData.status).send(booksHistoryData);
 });
 
-const get = asyncErrorHandler(async (req, res) => {
+const get = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const booksHistoryData = await recentlyVisitedBooksService.get(requester);
 

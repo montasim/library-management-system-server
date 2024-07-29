@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../../service/asyncErrorHandler.service.js';
 import favouriteBooksService from './favouriteBooks.service.js';
 import getRequesterId from '../../../../utilities/getRequesterId.js';
 
-const createFavouriteBook = asyncErrorHandler(async (req, res) => {
+const createFavouriteBook = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const newFavouriteBookData =
         await favouriteBooksService.createFavouriteBook(
@@ -15,7 +15,7 @@ const createFavouriteBook = asyncErrorHandler(async (req, res) => {
     res.status(newFavouriteBookData.status).send(newFavouriteBookData);
 });
 
-const getFavouriteBooks = asyncErrorHandler(async (req, res) => {
+const getFavouriteBooks = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const favouriteBooksData =
         await favouriteBooksService.getFavouriteBooks(requester);
@@ -25,7 +25,7 @@ const getFavouriteBooks = asyncErrorHandler(async (req, res) => {
     res.status(favouriteBooksData.status).send(favouriteBooksData);
 });
 
-const deleteFavouriteBook = asyncErrorHandler(async (req, res) => {
+const deleteFavouriteBook = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const deletedFavouriteBookData =
         await favouriteBooksService.deleteFavouriteBook(

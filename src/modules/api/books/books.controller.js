@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import booksService from './books.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
 
-const createBook = asyncErrorHandler(async (req, res) => {
+const createBook = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const bookImage = req.file;
     const newBookData = await booksService.createBook(
@@ -16,7 +16,7 @@ const createBook = asyncErrorHandler(async (req, res) => {
     res.status(newBookData.status).send(newBookData);
 });
 
-const getBooks = asyncErrorHandler(async (req, res) => {
+const getBooks = asyncErrorHandlerService(async (req, res) => {
     const booksData = await booksService.getBooks(req.query);
 
     booksData.route = req.originalUrl;
@@ -24,7 +24,7 @@ const getBooks = asyncErrorHandler(async (req, res) => {
     res.status(booksData.status).send(booksData);
 });
 
-const getBook = asyncErrorHandler(async (req, res) => {
+const getBook = asyncErrorHandlerService(async (req, res) => {
     const bookData = await booksService.getBook(req.params.bookId);
 
     bookData.route = req.originalUrl;
@@ -32,7 +32,7 @@ const getBook = asyncErrorHandler(async (req, res) => {
     res.status(bookData.status).send(bookData);
 });
 
-const updateBook = asyncErrorHandler(async (req, res) => {
+const updateBook = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const bookImage = req.file;
     const updatedBookData = await booksService.updateBook(
@@ -47,7 +47,7 @@ const updateBook = asyncErrorHandler(async (req, res) => {
     res.status(updatedBookData.status).send(updatedBookData);
 });
 
-const deleteBooks = asyncErrorHandler(async (req, res) => {
+const deleteBooks = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const bookIds = req.query.ids.split(',');
     const deletedBooksData = await booksService.deleteBooks(requester, bookIds);
@@ -57,7 +57,7 @@ const deleteBooks = asyncErrorHandler(async (req, res) => {
     res.status(deletedBooksData.status).send(deletedBooksData);
 });
 
-const deleteBook = asyncErrorHandler(async (req, res) => {
+const deleteBook = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const deletedBookData = await booksService.deleteBook(
         requester,

@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import publicationsService from './publications.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
 
-const createPublication = asyncErrorHandler(async (req, res) => {
+const createPublication = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const newPublicationData = await publicationsService.createPublication(
         requester,
@@ -14,7 +14,7 @@ const createPublication = asyncErrorHandler(async (req, res) => {
     res.status(newPublicationData.status).send(newPublicationData);
 });
 
-const getPublications = asyncErrorHandler(async (req, res) => {
+const getPublications = asyncErrorHandlerService(async (req, res) => {
     const publicationsData = await publicationsService.getPublications(
         req.query
     );
@@ -24,7 +24,7 @@ const getPublications = asyncErrorHandler(async (req, res) => {
     res.status(publicationsData.status).send(publicationsData);
 });
 
-const getPublication = asyncErrorHandler(async (req, res) => {
+const getPublication = asyncErrorHandlerService(async (req, res) => {
     const publicationData = await publicationsService.getPublication(
         req.params.publicationId
     );
@@ -34,7 +34,7 @@ const getPublication = asyncErrorHandler(async (req, res) => {
     res.status(publicationData.status).send(publicationData);
 });
 
-const updatePublication = asyncErrorHandler(async (req, res) => {
+const updatePublication = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const updatedPublicationData = await publicationsService.updatePublication(
         requester,
@@ -47,7 +47,7 @@ const updatePublication = asyncErrorHandler(async (req, res) => {
     res.status(updatedPublicationData.status).send(updatedPublicationData);
 });
 
-const deletePublications = asyncErrorHandler(async (req, res) => {
+const deletePublications = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const publicationIds = req.query.ids.split(',');
     const deletedPublicationsData =
@@ -58,7 +58,7 @@ const deletePublications = asyncErrorHandler(async (req, res) => {
     res.status(deletedPublicationsData.status).send(deletedPublicationsData);
 });
 
-const deletePublication = asyncErrorHandler(async (req, res) => {
+const deletePublication = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const deletedPublicationData = await publicationsService.deletePublication(
         requester,

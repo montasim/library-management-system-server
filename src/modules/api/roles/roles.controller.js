@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import rolesService from './roles.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
 
-const createRole = asyncErrorHandler(async (req, res) => {
+const createRole = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const newRoleData = await rolesService.createRole(requester, req.body);
 
@@ -11,7 +11,7 @@ const createRole = asyncErrorHandler(async (req, res) => {
     res.status(newRoleData.status).send(newRoleData);
 });
 
-const getRoles = asyncErrorHandler(async (req, res) => {
+const getRoles = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const rolesData = await rolesService.getRoles(requester, req.query);
 
@@ -20,7 +20,7 @@ const getRoles = asyncErrorHandler(async (req, res) => {
     res.status(rolesData.status).send(rolesData);
 });
 
-const getRole = asyncErrorHandler(async (req, res) => {
+const getRole = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const roleData = await rolesService.getRole(requester, req.params.roleId);
 
@@ -29,7 +29,7 @@ const getRole = asyncErrorHandler(async (req, res) => {
     res.status(roleData.status).send(roleData);
 });
 
-const updateRole = asyncErrorHandler(async (req, res) => {
+const updateRole = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const updatedRoleData = await rolesService.updateRole(
         requester,
@@ -42,7 +42,7 @@ const updateRole = asyncErrorHandler(async (req, res) => {
     res.status(updatedRoleData.status).send(updatedRoleData);
 });
 
-const deleteRoles = asyncErrorHandler(async (req, res) => {
+const deleteRoles = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const roleIds = req.query.ids.split(',');
     const deletedRolesData = await rolesService.deleteRoles(requester, roleIds);
@@ -52,7 +52,7 @@ const deleteRoles = asyncErrorHandler(async (req, res) => {
     res.status(deletedRolesData.status).send(deletedRolesData);
 });
 
-const deleteRole = asyncErrorHandler(async (req, res) => {
+const deleteRole = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const deletedRoleData = await rolesService.deleteRole(
         requester,

@@ -1,7 +1,7 @@
-import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../../service/asyncErrorHandler.service.js';
 import trendingBooksService from './trendingBooks.service.js';
 
-const getTrendingBooks = asyncErrorHandler(async (req, res) => {
+const getTrendingBooks = asyncErrorHandlerService(async (req, res) => {
     const trendingBooksData = await trendingBooksService.getTrendingBooks();
 
     trendingBooksData.route = req.originalUrl;

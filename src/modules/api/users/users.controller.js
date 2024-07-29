@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import usersService from './users.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
 
-const getUser = asyncErrorHandler(async (req, res) => {
+const getUser = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const userData = await usersService.getUser(requester);
 
@@ -11,7 +11,7 @@ const getUser = asyncErrorHandler(async (req, res) => {
     res.status(userData.status).send(userData);
 });
 
-const updateUser = asyncErrorHandler(async (req, res) => {
+const updateUser = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const userImage = req.file;
     const updatedUserData = await usersService.updateUser(
@@ -25,7 +25,7 @@ const updateUser = asyncErrorHandler(async (req, res) => {
     res.status(updatedUserData.status).send(updatedUserData);
 });
 
-const deleteUser = asyncErrorHandler(async (req, res) => {
+const deleteUser = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const deletedUserData = await usersService.deleteUser(
         requester,

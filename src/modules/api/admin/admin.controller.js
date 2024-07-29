@@ -1,9 +1,9 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
 import adminService from './admin.service.js';
 import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
 
-const createAdmin = asyncErrorHandler(async (req, res) => {
+const createAdmin = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const hostData = {
         hostname: req.hostname,
@@ -20,7 +20,7 @@ const createAdmin = asyncErrorHandler(async (req, res) => {
     res.status(newUserData.status).send(newUserData);
 });
 
-const verify = asyncErrorHandler(async (req, res) => {
+const verify = asyncErrorHandlerService(async (req, res) => {
     const hostData = {
         hostname: req.hostname,
         port: req.port,
@@ -32,7 +32,7 @@ const verify = asyncErrorHandler(async (req, res) => {
     res.status(verifyData.status).send(verifyData);
 });
 
-const resendVerification = asyncErrorHandler(async (req, res) => {
+const resendVerification = asyncErrorHandlerService(async (req, res) => {
     const hostData = {
         hostname: req.hostname,
         port: req.port,
@@ -47,7 +47,7 @@ const resendVerification = asyncErrorHandler(async (req, res) => {
     res.status(verificationData.status).send(verificationData);
 });
 
-const requestNewPassword = asyncErrorHandler(async (req, res) => {
+const requestNewPassword = asyncErrorHandlerService(async (req, res) => {
     const hostData = {
         hostname: req.hostname,
         port: req.port,
@@ -62,7 +62,7 @@ const requestNewPassword = asyncErrorHandler(async (req, res) => {
     res.status(requestNewPasswordData.status).send(requestNewPasswordData);
 });
 
-const resetPassword = asyncErrorHandler(async (req, res) => {
+const resetPassword = asyncErrorHandlerService(async (req, res) => {
     const hostData = {
         hostname: req.hostname,
         port: req.port,
@@ -83,7 +83,7 @@ const resetPassword = asyncErrorHandler(async (req, res) => {
     res.status(verificationData.status).send(verificationData);
 });
 
-const login = asyncErrorHandler(async (req, res) => {
+const login = asyncErrorHandlerService(async (req, res) => {
     const { headers } = req;
     const userAgentString = headers['user-agent'];
     const device = await getRequestedDeviceDetails(req);
@@ -98,7 +98,7 @@ const login = asyncErrorHandler(async (req, res) => {
     res.status(loginData.status).send(loginData);
 });
 
-const logout = asyncErrorHandler(async (req, res) => {
+const logout = asyncErrorHandlerService(async (req, res) => {
     const logoutData = await adminService.logout(req);
 
     logoutData.route = req.originalUrl;

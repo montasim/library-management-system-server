@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import pronounsService from './pronouns.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
 
-const createPronouns = asyncErrorHandler(async (req, res) => {
+const createPronouns = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const newPronounsData = await pronounsService.createPronouns(
         requester,
@@ -14,7 +14,7 @@ const createPronouns = asyncErrorHandler(async (req, res) => {
     res.status(newPronounsData.status).send(newPronounsData);
 });
 
-const getPronounses = asyncErrorHandler(async (req, res) => {
+const getPronounses = asyncErrorHandlerService(async (req, res) => {
     const pronounsData = await pronounsService.getPronounses(
         req.query // This should correctly pass the query parameters
     );
@@ -24,7 +24,7 @@ const getPronounses = asyncErrorHandler(async (req, res) => {
     res.status(pronounsData.status).send(pronounsData);
 });
 
-const getPronouns = asyncErrorHandler(async (req, res) => {
+const getPronouns = asyncErrorHandlerService(async (req, res) => {
     const pronounsData = await pronounsService.getPronouns(
         req.params.pronounsId
     );
@@ -34,7 +34,7 @@ const getPronouns = asyncErrorHandler(async (req, res) => {
     res.status(pronounsData.status).send(pronounsData);
 });
 
-const updatePronouns = asyncErrorHandler(async (req, res) => {
+const updatePronouns = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const updatedPronounsData = await pronounsService.updatePronouns(
         requester,
@@ -47,7 +47,7 @@ const updatePronouns = asyncErrorHandler(async (req, res) => {
     res.status(updatedPronounsData.status).send(updatedPronounsData);
 });
 
-const deletePronounses = asyncErrorHandler(async (req, res) => {
+const deletePronounses = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const pronounsIds = req.query.ids.split(',');
     const deletedPronounsData = await pronounsService.deletePronounses(
@@ -60,7 +60,7 @@ const deletePronounses = asyncErrorHandler(async (req, res) => {
     res.status(deletedPronounsData.status).send(deletedPronounsData);
 });
 
-const deletePronouns = asyncErrorHandler(async (req, res) => {
+const deletePronouns = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const deletedPronounsData = await pronounsService.deletePronouns(
         requester,

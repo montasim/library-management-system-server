@@ -1,7 +1,7 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import detectService from './detect.service.js';
 
-const detectController = asyncErrorHandler(async (req, res) => {
+const detectController = asyncErrorHandlerService(async (req, res) => {
     const browserData = await detectService(req);
 
     browserData.route = req.originalUrl;

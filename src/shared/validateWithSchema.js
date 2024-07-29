@@ -1,9 +1,9 @@
-import asyncErrorHandler from '../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../service/asyncErrorHandler.service.js';
 import customValidationMessage from './customValidationMessage.js';
 import httpStatus from '../constant/httpStatus.constants.js';
 
 const validateWithSchema = (schemas, options = {}) => {
-    return asyncErrorHandler(async (req, res, next) => {
+    return asyncErrorHandlerService(async (req, res, next) => {
         const defaultOptions = {
             abortEarly: false,
             convert: true,

@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../../service/asyncErrorHandler.service.js';
 import lendBooksService from './lendBooks.service.js';
 import getRequesterId from '../../../../utilities/getRequesterId.js';
 
-const createLendBook = asyncErrorHandler(async (req, res) => {
+const createLendBook = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const newLendBookData = await lendBooksService.createLendBook(
         requester,
@@ -14,7 +14,7 @@ const createLendBook = asyncErrorHandler(async (req, res) => {
     res.status(newLendBookData.status).send(newLendBookData);
 });
 
-const getLendBooks = asyncErrorHandler(async (req, res) => {
+const getLendBooks = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const lendBooksData = await lendBooksService.getLendBooks(requester);
 

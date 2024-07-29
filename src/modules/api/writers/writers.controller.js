@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import writersService from './writers.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
 
-const createWriter = asyncErrorHandler(async (req, res) => {
+const createWriter = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const writerImage = req.file;
     const newWriterData = await writersService.createWriter(
@@ -16,7 +16,7 @@ const createWriter = asyncErrorHandler(async (req, res) => {
     res.status(newWriterData.status).send(newWriterData);
 });
 
-const getWriters = asyncErrorHandler(async (req, res) => {
+const getWriters = asyncErrorHandlerService(async (req, res) => {
     const writersData = await writersService.getWriters(req.query);
 
     writersData.route = req.originalUrl;
@@ -24,7 +24,7 @@ const getWriters = asyncErrorHandler(async (req, res) => {
     res.status(writersData.status).send(writersData);
 });
 
-const getWriter = asyncErrorHandler(async (req, res) => {
+const getWriter = asyncErrorHandlerService(async (req, res) => {
     const writerData = await writersService.getWriter(req.params.writerId);
 
     writerData.route = req.originalUrl;
@@ -32,7 +32,7 @@ const getWriter = asyncErrorHandler(async (req, res) => {
     res.status(writerData.status).send(writerData);
 });
 
-const updateWriter = asyncErrorHandler(async (req, res) => {
+const updateWriter = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const writerImage = req.file;
     const updatedWriterData = await writersService.updateWriter(
@@ -47,7 +47,7 @@ const updateWriter = asyncErrorHandler(async (req, res) => {
     res.status(updatedWriterData.status).send(updatedWriterData);
 });
 
-const deleteWriters = asyncErrorHandler(async (req, res) => {
+const deleteWriters = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const writerIds = req.query.ids.split(',');
     const deletedWritersData = await writersService.deleteWriters(
@@ -60,7 +60,7 @@ const deleteWriters = asyncErrorHandler(async (req, res) => {
     res.status(deletedWritersData.status).send(deletedWritersData);
 });
 
-const deleteWriter = asyncErrorHandler(async (req, res) => {
+const deleteWriter = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const deletedWriterData = await writersService.deleteWriter(
         requester,

@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../../service/asyncErrorHandler.service.js';
 import getRequesterId from '../../../../utilities/getRequesterId.js';
 import returnBooksService from './returnBooks.service.js';
 
-const returnBook = asyncErrorHandler(async (req, res) => {
+const returnBook = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const returnBooksData = await returnBooksService.returnBook(
         requester,

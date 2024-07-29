@@ -1,4 +1,4 @@
-const asyncErrorHandlerService = (fn) => async (req, res, next) => {
+const asyncErrorHandlerServiceService = (fn) => async (req, res, next) => {
     try {
         // Await the execution of the passed-in function
         await fn(req, res, next);
@@ -8,4 +8,4 @@ const asyncErrorHandlerService = (fn) => async (req, res, next) => {
     }
 };
 
-export default asyncErrorHandlerService;
+export default asyncErrorHandlerServiceService;

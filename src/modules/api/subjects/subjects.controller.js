@@ -1,8 +1,8 @@
-import asyncErrorHandler from '../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import subjectsService from './subjects.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
 
-const createSubject = asyncErrorHandler(async (req, res) => {
+const createSubject = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const newSubjectData = await subjectsService.createSubject(
         requester,
@@ -14,7 +14,7 @@ const createSubject = asyncErrorHandler(async (req, res) => {
     res.status(newSubjectData.status).send(newSubjectData);
 });
 
-const getSubjects = asyncErrorHandler(async (req, res) => {
+const getSubjects = asyncErrorHandlerService(async (req, res) => {
     const subjectsData = await subjectsService.getSubjects(req.query);
 
     subjectsData.route = req.originalUrl;
@@ -22,7 +22,7 @@ const getSubjects = asyncErrorHandler(async (req, res) => {
     res.status(subjectsData.status).send(subjectsData);
 });
 
-const getSubject = asyncErrorHandler(async (req, res) => {
+const getSubject = asyncErrorHandlerService(async (req, res) => {
     const subjectData = await subjectsService.getSubject(req.params.subjectId);
 
     subjectData.route = req.originalUrl;
@@ -30,7 +30,7 @@ const getSubject = asyncErrorHandler(async (req, res) => {
     res.status(subjectData.status).send(subjectData);
 });
 
-const updateSubject = asyncErrorHandler(async (req, res) => {
+const updateSubject = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const updatedSubjectData = await subjectsService.updateSubject(
         requester,
@@ -43,7 +43,7 @@ const updateSubject = asyncErrorHandler(async (req, res) => {
     res.status(updatedSubjectData.status).send(updatedSubjectData);
 });
 
-const deleteSubjects = asyncErrorHandler(async (req, res) => {
+const deleteSubjects = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const subjectIds = req.query.ids.split(',');
     const deletedSubjectsData = await subjectsService.deleteSubjects(
@@ -56,7 +56,7 @@ const deleteSubjects = asyncErrorHandler(async (req, res) => {
     res.status(deletedSubjectsData.status).send(deletedSubjectsData);
 });
 
-const deleteSubject = asyncErrorHandler(async (req, res) => {
+const deleteSubject = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const deletedSubjectData = await subjectsService.deleteSubject(
         requester,
