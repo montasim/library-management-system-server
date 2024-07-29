@@ -5,7 +5,7 @@ const PROFILE_VISIBILITY = {
 };
 
 const privacySettings = {
-    PROFILE_VISIBILITY
-}
+    PROFILE_VISIBILITY,
+};
 
 export default privacySettings;

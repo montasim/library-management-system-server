@@ -206,8 +206,7 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
             await GoogleDriveService.deleteFile(oldFileId);
         }
 
-        writerImageData =
-            await GoogleDriveService.uploadFile(writerImage);
+        writerImageData = await GoogleDriveService.uploadFile(writerImage);
 
         if (!writerImageData || writerImageData instanceof Error) {
             return errorResponse(

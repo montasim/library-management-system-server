@@ -112,8 +112,7 @@ const createBook = async (requester, bookData, bookImage) => {
         }
 
         // Upload image and handle possible errors
-        const bookImageData =
-            await GoogleDriveService.uploadFile(bookImage);
+        const bookImageData = await GoogleDriveService.uploadFile(bookImage);
         if (!bookImageData || bookImageData instanceof Error) {
             return errorResponse(
                 'Failed to save image.',
@@ -385,8 +384,7 @@ const updateBook = async (requester, bookId, updateData, bookImage) => {
                 await GoogleDriveService.deleteFile(oldFileId);
             }
 
-            bookImageData =
-                await GoogleDriveService.uploadFile(bookImage);
+            bookImageData = await GoogleDriveService.uploadFile(bookImage);
 
             if (!bookImageData || bookImageData instanceof Error) {
                 return errorResponse(

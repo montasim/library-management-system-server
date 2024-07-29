@@ -339,7 +339,9 @@ const resendVerification = async (userId, hostData) => {
             )
         );
 
-        loggerService.info(`Verification email resent to ${primaryEmail.email}`);
+        loggerService.info(
+            `Verification email resent to ${primaryEmail.email}`
+        );
 
         return sendResponse(
             {},

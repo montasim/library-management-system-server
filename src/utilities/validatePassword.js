@@ -37,7 +37,9 @@ const validatePassword = async (password) => {
     }
 
     // Consider integrating a more comprehensive check against a list of common passwords
-    const commonPasswords = await loadListFromFile('../vendor/commonPasswords.txt');
+    const commonPasswords = await loadListFromFile(
+        '../vendor/commonPasswords.txt'
+    );
     if (commonPasswords.has(password)) {
         return 'Use of common password is not allowed';
     }

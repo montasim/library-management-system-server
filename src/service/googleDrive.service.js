@@ -2,8 +2,7 @@ import google from '@googleapis/drive';
 import { Readable } from 'stream';
 
 import configuration from '../configuration/configuration.js';
-import googleDriveConfiguration
-    from '../configuration/googleDrive.configuration.js';
+import googleDriveConfiguration from '../configuration/googleDrive.configuration.js';
 
 const uploadFile = async (file) => {
     try {

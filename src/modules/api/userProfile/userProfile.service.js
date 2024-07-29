@@ -13,20 +13,32 @@ import privacySettings from '../privacySettings/privacySettings.constants.js';
 const getProfile = async (username, requester) => {
     try {
         // Retrieve the user's details including privacy settings and ID
-        const userWithSettings = await UsersModel.findOne({ username: username }, 'privacySettings _id').lean();
+        const userWithSettings = await UsersModel.findOne(
+            { username },
+            'privacySettings _id'
+        ).lean();
         if (!userWithSettings) {
             return errorResponse('User not found.', httpStatus.NOT_FOUND);
         }
 
-        const visibilitySetting = userWithSettings.privacySettings ? userWithSettings.privacySettings.profileVisibility : privacySettings.PROFILE_VISIBILITY.PUBLIC;
+        const visibilitySetting = userWithSettings.privacySettings
+            ? userWithSettings.privacySettings.profileVisibility
+            : privacySettings.PROFILE_VISIBILITY.PUBLIC;
         const isSelf = requester && requester === userWithSettings._id; // Ensure correct comparison for MongoDB ObjectId
         const isAdmin = requester && requester.isAdmin; // Assume an isAdmin flag or a method to determine if the requester is an admin
         const isAuthenticated = !!requester; // Check if there's a requester ID indicating an authenticated user
 
         let accessibleFields = [];
 
-        if (visibilitySetting === privacySettings.PROFILE_VISIBILITY.PRIVATE && !isSelf && !isAdmin) {
-            return errorResponse('This profile is private.', httpStatus.FORBIDDEN);
+        if (
+            visibilitySetting === privacySettings.PROFILE_VISIBILITY.PRIVATE &&
+            !isSelf &&
+            !isAdmin
+        ) {
+            return errorResponse(
+                'This profile is private.',
+                httpStatus.FORBIDDEN
+            );
         }
 
         if (isSelf) {
@@ -42,7 +54,7 @@ const getProfile = async (username, requester) => {
         }
 
         let projection = { _id: 0 }; // Exclude `_id` by default
-        accessibleFields.forEach(field => {
+        accessibleFields.forEach((field) => {
             if (field === '*') {
                 projection = {}; // Admin case: include all fields
             } else {
@@ -51,7 +63,7 @@ const getProfile = async (username, requester) => {
         });
 
         // Fetch user details as per determined privacy settings
-        const user = await UsersModel.findOne({ username: username }, projection).lean();
+        const user = await UsersModel.findOne({ username }, projection).lean();
         if (!user) {
             return errorResponse('User not found.', httpStatus.NOT_FOUND);
         }

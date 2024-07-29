@@ -8,12 +8,16 @@ const validateEmail = async (email) => {
 
     const domain = email.split('@')[1].toLowerCase();
 
-    const blockedEmailDomains = await loadListFromFile('../vendor/blockedEmailDomains.txt');
+    const blockedEmailDomains = await loadListFromFile(
+        '../vendor/blockedEmailDomains.txt'
+    );
     if (blockedEmailDomains.has(domain)) {
         return 'Email services is not allowed';
     }
 
-    const tempEmailDomains = await loadListFromFile('../vendor/tempEmailDomains.txt');
+    const tempEmailDomains = await loadListFromFile(
+        '../vendor/tempEmailDomains.txt'
+    );
     if (tempEmailDomains.has(domain)) {
         return 'Use of temporary email services is not allowed';
     }

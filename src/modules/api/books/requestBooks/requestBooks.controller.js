@@ -34,16 +34,18 @@ const getRequestBookByBookId = asyncErrorHandlerService(async (req, res) => {
     res.status(requestBooksData.status).send(requestBooksData);
 });
 
-const getRequestedBooksByOwnerId = asyncErrorHandlerService(async (req, res) => {
-    const requestBooksData =
-        await requestBooksService.getRequestedBooksByOwnerId(
-            req.params.ownerId
-        );
+const getRequestedBooksByOwnerId = asyncErrorHandlerService(
+    async (req, res) => {
+        const requestBooksData =
+            await requestBooksService.getRequestedBooksByOwnerId(
+                req.params.ownerId
+            );
 
-    requestBooksData.route = req.originalUrl;
+        requestBooksData.route = req.originalUrl;
 
-    res.status(requestBooksData.status).send(requestBooksData);
-});
+        res.status(requestBooksData.status).send(requestBooksData);
+    }
+);
 
 const deleteRequestBook = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
