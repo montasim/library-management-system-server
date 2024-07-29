@@ -4,111 +4,42 @@ import decodeAuthenticationToken from '../utilities/decodeAuthenticationToken.js
 import validateUserRequest from '../utilities/validateUserRequest.js';
 import validateAdminRequest from '../utilities/validateAdminRequest.js';
 
-const user = async (req, res, next) => {
+// Helper to create error response data
+const createErrorData = (message, status, route) => ({
+    timeStamp: new Date(),
+    success: false,
+    data: {},
+    message,
+    status,
+    route,
+});
+
+// Function to process authentication and authorization
+const processAuthentication = async (req, res, next, validateFunc) => {
     const token = await getAuthenticationToken(req?.headers['authorization']);
-
     if (!token) {
-        const forbiddenData = {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Access forbidden. No token provided.',
-            status: httpStatus.FORBIDDEN,
-            route: req.originalUrl,
-        };
-
-        return res.status(forbiddenData.status).send(forbiddenData);
+        return res.status(httpStatus.FORBIDDEN).send(createErrorData('Access forbidden. No token provided.', httpStatus.FORBIDDEN, req.originalUrl));
     }
 
     try {
         const decodedData = await decodeAuthenticationToken(token);
         const requester = decodedData ? decodedData.currentUser._id : undefined;
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateFunc(requester);
 
         if (!isAuthorized) {
-            const unauthorizedData = {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'Unauthorized access.',
-                status: httpStatus.UNAUTHORIZED,
-                route: req.originalUrl,
-            };
-
-            return res.status(unauthorizedData.status).send(unauthorizedData);
+            return res.status(httpStatus.UNAUTHORIZED).send(createErrorData('Unauthorized access.', httpStatus.UNAUTHORIZED, req.originalUrl));
         }
 
         req.sessionUser = decodedData;
-
         next();
     } catch (error) {
-        const forbiddenData = {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Your session has expired. Please login again.',
-            status: httpStatus.FORBIDDEN,
-            route: req.originalUrl,
-        };
-
-        return res.status(forbiddenData.status).send(forbiddenData);
+        return res.status(httpStatus.FORBIDDEN).send(createErrorData('Your session has expired. Please login again.', httpStatus.FORBIDDEN, req.originalUrl));
     }
 };
 
-const admin = async (req, res, next) => {
-    const token = await getAuthenticationToken(req?.headers['authorization']);
+const user = (req, res, next) => processAuthentication(req, res, next, validateUserRequest);
+const admin = (req, res, next) => processAuthentication(req, res, next, validateAdminRequest);
 
-    if (!token) {
-        const forbiddenData = {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Access forbidden. No token provided.',
-            status: httpStatus.FORBIDDEN,
-            route: req.originalUrl,
-        };
-
-        return res.status(forbiddenData.status).send(forbiddenData);
-    }
-
-    try {
-        const decodedData = await decodeAuthenticationToken(token);
-        const requester = decodedData ? decodedData.currentUser._id : undefined;
-        const isAuthorized = await validateAdminRequest(requester);
-
-        if (!isAuthorized) {
-            const unauthorizedData = {
-                timeStamp: new Date(),
-                success: false,
-                data: {},
-                message: 'Unauthorized access.',
-                status: httpStatus.UNAUTHORIZED,
-                route: req.originalUrl,
-            };
-
-            return res.status(unauthorizedData.status).send(unauthorizedData);
-        }
-
-        req.sessionUser = decodedData;
-
-        next();
-    } catch (error) {
-        const forbiddenData = {
-            timeStamp: new Date(),
-            success: false,
-            data: {},
-            message: 'Your session has expired. Please login again.',
-            status: httpStatus.FORBIDDEN,
-            route: req.originalUrl,
-        };
-
-        return res.status(forbiddenData.status).send(forbiddenData);
-    }
-};
-
-const authenticateMiddleware = {
-    user,
-    admin,
-};
+const authenticateMiddleware = { user, admin };
 
 export default authenticateMiddleware;

@@ -4,28 +4,54 @@ import loggerService from '../../../service/logger.service.js';
 import UsersModel from '../users/users.model.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import privacySettingsRules from '../privacySettings/privacySettings.rules.js';
+import privacySettings from '../privacySettings/privacySettings.constants.js';
 
-const getProfile = async (username) => {
+// unauthorized user is treated as public
+// authenticated user could be himself
+// authenticated user but not himself is treated as friends
+// authenticated user could be admin
+const getProfile = async (username, requester) => {
     try {
-        // Retrieve the user's privacy settings first to determine allowed fields
-        const userWithSettings = await UsersModel.findOne({ username: username }, 'privacySettings').lean();
-
-        if (!userWithSettings || !userWithSettings.privacySettings) {
-            return errorResponse('Privacy settings not found or user does not exist.', httpStatus.NOT_FOUND);
+        // Retrieve the user's details including privacy settings and ID
+        const userWithSettings = await UsersModel.findOne({ username: username }, 'privacySettings _id').lean();
+        if (!userWithSettings) {
+            return errorResponse('User not found.', httpStatus.NOT_FOUND);
         }
 
-        const visibilitySetting = userWithSettings.privacySettings.profileVisibility;
-        const accessibleFields = privacySettingsRules[visibilitySetting.toUpperCase()] || [];
+        const visibilitySetting = userWithSettings.privacySettings ? userWithSettings.privacySettings.profileVisibility : privacySettings.PROFILE_VISIBILITY.PUBLIC;
+        const isSelf = requester && requester === userWithSettings._id; // Ensure correct comparison for MongoDB ObjectId
+        const isAdmin = requester && requester.isAdmin; // Assume an isAdmin flag or a method to determine if the requester is an admin
+        const isAuthenticated = !!requester; // Check if there's a requester ID indicating an authenticated user
 
-        // Prepare the projection object with `_id` explicitly set to 0 to exclude it unless needed
-        let projection = { _id: 0 };
+        let accessibleFields = [];
+
+        if (visibilitySetting === privacySettings.PROFILE_VISIBILITY.PRIVATE && !isSelf && !isAdmin) {
+            return errorResponse('This profile is private.', httpStatus.FORBIDDEN);
+        }
+
+        if (isSelf) {
+            accessibleFields = privacySettingsRules.ITSELF;
+        } else if (isAdmin) {
+            accessibleFields = Object.keys(UsersModel.schema.paths); // Admins can access all fields
+        } else if (isAuthenticated) {
+            // Apply FRIENDS settings if the user is authenticated but not viewing their own profile
+            accessibleFields = privacySettingsRules.FRIENDS;
+        } else {
+            // Apply PUBLIC settings if the user is not authenticated
+            accessibleFields = privacySettingsRules.PUBLIC;
+        }
+
+        let projection = { _id: 0 }; // Exclude `_id` by default
         accessibleFields.forEach(field => {
-            projection[field] = 1;  // Include these fields
+            if (field === '*') {
+                projection = {}; // Admin case: include all fields
+            } else {
+                projection[field] = 1; // Include specified fields for the given privacy settings
+            }
         });
 
-        // Now, fetch the user details as per the privacy settings
+        // Fetch user details as per determined privacy settings
         const user = await UsersModel.findOne({ username: username }, projection).lean();
-
         if (!user) {
             return errorResponse('User not found.', httpStatus.NOT_FOUND);
         }

@@ -70,6 +70,9 @@ const envVarsSchema = Joi.object({
     JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number()
         .required()
         .description('Minutes after which verify email token expires.'),
+    BASIC_TOKEN: Joi.string()
+        .required()
+        .description('Basic token for authentication.'),
     MAXIMUM_LOGIN_ATTEMPTS: Joi.number()
         .required()
         .description('Maximum number of login attempts.'),
@@ -185,6 +188,7 @@ const configuration = {
         ),
     },
     auth: {
+        basicToken: getEnvVar(envVars.BASIC_TOKEN, 'defaultBasicToken'),
         loginAttempts: getInt(envVars.MAXIMUM_LOGIN_ATTEMPTS, 5),
         resetPasswordAttempts: getInt(
             envVars.MAXIMUM_RESET_PASSWORD_ATTEMPTS,
