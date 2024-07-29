@@ -36,9 +36,9 @@ const getPermissions = asyncErrorHandlerService(async (req, res) => {
     res.status(permissionsData.status).send(permissionsData);
 });
 
-const getPermission = asyncErrorHandlerService(async (req, res) => {
+const getPermissionById = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const permissionData = await permissionsService.getPermission(
+    const permissionData = await permissionsService.getPermissionById(
         requester,
         req.params.permissionId
     );
@@ -90,7 +90,7 @@ const permissionsController = {
     createPermission,
     createDefaultPermission,
     getPermissions,
-    getPermission,
+    getPermissionById,
     updatePermission,
     deletePermissions,
     deletePermission,

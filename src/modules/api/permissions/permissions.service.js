@@ -4,7 +4,6 @@ import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
-import getResourceById from '../../../shared/getResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import routesConstants from '../../../constant/routes.constants.js';
@@ -35,8 +34,19 @@ const createPermission = async (requester, newPermissionData) => {
 
         const newPermission = await PermissionsModel.create(newPermissionData);
 
+        // Populate the necessary fields after creation
+        const populatedPermission = await PermissionsModel.findById(newPermission._id)
+            .populate({
+                path: 'createdBy',
+                select: 'name image department designation isActive',
+            })
+            .populate({
+                path: 'updatedBy',
+                select: 'name image department designation isActive',
+            });
+
         return sendResponse(
-            newPermission,
+            populatedPermission,
             'Permission created successfully.',
             httpStatus.CREATED
         );
@@ -71,42 +81,38 @@ const createDefaultPermission = async (requester) => {
         const createdPermissions = [];
         const errors = [];
 
-        for (const permissionName of permissions) {
-            try {
-                // Check if the permission already exists to prevent duplicates
-                const existingPermission = await PermissionsModel.findOne({
-                    name: permissionName,
-                }).lean();
-                if (!existingPermission) {
-                    // Create and save the new permission if it does not exist
-                    const newPermission = new PermissionsModel({
-                        name: permissionName,
-                        isActive: true,
-                        createdBy: requester,
-                    });
+        // Fetch existing permissions in one call
+        const existingPermissions = await PermissionsModel.find({
+            name: { $in: permissions }
+        }).lean().select('name').exec();
 
-                    await newPermission.save();
+        const existingNames = new Set(existingPermissions.map(p => p.name));
 
-                    createdPermissions.push(newPermission);
+        const permissionsToCreate = permissions.filter(p => !existingNames.has(p)).map(permissionName => ({
+            name: permissionName,
+            isActive: true,
+            createdBy: requester,
+            updatedBy: requester // Assuming the creator is initially also the updater
+        }));
 
-                    loggerService.info(
-                        `Created new permission: ${permissionName}`
-                    );
-                } else {
-                    loggerService.info(
-                        `Permission already exists and was not created: ${permissionName}`
-                    );
-                }
-            } catch (error) {
-                errors.push({ permissionName, error: error.message });
+        if (permissionsToCreate.length > 0) {
+            // Bulk insert new permissions
+            const newPermissions = await PermissionsModel.insertMany(permissionsToCreate);
 
-                loggerService.error(
-                    `Error creating permission ${permissionName}: ${error.message}`
-                );
-            }
+            // Optionally populate necessary fields after creation - this would still require individual fetches, but it's optional
+            const populatedPermissions = await PermissionsModel.find({
+                _id: { $in: newPermissions.map(p => p._id) }
+            }).populate({
+                path: 'createdBy',
+                select: 'name image department designation isActive',
+            }).populate({
+                path: 'updatedBy',
+                select: 'name image department designation isActive',
+            });
+
+            createdPermissions.push(...populatedPermissions);
         }
 
-        // Construct the response with details of created permissions and any errors
         const message = `Permissions creation process completed with ${createdPermissions.length} permissions created.`;
         if (errors.length) {
             message += ` There were errors with ${errors.length} permissions.`;
@@ -162,7 +168,15 @@ const getPermissions = async (requester, params) => {
         const permissions = await PermissionsModel.find(query)
             .sort(sort)
             .skip((page - 1) * limit)
-            .limit(limit);
+            .limit(limit)
+            .populate({
+                path: 'createdBy',
+                select: 'name image department designation isActive',
+            })
+            .populate({
+                path: 'updatedBy',
+                select: 'name image department designation isActive',
+            });
 
         if (!permissions.length) {
             return sendResponse(
@@ -194,13 +208,36 @@ const getPermissions = async (requester, params) => {
     }
 };
 
-const getPermission = async (requester, permissionId) => {
+const getPermissionById = async (requester, permissionId) => {
     try {
-        return getResourceById(
-            requester,
-            permissionId,
-            PermissionsModel,
-            'permission'
+        const isAuthorized = await validateUserRequest(requester);
+        if (!isAuthorized) {
+            return errorResponse(
+                `You are not authorized to view permission.`,
+                httpStatus.FORBIDDEN
+            );
+        }
+
+        const resource = await PermissionsModel.findById(permissionId)
+            .populate({
+                path: 'createdBy',
+                select: 'name image department designation isActive',
+            })
+            .populate({
+                path: 'updatedBy',
+                select: 'name image department designation isActive',
+            });
+        if (!resource) {
+            return errorResponse(
+                `Permission not found.`,
+                httpStatus.NOT_FOUND
+            );
+        }
+
+        return sendResponse(
+            resource,
+            `Permission fetched successfully.`,
+            httpStatus.OK
         );
     } catch (error) {
         loggerService.error(`Failed to get permission: ${error}`);
@@ -229,24 +266,15 @@ const updatePermission = async (requester, permissionId, updateData) => {
             );
         }
 
-        const exists = await PermissionsModel.exists({
-            name: updateData.name,
-        });
-        if (exists) {
-            return sendResponse(
-                {},
-                `Permission name "${updateData.name}" already exists.`,
-                httpStatus.BAD_REQUEST
-            );
-        }
-
         updateData.updatedBy = requester;
 
+        // Attempt to update the permission
         const updatedPermission = await PermissionsModel.findByIdAndUpdate(
             permissionId,
             updateData,
-            { new: true }
+            { new: true, runValidators: true }
         );
+
         if (!updatedPermission) {
             return sendResponse(
                 {},
@@ -255,12 +283,28 @@ const updatePermission = async (requester, permissionId, updateData) => {
             );
         }
 
+        // Optionally populate if necessary (could be omitted based on requirements)
+        const populatedPermission = await PermissionsModel.findById(updatedPermission._id)
+            .populate({
+                path: 'createdBy updatedBy',
+                select: 'name image department designation isActive',
+            });
+
         return sendResponse(
-            updatedPermission,
+            populatedPermission,
             'Permission updated successfully.',
             httpStatus.OK
         );
     } catch (error) {
+        // Handle specific errors, like duplicate names, here
+        if (error.code === 11000) { // MongoDB duplicate key error
+            return sendResponse(
+                {},
+                `Permission name "${updateData.name}" already exists.`,
+                httpStatus.BAD_REQUEST
+            );
+        }
+
         loggerService.error(`Failed to update permission: ${error}`);
 
         return errorResponse(
@@ -346,7 +390,7 @@ const permissionsService = {
     createPermission,
     createDefaultPermission,
     getPermissions,
-    getPermission,
+    getPermissionById,
     updatePermission,
     deletePermissions,
     deletePermission,

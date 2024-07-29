@@ -31,8 +31,8 @@ router
 router
     .route(`/:${routesConstants.permissions.params}`)
     .get(
-        permissionsValidator.getPermission,
-        permissionsController.getPermission
+        permissionsValidator.getPermissionById,
+        permissionsController.getPermissionById
     )
     .put(
         permissionsValidator.updatePermission,
