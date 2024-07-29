@@ -16,35 +16,34 @@ import loggerService from './logger.service.js';
  * @returns {Promise<void>} A promise that resolves when the database connection is successful.
  */
 const connect = async () => {
-    // Setting up connection event listeners before initiating the connecting
+    // Set up event listeners for the MongoDB connection
     mongoose.connection.on('error', (error) =>
-        loggerService.error(`Database connection error: ${error}`)
+        loggerService.error(`Database connection error: ${error.message}`)
     );
 
     mongoose.connection.on('reconnected', () =>
-        loggerService.info('Database reconnected')
+        loggerService.info('Database has successfully reconnected.')
     );
 
     mongoose.connection.on('disconnected', async () => {
-        loggerService.info('Database disconnected! Attempting to reconnect...');
+        loggerService.warn('Database disconnected! Attempting to reconnect...');
 
         try {
             await mongoose.connect(configuration.mongoose.url);
-
-            loggerService.info('Database reconnected successfully');
+            loggerService.info('Database reconnected successfully.');
         } catch (error) {
-            loggerService.error(`Database reconnection error: ${error}`);
+            loggerService.error(`Database reconnection failed: ${error.message}`);
         }
     });
 
+    // Attempt to connect to the database
     try {
         await mongoose.connect(configuration.mongoose.url);
+        const dbName = mongoose.connection.db.databaseName;
 
-        const dbName = mongoose.connection.name;
-
-        loggerService.info(`Database connected successfully to ${dbName}`);
+        loggerService.info(`Database connected successfully to '${dbName}'.`);
     } catch (error) {
-        loggerService.error(`Database connection error: ${error}`);
+        loggerService.error(`Initial database connection attempt failed: ${error.message}`);
 
         throw error; // Re-throwing is necessary for the caller to handle it
     }
@@ -61,15 +60,13 @@ const connect = async () => {
  */
 const disconnect = async () => {
     try {
-        // Log when the disconnection process starts
         loggerService.info('Database connection disconnecting...');
 
         await mongoose.disconnect();
 
-        // Since listeners are set up per disconnect call, it logs directly after await
-        loggerService.info('Database disconnected successfully');
+        loggerService.info('Database connection disconnected successfully.');
     } catch (error) {
-        loggerService.error(`Database disconnection error: ${error}`);
+        loggerService.error(`Database disconnection error: ${error.message}`);
 
         throw error; // Re-throwing is necessary for the caller to handle it
     }
