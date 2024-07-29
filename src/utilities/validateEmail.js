@@ -1,6 +1,5 @@
 import patterns from '../constant/patterns.constants.js';
-import loadTempEmailDomains from '../shared/loadTempEmailDomains.js';
-import loadBlockedEmailDomains from '../shared/loadBlockedEmailDomains.js';
+import loadListFromFile from './loadListFromFile.js';
 
 const validateEmail = async (email) => {
     if (!patterns.EMAIL.test(email)) {
@@ -9,12 +8,12 @@ const validateEmail = async (email) => {
 
     const domain = email.split('@')[1].toLowerCase();
 
-    const blockedEmailDomains = await loadBlockedEmailDomains();
+    const blockedEmailDomains = await loadListFromFile('../vendor/blockedEmailDomains.txt');
     if (blockedEmailDomains.has(domain)) {
         return 'Email services is not allowed';
     }
 
-    const tempEmailDomains = await loadTempEmailDomains();
+    const tempEmailDomains = await loadListFromFile('../vendor/tempEmailDomains.txt');
     if (tempEmailDomains.has(domain)) {
         return 'Use of temporary email services is not allowed';
     }

@@ -1,5 +1,5 @@
 import patterns from '../constant/patterns.constants.js';
-import loadCommonPasswords from '../shared/loadCommonPasswords.js';
+import loadListFromFile from './loadListFromFile.js';
 
 const validatePassword = async (password) => {
     // Check minimum and maximum length
@@ -37,7 +37,7 @@ const validatePassword = async (password) => {
     }
 
     // Consider integrating a more comprehensive check against a list of common passwords
-    const commonPasswords = await loadCommonPasswords();
+    const commonPasswords = await loadListFromFile('../vendor/commonPasswords.txt');
     if (commonPasswords.has(password)) {
         return 'Use of common password is not allowed';
     }
