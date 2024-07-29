@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { MongoDB } from 'winston-mongodb';
@@ -27,12 +28,10 @@ const loggerService = winston.createLogger({
                 )
             ),
         }),
-        // TODO: use the already setup mongodb database connection
         // MongoDB transport for saving logs to the database
         new MongoDB({
             level: 'info',
-            db: configuration.mongoose.url,
-            options: { useUnifiedTopology: true },
+            db: mongoose.connection,  // Use the existing mongoose connection
             collection: 'log',
             storeHost: true,
             capped: true,
@@ -43,50 +42,48 @@ const loggerService = winston.createLogger({
             ),
         }),
         // Conditionally add file transports based on the environment
-        ...(!isProduction
-            ? [
-                  new DailyRotateFile({
-                      level: 'debug',
-                      filename: 'logs/debug-%DATE%.log',
-                      datePattern: 'YYYY-MM-DD',
-                      zippedArchive: true,
-                      maxSize: '20m',
-                      maxFiles: '14d',
-                  }),
-                  new DailyRotateFile({
-                      level: 'info',
-                      filename: 'logs/info-%DATE%.log',
-                      datePattern: 'YYYY-MM-DD',
-                      zippedArchive: true,
-                      maxSize: '20m',
-                      maxFiles: '14d',
-                  }),
-                  new DailyRotateFile({
-                      level: 'warn',
-                      filename: 'logs/warn-%DATE%.log',
-                      datePattern: 'YYYY-MM-DD',
-                      zippedArchive: true,
-                      maxSize: '20m',
-                      maxFiles: '14d',
-                  }),
-                  new DailyRotateFile({
-                      level: 'error',
-                      filename: 'logs/error-%DATE%.log',
-                      datePattern: 'YYYY-MM-DD',
-                      zippedArchive: true,
-                      maxSize: '20m',
-                      maxFiles: '14d',
-                  }),
-                  new DailyRotateFile({
-                      level: 'fatal',
-                      filename: 'logs/fatal-%DATE%.log',
-                      datePattern: 'YYYY-MM-DD',
-                      zippedArchive: true,
-                      maxSize: '20m',
-                      maxFiles: '14d',
-                  }),
-              ]
-            : []),
+        ...(!isProduction ? [
+            new DailyRotateFile({
+                level: 'debug',
+                filename: 'logs/debug-%DATE%.log',
+                datePattern: 'YYYY-MM-DD',
+                zippedArchive: true,
+                maxSize: '20m',
+                maxFiles: '14d',
+            }),
+            new DailyRotateFile({
+                level: 'info',
+                filename: 'logs/info-%DATE%.log',
+                datePattern: 'YYYY-MM-DD',
+                zippedArchive: true,
+                maxSize: '20m',
+                maxFiles: '14d',
+            }),
+            new DailyRotateFile({
+                level: 'warn',
+                filename: 'logs/warn-%DATE%.log',
+                datePattern: 'YYYY-MM-DD',
+                zippedArchive: true,
+                maxSize: '20m',
+                maxFiles: '14d',
+            }),
+            new DailyRotateFile({
+                level: 'error',
+                filename: 'logs/error-%DATE%.log',
+                datePattern: 'YYYY-MM-DD',
+                zippedArchive: true,
+                maxSize: '20m',
+                maxFiles: '14d',
+            }),
+            new DailyRotateFile({
+                level: 'fatal',
+                filename: 'logs/fatal-%DATE%.log',
+                datePattern: 'YYYY-MM-DD',
+                zippedArchive: true,
+                maxSize: '20m',
+                maxFiles: '14d',
+            }),
+        ] : []),
     ],
 });
 
