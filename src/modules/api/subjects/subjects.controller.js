@@ -22,8 +22,8 @@ const getSubjects = asyncErrorHandlerService(async (req, res) => {
     res.status(subjectsData.status).send(subjectsData);
 });
 
-const getSubject = asyncErrorHandlerService(async (req, res) => {
-    const subjectData = await subjectsService.getSubject(req.params.subjectId);
+const getSubjectById = asyncErrorHandlerService(async (req, res) => {
+    const subjectData = await subjectsService.getSubjectById(req.params.subjectId);
 
     subjectData.route = req.originalUrl;
 
@@ -71,7 +71,7 @@ const deleteSubject = asyncErrorHandlerService(async (req, res) => {
 const subjectsController = {
     createSubject,
     getSubjects,
-    getSubject,
+    getSubjectById,
     updateSubject,
     deleteSubjects,
     deleteSubject,

@@ -1,6 +1,5 @@
 import PermissionsModel from './permissions.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
@@ -10,6 +9,7 @@ import routesConstants from '../../../constant/routes.constants.js';
 import generatePermissions from '../../../shared/generatePermissions.js';
 import RolesModel from '../roles/roles.model.js';
 import constants from '../../../constant/constants.js';
+import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
 
 const populatePermissionFields = async (query) => {
     return await query
@@ -25,7 +25,7 @@ const populatePermissionFields = async (query) => {
 
 const createPermission = async (requester, newPermissionData) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to create permissions.',
@@ -94,7 +94,7 @@ const createPermission = async (requester, newPermissionData) => {
 const createDefaultPermission = async (requester) => {
     try {
         // Validate user authorization
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             loggerService.warn(
                 `Unauthorized permission creation attempt by user ${requester._id}`
@@ -171,7 +171,7 @@ const createDefaultPermission = async (requester) => {
 
 const getPermissions = async (requester, params) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to view permissions.',
@@ -237,7 +237,7 @@ const getPermissions = async (requester, params) => {
 
 const getPermissionById = async (requester, permissionId) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 `You are not authorized to view permission.`,
@@ -269,7 +269,7 @@ const getPermissionById = async (requester, permissionId) => {
 
 const updatePermission = async (requester, permissionId, updateData) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to update permissions.',
@@ -333,7 +333,7 @@ const updatePermission = async (requester, permissionId, updateData) => {
 
 const deletePermissions = async (requester, permissionIds) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to delete permissions.',

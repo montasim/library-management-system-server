@@ -1,15 +1,27 @@
 import SubjectsModel from './subjects.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
+import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
 
-const createSubject = async (requester, subjectData) => {
+const populateSubjectFields = async (query) => {
+    return await query
+        .populate({
+            path: 'createdBy',
+            select: 'name image department designation isActive',
+        })
+        .populate({
+            path: 'updatedBy',
+            select: 'name image department designation isActive',
+        });
+};
+
+const createSubject = async (requester, newSubjectData) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to create subjects.',
@@ -17,23 +29,27 @@ const createSubject = async (requester, subjectData) => {
             );
         }
 
-        const exists = await SubjectsModel.findOne({
-            name: subjectData.name,
-        }).lean();
+        const exists = await SubjectsModel.exists({
+            name: newSubjectData.name,
+        });
         if (exists) {
             return sendResponse(
                 {},
-                `Subject name "${subjectData.name}" already exists.`,
+                `Subject name "${newSubjectData.name}" already exists.`,
                 httpStatus.BAD_REQUEST
             );
         }
 
-        subjectData.createdBy = requester;
+        newSubjectData.createdBy = requester;
 
-        const newSubject = await SubjectsModel.create(subjectData);
+        const newSubject = await SubjectsModel.create(newSubjectData);
+        // Populate the necessary fields after creation
+        const populatedSubject = await populateSubjectFields(
+            SubjectsModel.findById(newSubject._id)
+        );
 
         return sendResponse(
-            newSubject,
+            populatedSubject,
             'Subject created successfully.',
             httpStatus.CREATED
         );
@@ -68,10 +84,12 @@ const getSubjects = async (params) => {
         };
         const totalSubjects = await SubjectsModel.countDocuments(query);
         const totalPages = Math.ceil(totalSubjects / limit);
-        const subjects = await SubjectsModel.find(query)
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(limit);
+        const subjects = await populateSubjectFields(
+            SubjectsModel.find(query)
+                .sort(sort)
+                .skip((page - 1) * limit)
+                .limit(limit)
+        );
 
         if (!subjects.length) {
             return sendResponse({}, 'No subject found.', httpStatus.NOT_FOUND);
@@ -99,16 +117,18 @@ const getSubjects = async (params) => {
     }
 };
 
-const getSubject = async (subjectId) => {
+const getSubjectById = async (subjectId) => {
     try {
-        const subject = await SubjectsModel.findById(subjectId);
-        if (!subject) {
-            return errorResponse('Subject not found.', httpStatus.NOT_FOUND);
+        const resource = await populateSubjectFields(
+            SubjectsModel.findById(subjectId)
+        );
+        if (!resource) {
+            return errorResponse(`Subject not found.`, httpStatus.NOT_FOUND);
         }
 
         return sendResponse(
-            subject,
-            'Subject fetched successfully.',
+            resource,
+            `Subject fetched successfully.`,
             httpStatus.OK
         );
     } catch (error) {
@@ -123,7 +143,7 @@ const getSubject = async (subjectId) => {
 
 const updateSubject = async (requester, subjectId, updateData) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to update subjects.',
@@ -138,10 +158,37 @@ const updateSubject = async (requester, subjectId, updateData) => {
             );
         }
 
-        const exists = await SubjectsModel.findOne({
-            name: updateData.name,
-        }).lean();
-        if (exists) {
+        updateData.updatedBy = requester;
+
+        // Attempt to update the subject
+        const updatedSubject = await SubjectsModel.findByIdAndUpdate(
+            subjectId,
+            updateData,
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedSubject) {
+            return sendResponse(
+                {},
+                'Subject not found.',
+                httpStatus.NOT_FOUND
+            );
+        }
+
+        // Optionally populate if necessary (could be omitted based on requirements)
+        const populatedSubject = await populateSubjectFields(
+            SubjectsModel.findById(updatedSubject._id)
+        );
+
+        return sendResponse(
+            populatedSubject,
+            'Subject updated successfully.',
+            httpStatus.OK
+        );
+    } catch (error) {
+        // Handle specific errors, like duplicate names, here
+        if (error.code === 11000) {
+            // MongoDB duplicate key error
             return sendResponse(
                 {},
                 `Subject name "${updateData.name}" already exists.`,
@@ -149,25 +196,6 @@ const updateSubject = async (requester, subjectId, updateData) => {
             );
         }
 
-        updateData.updatedBy = requester;
-
-        const updatedSubject = await SubjectsModel.findByIdAndUpdate(
-            subjectId,
-            updateData,
-            {
-                new: true,
-            }
-        );
-        if (!updatedSubject) {
-            return sendResponse({}, 'Subject not found.', httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse(
-            updatedSubject,
-            'Subject updated successfully.',
-            httpStatus.OK
-        );
-    } catch (error) {
         loggerService.error(`Failed to update subject: ${error}`);
 
         return errorResponse(
@@ -179,7 +207,7 @@ const updateSubject = async (requester, subjectId, updateData) => {
 
 const deleteSubjects = async (requester, subjectIds) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to delete subjects.',
@@ -187,7 +215,7 @@ const deleteSubjects = async (requester, subjectIds) => {
             );
         }
 
-        // First, check which permissions exist
+        // First, check which subjects exist
         const existingSubjects = await SubjectsModel.find({
             _id: { $in: subjectIds },
         })
@@ -199,7 +227,7 @@ const deleteSubjects = async (requester, subjectIds) => {
             (id) => !existingIds.includes(id)
         );
 
-        // Perform deletion on existing permissions only
+        // Perform deletion on existing subjects only
         const deletionResult = await SubjectsModel.deleteMany({
             _id: { $in: existingIds },
         });
@@ -252,7 +280,7 @@ const deleteSubject = async (requester, subjectId) => {
 const subjectsService = {
     createSubject,
     getSubjects,
-    getSubject,
+    getSubjectById,
     updateSubject,
     deleteSubjects,
     deleteSubject,

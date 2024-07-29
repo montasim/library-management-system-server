@@ -24,8 +24,8 @@ router
     .all(methodNotSupported);
 
 router
-    .route(`/${routesConstants.subjects.params}`)
-    .get(subjectsValidator.getSubject, subjectsController.getSubject)
+    .route(`/:${routesConstants.subjects.params}`)
+    .get(subjectsValidator.getSubjectById, subjectsController.getSubjectById)
     .put(
         authenticateMiddleware.admin,
         subjectsValidator.updateSubject,

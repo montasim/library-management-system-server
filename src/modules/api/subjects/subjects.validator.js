@@ -15,7 +15,7 @@ const getSubjects = validateWithSchema([
     },
 ]);
 
-const getSubject = validateWithSchema([
+const getSubjectById = validateWithSchema([
     {
         schema: subjectsSchema.subjectIdParamSchema,
         property: 'params',
@@ -50,7 +50,7 @@ const deleteSubject = validateWithSchema([
 const subjectsValidator = {
     createSubject,
     getSubjects,
-    getSubject,
+    getSubjectById,
     updateSubject,
     deleteSubjects,
     deleteSubject,
