@@ -22,11 +22,11 @@ const getUser = async (userId) => {
         }
 
         // Remove sensitive data, considering the user may have multiple emails
-        user.emails.forEach(email => {
+        user.emails.forEach((email) => {
             delete email.emailVerifyToken;
             delete email.emailVerifyTokenExpires;
         });
-        user.mobiles.forEach(mobile => {
+        user.mobiles.forEach((mobile) => {
             delete mobile.phoneVerifyToken;
             delete mobile.phoneVerifyTokenExpires;
         });
@@ -50,7 +50,10 @@ const updateUser = async (requester, updateData, userImage) => {
         // Fetch the existing user; no need to lean() if updates are to be applied.
         const existingUser = await UsersModel.findById(requester);
         if (!existingUser) {
-            return errorResponse('Unauthorized. Please login first.', httpStatus.UNAUTHORIZED);
+            return errorResponse(
+                'Unauthorized. Please login first.',
+                httpStatus.UNAUTHORIZED
+            );
         }
 
         // Validate provided update data
@@ -78,7 +81,10 @@ const updateUser = async (requester, updateData, userImage) => {
             );
 
             if (!fileValidationResults.isValid) {
-                return errorResponse(fileValidationResults.message, httpStatus.BAD_REQUEST);
+                return errorResponse(
+                    fileValidationResults.message,
+                    httpStatus.BAD_REQUEST
+                );
             }
 
             // Remove the old image file if it exists
@@ -90,7 +96,10 @@ const updateUser = async (requester, updateData, userImage) => {
             // Upload new image file
             const newImageData = await GoogleDriveService.uploadFile(userImage);
             if (!newImageData || newImageData instanceof Error) {
-                return errorResponse('Failed to update image.', httpStatus.INTERNAL_SERVER_ERROR);
+                return errorResponse(
+                    'Failed to update image.',
+                    httpStatus.INTERNAL_SERVER_ERROR
+                );
             }
 
             // Update image data in update object
@@ -102,8 +111,12 @@ const updateUser = async (requester, updateData, userImage) => {
         }
 
         // Apply updates to the user document
-        updateData.updatedBy = requester;  // Track who made the update
-        const updatedUser = await UsersModel.findByIdAndUpdate(requester, { $set: updateData }, { new: true, runValidators: true }).lean();
+        updateData.updatedBy = requester; // Track who made the update
+        const updatedUser = await UsersModel.findByIdAndUpdate(
+            requester,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).lean();
 
         // Remove sensitive data before sending to client
         delete updatedUser.passwordHash;
@@ -112,11 +125,18 @@ const updateUser = async (requester, updateData, userImage) => {
         delete updatedUser.emailVerifyToken;
         delete updatedUser.emailVerifyTokenExpires;
 
-        return sendResponse(updatedUser, 'User updated successfully.', httpStatus.OK);
+        return sendResponse(
+            updatedUser,
+            'User updated successfully.',
+            httpStatus.OK
+        );
     } catch (error) {
         loggerService.error(`Failed to update user: ${error}`);
 
-        return errorResponse('Failed to update user.', httpStatus.INTERNAL_SERVER_ERROR);
+        return errorResponse(
+            'Failed to update user.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
@@ -124,13 +144,13 @@ const deleteUser = async (userId, confirmationData) => {
     try {
         const existingUser = await UsersModel.findById(userId).lean();
         if (!existingUser) {
-            return errorResponse(
-                'User not found.',
-                httpStatus.NOT_FOUND
-            );
+            return errorResponse('User not found.', httpStatus.NOT_FOUND);
         }
 
-        if (confirmationData.confirmationText !== constants.confirmationText.deleteUserAccount) {
+        if (
+            confirmationData.confirmationText !==
+            constants.confirmationText.deleteUserAccount
+        ) {
             return errorResponse(
                 'Confirmation text did not matched.',
                 httpStatus.BAD_REQUEST
@@ -147,11 +167,7 @@ const deleteUser = async (userId, confirmationData) => {
 
         await UsersModel.findByIdAndDelete(userId);
 
-        return sendResponse(
-            {},
-            'User deleted successfully.',
-            httpStatus.OK
-        );
+        return sendResponse({}, 'User deleted successfully.', httpStatus.OK);
     } catch (error) {
         loggerService.error(`Failed to delete account: ${error}`);
 

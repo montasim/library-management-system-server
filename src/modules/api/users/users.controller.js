@@ -27,10 +27,7 @@ const updateUser = asyncErrorHandlerService(async (req, res) => {
 
 const deleteUser = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const deletedUserData = await usersService.deleteUser(
-        requester,
-        req.body,
-    );
+    const deletedUserData = await usersService.deleteUser(requester, req.body);
 
     deletedUserData.route = req.originalUrl;
 

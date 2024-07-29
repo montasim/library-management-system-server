@@ -18,10 +18,7 @@ router
         usersValidator.updateUser,
         usersController.updateUser
     )
-    .delete(
-        usersValidator.deleteUser,
-        usersController.deleteUser
-    )
+    .delete(usersValidator.deleteUser, usersController.deleteUser)
     .all(methodNotSupported);
 
 router.use('/history', usersBooksHistoryRoutes);

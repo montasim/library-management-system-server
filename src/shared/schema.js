@@ -23,8 +23,7 @@ const imageSchema = new Schema({
             constants.lengths.IMAGE.SHAREABLE_LINK,
             `Shareable link should not exceed ${constants.lengths.IMAGE.SHAREABLE_LINK} characters.`,
         ],
-        description:
-            "URL link that allows others to access the user's image.",
+        description: "URL link that allows others to access the user's image.",
     },
     downloadLink: {
         type: String,
@@ -42,10 +41,7 @@ const nameSchema = new Schema({
     first: {
         type: String,
         trim: true,
-        required: [
-            true,
-            'Please enter your name to create your profile.',
-        ],
+        required: [true, 'Please enter your name to create your profile.'],
         match: [
             userConstants.pattern.NAME,
             'Invalid name format. Names should only contain alphabetic characters and appropriate separators like spaces. For example, "John", "Mary Anne".',
@@ -154,7 +150,7 @@ const urlSchema = new Schema({
         ],
         description:
             'A unique URL associated with the user, typically for a personal or professional website.',
-    }
+    },
 });
 
 // Define the shared facebook schema
@@ -177,7 +173,7 @@ const facebookSchema = new Schema({
         ],
         description:
             'The Facebook URL must be unique across all users and follow the predefined URL pattern.',
-    }
+    },
 });
 
 // Define the shared twitter schema
@@ -200,7 +196,7 @@ const twitterSchema = new Schema({
         ],
         description:
             'The Twitter handle must be unique and comply with a specific URL format.',
-    }
+    },
 });
 
 // Define the shared linkedIn schema
@@ -223,7 +219,7 @@ const linkedInSchema = new Schema({
         ],
         description:
             'LinkedIn URLs are unique to each user, adhering to the required LinkedIn format.',
-    }
+    },
 });
 
 // Define the shared github schema
@@ -246,7 +242,7 @@ const githubSchema = new Schema({
         ],
         description:
             "GitHub's usernames need to follow a specific format and be unique among all system users.",
-    }
+    },
 });
 
 // Define the shared company schema
