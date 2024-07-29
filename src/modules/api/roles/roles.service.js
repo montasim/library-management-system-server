@@ -9,6 +9,7 @@ import getResourceById from '../../../shared/getResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import PermissionsModel from '../permissions/permissions.model.js';
+import constants from '../../../constant/constants.js';
 
 const createRole = async (requester, newRoleData) => {
     try {
@@ -69,14 +70,13 @@ const createDefaultRole = async (requester) => {
             );
         }
 
-        const defaultRoleName = 'Admin';
         const allPermissions = await PermissionsModel.find({}).select('_id'); // Fetch all permissions
         const permissionsIds = allPermissions.map(
             (permission) => permission._id
         );
 
         const oldDetails = await RolesModel.findOne({
-            name: defaultRoleName,
+            name: constants.defaultName.adminRole,
         }).lean();
 
         if (oldDetails) {
@@ -120,7 +120,7 @@ const createDefaultRole = async (requester) => {
         } else {
             // Role does not exist, create it with all permissions
             const newRole = new RolesModel({
-                name: defaultRoleName,
+                name: constants.defaultName.adminRole,
                 permissions: permissionsIds,
                 createdBy: requester,
             });

@@ -33,10 +33,15 @@ const confirmationText = {
     deleteUserAccount: 'Delete my account',
 };
 
+const defaultName = {
+    adminRole: 'Admin'
+};
+
 const constants = {
     lengths,
     urls,
     confirmationText,
+    defaultName,
 };
 
 export default constants;

@@ -8,6 +8,8 @@ import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import routesConstants from '../../../constant/routes.constants.js';
 import generatePermissions from '../../../shared/generatePermissions.js';
+import RolesModel from '../roles/roles.model.js';
+import constants from '../../../constant/constants.js';
 
 const populatePermissionFields = async (query) => {
     return await query
@@ -21,7 +23,6 @@ const populatePermissionFields = async (query) => {
         });
 };
 
-// TODO: add new permission to the admin role
 const createPermission = async (requester, newPermissionData) => {
     try {
         const isAuthorized = await validateUserRequest(requester);
@@ -46,6 +47,29 @@ const createPermission = async (requester, newPermissionData) => {
         newPermissionData.createdBy = requester;
 
         const newPermission = await PermissionsModel.create(newPermissionData);
+
+        // add new permission to the admin role
+        const adminRoleDetails = await RolesModel.findOne({
+            name: constants.defaultName.adminRole,
+        }).lean();
+        if (adminRoleDetails) {
+            // Role exists, update it by adding the new permission
+            await RolesModel.updateOne(
+                { _id: adminRoleDetails._id },
+                {
+                    $addToSet: { permissions: newPermission._id },
+                }
+            );
+        } else {
+            // Role does not exist, create it with the new permission
+            const newRole = new RolesModel({
+                name: constants.defaultName.adminRole,
+                permissions: [newPermission._id], // Use an array to initialize permissions
+                createdBy: requester,
+            });
+
+            await newRole.save();
+        }
 
         // Populate the necessary fields after creation
         const populatedPermission = await populatePermissionFields(
