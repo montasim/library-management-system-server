@@ -1,8 +1,8 @@
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import configuration from '../../../configuration/configuration.js';
 import sendResponse from '../../../utilities/sendResponse.js';
-import logger from '../../../utilities/logger.js';
 import errorResponse from '../../../utilities/errorResponse.js';
+import loggerService from '../../../service/logger.service.js';
 
 const homeService = async () => {
     try {
@@ -39,7 +39,7 @@ const homeService = async () => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get home data: ${error}`);
+        loggerService.error(`Failed to get home data: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get home data.',

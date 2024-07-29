@@ -8,7 +8,7 @@ import fileExtensionsConstants from '../../../../constant/fileExtensions.constan
 import GoogleDriveFileOperations from '../../../../utilities/googleDriveFileOperations.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import RequestBooksModel from './requestBooks.model.js';
-import logger from '../../../../utilities/logger.js';
+import loggerService from '../../../../service/logger.service.js';
 
 const createRequestBook = async (requester, bookData, bookImage) => {
     try {
@@ -130,7 +130,7 @@ const createRequestBook = async (requester, bookData, bookImage) => {
             );
         }
     } catch (error) {
-        logger.error(`Failed to request book: ${error}`);
+        loggerService.error(`Failed to request book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to request book.',
@@ -164,7 +164,7 @@ const getRequestBooks = async () => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get requested book: ${error}`);
+        loggerService.error(`Failed to get requested book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get requested book.',
@@ -213,7 +213,7 @@ const getRequestBook = async (bookId) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get requested book: ${error}`);
+        loggerService.error(`Failed to get requested book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get requested book.',
@@ -258,7 +258,7 @@ const getRequestedBooksByOwnerId = async (ownerId) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get requested book: ${error}`);
+        loggerService.error(`Failed to get requested book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get requested book.',
@@ -310,7 +310,7 @@ const deleteRequestBook = async (requester, requestBookId) => {
             );
         }
     } catch (error) {
-        logger.error(`Failed to delete requested book: ${error}`);
+        loggerService.error(`Failed to delete requested book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete requested book.',

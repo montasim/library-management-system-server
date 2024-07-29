@@ -1,7 +1,7 @@
 import environment from '../constant/envTypes.constants.js';
-import logger from '../utilities/logger.js';
 import httpStatus from '../constant/httpStatus.constants.js';
 import errorCodes from '../constant/errorCodes.constants.js';
+import loggerService from './logger.service.js';
 
 const errorHandlingService = (error, req, res, next) => {
     let message;
@@ -9,7 +9,7 @@ const errorHandlingService = (error, req, res, next) => {
 
     // Log detailed error information in development for debugging
     if (process.env.NODE_ENV === environment.DEVELOPMENT) {
-        logger.error('Detailed Error:', {
+        loggerService.error('Detailed Error:', {
             error,
             body: req.body,
             path: req.path,
@@ -84,7 +84,7 @@ const errorHandlingService = (error, req, res, next) => {
         message = error.message; // Use a more user-friendly message
     } else {
         // Log non-operational errors more aggressively
-        logger.error('Non-operational error:', {
+        loggerService.error('Non-operational error:', {
             message: error.message,
             stack: error.stack,
         });

@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 import configuration from '../configuration/configuration.js';
-import logger from '../utilities/logger.js';
+import loggerService from './logger.service.js';
 
 let transporter;
 let retryCount = 0;
@@ -17,7 +17,7 @@ let retryCount = 0;
  */
 const connect = async () => {
     if (transporter) {
-        logger.info('Email service already initialized.');
+        loggerService.info('Email service already initialized.');
 
         return;
     }
@@ -40,11 +40,11 @@ const connect = async () => {
             // Logging real connection details from the transporter
             const connectionDetails = transporter.options; // Accessing actual options used by the transporter
 
-            logger.info(
+            loggerService.info(
                 `Email service connected successfully with: Host: ${connectionDetails.host}, Port: ${connectionDetails.port}, Secure: ${connectionDetails.secure}`
             );
         } catch (error) {
-            logger.error(
+            loggerService.error(
                 `Failed to connect to email service on attempt ${retryCount + 1}:`,
                 error
             );
@@ -52,7 +52,7 @@ const connect = async () => {
             if (retryCount < configuration.email.smtp.maxConnectionAttempts) {
                 retryCount++;
 
-                logger.info(
+                loggerService.info(
                     `Retrying to connect (${retryCount}/${configuration.email.smtp.maxConnectionAttempts})...`
                 );
 
@@ -92,7 +92,7 @@ const sendEmail = async (emailAddress, subject, html) => {
             html,
         });
     } catch (error) {
-        logger.error('Failed to send email:', error);
+        loggerService.error('Failed to send email:', error);
 
         throw error;
     }

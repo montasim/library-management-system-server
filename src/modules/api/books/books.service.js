@@ -1,6 +1,5 @@
 import BooksModel from './books.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import logger from '../../../utilities/logger.js';
 import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import errorResponse from '../../../utilities/errorResponse.js';
@@ -13,6 +12,7 @@ import SubjectsModel from '../subjects/subjects.model.js';
 import PublicationsModel from '../publications/publications.model.js';
 import WritersModel from '../writers/writers.model.js';
 import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
+import loggerService from '../../../service/logger.service.js';
 
 // Helper function to validate IDs
 const validateIds = async (writer, publication) => {
@@ -142,7 +142,7 @@ const createBook = async (requester, bookData, bookImage) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        logger.error(`Failed to create book: ${error}`);
+        loggerService.error(`Failed to create book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to create book.',
@@ -220,7 +220,7 @@ const getBooks = async (params) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get books: ${error}`);
+        loggerService.error(`Failed to get books: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get books.',
@@ -243,7 +243,7 @@ const getBook = async (bookId) => {
 
         return sendResponse(book, 'Book fetched successfully.', httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to get book: ${error}`);
+        loggerService.error(`Failed to get book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get book.',
@@ -420,7 +420,7 @@ const updateBook = async (requester, bookId, updateData, bookImage) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to update book: ${error}`);
+        loggerService.error(`Failed to update book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to update book.',
@@ -464,7 +464,7 @@ const deleteBooks = async (requester, bookIds) => {
                 }
             } catch (error) {
                 // Log the error and mark this ID as failed
-                logger.error(
+                loggerService.error(
                     `Failed to delete book with ID ${bookId}: ${error}`
                 );
                 results.failed.push(bookId);
@@ -477,7 +477,7 @@ const deleteBooks = async (requester, bookIds) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to delete books: ${error}`);
+        loggerService.error(`Failed to delete books: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete books.',
@@ -503,7 +503,7 @@ const deleteBook = async (requester, bookId) => {
 
         return sendResponse({}, 'Book deleted successfully.', httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to delete book: ${error}`);
+        loggerService.error(`Failed to delete book: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete book.',

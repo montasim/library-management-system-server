@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import UsersModel from '../users/users.model.js';
 import generateVerificationToken from '../../../utilities/generateVerificationToken.js';
@@ -17,8 +19,7 @@ import validatePassword from '../../../utilities/validatePassword.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import AdminModel from '../admin/admin.model.js';
-import logger from '../../../utilities/logger.js';
-import moment from 'moment';
+import loggerService from '../../../service/logger.service.js';
 
 const signup = async (userData, hostData) => {
     try {
@@ -146,7 +147,7 @@ const signup = async (userData, hostData) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        logger.error(`Failed to signup: ${error}`);
+        loggerService.error(`Failed to signup: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to signup.',
@@ -247,7 +248,7 @@ const verify = async (token) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to verify email: ${error}`);
+        loggerService.error(`Failed to verify email: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to verify email.',
@@ -260,7 +261,7 @@ const resendVerification = async (userId, hostData) => {
     try {
         const userDetails = await UsersModel.findById(userId);
         if (!userDetails) {
-            logger.debug(`User not found: ${userId}`);
+            loggerService.debug(`User not found: ${userId}`);
 
             return errorResponse('User not found.', httpStatus.NOT_FOUND);
         }
@@ -269,7 +270,7 @@ const resendVerification = async (userId, hostData) => {
             (email) => email.isPrimaryEmail
         );
         if (!primaryEmail) {
-            logger.debug(`Primary email not set for user: ${userId}`);
+            loggerService.debug(`Primary email not set for user: ${userId}`);
 
             return errorResponse(
                 'No primary email set for this account.',
@@ -278,7 +279,7 @@ const resendVerification = async (userId, hostData) => {
         }
 
         if (primaryEmail.isEmailVerified) {
-            logger.debug(`Email already verified for user: ${userId}`);
+            loggerService.debug(`Email already verified for user: ${userId}`);
 
             return errorResponse(
                 'This email address has already been verified.',
@@ -300,7 +301,7 @@ const resendVerification = async (userId, hostData) => {
 
         await userDetails.save();
 
-        logger.debug(`Verification token updated for user: ${userId}`);
+        loggerService.debug(`Verification token updated for user: ${userId}`);
 
         const subject = 'Confirm Your Email Address';
         let emailVerificationLink;
@@ -338,7 +339,7 @@ const resendVerification = async (userId, hostData) => {
             )
         );
 
-        logger.info(`Verification email resent to ${primaryEmail.email}`);
+        loggerService.info(`Verification email resent to ${primaryEmail.email}`);
 
         return sendResponse(
             {},
@@ -346,7 +347,7 @@ const resendVerification = async (userId, hostData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(
+        loggerService.error(
             `Failed to resend verification email for user ${userId}: ${error}`
         );
 
@@ -433,7 +434,7 @@ const requestNewPassword = async (email, hostData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to request new password: ${error}`);
+        loggerService.error(`Failed to request new password: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to request new password.',
@@ -529,7 +530,7 @@ const resetPassword = async (hostData, token, userData) => {
 
         return sendResponse({}, 'Reset Password Successful.', httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to reset password: ${error}`);
+        loggerService.error(`Failed to reset password: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to reset password.',
@@ -636,7 +637,7 @@ const login = async (userData, userAgent, device) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to login: ${error}`);
+        loggerService.error(`Failed to login: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to login.',
@@ -671,7 +672,7 @@ const logout = async (req) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to logout: ${error}`);
+        loggerService.error(`Failed to logout: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to logout.',

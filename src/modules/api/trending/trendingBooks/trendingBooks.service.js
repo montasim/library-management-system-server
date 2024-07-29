@@ -2,7 +2,7 @@ import httpStatus from '../../../../constant/httpStatus.constants.js';
 import FavouriteBooksModel from '../../books/favourite/favouriteBooks.model.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
-import logger from '../../../../utilities/logger.js';
+import loggerService from '../../../../service/logger.service.js';
 
 const getTrendingBooks = async () => {
     try {
@@ -60,7 +60,7 @@ const getTrendingBooks = async () => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get trending books: ${error}`);
+        loggerService.error(`Failed to get trending books: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get trending books.',

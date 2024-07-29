@@ -5,7 +5,7 @@ import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
-import logger from '../../../utilities/logger.js';
+import loggerService from '../../../service/logger.service.js';
 
 const createSubject = async (requester, subjectData) => {
     try {
@@ -38,7 +38,7 @@ const createSubject = async (requester, subjectData) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        logger.error(`Failed to create subject: ${error}`);
+        loggerService.error(`Failed to create subject: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to create subject.',
@@ -90,7 +90,7 @@ const getSubjects = async (params) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get subjects: ${error}`);
+        loggerService.error(`Failed to get subjects: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get subjects.',
@@ -112,7 +112,7 @@ const getSubject = async (subjectId) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get subject: ${error}`);
+        loggerService.error(`Failed to get subject: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get subject.',
@@ -168,7 +168,7 @@ const updateSubject = async (requester, subjectId, updateData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to update subject: ${error}`);
+        loggerService.error(`Failed to update subject: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to update subject.',
@@ -222,7 +222,7 @@ const deleteSubjects = async (requester, subjectIds) => {
 
         return sendResponse({}, message, httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to delete subjects: ${error}`);
+        loggerService.error(`Failed to delete subjects: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete subjects.',
@@ -240,7 +240,7 @@ const deleteSubject = async (requester, subjectId) => {
             'subject'
         );
     } catch (error) {
-        logger.error(`Failed to delete subject: ${error}`);
+        loggerService.error(`Failed to delete subject: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete subject.',

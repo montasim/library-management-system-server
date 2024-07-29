@@ -1,5 +1,6 @@
 import morgan from 'morgan';
-import logger from '../utilities/logger.js';
+
+import loggerService from '../service/logger.service.js';
 
 // Custom token to log requestBooks bodies
 morgan.token('body', (req) => JSON.stringify(req.body));
@@ -21,7 +22,7 @@ const morganConfiguration = morgan(
             tokens['user-agent'](req, res),
         ].join(' ');
     },
-    { stream: { write: (message) => logger.info(message) } }
+    { stream: { write: (message) => loggerService.info(message) } }
 );
 
 export default morganConfiguration;

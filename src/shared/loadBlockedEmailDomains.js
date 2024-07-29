@@ -11,7 +11,8 @@
 import { promises as fs } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import logger from '../utilities/logger.js';
+
+import loggerService from '../service/logger.service.js';
 
 // Derive the __dirname equivalent for ES6 modules using fileURLToPath
 const __filename = fileURLToPath(import.meta.url);
@@ -48,7 +49,7 @@ const loadBlockedEmailDomains = async () => {
 
         return new Set(lines);
     } catch (error) {
-        logger.error('Error loading the blocked email domain list:', error);
+        loggerService.error('Error loading the blocked email domain list:', error);
 
         return new Set(); // Return an empty set on error to allow continued operation
     }

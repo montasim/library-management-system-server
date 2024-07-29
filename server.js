@@ -3,11 +3,11 @@ import app from './src/app.js';
 import configuration from './src/configuration/configuration.js';
 import EmailService from './src/service/email.service.js';
 import DatabaseService from './src/service/database.service.js';
-import logger from './src/utilities/logger.js';
 import handleServerError from './src/utilities/handleServerError.js';
 import shutdownHandler from './src/utilities/shutdownHandler.js';
 import handleUncaughtException from './src/utilities/handleUncaughtException.js';
 import handleUnhandledRejection from './src/utilities/handleUnhandledRejection.js';
+import loggerService from './src/service/logger.service.js';
 
 const startServer = async () => {
     try {
@@ -20,7 +20,7 @@ const startServer = async () => {
             configuration.env.slice(1);
 
         const server = app.listen(configuration.port, () => {
-            logger.info(
+            loggerService.info(
                 `${envCapitalized} server started on port ${configuration.port}`
             );
         });
@@ -42,7 +42,7 @@ const startServer = async () => {
         process.on('SIGINT', () => shutdownHandler('SIGINT', server));
         process.on('SIGTERM', () => shutdownHandler('SIGTERM', server));
     } catch (error) {
-        logger.error('Failed to start the server:', error);
+        loggerService.error('Failed to start the server:', error);
 
         process.exit(1); // Exit the process with failure
     }

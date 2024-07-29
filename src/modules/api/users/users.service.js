@@ -8,8 +8,8 @@ import validateFile from '../../../utilities/validateFile.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import userConstants from './users.constants.js';
-import logger from '../../../utilities/logger.js';
 import constants from '../../../constant/constants.js';
+import loggerService from '../../../service/logger.service.js';
 
 const getUser = async (userId) => {
     try {
@@ -36,7 +36,7 @@ const getUser = async (userId) => {
 
         return sendResponse(user, 'User fetched successfully.', httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to get user details: ${error}`);
+        loggerService.error(`Failed to get user details: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get user details.',
@@ -114,7 +114,7 @@ const updateUser = async (requester, updateData, userImage) => {
 
         return sendResponse(updatedUser, 'User updated successfully.', httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to update user: ${error}`);
+        loggerService.error(`Failed to update user: ${error}`);
 
         return errorResponse('Failed to update user.', httpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -153,7 +153,7 @@ const deleteUser = async (userId, confirmationData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to delete account: ${error}`);
+        loggerService.error(`Failed to delete account: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete account.',

@@ -1,11 +1,11 @@
-import logger from './logger.js';
 import EmailService from '../service/email.service.js';
 import configuration from '../configuration/configuration.js';
 import prepareEmailContent from '../shared/prepareEmailContent.js';
 import prepareEmail from '../shared/prepareEmail.js';
+import loggerService from '../service/logger.service.js';
 
 const initiateGracefulShutdown = async (reason, server, error) => {
-    logger.log(`Shutting down gracefully due to ${reason}.`);
+    loggerService.log(`Shutting down gracefully due to ${reason}.`);
 
     const emailData = {};
 
@@ -39,7 +39,7 @@ const initiateGracefulShutdown = async (reason, server, error) => {
     );
 
     const shutdownTimeout = setTimeout(() => {
-        logger.error('Shutdown timed out, forcing shutdown.');
+        loggerService.error('Shutdown timed out, forcing shutdown.');
 
         process.exit(1);
     }, 30000); // 30 seconds timeout
@@ -50,13 +50,13 @@ const initiateGracefulShutdown = async (reason, server, error) => {
                 clearTimeout(shutdownTimeout);
 
                 if (error) {
-                    logger.error(
+                    loggerService.error(
                         `Failed to close server due to: ${error.message}`
                     );
 
                     reject(error);
                 } else {
-                    logger.log('Server successfully closed.');
+                    loggerService.log('Server successfully closed.');
 
                     resolve();
                 }

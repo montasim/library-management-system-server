@@ -5,7 +5,7 @@ import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
-import logger from '../../../utilities/logger.js';
+import loggerService from '../../../service/logger.service.js';
 
 const createPublication = async (requester, publicationData) => {
     try {
@@ -38,7 +38,7 @@ const createPublication = async (requester, publicationData) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        logger.error(`Failed to create publication: ${error}`);
+        loggerService.error(`Failed to create publication: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to create publication.',
@@ -94,7 +94,7 @@ const getPublications = async (params) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get publications: ${error}`);
+        loggerService.error(`Failed to get publications: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get publications.',
@@ -119,7 +119,7 @@ const getPublication = async (publicationId) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get publication: ${error}`);
+        loggerService.error(`Failed to get publication: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get publication.',
@@ -179,7 +179,7 @@ const updatePublication = async (requester, publicationId, updateData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to update publication: ${error}`);
+        loggerService.error(`Failed to update publication: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to update publication.',
@@ -233,7 +233,7 @@ const deletePublications = async (requester, publicationIds) => {
 
         return sendResponse({}, message, httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to delete publications: ${error}`);
+        loggerService.error(`Failed to delete publications: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete publications.',
@@ -251,7 +251,7 @@ const deletePublication = async (requester, publicationId) => {
             'publication'
         );
     } catch (error) {
-        logger.error(`Failed to delete publication: ${error}`);
+        loggerService.error(`Failed to delete publication: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete publication.',

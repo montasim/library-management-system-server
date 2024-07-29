@@ -1,15 +1,15 @@
-import logger from './logger.js';
 import DatabaseService from '../service/database.service.js';
 import initiateGracefulShutdown from './initiateGracefulShutdown.js';
+import loggerService from '../service/logger.service.js';
 
 const shutdownHandler = async (signal, server) => {
-    logger.log(`Received ${signal}.`);
+    loggerService.log(`Received ${signal}.`);
 
     try {
         await DatabaseService.disconnect();
         await initiateGracefulShutdown(signal, server);
     } catch (shutdownError) {
-        logger.error(
+        loggerService.error(
             `Error during graceful shutdown on ${signal}: ${shutdownError.message}`
         );
 

@@ -6,7 +6,7 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
 import getResourceById from '../../../shared/getResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
-import logger from '../../../utilities/logger.js';
+import loggerService from '../../../service/logger.service.js';
 
 const createPermission = async (requester, newPermissionData) => {
     try {
@@ -39,7 +39,7 @@ const createPermission = async (requester, newPermissionData) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        logger.error(`Failed to create permission: ${error}`);
+        loggerService.error(`Failed to create permission: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to create permission.',
@@ -103,7 +103,7 @@ const getPermissions = async (requester, params) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get permission: ${error}`);
+        loggerService.error(`Failed to get permission: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get permission.',
@@ -121,7 +121,7 @@ const getPermission = async (requester, permissionId) => {
             'permission'
         );
     } catch (error) {
-        logger.error(`Failed to get permission: ${error}`);
+        loggerService.error(`Failed to get permission: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get permission.',
@@ -179,7 +179,7 @@ const updatePermission = async (requester, permissionId, updateData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to update permission: ${error}`);
+        loggerService.error(`Failed to update permission: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to update permission.',
@@ -233,7 +233,7 @@ const deletePermissions = async (requester, permissionIds) => {
 
         return sendResponse({}, message, httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to delete permissions: ${error}`);
+        loggerService.error(`Failed to delete permissions: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete permissions.',
@@ -251,7 +251,7 @@ const deletePermission = async (requester, permissionId) => {
             'permission'
         );
     } catch (error) {
-        logger.error(`Failed to delete permission: ${error}`);
+        loggerService.error(`Failed to delete permission: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete permission.',

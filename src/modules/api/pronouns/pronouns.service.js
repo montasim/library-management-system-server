@@ -3,8 +3,8 @@ import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
-import logger from '../../../utilities/logger.js';
 import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
+import loggerService from '../../../service/logger.service.js';
 
 const createPronouns = async (requester, newPronounsData) => {
     try {
@@ -37,7 +37,7 @@ const createPronouns = async (requester, newPronounsData) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        logger.error(`Failed to create pronouns: ${error}`);
+        loggerService.error(`Failed to create pronouns: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to create pronouns.',
@@ -89,7 +89,7 @@ const getPronounses = async (params) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get pronouns: ${error}`);
+        loggerService.error(`Failed to get pronouns: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get pronouns.',
@@ -111,7 +111,7 @@ const getPronouns = async (pronounsId) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to get pronouns: ${error}`);
+        loggerService.error(`Failed to get pronouns: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to get pronouns.',
@@ -169,7 +169,7 @@ const updatePronouns = async (requester, pronounsId, updateData) => {
             httpStatus.OK
         );
     } catch (error) {
-        logger.error(`Failed to update pronouns: ${error}`);
+        loggerService.error(`Failed to update pronouns: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to update pronouns.',
@@ -223,7 +223,7 @@ const deletePronounses = async (requester, pronounsIds) => {
 
         return sendResponse({}, message, httpStatus.OK);
     } catch (error) {
-        logger.error(`Failed to delete pronouns: ${error}`);
+        loggerService.error(`Failed to delete pronouns: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to delete pronouns.',
