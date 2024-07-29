@@ -152,12 +152,12 @@ const adminSchema = new mongoose.Schema(
         createdBy: {
             trim: true,
             type: Schema.Types.ObjectId,
-            ref: 'UsersModel',
+            ref: 'Admin',
         },
         updatedBy: {
             trim: true,
             type: Schema.Types.ObjectId,
-            ref: 'UsersModel',
+            ref: 'Admin',
         },
     },
     {

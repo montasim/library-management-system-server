@@ -24,6 +24,13 @@ router
     .all(methodNotSupported);
 
 router
+    .route('/default')
+    .post(
+        rolesController.createDefaultRole
+    )
+    .all(methodNotSupported);
+
+router
     .route(`/:${routesConstants.roles.params}`)
     .get(
         rolesValidator.getRole,

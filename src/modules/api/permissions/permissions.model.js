@@ -36,15 +36,13 @@ const permissionSchema = new mongoose.Schema(
         },
         createdBy: {
             type: Schema.Types.ObjectId,
-            trim: true,
-            ref: 'AdminsModel',
+            ref: 'Admin',
             description:
                 'Reference to the admin who created this record, used for tracking record ownership.',
         },
         updatedBy: {
             type: Schema.Types.ObjectId,
-            trim: true,
-            ref: 'AdminsModel',
+            ref: 'Admin',
             description:
                 'Reference to the admin who last updated this record, used for tracking changes and record ownership.',
         },

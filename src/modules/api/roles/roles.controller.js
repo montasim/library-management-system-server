@@ -11,6 +11,15 @@ const createRole = asyncErrorHandlerService(async (req, res) => {
     res.status(newRoleData.status).send(newRoleData);
 });
 
+const createDefaultRole = asyncErrorHandlerService(async (req, res) => {
+    const requester = getRequesterId(req);
+    const newRoleData = await rolesService.createDefaultRole(requester);
+
+    newRoleData.route = req.originalUrl;
+
+    res.status(newRoleData.status).send(newRoleData);
+});
+
 const getRoles = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const rolesData = await rolesService.getRoles(requester, req.query);
@@ -66,6 +75,7 @@ const deleteRole = asyncErrorHandlerService(async (req, res) => {
 
 const rolesController = {
     createRole,
+    createDefaultRole,
     getRoles,
     getRole,
     updateRole,

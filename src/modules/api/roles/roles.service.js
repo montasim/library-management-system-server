@@ -8,6 +8,7 @@ import deleteResourceById from '../../../shared/deleteResourceById.js';
 import getResourceById from '../../../shared/getResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
+import PermissionsModel from '../permissions/permissions.model.js';
 
 const createRole = async (requester, newRoleData) => {
     try {
@@ -53,6 +54,94 @@ const createRole = async (requester, newRoleData) => {
 
         return errorResponse(
             error.message || 'Failed to create role.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+};
+
+const createDefaultRole = async (requester) => {
+    try {
+        const isAuthorized = await validateUserRequest(requester);
+        if (!isAuthorized) {
+            return errorResponse(
+                'You are not authorized to create role.',
+                httpStatus.FORBIDDEN
+            );
+        }
+
+        const defaultRoleName = 'Admin';
+        const allPermissions = await PermissionsModel.find({}).select('_id');  // Fetch all permissions
+        const permissionsIds = allPermissions.map(permission => permission._id);
+
+        const oldDetails = await RolesModel.findOne({ name: defaultRoleName }).lean();
+
+        if (oldDetails) {
+            // Role exists, update it with all permissions
+            await RolesModel.updateOne({ _id: oldDetails._id }, {
+                $set: { permissions: permissionsIds }
+            });
+            const updatedRole = await RolesModel.findById(oldDetails._id)
+                .populate({
+                    path: 'permissions',
+                    populate: [
+                        // { path: 'createdBy', select: '-password -mustChangePassword -isEmailVerified -isPhoneVerified -emailVerifyToken -emailVerifyTokenExpires -phoneVerifyToken -phoneVerifyTokenExpires -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -login' },
+                        // { path: 'updatedBy', select: '-password -mustChangePassword -isEmailVerified -isPhoneVerified -emailVerifyToken -emailVerifyTokenExpires -phoneVerifyToken -phoneVerifyTokenExpires -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -login' },
+                        { path: 'createdBy', select: 'name image department designation isActive' },
+                        { path: 'updatedBy', select: 'name image department designation isActive' },
+                    ]
+                })
+                .populate({
+                    path: 'createdBy',
+                    select: 'name image department designation isActive'
+                })
+                .populate({
+                    path: 'updatedBy',
+                    select: 'name image department designation isActive'
+                });
+
+            return sendResponse(
+                updatedRole,
+                'Role updated successfully.',
+                httpStatus.OK
+            );
+        } else {
+            // Role does not exist, create it with all permissions
+            const newRole = new RolesModel({
+                name: defaultRoleName,
+                permissions: permissionsIds,
+                createdBy: requester
+            });
+
+            await newRole.save();
+            const savedRole = await RolesModel.findById(newRole._id)
+                .populate({
+                    path: 'permissions',
+                    populate: [
+                        // { path: 'createdBy', select: '-password -mustChangePassword -isEmailVerified -isPhoneVerified -emailVerifyToken -emailVerifyTokenExpires -phoneVerifyToken -phoneVerifyTokenExpires -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -login' },
+                        // { path: 'updatedBy', select: '-password -mustChangePassword -isEmailVerified -isPhoneVerified -emailVerifyToken -emailVerifyTokenExpires -phoneVerifyToken -phoneVerifyTokenExpires -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -login' },
+                        { path: 'createdBy', select: 'name image department designation isActive' },
+                        { path: 'updatedBy', select: 'name image department designation isActive' },
+                    ]
+                })
+                .populate({
+                    path: 'createdBy',
+                    select: 'name image department designation isActive'
+                })
+                .populate({
+                    path: 'updatedBy',
+                    select: 'name image department designation isActive'
+                });
+
+            return sendResponse(
+                savedRole,
+                'Role created successfully.',
+                httpStatus.CREATED
+            );
+        }
+    } catch (error) {
+        loggerService.error(`Failed to create or update role: ${error}`);
+        return errorResponse(
+            error.message || 'Failed to create or update role.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
@@ -255,6 +344,7 @@ const deleteRole = async (requester, roleId) => {
 
 const rolesService = {
     createRole,
+    createDefaultRole,
     getRoles,
     getRole,
     updateRole,
