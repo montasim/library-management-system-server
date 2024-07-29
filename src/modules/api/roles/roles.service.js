@@ -70,33 +70,46 @@ const createDefaultRole = async (requester) => {
         }
 
         const defaultRoleName = 'Admin';
-        const allPermissions = await PermissionsModel.find({}).select('_id');  // Fetch all permissions
-        const permissionsIds = allPermissions.map(permission => permission._id);
+        const allPermissions = await PermissionsModel.find({}).select('_id'); // Fetch all permissions
+        const permissionsIds = allPermissions.map(
+            (permission) => permission._id
+        );
 
-        const oldDetails = await RolesModel.findOne({ name: defaultRoleName }).lean();
+        const oldDetails = await RolesModel.findOne({
+            name: defaultRoleName,
+        }).lean();
 
         if (oldDetails) {
             // Role exists, update it with all permissions
-            await RolesModel.updateOne({ _id: oldDetails._id }, {
-                $set: { permissions: permissionsIds }
-            });
+            await RolesModel.updateOne(
+                { _id: oldDetails._id },
+                {
+                    $set: { permissions: permissionsIds },
+                }
+            );
             const updatedRole = await RolesModel.findById(oldDetails._id)
                 .populate({
                     path: 'permissions',
                     populate: [
                         // { path: 'createdBy', select: '-password -mustChangePassword -isEmailVerified -isPhoneVerified -emailVerifyToken -emailVerifyTokenExpires -phoneVerifyToken -phoneVerifyTokenExpires -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -login' },
                         // { path: 'updatedBy', select: '-password -mustChangePassword -isEmailVerified -isPhoneVerified -emailVerifyToken -emailVerifyTokenExpires -phoneVerifyToken -phoneVerifyTokenExpires -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -login' },
-                        { path: 'createdBy', select: 'name image department designation isActive' },
-                        { path: 'updatedBy', select: 'name image department designation isActive' },
-                    ]
+                        {
+                            path: 'createdBy',
+                            select: 'name image department designation isActive',
+                        },
+                        {
+                            path: 'updatedBy',
+                            select: 'name image department designation isActive',
+                        },
+                    ],
                 })
                 .populate({
                     path: 'createdBy',
-                    select: 'name image department designation isActive'
+                    select: 'name image department designation isActive',
                 })
                 .populate({
                     path: 'updatedBy',
-                    select: 'name image department designation isActive'
+                    select: 'name image department designation isActive',
                 });
 
             return sendResponse(
@@ -109,7 +122,7 @@ const createDefaultRole = async (requester) => {
             const newRole = new RolesModel({
                 name: defaultRoleName,
                 permissions: permissionsIds,
-                createdBy: requester
+                createdBy: requester,
             });
 
             await newRole.save();
@@ -119,17 +132,23 @@ const createDefaultRole = async (requester) => {
                     populate: [
                         // { path: 'createdBy', select: '-password -mustChangePassword -isEmailVerified -isPhoneVerified -emailVerifyToken -emailVerifyTokenExpires -phoneVerifyToken -phoneVerifyTokenExpires -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -login' },
                         // { path: 'updatedBy', select: '-password -mustChangePassword -isEmailVerified -isPhoneVerified -emailVerifyToken -emailVerifyTokenExpires -phoneVerifyToken -phoneVerifyTokenExpires -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -login' },
-                        { path: 'createdBy', select: 'name image department designation isActive' },
-                        { path: 'updatedBy', select: 'name image department designation isActive' },
-                    ]
+                        {
+                            path: 'createdBy',
+                            select: 'name image department designation isActive',
+                        },
+                        {
+                            path: 'updatedBy',
+                            select: 'name image department designation isActive',
+                        },
+                    ],
                 })
                 .populate({
                     path: 'createdBy',
-                    select: 'name image department designation isActive'
+                    select: 'name image department designation isActive',
                 })
                 .populate({
                     path: 'updatedBy',
-                    select: 'name image department designation isActive'
+                    select: 'name image department designation isActive',
                 });
 
             return sendResponse(

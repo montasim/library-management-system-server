@@ -4,7 +4,7 @@ import configuration from '../configuration/configuration.js';
 import loggerService from './logger.service.js';
 
 let transporter;
-let isInitialized = false;  // Initialized with a default value
+let isInitialized = false; // Initialized with a default value
 
 const connect = async () => {
     try {
@@ -25,15 +25,19 @@ const connect = async () => {
         isInitialized = true;
     } catch (error) {
         loggerService.error(`Email service connection error: ${error.message}`);
-        loggerService.info('Attempting to reconnect email service in 2 seconds...');
+        loggerService.info(
+            'Attempting to reconnect email service in 2 seconds...'
+        );
 
-        setTimeout(connect, 2000);  // Retry connection after 2 seconds
+        setTimeout(connect, 2000); // Retry connection after 2 seconds
     }
 };
 
 const sendEmail = async (emailAddress, subject, html) => {
     if (!isInitialized) {
-        throw new Error('Cannot send email: email transporter is not initialized.');
+        throw new Error(
+            'Cannot send email: email transporter is not initialized.'
+        );
     }
 
     try {
@@ -44,10 +48,14 @@ const sendEmail = async (emailAddress, subject, html) => {
             html,
         });
 
-        loggerService.info(`Email sent successfully to ${emailAddress}. Message ID: ${info.messageId}`);
+        loggerService.info(
+            `Email sent successfully to ${emailAddress}. Message ID: ${info.messageId}`
+        );
     } catch (error) {
         loggerService.error(`Email send failure: ${error.message}`);
-        loggerService.info('Reconnecting email service to resolve send failure...');
+        loggerService.info(
+            'Reconnecting email service to resolve send failure...'
+        );
 
         await connect(); // Reconnect and then retry
 
@@ -58,7 +66,9 @@ const sendEmail = async (emailAddress, subject, html) => {
             html,
         });
 
-        loggerService.info(`Email successfully sent after reconnection. Message ID: ${retryInfo.messageId}`);
+        loggerService.info(
+            `Email successfully sent after reconnection. Message ID: ${retryInfo.messageId}`
+        );
     }
 };
 

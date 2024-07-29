@@ -72,7 +72,8 @@ const userSchema = new mongoose.Schema(
         twoFactorSecret: sharedSchema.twoFactorSecretSchema,
         mustChangePassword: sharedSchema.mustChangePasswordSchema,
         resetPasswordVerifyToken: sharedSchema.resetPasswordVerifyTokenSchema,
-        resetPasswordVerifyTokenExpires: sharedSchema.resetPasswordVerifyTokenExpiresSchema,
+        resetPasswordVerifyTokenExpires:
+            sharedSchema.resetPasswordVerifyTokenExpiresSchema,
 
         // Professional Information
         company: sharedSchema.companySchema,

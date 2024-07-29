@@ -32,7 +32,9 @@ const connect = async () => {
             await mongoose.connect(configuration.mongoose.url);
             loggerService.info('Database reconnected successfully.');
         } catch (error) {
-            loggerService.error(`Database reconnection failed: ${error.message}`);
+            loggerService.error(
+                `Database reconnection failed: ${error.message}`
+            );
         }
     });
 
@@ -43,7 +45,9 @@ const connect = async () => {
 
         loggerService.info(`Database connected successfully to '${dbName}'.`);
     } catch (error) {
-        loggerService.error(`Initial database connection attempt failed: ${error.message}`);
+        loggerService.error(
+            `Initial database connection attempt failed: ${error.message}`
+        );
 
         throw error; // Re-throwing is necessary for the caller to handle it
     }

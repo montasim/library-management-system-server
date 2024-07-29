@@ -54,7 +54,8 @@ const adminSchema = new mongoose.Schema(
         phoneVerifyToken: sharedSchema.mobileVerifyTokenSchema,
         phoneVerifyTokenExpires: sharedSchema.mobileVerifyTokenExpiresSchema,
         resetPasswordVerifyToken: sharedSchema.resetPasswordVerifyTokenSchema,
-        resetPasswordVerifyTokenExpires: sharedSchema.resetPasswordVerifyTokenExpiresSchema,
+        resetPasswordVerifyTokenExpires:
+            sharedSchema.resetPasswordVerifyTokenExpiresSchema,
         login: {
             failed: {
                 device: [

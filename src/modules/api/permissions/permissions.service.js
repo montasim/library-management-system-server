@@ -55,7 +55,9 @@ const createDefaultPermission = async (requester) => {
         // Validate user authorization
         const isAuthorized = await validateUserRequest(requester);
         if (!isAuthorized) {
-            loggerService.warn(`Unauthorized permission creation attempt by user ${requester._id}`);
+            loggerService.warn(
+                `Unauthorized permission creation attempt by user ${requester._id}`
+            );
 
             return errorResponse(
                 'You are not authorized to create permissions.',
@@ -72,7 +74,9 @@ const createDefaultPermission = async (requester) => {
         for (const permissionName of permissions) {
             try {
                 // Check if the permission already exists to prevent duplicates
-                const existingPermission = await PermissionsModel.findOne({ name: permissionName }).lean();
+                const existingPermission = await PermissionsModel.findOne({
+                    name: permissionName,
+                }).lean();
                 if (!existingPermission) {
                     // Create and save the new permission if it does not exist
                     const newPermission = new PermissionsModel({
@@ -85,14 +89,20 @@ const createDefaultPermission = async (requester) => {
 
                     createdPermissions.push(newPermission);
 
-                    loggerService.info(`Created new permission: ${permissionName}`);
+                    loggerService.info(
+                        `Created new permission: ${permissionName}`
+                    );
                 } else {
-                    loggerService.info(`Permission already exists and was not created: ${permissionName}`);
+                    loggerService.info(
+                        `Permission already exists and was not created: ${permissionName}`
+                    );
                 }
             } catch (error) {
                 errors.push({ permissionName, error: error.message });
 
-                loggerService.error(`Error creating permission ${permissionName}: ${error.message}`);
+                loggerService.error(
+                    `Error creating permission ${permissionName}: ${error.message}`
+                );
             }
         }
 
@@ -105,7 +115,7 @@ const createDefaultPermission = async (requester) => {
         return sendResponse(
             {
                 createdPermissions,
-                errors
+                errors,
             },
             message,
             httpStatus.CREATED

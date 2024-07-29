@@ -19,13 +19,14 @@ const roleSchema = new mongoose.Schema(
                 rolesConstants.lengths.NAME_MAX,
                 `Name cannot be more than ${rolesConstants.lengths.NAME_MAX} characters long.`,
             ],
-            description: "Name of the role. Must be unique and conform to specified length constraints.",
+            description:
+                'Name of the role. Must be unique and conform to specified length constraints.',
         },
         permissions: [
             {
                 type: Schema.Types.ObjectId,
                 ref: 'Permissions',
-                description: 'Array of associated permissions.'
+                description: 'Array of associated permissions.',
             },
         ],
         isActive: sharedSchema.isActiveSchema,
@@ -43,7 +44,10 @@ roleSchema.index({ name: 1 }, { unique: true });
 
 // Pre-save and update middleware
 roleSchema.pre(['save', 'findOneAndUpdate'], function (next) {
-    if ((this.isNew && !this.createdBy) || (this._update && !this._update.updatedBy)) {
+    if (
+        (this.isNew && !this.createdBy) ||
+        (this._update && !this._update.updatedBy)
+    ) {
         return next(new Error('Creator or updater is required.'));
     }
     next();

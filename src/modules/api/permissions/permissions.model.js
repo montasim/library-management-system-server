@@ -27,7 +27,7 @@ const permissionSchema = new mongoose.Schema(
                 'Invalid permission name format. Please use a valid format.',
             ],
             description:
-                "Name of the permission. Must be unique and conform to specified format constraints.",
+                'Name of the permission. Must be unique and conform to specified format constraints.',
         },
         isActive: sharedSchema.isActiveSchema,
         createdBy: sharedSchema.createdByAdminSchema,

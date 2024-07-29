@@ -26,8 +26,7 @@ const usernameSchema = {
         constants.lengths.USERNAME_MAX,
         `Username should not exceed ${constants.lengths.USERNAME_MAX} characters.`,
     ],
-    description:
-        'Username, must be unique and formatted as an email address.',
+    description: 'Username, must be unique and formatted as an email address.',
 };
 
 // Define the shared dateOfBirth schema
@@ -232,8 +231,7 @@ const passwordHashSchema = {
     type: String,
     trim: true,
     required: [true, 'A password is necessary to secure your account.'],
-    description:
-        'Stores the hashed password for secure authentication.',
+    description: 'Stores the hashed password for secure authentication.',
 };
 
 // Define the shared role schema
@@ -304,7 +302,7 @@ const urlSchema = {
 };
 
 // Define the shared email schema
-const emailSchema= {
+const emailSchema = {
     type: String,
     trim: true,
     lowercase: true,
@@ -326,12 +324,11 @@ const emailSchema= {
         constants.lengths.EMAIL_MAX,
         `Email should not exceed ${constants.lengths.EMAIL_MAX} characters long.`,
     ],
-    description:
-        "Each email validated for uniqueness and proper format.",
+    description: 'Each email validated for uniqueness and proper format.',
 };
 
 // Define the shared isPrimaryEmail schema
-const isPrimaryEmailSchema= {
+const isPrimaryEmailSchema = {
     type: Boolean,
     default: false,
     description:
@@ -339,26 +336,24 @@ const isPrimaryEmailSchema= {
 };
 
 // Define the shared isEmailVerified schema
-const isEmailVerifiedSchema= {
+const isEmailVerifiedSchema = {
     type: Boolean,
     default: false,
-    description:
-        "Flag to indicate whether the user's email has been verified.",
+    description: "Flag to indicate whether the user's email has been verified.",
 };
 
 // Define the shared emailVerifyToken schema
-const emailVerifyTokenSchema= {
+const emailVerifyTokenSchema = {
     type: String,
     trim: true,
     description: 'Token used for email verification process.',
 };
 
 // Define the shared emailVerifyTokenExpires schema
-const emailVerifyTokenExpiresSchema= {
+const emailVerifyTokenExpiresSchema = {
     type: Date,
     trim: true,
-    description:
-        'Expiration date and time for the email verification token.',
+    description: 'Expiration date and time for the email verification token.',
 };
 
 // Define the shared mobile schema
@@ -382,8 +377,7 @@ const mobileSchema = {
         constants.lengths.MOBILE_MAX,
         `Mobile number should not exceed ${constants.lengths.MOBILE_MAX} digits.`,
     ],
-    description:
-        'Mobile number, must be unique and properly formatted.',
+    description: 'Mobile number, must be unique and properly formatted.',
 };
 
 // Define the shared isPrimaryMobile schema
@@ -413,8 +407,7 @@ const mobileVerifyTokenSchema = {
 const mobileVerifyTokenExpiresSchema = {
     type: Date,
     trim: true,
-    description:
-        'Expiration date and time for the mobile verification token.',
+    description: 'Expiration date and time for the mobile verification token.',
 };
 
 // Define the shared isActive schema
@@ -422,7 +415,7 @@ const isActiveSchema = {
     type: Boolean,
     default: true,
     description:
-        "Flag to indicate whether the document is active or deactivated.",
+        'Flag to indicate whether the document is active or deactivated.',
 };
 
 // Define the shared facebook schema
@@ -430,10 +423,7 @@ const facebookSchema = {
     type: String,
     trim: true,
     sparse: true,
-    unique: [
-        true,
-        'This Facebook URL is already linked to another account.',
-    ],
+    unique: [true, 'This Facebook URL is already linked to another account.'],
     match: [
         patterns.FACEBOOK_URL,
         'Invalid facebook url format. Please enter a valid facebook url.',
@@ -451,10 +441,7 @@ const twitterSchema = {
     type: String,
     trim: true,
     sparse: true,
-    unique: [
-        true,
-        'This Twitter handle is already linked to another account.',
-    ],
+    unique: [true, 'This Twitter handle is already linked to another account.'],
     match: [
         patterns.TWITTER_URL,
         'Invalid twitter url format. Please enter a valid twitter url.',
@@ -684,8 +671,7 @@ const profileVisibilitySchema = {
     trim: true,
     enum: ['public', 'private', 'friends'],
     default: 'public',
-    description:
-        'Controls the visibility of the user profile to other users.',
+    description: 'Controls the visibility of the user profile to other users.',
 };
 
 // Define the shared createdByAdmin schema

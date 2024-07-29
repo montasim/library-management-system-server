@@ -25,9 +25,7 @@ router
 
 router
     .route('/default')
-    .post(
-        permissionsController.createDefaultPermission
-    )
+    .post(permissionsController.createDefaultPermission)
     .all(methodNotSupported);
 
 router

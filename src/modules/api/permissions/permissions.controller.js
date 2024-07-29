@@ -16,9 +16,8 @@ const createPermission = asyncErrorHandlerService(async (req, res) => {
 
 const createDefaultPermission = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const newPermissionData = await permissionsService.createDefaultPermission(
-        requester
-    );
+    const newPermissionData =
+        await permissionsService.createDefaultPermission(requester);
 
     newPermissionData.route = req.originalUrl;
 
