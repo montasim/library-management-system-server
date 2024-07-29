@@ -12,7 +12,7 @@ const getRoles = validateWithSchema([
     },
 ]);
 
-const getRole = validateWithSchema([
+const getRoleById = validateWithSchema([
     {
         schema: rolesSchema.roleIdParamSchema,
         property: 'params',
@@ -47,7 +47,7 @@ const deleteRole = validateWithSchema([
 const rolesValidator = {
     createRole,
     getRoles,
-    getRole,
+    getRoleById,
     updateRole,
     deleteRoles,
     deleteRole,

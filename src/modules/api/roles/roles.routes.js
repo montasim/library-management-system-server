@@ -21,7 +21,7 @@ router
 
 router
     .route(`/:${routesConstants.roles.params}`)
-    .get(rolesValidator.getRole, rolesController.getRole)
+    .get(rolesValidator.getRoleById, rolesController.getRoleById)
     .put(rolesValidator.updateRole, rolesController.updateRole)
     .delete(rolesValidator.deleteRole, rolesController.deleteRole)
     .all(methodNotSupported);
