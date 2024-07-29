@@ -14,6 +14,7 @@ import permissionRoutes from './permissions/permission.routes.js';
 import rolesRoutes from './roles/roles.routes.js';
 import adminRoutes from './admin/admin.routes.js';
 import pronounsRoutes from './pronouns/pronouns.routes.js';
+import userProfileRoutes from './userProfile/userProfile.routes.js';
 
 const router = express.Router();
 
@@ -37,5 +38,6 @@ router.use(`/${routesConstants.subjects.routes}`, subjectsRoutes);
 router.use('/trending', trendingRoutes);
 router.use('/users', authenticateMiddleware.user, usersRoutes);
 router.use(`/${routesConstants.writers.routes}`, writersRoutes);
+router.use('/', userProfileRoutes);
 
 export default router;
