@@ -4,6 +4,98 @@ import constants from '../constant/constants.js';
 import userConstants from '../modules/api/users/users.constants.js';
 import patterns from '../constant/patterns.constants.js';
 
+// Define the shared username schema
+const usernameSchema = {
+    type: String,
+    trim: true,
+    lowercase: true,
+    sparse: true,
+    unique: [
+        true,
+        'The username you chose is already in use. Please try a different one.',
+    ],
+    match: [
+        userConstants.pattern.USERNAME,
+        'Please enter a valid email address for your username.',
+    ],
+    minlength: [
+        constants.lengths.USERNAME_MIN,
+        `Username should be at least ${constants.lengths.USERNAME_MIN} characters.`,
+    ],
+    maxlength: [
+        constants.lengths.USERNAME_MAX,
+        `Username should not exceed ${constants.lengths.USERNAME_MAX} characters.`,
+    ],
+    description:
+        'Username, must be unique and formatted as an email address.',
+};
+
+// Define the shared dateOfBirth schema
+const dateOfBirthSchema = {
+    type: Date,
+    trim: true,
+    required: [true, 'Your date of birth is required.'],
+    match: [
+        userConstants.pattern.DATE_OF_BIRTH,
+        'Date of birth must be in the format DD-MM-YYYY and a valid date.',
+    ],
+    description:
+        "The user's birth date, important for age-based access control.",
+};
+
+// Define the shared bio schema
+const bioSchema = {
+    type: String,
+    trim: true,
+    maxlength: [
+        userConstants.lengths.BIO_MAX,
+        `Bio should not exceed ${userConstants.lengths.BIO_MAX} characters.`,
+    ],
+    description:
+        'A short description about the user, limited to a specified maximum length.',
+};
+
+// Define the shared pronouns schema
+const pronounsSchema = {
+    type: Schema.Types.ObjectId,
+    trim: true,
+    ref: 'Pronouns',
+    default: undefined,
+    description:
+        'Reference to an external Pronouns model, ensuring pronouns are selected from a predefined list.',
+};
+
+// Define the shared numericId schema
+const numericIdSchema = {
+    type: Number,
+    trim: true,
+    sparse: true,
+    unique: [
+        true,
+        'The numeric ID must be unique. Duplicate IDs are not allowed.',
+    ],
+    // required: [true, 'A numeric ID is required for each user.'],
+    description:
+        'Numeric part of the unique identifier, incremented automatically.',
+};
+
+// Define the shared userId schema
+const userIdSchema = {
+    type: String,
+    trim: true,
+    sparse: true,
+    // required: [
+    //     true,
+    //     'A user ID is required and must be unique across all users.',
+    // ],
+    unique: [
+        true,
+        'The user ID must be unique. Duplicate user IDs are not allowed.',
+    ],
+    description:
+        'User ID in the format user-X, where X is an auto-incremented number.',
+};
+
 // Define the shared image schema
 const imageSchema = new Schema({
     fileId: {
@@ -135,115 +227,287 @@ const addressSchema = new Schema({
     },
 });
 
+// Define the shared passwordHash schema
+const passwordHashSchema = {
+    type: String,
+    trim: true,
+    required: [true, 'A password is necessary to secure your account.'],
+    description:
+        'Stores the hashed password for secure authentication.',
+};
+
+// Define the shared role schema
+const roleSchema = {
+    type: Schema.Types.ObjectId,
+    ref: 'Roles',
+    default: undefined,
+    description:
+        "Defines the user's role within the application by referencing the RoleModel, restricting access based on the role defined in the RoleModel.",
+};
+
+// Define the shared twoFactorEnabled schema
+const twoFactorEnabledSchema = {
+    type: Boolean,
+    trim: true,
+    default: false,
+    description:
+        'Boolean flag to indicate if two-factor authentication is enabled for added security.',
+};
+
+// Define the shared twoFactorSecret schema
+const twoFactorSecretSchema = {
+    type: String,
+    trim: true,
+    description:
+        'Secret key for two-factor authentication, used to generate tokens.',
+};
+
+// Define the shared mustChangePassword schema
+const mustChangePasswordSchema = {
+    type: Boolean,
+    trim: true,
+    default: false,
+    description:
+        'Flag to indicate if the user must change their password at next login for security reasons.',
+};
+
+// Define the shared resetPasswordVerifyToken schema
+const resetPasswordVerifyTokenSchema = {
+    type: String,
+    trim: true,
+    description:
+        "Token used to verify the user's identity for password reset process.",
+};
+
+// Define the shared resetPasswordVerifyTokenExpires schema
+const resetPasswordVerifyTokenExpiresSchema = {
+    type: Date,
+    trim: true,
+    description:
+        ' Expiration date and time for the reset password verification token.',
+};
+
 // Define the shared url schema
-const urlSchema = new Schema({
-    url: {
-        type: String,
-        trim: true,
-        match: [
-            patterns.URL,
-            'Invalid website format. Please enter a valid website.',
-        ],
-        maxlength: [
-            constants.lengths.WEBSITE_URL_MAX,
-            `Your URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
-        ],
-        description:
-            'A unique URL associated with the user, typically for a personal or professional website.',
-    },
-});
+const urlSchema = {
+    type: String,
+    trim: true,
+    match: [
+        patterns.URL,
+        'Invalid website format. Please enter a valid website.',
+    ],
+    maxlength: [
+        constants.lengths.WEBSITE_URL_MAX,
+        `Your URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
+    ],
+    description:
+        'A unique URL associated with the user, typically for a personal or professional website.',
+};
+
+// Define the shared email schema
+const emailSchema= {
+    type: String,
+    trim: true,
+    lowercase: true,
+    sparse: true,
+    unique: [
+        true,
+        'This email address is already in use. Please use a different email address.',
+    ],
+    required: [true, 'An email address is required to register.'],
+    match: [
+        patterns.EMAIL,
+        'Invalid email format. Please enter a valid email address.',
+    ],
+    minlength: [
+        constants.lengths.EMAIL_MIN,
+        `Email should be at least ${constants.lengths.EMAIL_MIN} characters long.`,
+    ],
+    maxlength: [
+        constants.lengths.EMAIL_MAX,
+        `Email should not exceed ${constants.lengths.EMAIL_MAX} characters long.`,
+    ],
+    description:
+        "Each email validated for uniqueness and proper format.",
+};
+
+// Define the shared isPrimaryEmail schema
+const isPrimaryEmailSchema= {
+    type: Boolean,
+    default: false,
+    description:
+        'Indicates if this is the primary email for the user. Only one email should be set as primary at any time.',
+};
+
+// Define the shared isEmailVerified schema
+const isEmailVerifiedSchema= {
+    type: Boolean,
+    default: false,
+    description:
+        "Flag to indicate whether the user's email has been verified.",
+};
+
+// Define the shared emailVerifyToken schema
+const emailVerifyTokenSchema= {
+    type: String,
+    trim: true,
+    description: 'Token used for email verification process.',
+};
+
+// Define the shared emailVerifyTokenExpires schema
+const emailVerifyTokenExpiresSchema= {
+    type: Date,
+    trim: true,
+    description:
+        'Expiration date and time for the email verification token.',
+};
+
+// Define the shared mobile schema
+const mobileSchema = {
+    type: String,
+    trim: true,
+    sparse: true,
+    unique: [
+        true,
+        'This mobile number is already registered. Please use a different mobile number.',
+    ],
+    match: [
+        patterns.MOBILE,
+        'Invalid mobile number format. Please enter a valid mobile number.',
+    ],
+    minlength: [
+        constants.lengths.MOBILE_MIN,
+        `Mobile number should have at least ${constants.lengths.MOBILE_MIN} digits.`,
+    ],
+    maxlength: [
+        constants.lengths.MOBILE_MAX,
+        `Mobile number should not exceed ${constants.lengths.MOBILE_MAX} digits.`,
+    ],
+    description:
+        'Mobile number, must be unique and properly formatted.',
+};
+
+// Define the shared isPrimaryMobile schema
+const isPrimaryMobileSchema = {
+    type: Boolean,
+    default: false,
+    description:
+        'Indicates if this is the primary mobile for the user. Only one mobile should be set as primary at any time.',
+};
+
+// Define the shared isMobileVerified schema
+const isMobileVerifiedSchema = {
+    type: Boolean,
+    default: false,
+    description:
+        "Flag to indicate whether the user's mobile number has been verified.",
+};
+
+// Define the shared mobileVerifyToken schema
+const mobileVerifyTokenSchema = {
+    type: String,
+    trim: true,
+    description: 'Token used for mobile number verification process.',
+};
+
+// Define the shared mobileVerifyTokenExpires schema
+const mobileVerifyTokenExpiresSchema = {
+    type: Date,
+    trim: true,
+    description:
+        'Expiration date and time for the mobile verification token.',
+};
+
+// Define the shared isActive schema
+const isActiveSchema = {
+    type: Boolean,
+    default: true,
+    description:
+        "Flag to indicate whether the document is active or deactivated.",
+};
 
 // Define the shared facebook schema
-const facebookSchema = new Schema({
-    facebook: {
-        type: String,
-        trim: true,
-        sparse: true,
-        unique: [
-            true,
-            'This Facebook URL is already linked to another account.',
-        ],
-        match: [
-            patterns.FACEBOOK_URL,
-            'Invalid facebook url format. Please enter a valid facebook url.',
-        ],
-        maxlength: [
-            constants.lengths.WEBSITE_URL_MAX,
-            `Your Facebook URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
-        ],
-        description:
-            'The Facebook URL must be unique across all users and follow the predefined URL pattern.',
-    },
-});
+const facebookSchema = {
+    type: String,
+    trim: true,
+    sparse: true,
+    unique: [
+        true,
+        'This Facebook URL is already linked to another account.',
+    ],
+    match: [
+        patterns.FACEBOOK_URL,
+        'Invalid facebook url format. Please enter a valid facebook url.',
+    ],
+    maxlength: [
+        constants.lengths.WEBSITE_URL_MAX,
+        `Your Facebook URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
+    ],
+    description:
+        'The Facebook URL must be unique across all users and follow the predefined URL pattern.',
+};
 
 // Define the shared twitter schema
-const twitterSchema = new Schema({
-    twitter: {
-        type: String,
-        trim: true,
-        sparse: true,
-        unique: [
-            true,
-            'This Twitter handle is already linked to another account.',
-        ],
-        match: [
-            patterns.TWITTER_URL,
-            'Invalid twitter url format. Please enter a valid twitter url.',
-        ],
-        maxlength: [
-            constants.lengths.WEBSITE_URL_MAX,
-            `Your Twitter handle must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
-        ],
-        description:
-            'The Twitter handle must be unique and comply with a specific URL format.',
-    },
-});
+const twitterSchema = {
+    type: String,
+    trim: true,
+    sparse: true,
+    unique: [
+        true,
+        'This Twitter handle is already linked to another account.',
+    ],
+    match: [
+        patterns.TWITTER_URL,
+        'Invalid twitter url format. Please enter a valid twitter url.',
+    ],
+    maxlength: [
+        constants.lengths.WEBSITE_URL_MAX,
+        `Your Twitter handle must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
+    ],
+    description:
+        'The Twitter handle must be unique and comply with a specific URL format.',
+};
 
 // Define the shared linkedIn schema
-const linkedInSchema = new Schema({
-    linkedIn: {
-        type: String,
-        trim: true,
-        sparse: true,
-        unique: [
-            true,
-            'This LinkedIn profile is already linked to another account.',
-        ],
-        match: [
-            patterns.LINKEDIN_URL,
-            'Invalid linkedIn url format. Please enter a valid linkedIn url.',
-        ],
-        maxlength: [
-            constants.lengths.WEBSITE_URL_MAX,
-            `Your LinkedIn URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
-        ],
-        description:
-            'LinkedIn URLs are unique to each user, adhering to the required LinkedIn format.',
-    },
-});
+const linkedInSchema = {
+    type: String,
+    trim: true,
+    sparse: true,
+    unique: [
+        true,
+        'This LinkedIn profile is already linked to another account.',
+    ],
+    match: [
+        patterns.LINKEDIN_URL,
+        'Invalid linkedIn url format. Please enter a valid linkedIn url.',
+    ],
+    maxlength: [
+        constants.lengths.WEBSITE_URL_MAX,
+        `Your LinkedIn URL must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
+    ],
+    description:
+        'LinkedIn URLs are unique to each user, adhering to the required LinkedIn format.',
+};
 
 // Define the shared github schema
-const githubSchema = new Schema({
-    github: {
-        type: String,
-        trim: true,
-        sparse: true,
-        unique: [
-            true,
-            'This GitHub username is already linked to another account.',
-        ],
-        match: [
-            patterns.GITHUB_URL,
-            'Invalid github url format. Please enter a valid github url.',
-        ],
-        maxlength: [
-            constants.lengths.WEBSITE_URL_MAX,
-            `Your GitHub username must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
-        ],
-        description:
-            "GitHub's usernames need to follow a specific format and be unique among all system users.",
-    },
-});
+const githubSchema = {
+    type: String,
+    trim: true,
+    sparse: true,
+    unique: [
+        true,
+        'This GitHub username is already linked to another account.',
+    ],
+    match: [
+        patterns.GITHUB_URL,
+        'Invalid github url format. Please enter a valid github url.',
+    ],
+    maxlength: [
+        constants.lengths.WEBSITE_URL_MAX,
+        `Your GitHub username must be less than ${constants.lengths.WEBSITE_URL_MAX} characters long.`,
+    ],
+    description:
+        "GitHub's usernames need to follow a specific format and be unique among all system users.",
+};
 
 // Define the shared company schema
 const companySchema = new Schema({
@@ -414,12 +678,62 @@ const activitiesSchema = new Schema({
     },
 });
 
+// Define the shared profileVisibility schema
+const profileVisibilitySchema = {
+    type: String,
+    trim: true,
+    enum: ['public', 'private', 'friends'],
+    default: 'public',
+    description:
+        'Controls the visibility of the user profile to other users.',
+};
+
+// Define the shared createdByAdmin schema
+const createdByAdminSchema = {
+    type: Schema.Types.ObjectId,
+    ref: 'Admin',
+    description:
+        'Reference to the admin who created this record, used for tracking record ownership.',
+};
+
+// Define the shared updatedByAdmin schema
+const updatedByAdminSchema = {
+    type: Schema.Types.ObjectId,
+    ref: 'Admin',
+    description:
+        'Reference to the admin who last updated this record, used for tracking changes and record ownership.',
+};
+
 const sharedSchema = {
+    usernameSchema,
+    dateOfBirthSchema,
+    bioSchema,
+    pronounsSchema,
+    numericIdSchema,
+    userIdSchema,
     imageSchema,
     nameSchema,
     addressSchema,
+    passwordHashSchema,
+    roleSchema,
+    twoFactorEnabledSchema,
+    twoFactorSecretSchema,
+    mustChangePasswordSchema,
     companySchema,
+    resetPasswordVerifyTokenSchema,
+    resetPasswordVerifyTokenExpiresSchema,
     urlSchema,
+    emailSchema,
+    isPrimaryEmailSchema,
+    isEmailVerifiedSchema,
+    emailVerifyTokenSchema,
+    emailVerifyTokenExpiresSchema,
+    mobileSchema,
+    isPrimaryMobileSchema,
+    isMobileVerifiedSchema,
+    mobileVerifyTokenSchema,
+    mobileVerifyTokenExpiresSchema,
+    isActiveSchema,
     facebookSchema,
     twitterSchema,
     linkedInSchema,
@@ -428,6 +742,9 @@ const sharedSchema = {
     loginSchema,
     sessionsSchema,
     activitiesSchema,
+    profileVisibilitySchema,
+    createdByAdminSchema,
+    updatedByAdminSchema,
 };
 
 export default sharedSchema;

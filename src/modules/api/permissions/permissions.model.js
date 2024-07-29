@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import permissionsConstants from './permissions.constant.js';
+import sharedSchema from '../../../shared/schema.js';
 
 const permissionSchema = new mongoose.Schema(
     {
@@ -28,24 +29,9 @@ const permissionSchema = new mongoose.Schema(
             description:
                 "Name of the permission. Must be unique and conform to specified format constraints.",
         },
-        isActive: {
-            type: Boolean,
-            default: true,
-            description:
-                'Indicates whether the permission is currently active. Default is true.',
-        },
-        createdBy: {
-            type: Schema.Types.ObjectId,
-            ref: 'Admin',
-            description:
-                'Reference to the admin who created this record, used for tracking record ownership.',
-        },
-        updatedBy: {
-            type: Schema.Types.ObjectId,
-            ref: 'Admin',
-            description:
-                'Reference to the admin who last updated this record, used for tracking changes and record ownership.',
-        },
+        isActive: sharedSchema.isActiveSchema,
+        createdBy: sharedSchema.createdByAdminSchema,
+        updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
         timestamps: true, // Automatically adds createdAt and updatedAt timestamps

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import publicationsConstants from './publications.constant.js';
+import sharedSchema from '../../../shared/schema.js';
 
 const { Schema } = mongoose;
 
@@ -20,20 +21,9 @@ const publicationSchema = new mongoose.Schema(
                 'Name cannot be more than 100 characters long.',
             ],
         },
-        isActive: {
-            type: Boolean,
-            default: true,
-        },
-        createdBy: {
-            trim: true,
-            type: Schema.Types.ObjectId,
-            ref: 'UsersModel',
-        },
-        updatedBy: {
-            trim: true,
-            type: Schema.Types.ObjectId,
-            ref: 'UsersModel',
-        },
+        isActive: sharedSchema.isActiveSchema,
+        createdBy: sharedSchema.createdByAdminSchema,
+        updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
         timestamps: true,

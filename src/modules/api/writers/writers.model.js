@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import writersConstants from './writers.constant.js';
-
-const { Schema } = mongoose;
+import sharedSchema from '../../../shared/schema.js';
 
 const writerSchema = new mongoose.Schema(
     {
@@ -20,29 +19,7 @@ const writerSchema = new mongoose.Schema(
                 'Name cannot be more than 100 characters long.',
             ],
         },
-        image: {
-            fileId: {
-                type: String,
-                maxlength: [
-                    100,
-                    'Picture fileId must be less than 100 characters long',
-                ],
-            },
-            shareableLink: {
-                type: String,
-                maxlength: [
-                    500,
-                    'Picture shareableLink must be less than 500 characters long',
-                ],
-            },
-            downloadLink: {
-                type: String,
-                maxlength: [
-                    500,
-                    'Picture downloadLink must be less than 500 characters long',
-                ],
-            },
-        },
+        image: sharedSchema.imageSchema,
         review: {
             type: Number,
             min: [0, 'Review must be at least 0.'],
@@ -62,20 +39,9 @@ const writerSchema = new mongoose.Schema(
                 'Summary cannot be more than 1000 characters long.',
             ],
         },
-        isActive: {
-            type: Boolean,
-            default: true,
-        },
-        createdBy: {
-            trim: true,
-            type: Schema.Types.ObjectId,
-            ref: 'UsersModel',
-        },
-        updatedBy: {
-            trim: true,
-            type: Schema.Types.ObjectId,
-            ref: 'UsersModel',
-        },
+        isActive: sharedSchema.isActiveSchema,
+        createdBy: sharedSchema.createdByAdminSchema,
+        updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
         timestamps: true,

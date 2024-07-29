@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
 import requestBooksConstants from '../books.constant.js';
+import sharedSchema from '../../../../shared/schema.js';
 
 const requestBookSchema = new mongoose.Schema(
     {
@@ -25,35 +26,7 @@ const requestBookSchema = new mongoose.Schema(
                     ],
                     description: 'The unique name of the book.',
                 },
-                image: {
-                    fileId: {
-                        type: String,
-                        maxlength: [
-                            requestBooksConstants.lengths.FILE_ID,
-                            `The image file ID should be shorter than ${requestBooksConstants.lengths.FILE_ID} characters.`,
-                        ],
-                        description:
-                            'The unique identifier for the book image file.',
-                    },
-                    shareableLink: {
-                        type: String,
-                        maxlength: [
-                            requestBooksConstants.lengths.SHAREABLE_LINK,
-                            `The shareable link should be shorter than ${requestBooksConstants.lengths.SHAREABLE_LINK} characters.`,
-                        ],
-                        description:
-                            'A URL where the book image can be accessed.',
-                    },
-                    downloadLink: {
-                        type: String,
-                        maxlength: [
-                            requestBooksConstants.lengths.DOWNLOAD_LINK,
-                            `The download link should be shorter than ${requestBooksConstants.lengths.DOWNLOAD_LINK} characters.`,
-                        ],
-                        description:
-                            'A URL where the book image can be downloaded.',
-                    },
-                },
+                image: sharedSchema.imageSchema,
                 writer: {
                     type: String,
                     trim: true,

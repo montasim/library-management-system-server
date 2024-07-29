@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import pronounsConstants from './pronouns.constant.js';
+import sharedSchema from '../../../shared/schema.js';
 
 const { Schema } = mongoose;
 
@@ -26,26 +27,9 @@ const pronounsSchema = new mongoose.Schema(
             description:
                 'The name of the pronouns, representing different gender identities.',
         },
-        isActive: {
-            type: Boolean,
-            default: true,
-            description:
-                'Indicates whether the pronouns are active and should be displayed in user options.',
-        },
-        createdBy: {
-            type: Schema.Types.ObjectId,
-            trim: true,
-            ref: 'Admin',
-            required: [true, 'Creator of the pronoun must be specified.'],
-            description: 'The ID of the admin who created this pronoun entry.',
-        },
-        updatedBy: {
-            type: Schema.Types.ObjectId,
-            trim: true,
-            ref: 'Admin',
-            description:
-                'The ID of the admin who last updated this pronoun entry.',
-        },
+        isActive: sharedSchema.isActiveSchema,
+        createdBy: sharedSchema.createdByAdminSchema,
+        updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
         timestamps: true,

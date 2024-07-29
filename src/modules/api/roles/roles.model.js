@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import rolesConstants from './roles.constant.js';
+import sharedSchema from '../../../shared/schema.js';
 
 const { Schema } = mongoose;
 
@@ -27,23 +28,9 @@ const roleSchema = new mongoose.Schema(
                 description: 'Array of associated permissions.'
             },
         ],
-        isActive: {
-            type: Boolean,
-            default: true,
-            description: "Indicates whether the role is currently active. Default is true."
-        },
-        createdBy: {
-            type: Schema.Types.ObjectId,
-            ref: 'Admin',
-            description:
-                'Reference to the admin who created this record, used for tracking record ownership.',
-        },
-        updatedBy: {
-            type: Schema.Types.ObjectId,
-            ref: 'Admin',
-            description:
-                'Reference to the admin who last updated this record, used for tracking changes and record ownership.',
-        },
+        isActive: sharedSchema.isActiveSchema,
+        createdBy: sharedSchema.createdByAdminSchema,
+        updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
         timestamps: true,

@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import booksConstants from './books.constant.js';
+import sharedSchema from '../../../shared/schema.js';
 
 /**
  * Mongoose schema for books.
@@ -23,32 +24,7 @@ const bookSchema = new mongoose.Schema(
             ],
             description: 'The unique name of the book.',
         },
-        image: {
-            fileId: {
-                type: String,
-                maxlength: [
-                    booksConstants.lengths.FILE_ID,
-                    `The image file ID should be shorter than ${booksConstants.lengths.FILE_ID} characters.`,
-                ],
-                description: 'The unique identifier for the book image file.',
-            },
-            shareableLink: {
-                type: String,
-                maxlength: [
-                    booksConstants.lengths.SHAREABLE_LINK,
-                    `The shareable link should be shorter than ${booksConstants.lengths.SHAREABLE_LINK} characters.`,
-                ],
-                description: 'A URL where the book image can be accessed.',
-            },
-            downloadLink: {
-                type: String,
-                maxlength: [
-                    booksConstants.lengths.DOWNLOAD_LINK,
-                    `The download link should be shorter than ${booksConstants.lengths.DOWNLOAD_LINK} characters.`,
-                ],
-                description: 'A URL where the book image can be downloaded.',
-            },
-        },
+        image: sharedSchema.imageSchema,
         bestSeller: {
             type: Number,
             min: [
@@ -149,26 +125,9 @@ const bookSchema = new mongoose.Schema(
             description:
                 'The number of copies of the book currently in stock and available for purchase.',
         },
-        isActive: {
-            type: Boolean,
-            default: true,
-            description:
-                'Indicates whether the book is currently available for purchase.',
-        },
-        createdBy: {
-            type: Schema.Types.ObjectId,
-            ref: 'AdminModel',
-            required: 'Please specify who created this book entry.',
-            description:
-                'The database ID of the admin who originally created this book entry.',
-        },
-        updatedBy: {
-            type: Schema.Types.ObjectId,
-            ref: 'AdminModel',
-            required: 'Please specify who last updated this book entry.',
-            description:
-                'The database ID of the admin who last updated this book entry.',
-        },
+        isActive: sharedSchema.isActiveSchema,
+        createdBy: sharedSchema.createdByAdminSchema,
+        updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
         timestamps: true,
