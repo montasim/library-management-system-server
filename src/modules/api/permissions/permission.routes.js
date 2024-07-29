@@ -24,6 +24,13 @@ router
     .all(methodNotSupported);
 
 router
+    .route('/default')
+    .post(
+        permissionsController.createDefaultPermission
+    )
+    .all(methodNotSupported);
+
+router
     .route(`/:${routesConstants.permissions.params}`)
     .get(
         permissionsValidator.getPermission,

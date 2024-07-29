@@ -1,82 +1,67 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import permissionsConstants from './permissions.constant.js';
-
-const { Schema } = mongoose;
 
 const permissionSchema = new mongoose.Schema(
     {
         name: {
             type: String,
             trim: true,
-            unique: true,
-            required: [true, 'Name cannot be empty.'],
+            lowercase: true,
+            sparse: true,
+            unique: [
+                true,
+                'This permission name is already in use. Please use a different name.',
+            ],
+            required: [true, 'Permission name is required.'],
             minlength: [
                 permissionsConstants.lengths.NAME_MIN,
-                'Name must be at least 3 characters long.',
+                `Permission name must be at least ${permissionsConstants.lengths.NAME_MIN} characters long.`,
             ],
             maxlength: [
                 permissionsConstants.lengths.NAME_MAX,
-                'Name cannot be more than 100 characters long.',
+                `Permission name must not exceed ${permissionsConstants.lengths.NAME_MAX} characters.`,
             ],
             match: [
                 permissionsConstants.pattern.name,
-                permissionsConstants.message.pattern,
+                'Invalid permission name format. Please use a valid format.',
             ],
+            description:
+                "Name of the permission. Must be unique and conform to specified format constraints.",
         },
         isActive: {
             type: Boolean,
             default: true,
+            description:
+                'Indicates whether the permission is currently active. Default is true.',
         },
         createdBy: {
-            trim: true,
             type: Schema.Types.ObjectId,
-            ref: 'UsersModel',
+            trim: true,
+            ref: 'AdminsModel',
+            description:
+                'Reference to the admin who created this record, used for tracking record ownership.',
         },
         updatedBy: {
-            trim: true,
             type: Schema.Types.ObjectId,
-            ref: 'UsersModel',
+            trim: true,
+            ref: 'AdminsModel',
+            description:
+                'Reference to the admin who last updated this record, used for tracking changes and record ownership.',
         },
     },
     {
-        timestamps: true,
-        versionKey: false,
+        timestamps: true, // Automatically adds createdAt and updatedAt timestamps
+        versionKey: false, // Disables versioning (__v field)
     }
 );
 
-// Pre-save middleware for creation
-permissionSchema.pre('save', function (next) {
-    if (this.isNew && !this.createdBy) {
-        return next(new Error('Creator is required.'));
-    }
-
-    next();
-});
-
-// Pre-update middleware for updates
-permissionSchema.pre('findOneAndUpdate', function (next) {
-    if (!this._update.updatedBy) {
-        return next(new Error('Updater is required.'));
-    }
-
-    next();
-});
-
-// Error handling middleware for unique constraint violations
-permissionSchema.post('save', (error, doc, next) => {
+// Middleware for handling unique constraint violations
+permissionSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
-        return next(new Error('Permission name already exists.'));
+        next(new Error('Permission name already exists.'));
+    } else {
+        next(error);
     }
-
-    next(error);
-});
-
-permissionSchema.post('findOneAndUpdate', (error, res, next) => {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        return next(new Error('Permission name already exists.'));
-    }
-
-    next(error);
 });
 
 const PermissionsModel = mongoose.model('Permissions', permissionSchema);

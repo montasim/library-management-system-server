@@ -7,6 +7,8 @@ import deleteResourceById from '../../../shared/deleteResourceById.js';
 import getResourceById from '../../../shared/getResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
+import routesConstants from '../../../constant/routes.constants.js';
+import generatePermissions from '../../../shared/generatePermissions.js';
 
 const createPermission = async (requester, newPermissionData) => {
     try {
@@ -43,6 +45,76 @@ const createPermission = async (requester, newPermissionData) => {
 
         return errorResponse(
             error.message || 'Failed to create permission.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+};
+
+const createDefaultPermission = async (requester) => {
+    try {
+        // Validate user authorization
+        const isAuthorized = await validateUserRequest(requester);
+        if (!isAuthorized) {
+            loggerService.warn(`Unauthorized permission creation attempt by user ${requester._id}`);
+
+            return errorResponse(
+                'You are not authorized to create permissions.',
+                httpStatus.FORBIDDEN
+            );
+        }
+
+        // Define actions and generate permissions
+        const actions = ['create', 'get', 'update', 'delete', 'modify'];
+        const permissions = generatePermissions(actions, routesConstants);
+        const createdPermissions = [];
+        const errors = [];
+
+        for (const permissionName of permissions) {
+            try {
+                // Check if the permission already exists to prevent duplicates
+                const existingPermission = await PermissionsModel.findOne({ name: permissionName }).lean();
+                if (!existingPermission) {
+                    // Create and save the new permission if it does not exist
+                    const newPermission = new PermissionsModel({
+                        name: permissionName,
+                        isActive: true,
+                        createdBy: requester,
+                    });
+
+                    await newPermission.save();
+
+                    createdPermissions.push(newPermission);
+
+                    loggerService.info(`Created new permission: ${permissionName}`);
+                } else {
+                    loggerService.info(`Permission already exists and was not created: ${permissionName}`);
+                }
+            } catch (error) {
+                errors.push({ permissionName, error: error.message });
+
+                loggerService.error(`Error creating permission ${permissionName}: ${error.message}`);
+            }
+        }
+
+        // Construct the response with details of created permissions and any errors
+        const message = `Permissions creation process completed with ${createdPermissions.length} permissions created.`;
+        if (errors.length) {
+            message += ` There were errors with ${errors.length} permissions.`;
+        }
+
+        return sendResponse(
+            {
+                createdPermissions,
+                errors
+            },
+            message,
+            httpStatus.CREATED
+        );
+    } catch (error) {
+        loggerService.error(`Failed to create permissions: ${error.message}`);
+
+        return errorResponse(
+            'Failed to create permissions due to an internal server error.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
@@ -262,6 +334,7 @@ const deletePermission = async (requester, permissionId) => {
 
 const permissionsService = {
     createPermission,
+    createDefaultPermission,
     getPermissions,
     getPermission,
     updatePermission,
