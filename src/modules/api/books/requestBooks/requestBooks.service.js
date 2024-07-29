@@ -5,7 +5,7 @@ import validateFile from '../../../../utilities/validateFile.js';
 import requestBooksConstant from './requestBooks.constant.js';
 import mimeTypesConstants from '../../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../../constant/fileExtensions.constants.js';
-import GoogleDriveFileOperations from '../../../../utilities/googleDriveFileOperations.js';
+import GoogleDriveService from '../../../../service/googleDrive.service.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import RequestBooksModel from './requestBooks.model.js';
 import loggerService from '../../../../service/logger.service.js';
@@ -60,7 +60,7 @@ const createRequestBook = async (requester, bookData, bookImage) => {
 
             // Upload image and handle possible errors
             const bookImageData =
-                await GoogleDriveFileOperations.uploadFile(bookImage);
+                await GoogleDriveService.uploadFile(bookImage);
             if (!bookImageData || bookImageData instanceof Error) {
                 return errorResponse(
                     'Failed to save image.',
@@ -105,7 +105,7 @@ const createRequestBook = async (requester, bookData, bookImage) => {
 
             // Upload image and handle possible errors
             const bookImageData =
-                await GoogleDriveFileOperations.uploadFile(bookImage);
+                await GoogleDriveService.uploadFile(bookImage);
             if (!bookImageData || bookImageData instanceof Error) {
                 return errorResponse(
                     'Failed to save image.',

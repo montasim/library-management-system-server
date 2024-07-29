@@ -1,15 +1,15 @@
 import initiateGracefulShutdown from './initiateGracefulShutdown.js';
-import logger from './logger.js';
+import loggerService from '../service/logger.service.js';
 
 const handleServerError = async (error, server) => {
-    logger.error(
+    loggerService.error(
         `Server startup error on port ${server.address().port}: ${error.message}`
     );
 
     try {
         await initiateGracefulShutdown('Startup Failure', server, error);
     } catch (shutdownError) {
-        logger.error(
+        loggerService.error(
             `Error during graceful shutdown: ${shutdownError.message}`
         );
 

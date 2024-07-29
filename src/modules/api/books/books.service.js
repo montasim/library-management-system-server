@@ -1,6 +1,6 @@
 import BooksModel from './books.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
+import GoogleDriveService from '../../../service/googleDrive.service.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
@@ -113,7 +113,7 @@ const createBook = async (requester, bookData, bookImage) => {
 
         // Upload image and handle possible errors
         const bookImageData =
-            await GoogleDriveFileOperations.uploadFile(bookImage);
+            await GoogleDriveService.uploadFile(bookImage);
         if (!bookImageData || bookImageData instanceof Error) {
             return errorResponse(
                 'Failed to save image.',
@@ -382,11 +382,11 @@ const updateBook = async (requester, bookId, updateData, bookImage) => {
             // Delete the old file from Google Drive if it exists
             const oldFileId = book.image?.fileId;
             if (oldFileId) {
-                await GoogleDriveFileOperations.deleteFile(oldFileId);
+                await GoogleDriveService.deleteFile(oldFileId);
             }
 
             bookImageData =
-                await GoogleDriveFileOperations.uploadFile(bookImage);
+                await GoogleDriveService.uploadFile(bookImage);
 
             if (!bookImageData || bookImageData instanceof Error) {
                 return errorResponse(
@@ -454,7 +454,7 @@ const deleteBooks = async (requester, bookIds) => {
                 // Delete the old file from Google Drive if it exists
                 const oldFileId = book.image?.fileId;
                 if (oldFileId) {
-                    await GoogleDriveFileOperations.deleteFile(oldFileId);
+                    await GoogleDriveService.deleteFile(oldFileId);
                 }
 
                 const deletedBook = await BooksModel.findByIdAndDelete(bookId);

@@ -1,6 +1,6 @@
 import UsersModel from './users.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
+import GoogleDriveService from '../../../service/googleDrive.service.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
@@ -84,11 +84,11 @@ const updateUser = async (requester, updateData, userImage) => {
             // Remove the old image file if it exists
             const oldFileId = existingUser.image?.fileId;
             if (oldFileId) {
-                await GoogleDriveFileOperations.deleteFile(oldFileId);
+                await GoogleDriveService.deleteFile(oldFileId);
             }
 
             // Upload new image file
-            const newImageData = await GoogleDriveFileOperations.uploadFile(userImage);
+            const newImageData = await GoogleDriveService.uploadFile(userImage);
             if (!newImageData || newImageData instanceof Error) {
                 return errorResponse('Failed to update image.', httpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -142,7 +142,7 @@ const deleteUser = async (userId, confirmationData) => {
         // Delete the old file from Google Drive if it exists
         const oldFileId = existingUser.image?.fileId;
         if (oldFileId) {
-            await GoogleDriveFileOperations.deleteFile(oldFileId);
+            await GoogleDriveService.deleteFile(oldFileId);
         }
 
         await UsersModel.findByIdAndDelete(userId);

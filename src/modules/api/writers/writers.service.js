@@ -1,6 +1,6 @@
 import WritersModel from './writers.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import GoogleDriveFileOperations from '../../../utilities/googleDriveFileOperations.js';
+import GoogleDriveService from '../../../service/googleDrive.service.js';
 import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import errorResponse from '../../../utilities/errorResponse.js';
@@ -54,7 +54,7 @@ const createWriter = async (requester, writerData, writerImage) => {
         }
 
         const writerImageData =
-            await GoogleDriveFileOperations.uploadFile(writerImage);
+            await GoogleDriveService.uploadFile(writerImage);
         if (!writerImageData || writerImageData instanceof Error) {
             return errorResponse(
                 'Failed to save image.',
@@ -203,11 +203,11 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
         // Delete the old file from Google Drive if it exists
         const oldFileId = existingWriter.image?.fileId;
         if (oldFileId) {
-            await GoogleDriveFileOperations.deleteFile(oldFileId);
+            await GoogleDriveService.deleteFile(oldFileId);
         }
 
         writerImageData =
-            await GoogleDriveFileOperations.uploadFile(writerImage);
+            await GoogleDriveService.uploadFile(writerImage);
 
         if (!writerImageData || writerImageData instanceof Error) {
             return errorResponse(
@@ -275,7 +275,7 @@ const deleteWriters = async (requester, writerIds) => {
                 // Delete the old file from Google Drive if it exists
                 const oldFileId = writer.image?.fileId;
                 if (oldFileId) {
-                    await GoogleDriveFileOperations.deleteFile(oldFileId);
+                    await GoogleDriveService.deleteFile(oldFileId);
                 }
 
                 const deletedWriter =
