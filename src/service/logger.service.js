@@ -1,6 +1,7 @@
 import winston from 'winston';
-
 import DailyRotateFile from 'winston-daily-rotate-file';
+import { MongoDB } from 'winston-mongodb';
+
 import configuration from '../configuration/configuration.js';
 import environment from '../constant/envTypes.constants.js';
 
@@ -26,7 +27,22 @@ const loggerService = winston.createLogger({
                 )
             ),
         }),
-        // Add file transports only if not in production
+        // TODO: use the already setup mongodb database connection
+        // MongoDB transport for saving logs to the database
+        new MongoDB({
+            level: 'info',
+            db: configuration.mongoose.url,
+            options: { useUnifiedTopology: true },
+            collection: 'log',
+            storeHost: true,
+            capped: true,
+            cappedMax: 10000,
+            format: winston.format.combine(
+                winston.format.timestamp(),
+                winston.format.json()
+            ),
+        }),
+        // Conditionally add file transports based on the environment
         ...(!isProduction
             ? [
                   new DailyRotateFile({
