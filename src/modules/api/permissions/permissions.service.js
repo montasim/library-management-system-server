@@ -9,6 +9,19 @@ import loggerService from '../../../service/logger.service.js';
 import routesConstants from '../../../constant/routes.constants.js';
 import generatePermissions from '../../../shared/generatePermissions.js';
 
+const populatePermissionFields = async (query) => {
+    return await query
+        .populate({
+            path: 'createdBy',
+            select: 'name image department designation isActive',
+        })
+        .populate({
+            path: 'updatedBy',
+            select: 'name image department designation isActive',
+        });
+};
+
+// TODO: add new permission to the admin role
 const createPermission = async (requester, newPermissionData) => {
     try {
         const isAuthorized = await validateUserRequest(requester);
@@ -35,15 +48,9 @@ const createPermission = async (requester, newPermissionData) => {
         const newPermission = await PermissionsModel.create(newPermissionData);
 
         // Populate the necessary fields after creation
-        const populatedPermission = await PermissionsModel.findById(newPermission._id)
-            .populate({
-                path: 'createdBy',
-                select: 'name image department designation isActive',
-            })
-            .populate({
-                path: 'updatedBy',
-                select: 'name image department designation isActive',
-            });
+        const populatedPermission = await populatePermissionFields(
+            PermissionsModel.findById(newPermission._id)
+        );
 
         return sendResponse(
             populatedPermission,
@@ -83,32 +90,34 @@ const createDefaultPermission = async (requester) => {
 
         // Fetch existing permissions in one call
         const existingPermissions = await PermissionsModel.find({
-            name: { $in: permissions }
-        }).lean().select('name').exec();
+            name: { $in: permissions },
+        })
+            .lean()
+            .select('name')
+            .exec();
 
-        const existingNames = new Set(existingPermissions.map(p => p.name));
+        const existingNames = new Set(existingPermissions.map((p) => p.name));
 
-        const permissionsToCreate = permissions.filter(p => !existingNames.has(p)).map(permissionName => ({
-            name: permissionName,
-            isActive: true,
-            createdBy: requester,
-            updatedBy: requester // Assuming the creator is initially also the updater
-        }));
+        const permissionsToCreate = permissions
+            .filter((p) => !existingNames.has(p))
+            .map((permissionName) => ({
+                name: permissionName,
+                isActive: true,
+                createdBy: requester,
+                updatedBy: requester, // Assuming the creator is initially also the updater
+            }));
 
         if (permissionsToCreate.length > 0) {
             // Bulk insert new permissions
-            const newPermissions = await PermissionsModel.insertMany(permissionsToCreate);
+            const newPermissions =
+                await PermissionsModel.insertMany(permissionsToCreate);
 
             // Optionally populate necessary fields after creation - this would still require individual fetches, but it's optional
-            const populatedPermissions = await PermissionsModel.find({
-                _id: { $in: newPermissions.map(p => p._id) }
-            }).populate({
-                path: 'createdBy',
-                select: 'name image department designation isActive',
-            }).populate({
-                path: 'updatedBy',
-                select: 'name image department designation isActive',
-            });
+            const populatedPermissions = await populatePermissionFields(
+                PermissionsModel.find({
+                    _id: { $in: newPermissions.map((p) => p._id) },
+                })
+            );
 
             createdPermissions.push(...populatedPermissions);
         }
@@ -165,18 +174,12 @@ const getPermissions = async (requester, params) => {
         };
         const totalPermissions = await PermissionsModel.countDocuments(query);
         const totalPages = Math.ceil(totalPermissions / limit);
-        const permissions = await PermissionsModel.find(query)
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(limit)
-            .populate({
-                path: 'createdBy',
-                select: 'name image department designation isActive',
-            })
-            .populate({
-                path: 'updatedBy',
-                select: 'name image department designation isActive',
-            });
+        const permissions = await populatePermissionFields(
+            PermissionsModel.find(query)
+                .sort(sort)
+                .skip((page - 1) * limit)
+                .limit(limit)
+        );
 
         if (!permissions.length) {
             return sendResponse(
@@ -218,20 +221,11 @@ const getPermissionById = async (requester, permissionId) => {
             );
         }
 
-        const resource = await PermissionsModel.findById(permissionId)
-            .populate({
-                path: 'createdBy',
-                select: 'name image department designation isActive',
-            })
-            .populate({
-                path: 'updatedBy',
-                select: 'name image department designation isActive',
-            });
+        const resource = await populatePermissionFields(
+            PermissionsModel.findById(permissionId)
+        );
         if (!resource) {
-            return errorResponse(
-                `Permission not found.`,
-                httpStatus.NOT_FOUND
-            );
+            return errorResponse(`Permission not found.`, httpStatus.NOT_FOUND);
         }
 
         return sendResponse(
@@ -284,11 +278,9 @@ const updatePermission = async (requester, permissionId, updateData) => {
         }
 
         // Optionally populate if necessary (could be omitted based on requirements)
-        const populatedPermission = await PermissionsModel.findById(updatedPermission._id)
-            .populate({
-                path: 'createdBy updatedBy',
-                select: 'name image department designation isActive',
-            });
+        const populatedPermission = await populatePermissionFields(
+            PermissionsModel.findById(updatedPermission._id)
+        );
 
         return sendResponse(
             populatedPermission,
@@ -297,7 +289,8 @@ const updatePermission = async (requester, permissionId, updateData) => {
         );
     } catch (error) {
         // Handle specific errors, like duplicate names, here
-        if (error.code === 11000) { // MongoDB duplicate key error
+        if (error.code === 11000) {
+            // MongoDB duplicate key error
             return sendResponse(
                 {},
                 `Permission name "${updateData.name}" already exists.`,
