@@ -665,6 +665,18 @@ const activitiesSchema = new Schema({
     },
 });
 
+// Define the shared appearance schema
+const appearanceSchema = new Schema({
+    theme: {
+        name: {
+            type: String,
+            trim: true,
+            description:
+                'The name of the theme chosen by the user. This setting determines the overall look and feel of the application, enabling a personalized user experience.',
+        },
+    }
+});
+
 // Define the shared profileVisibility schema
 const profileVisibilitySchema = {
     type: String,
@@ -728,6 +740,7 @@ const sharedSchema = {
     loginSchema,
     sessionsSchema,
     activitiesSchema,
+    appearanceSchema,
     profileVisibilitySchema,
     createdByAdminSchema,
     updatedByAdminSchema,

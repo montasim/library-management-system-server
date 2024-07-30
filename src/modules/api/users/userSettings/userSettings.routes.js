@@ -1,62 +1,59 @@
 import express from 'express';
 
-import usersController from '../users.controller.js';
 import uploadMiddleware from '../../../../middleware/upload.middleware.js';
-import usersValidator from '../users.validator.js';
 import userLogRoutes from './userLog/userLog.routes.js';
+import usersAccountValidator from './userAccount/userAccount.validator.js';
+import usersAccountController from './userAccount/userAccount.controller.js';
+import userProfileController from './userProfile/userProfile.controller.js';
+import usersProfileValidator from './userProfile/updateProfile.validator.js';
 import methodNotSupported from '../../../../shared/methodNotSupported.js';
+import userAppearanceValidator
+    from './userAppearance/userAppearance.validator.js';
+import userAppearanceController
+    from './userAppearance/userAppearance.controller.js';
 
 const router = express.Router();
 
-// TODO: user profile management
 router
     .route('/profile')
-    .get(usersController.getUser)
+    .get(userProfileController.getProfile)
     .put(
         uploadMiddleware.single('image'),
-        usersValidator.updateUser,
-        usersController.updateUser
+        usersProfileValidator.updateProfile,
+        userProfileController.updateProfile
     )
-    .delete(usersValidator.deleteUser, usersController.deleteUser)
     .all(methodNotSupported);
 
 router
-    // TODO: user account management
     .route('/account')
-    .get(usersController.getUser)
-    .put(
-        uploadMiddleware.single('image'),
-        usersValidator.updateUser,
-        usersController.updateUser
-    )
-    .delete(usersValidator.deleteUser, usersController.deleteUser)
+    .delete(usersAccountValidator.deleteAccount, usersAccountController.deleteAccount)
     .all(methodNotSupported);
 
 router
     // TODO: user appearance management, eg: theme, font size, etc
     .route('/appearance')
-    .get(usersController.getUser)
-    .put(
-        uploadMiddleware.single('image'),
-        usersValidator.updateUser,
-        usersController.updateUser
+    .get(
+        userAppearanceController.getAppearance
     )
-    .delete(usersValidator.deleteUser, usersController.deleteUser)
+    .put(
+        userAppearanceValidator.updateAppearance,
+        userAppearanceController.updateAppearance
+    )
     .all(methodNotSupported);
 
-router
-    // TODO: user security management, eg: email, mobile, password, 2FA, etc
-    .route('/security')
-    .get(usersController.getUser)
-    .put(
-        uploadMiddleware.single('image'),
-        usersValidator.updateUser,
-        usersController.updateUser
-    )
-    .delete(usersValidator.deleteUser, usersController.deleteUser)
-    .all(methodNotSupported);
-
-// TODO: user log management, eg: security, activities
-router.use('/log', userLogRoutes);
+// router
+//     // TODO: user security management, eg: email, mobile, password, 2FA, etc
+//     .route('/security')
+//     .get(userProfileController.getProfile)
+//     .put(
+//         uploadMiddleware.single('image'),
+//         usersAccountValidator.deleteAccount,
+//         userProfileController.updateProfile
+//     )
+//     .delete(usersAccountValidator.deleteAccount, userProfileController.updateProfile)
+//     .all(methodNotSupported);
+//
+// // TODO: user log management, eg: security, activities
+// router.use('/log', userLogRoutes);
 
 export default router;

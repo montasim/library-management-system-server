@@ -99,6 +99,9 @@ const userSchema = new mongoose.Schema(
             profileVisibility: sharedSchema.profileVisibilitySchema,
         },
 
+        // Appearance
+        appearance: sharedSchema.appearanceSchema,
+
         isActive: sharedSchema.isActiveSchema,
         // TODO: create a system to initialy create a new user
         createdBy: sharedSchema.createdByAdminSchema,
