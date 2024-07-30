@@ -10,17 +10,16 @@ const roleSchema = new mongoose.Schema(
             type: String,
             trim: true,
             unique: true,
-            required: [true, 'Name cannot be empty.'],
+            required: [true, 'Please provide a name for the role.'],
             minlength: [
                 rolesConstants.lengths.NAME_MIN,
-                `Name must be at least ${rolesConstants.lengths.NAME_MIN} characters long.`,
+                `Role name must be at least ${rolesConstants.lengths.NAME_MIN} characters long.`,
             ],
             maxlength: [
                 rolesConstants.lengths.NAME_MAX,
-                `Name cannot be more than ${rolesConstants.lengths.NAME_MAX} characters long.`,
+                `Role name cannot exceed ${rolesConstants.lengths.NAME_MAX} characters in length.`,
             ],
-            description:
-                'Name of the role. Must be unique and conform to specified length constraints.',
+            description: 'The name of the role. It must be unique and conform to specified length constraints.',
         },
         permissions: [
             {
