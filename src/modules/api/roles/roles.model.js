@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+
 import rolesConstants from './roles.constant.js';
 import sharedSchema from '../../../shared/schema.js';
-
-const { Schema } = mongoose;
 
 const roleSchema = new mongoose.Schema(
     {
@@ -35,6 +34,8 @@ const roleSchema = new mongoose.Schema(
     {
         timestamps: true,
         versionKey: false,
+        description:
+            'Schema for storing user data with automatic timestamping for creation and updates.',
     }
 );
 

@@ -1,9 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import subjectsConstants from './subjects.constant.js';
 import sharedSchema from '../../../shared/schema.js';
-
-const { Schema } = mongoose;
 
 const subjectSchema = new Schema(
     {
@@ -11,6 +9,7 @@ const subjectSchema = new Schema(
             type: String,
             trim: true,
             unique: true,
+            sparse: true,
             required: [true, 'Please provide a name for the subject.'],
             minlength: [
                 subjectsConstants.lengths.NAME_MIN,
@@ -29,26 +28,34 @@ const subjectSchema = new Schema(
     {
         timestamps: true,
         versionKey: false,
+        description:
+            'Schema for storing user data with automatic timestamping for creation and updates.',
     }
 );
 
-// Pre-save middleware for creation
-subjectSchema.pre('save', function (next) {
-    if (this.isNew && !this.createdBy) {
-        next(new Error('Creator is required.'));
+// Create a unique index on the name field
+subjectSchema.index({ name: 1 }, { unique: true });
+
+// Pre-save and update middleware
+subjectSchema.pre(['save', 'findOneAndUpdate'], function (next) {
+    if (
+        (this.isNew && !this.createdBy) ||
+        (this._update && !this._update.updatedBy)
+    ) {
+        return next(new Error('Creator or updater is required.'));
+    }
+    next();
+});
+
+// Error handling middleware for unique constraint violations
+subjectSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        next(new Error('Subject name already exists.'));
     } else {
-        next();
+        next(error);
     }
 });
 
-// Pre-update middleware for updates
-subjectSchema.pre('findOneAndUpdate', function (next) {
-    if (!this._update.updatedBy) {
-        next(new Error('Updater is required.'));
-    } else {
-        next();
-    }
-});
 
 // Check if the model already exists before defining it
 const SubjectsModel = mongoose.model('Subjects', subjectSchema);

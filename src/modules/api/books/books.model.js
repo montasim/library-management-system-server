@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+
 import booksConstants from './books.constant.js';
 import sharedSchema from '../../../shared/schema.js';
 
@@ -13,6 +14,7 @@ const bookSchema = new mongoose.Schema(
             type: String,
             trim: true,
             unique: true,
+            sparse: true,
             required: 'Please enter a unique book name.',
             minlength: [
                 booksConstants.lengths.NAME_MIN,
@@ -132,8 +134,33 @@ const bookSchema = new mongoose.Schema(
     {
         timestamps: true,
         versionKey: false,
+        description:
+            'Schema for storing user data with automatic timestamping for creation and updates.',
     }
 );
+
+// Create a unique index on the name field
+bookSchema.index({ name: 1 }, { unique: true });
+
+// Pre-save and update middleware
+bookSchema.pre(['save', 'findOneAndUpdate'], function (next) {
+    if (
+        (this.isNew && !this.createdBy) ||
+        (this._update && !this._update.updatedBy)
+    ) {
+        return next(new Error('Creator or updater is required.'));
+    }
+    next();
+});
+
+// Error handling middleware for unique constraint violations
+bookSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        next(new Error('Book name already exists.'));
+    } else {
+        next(error);
+    }
+});
 
 const BooksModel = mongoose.model('Books', bookSchema);
 

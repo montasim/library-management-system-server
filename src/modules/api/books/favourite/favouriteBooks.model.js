@@ -1,6 +1,4 @@
-import mongoose from 'mongoose';
-
-const { Schema } = mongoose;
+import mongoose, { Schema } from 'mongoose';
 
 const favouriteBookSchema = new mongoose.Schema(
     {
@@ -18,6 +16,8 @@ const favouriteBookSchema = new mongoose.Schema(
     {
         timestamps: true,
         versionKey: false,
+        description:
+            'Schema for storing user data with automatic timestamping for creation and updates.',
     }
 );
 

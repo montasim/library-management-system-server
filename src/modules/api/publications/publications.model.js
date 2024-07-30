@@ -3,14 +3,13 @@ import mongoose from 'mongoose';
 import publicationsConstants from './publications.constant.js';
 import sharedSchema from '../../../shared/schema.js';
 
-const { Schema } = mongoose;
-
 const publicationSchema = new mongoose.Schema(
     {
         name: {
             type: String,
             trim: true,
             unique: true,
+            sparse: true,
             required: [true, 'Please provide a name for the publication.'],
             minlength: [
                 publicationsConstants.lengths.NAME_MIN,
@@ -29,42 +28,32 @@ const publicationSchema = new mongoose.Schema(
     {
         timestamps: true,
         versionKey: false,
+        description:
+            'Schema for storing user data with automatic timestamping for creation and updates.',
     }
 );
 
-// Pre-save middleware for creation
-publicationSchema.pre('save', function (next) {
-    if (this.isNew && !this.createdBy) {
-        return next(new Error('Creator is required.'));
+// Create a unique index on the name field
+publicationSchema.index({ name: 1 }, { unique: true });
+
+// Pre-save and update middleware
+publicationSchema.pre(['save', 'findOneAndUpdate'], function (next) {
+    if (
+        (this.isNew && !this.createdBy) ||
+        (this._update && !this._update.updatedBy)
+    ) {
+        return next(new Error('Creator or updater is required.'));
     }
-
-    next();
-});
-
-// Pre-update middleware for updates
-publicationSchema.pre('findOneAndUpdate', function (next) {
-    if (!this._update.updatedBy) {
-        return next(new Error('Updater is required.'));
-    }
-
     next();
 });
 
 // Error handling middleware for unique constraint violations
-publicationSchema.post('save', (error, doc, next) => {
+publicationSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
-        return next(new Error('Publication name already exists.'));
+        next(new Error('Publication name already exists.'));
+    } else {
+        next(error);
     }
-
-    next(error);
-});
-
-publicationSchema.post('findOneAndUpdate', (error, res, next) => {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        return next(new Error('Publication name already exists.'));
-    }
-
-    next(error);
 });
 
 const PublicationsModel = mongoose.model('Publications', publicationSchema);

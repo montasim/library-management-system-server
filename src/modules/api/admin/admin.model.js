@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import adminConstants from './admin.constants.js';
 import sharedSchema from '../../../shared/schema.js';
@@ -80,8 +80,9 @@ const adminSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
+        versionKey: false,
         description:
-            'Schema for storing admin data with automatic timestamping for creation and updates.',
+            'Schema for storing user data with automatic timestamping for creation and updates.',
     }
 );
 

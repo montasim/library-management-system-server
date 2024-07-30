@@ -108,6 +108,7 @@ const userSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
+        versionKey: false,
         description:
             'Schema for storing user data with automatic timestamping for creation and updates.',
     }

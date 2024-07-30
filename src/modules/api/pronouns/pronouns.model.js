@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
+
 import pronounsConstants from './pronouns.constant.js';
 import sharedSchema from '../../../shared/schema.js';
-
-const { Schema } = mongoose;
 
 const pronounsSchema = new mongoose.Schema(
     {
@@ -33,10 +32,34 @@ const pronounsSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
+        versionKey: false,
         description:
             'Schema for storing user data with automatic timestamping for creation and updates.',
     }
 );
+
+// Create a unique index on the name field
+pronounsSchema.index({ name: 1 }, { unique: true });
+
+// Pre-save and update middleware
+pronounsSchema.pre(['save', 'findOneAndUpdate'], function (next) {
+    if (
+        (this.isNew && !this.createdBy) ||
+        (this._update && !this._update.updatedBy)
+    ) {
+        return next(new Error('Creator or updater is required.'));
+    }
+    next();
+});
+
+// Error handling middleware for unique constraint violations
+pronounsSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+        next(new Error('Pronouns name already exists.'));
+    } else {
+        next(error);
+    }
+});
 
 const PronounsModel = mongoose.model('Pronouns', pronounsSchema);
 

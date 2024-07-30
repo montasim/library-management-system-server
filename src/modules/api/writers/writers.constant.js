@@ -2,6 +2,9 @@ const lengths = {
     NAME_MIN: 3,
     NAME_MAX: 100,
 
+    REVIEW_MIN: 0,
+    REVIEW_MAX: 5,
+
     SUMMARY_MIN: 100,
     SUMMARY_MAX: 5000,
 };

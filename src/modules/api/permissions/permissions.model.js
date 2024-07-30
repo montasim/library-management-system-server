@@ -1,4 +1,5 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
+
 import permissionsConstants from './permissions.constant.js';
 import sharedSchema from '../../../shared/schema.js';
 
@@ -8,12 +9,9 @@ const permissionSchema = new mongoose.Schema(
             type: String,
             trim: true,
             lowercase: true,
+            unique: true,
             sparse: true,
-            unique: [
-                true,
-                'This permission name is already in use. Please use a different name.',
-            ],
-            required: [true, 'Permission name is required.'],
+            required: [true, 'Please provide a name for the permission.'],
             minlength: [
                 permissionsConstants.lengths.NAME_MIN,
                 `Permission name must be at least ${permissionsConstants.lengths.NAME_MIN} characters long.`,
@@ -34,12 +32,28 @@ const permissionSchema = new mongoose.Schema(
         updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
-        timestamps: true, // Automatically adds createdAt and updatedAt timestamps
-        versionKey: false, // Disables versioning (__v field)
+        timestamps: true,
+        versionKey: false,
+        description:
+            'Schema for storing user data with automatic timestamping for creation and updates.',
     }
 );
 
-// Middleware for handling unique constraint violations
+// Create a unique index on the name field
+permissionSchema.index({ name: 1 }, { unique: true });
+
+// Pre-save and update middleware
+permissionSchema.pre(['save', 'findOneAndUpdate'], function (next) {
+    if (
+        (this.isNew && !this.createdBy) ||
+        (this._update && !this._update.updatedBy)
+    ) {
+        return next(new Error('Creator or updater is required.'));
+    }
+    next();
+});
+
+// Error handling middleware for unique constraint violations
 permissionSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
         next(new Error('Permission name already exists.'));
