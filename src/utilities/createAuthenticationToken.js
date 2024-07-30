@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import configuration from '../configuration/configuration.js';
 
-const createAuthenticationToken = async (userDetails, device) => {
+const createAuthenticationToken = async (userDetails, permissions, device) => {
     try {
         const tokenDetails = {
             tokenId: uuidv4(),
@@ -13,6 +13,7 @@ const createAuthenticationToken = async (userDetails, device) => {
             ),
             currentUser: {
                 _id: userDetails._id,
+                permissions: permissions,
                 device,
             },
         };

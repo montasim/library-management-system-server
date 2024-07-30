@@ -565,6 +565,13 @@ const login = async (userData, userAgent, device) => {
             );
         }
 
+        if (!user.passwordHash) {
+            return errorResponse(
+                'Please set your password first.',
+                httpStatus.FORBIDDEN
+            );
+        }
+
         if (user.mustChangePassword) {
             return errorResponse(
                 'Please change your password first.',

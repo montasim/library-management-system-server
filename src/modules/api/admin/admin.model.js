@@ -34,18 +34,11 @@ const adminSchema = new mongoose.Schema(
                 `department must be less than ${adminConstants.lengths.DEPARTMENT_MAX} characters long`,
             ],
         },
-        designation: {
-            type: String,
-            minlength: [
-                adminConstants.lengths.DESIGNATION_MIN,
-                `designation must be at least ${adminConstants.lengths.DESIGNATION_MIN} characters long`,
-            ],
-            maxlength: [
-                adminConstants.lengths.DESIGNATION_MAX,
-                `designation must be less than ${adminConstants.lengths.DESIGNATION_MAX} characters long`,
-            ],
-        },
-        password: sharedSchema.passwordHashSchema,
+
+        // designation is the role of the user
+        designation: sharedSchema.roleSchema,
+
+        passwordHash: sharedSchema.passwordHashSchema,
         mustChangePassword: sharedSchema.mustChangePasswordSchema,
         isEmailVerified: sharedSchema.isEmailVerifiedSchema,
         isPhoneVerified: sharedSchema.isMobileVerifiedSchema,
@@ -56,24 +49,17 @@ const adminSchema = new mongoose.Schema(
         resetPasswordVerifyToken: sharedSchema.resetPasswordVerifyTokenSchema,
         resetPasswordVerifyTokenExpires:
             sharedSchema.resetPasswordVerifyTokenExpiresSchema,
-        login: {
-            failed: {
-                device: [
-                    {
-                        details: String, // If you just need to store the admin agent string
-                        dateTime: Date,
-                    },
-                ],
-            },
-            successful: {
-                device: [
-                    {
-                        details: String, // If you just need to store the admin agent string
-                        dateTime: Date,
-                    },
-                ],
-            },
-        },
+
+        // Login and Session Management
+        login: sharedSchema.loginSchema,
+        sessions: [sharedSchema.sessionsSchema],
+
+        // Activity Tracking and Privacy
+        activities: [sharedSchema.activitiesSchema],
+
+        // Appearance
+        appearance: sharedSchema.appearanceSchema,
+
         isActive: sharedSchema.isActiveSchema,
         createdBy: sharedSchema.createdByAdminSchema,
         updatedBy: sharedSchema.updatedByAdminSchema,
