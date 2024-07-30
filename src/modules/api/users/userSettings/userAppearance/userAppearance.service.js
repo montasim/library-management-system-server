@@ -3,13 +3,6 @@ import errorResponse from '../../../../../utilities/errorResponse.js';
 import httpStatus from '../../../../../constant/httpStatus.constants.js';
 import sendResponse from '../../../../../utilities/sendResponse.js';
 import loggerService from '../../../../../service/logger.service.js';
-import isEmptyObject from '../../../../../utilities/isEmptyObject.js';
-import validateFile from '../../../../../utilities/validateFile.js';
-import userConstants from '../../users.constants.js';
-import mimeTypesConstants from '../../../../../constant/mimeTypes.constants.js';
-import fileExtensionsConstants
-    from '../../../../../constant/fileExtensions.constants.js';
-import GoogleDriveService from '../../../../../service/googleDrive.service.js';
 
 const getAppearance = async (requester) => {
     try {
@@ -64,16 +57,33 @@ const updateAppearance = async (requester, updateData) => {
             );
         }
 
-        // Prepare the update object specifically for theme
+        // Capture the old theme details
+        const oldThemeName = existingUser.appearance && existingUser.appearance.theme && existingUser.appearance.theme.name ? existingUser.appearance.theme.name : 'None';
+
         const themeUpdate = {
             'appearance.theme.name': updateData.theme.name,
-            updatedBy: requester  // Track who made the update
+            updatedBy: requester
         };
 
-        // Perform the update
+        // Prepare the activity record with old and new theme details
+        const activityRecord = {
+            category: userConstants.activityType.APPEARANCE,
+            action: 'update theme',
+            details: `Theme updated from '${oldThemeName}' to '${updateData.theme.name}'`,
+            metadata: {
+                oldTheme: oldThemeName,
+                updatedTheme: updateData.theme.name
+            },
+            date: new Date()  // Ensure date is set at the time of the operation
+        };
+
+        // Update user document with theme change and log activity
         const updatedUser = await UsersModel.findByIdAndUpdate(
             requester,
-            { $set: themeUpdate },
+            {
+                $set: themeUpdate,
+                $push: { activities: activityRecord }  // Push the new activity to the activities array
+            },
             { new: true, runValidators: true }
         ).lean();
 

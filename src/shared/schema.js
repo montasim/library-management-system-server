@@ -643,6 +643,15 @@ const sessionsSchema = new Schema({
 
 // Define the shared activities schema
 const activitiesSchema = new Schema({
+    category: {
+        type: String,
+        required: [
+            true,
+            'Recording the category of activity is necessary to track user activities accurately.'
+        ],
+        enum: Object.values(userConstants.activityType),
+        description: 'Describes the category of activity performed by the user, such as security, appearance.'
+    },
     action: {
         type: String,
         required: [
@@ -651,6 +660,15 @@ const activitiesSchema = new Schema({
         ],
         description:
             'Describes the type of activity performed by the user, such as login, logout, data entry, etc.',
+    },
+    details: {
+        type: String,
+        required: [
+            true,
+            'Action details is necessary to track user activities accurately.',
+        ],
+        description:
+            'Details activity performed by the user, such as login, logout, data entry, etc.',
     },
     date: {
         type: Date,

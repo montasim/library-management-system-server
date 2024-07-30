@@ -112,10 +112,18 @@ const pattern = {
 
 const imageSize = 1.1 * 1024 * 1024; // 1.1 MB
 
+const activityType = {
+    APPEARANCE: 'appearance',
+    PROFILE: 'profile',
+    ACCOUNT: 'account',
+    SECURITY: 'security',
+};
+
 const userConstants = {
     lengths,
     pattern,
     imageSize,
+    activityType,
 };
 
 export default userConstants;

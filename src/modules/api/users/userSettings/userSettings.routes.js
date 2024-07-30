@@ -52,8 +52,8 @@ router
 //     )
 //     .delete(usersAccountValidator.deleteAccount, userProfileController.updateProfile)
 //     .all(methodNotSupported);
-//
-// // TODO: user log management, eg: security, activities
-// router.use('/log', userLogRoutes);
+
+// TODO: user log management, eg: security, activities
+router.use('/log', userLogRoutes);
 
 export default router;

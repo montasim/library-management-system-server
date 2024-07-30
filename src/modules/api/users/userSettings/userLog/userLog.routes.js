@@ -1,16 +1,20 @@
 import express from 'express';
 
+import userLogController from './userLog.controller.js';
 import methodNotSupported from '../../../../../shared/methodNotSupported.js';
-import userProfileController from '../userProfile/userProfile.controller.js';
 
 const router = express.Router();
 
-router.route('/activity')
-    .get(userProfileController.getProfile)
+router.route('/account')
+    .get(userLogController.getAccountLog)
     .all(methodNotSupported);
 
 router.route('/security')
-    .get(userProfileController.getProfile)
+    .get(userLogController.getSecurityLog)
+    .all(methodNotSupported);
+
+router.route('/security')
+    .get(userLogController.getSecurityLog)
     .all(methodNotSupported);
 
 export default router;
