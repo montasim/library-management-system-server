@@ -23,14 +23,18 @@ const create = (duration = 3600) => {
                 .replace(/:/g, '');
             key = `${routeName}_${req.method}_${req.originalUrl || req.url}`;
 
-            loggerService.debug(`Cache key generated for non-GET request: ${key}`);
+            loggerService.debug(
+                `Cache key generated for non-GET request: ${key}`
+            );
         }
 
         // Cache retrieval for GET requests
         if (req.method === 'GET') {
             const cachedBody = cache.get(key);
             if (cachedBody) {
-                loggerService.info(`Cache hit: Serving from cache for key ${key}`);
+                loggerService.info(
+                    `Cache hit: Serving from cache for key ${key}`
+                );
 
                 return res.status(cachedBody.status).send(cachedBody.body);
             } else {
@@ -51,9 +55,15 @@ const create = (duration = 3600) => {
                 // Override the send method to cache the response
                 res.send = (body) => {
                     if (responseStatus >= 200 && responseStatus < 300) {
-                        cache.set(key, { body, status: responseStatus }, duration);
+                        cache.set(
+                            key,
+                            { body, status: responseStatus },
+                            duration
+                        );
 
-                        loggerService.info(`Data cached for key ${key} with status ${responseStatus}`);
+                        loggerService.info(
+                            `Data cached for key ${key} with status ${responseStatus}`
+                        );
                     }
 
                     originalSend(body);

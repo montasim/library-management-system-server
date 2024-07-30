@@ -19,7 +19,8 @@ const publicationSchema = new mongoose.Schema(
                 publicationsConstants.lengths.NAME_MAX,
                 `Publication name cannot exceed ${publicationsConstants.lengths.NAME_MAX} characters in length.`,
             ],
-            description: 'The name of the publication, representing different journals or reviews.',
+            description:
+                'The name of the publication, representing different journals or reviews.',
         },
         isActive: sharedSchema.isActiveSchema,
         createdBy: sharedSchema.createdByAdminSchema,

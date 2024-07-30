@@ -5,15 +5,18 @@ import methodNotSupported from '../../../../../shared/methodNotSupported.js';
 
 const router = express.Router();
 
-router.route('/account')
+router
+    .route('/account')
     .get(userLogController.getAccountLog)
     .all(methodNotSupported);
 
-router.route('/security')
+router
+    .route('/security')
     .get(userLogController.getSecurityLog)
     .all(methodNotSupported);
 
-router.route('/security')
+router
+    .route('/security')
     .get(userLogController.getSecurityLog)
     .all(methodNotSupported);
 

@@ -9,7 +9,7 @@ const routesConstants = {
             updateById: 'update-book-by-id',
             deleteById: 'delete-book-by-id',
             deleteByList: 'delete-book-by-list',
-        }
+        },
     },
     permissions: {
         routes: 'permissions',
@@ -22,7 +22,7 @@ const routesConstants = {
             deleteById: 'delete-permission-by-id',
             deleteByList: 'delete-permission-by-list',
             createDefault: 'create-default-permission',
-        }
+        },
     },
     pronouns: {
         routes: 'pronouns',
@@ -34,7 +34,7 @@ const routesConstants = {
             updateById: 'update-pronouns-by-id',
             deleteById: 'delete-pronouns-by-id',
             deleteByList: 'delete-pronouns-by-list',
-        }
+        },
     },
     publications: {
         routes: 'publications',
@@ -46,7 +46,7 @@ const routesConstants = {
             updateById: 'update-publication-by-id',
             deleteById: 'delete-publication-by-id',
             deleteByList: 'delete-publication-by-list',
-        }
+        },
     },
     roles: {
         routes: 'roles',
@@ -59,7 +59,7 @@ const routesConstants = {
             deleteById: 'delete-role-by-id',
             deleteByList: 'delete-role-by-list',
             createDefault: 'create-default-role',
-        }
+        },
     },
     subjects: {
         routes: 'subjects',
@@ -71,7 +71,7 @@ const routesConstants = {
             updateById: 'update-subject-by-id',
             deleteById: 'delete-subject-by-id',
             deleteByList: 'delete-subject-by-list',
-        }
+        },
     },
     writers: {
         routes: 'writers',
@@ -83,7 +83,7 @@ const routesConstants = {
             updateById: 'update-writer-by-id',
             deleteById: 'delete-writer-by-id',
             deleteByList: 'delete-writer-by-list',
-        }
+        },
     },
 };
 

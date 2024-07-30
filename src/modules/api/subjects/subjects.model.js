@@ -19,7 +19,8 @@ const subjectSchema = new Schema(
                 subjectsConstants.lengths.NAME_MAX,
                 `Subject name cannot exceed ${subjectsConstants.lengths.NAME_MAX} characters in length.`,
             ],
-            description: 'The name of the subject. It must be unique and conform to specified length constraints.',
+            description:
+                'The name of the subject. It must be unique and conform to specified length constraints.',
         },
         isActive: sharedSchema.isActiveSchema,
         createdBy: sharedSchema.createdByAdminSchema,
@@ -55,7 +56,6 @@ subjectSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
         next(error);
     }
 });
-
 
 // Check if the model already exists before defining it
 const SubjectsModel = mongoose.model('Subjects', subjectSchema);

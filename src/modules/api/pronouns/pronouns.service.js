@@ -18,7 +18,6 @@ const populatePronounsFields = async (query) => {
         });
 };
 
-
 const createPronouns = async (requester, newPronounsData) => {
     try {
         const isAuthorized = await validateAdminRequest(requester);
@@ -119,7 +118,9 @@ const getPronounsList = async (params) => {
 
 const getPronounsById = async (pronounsId) => {
     try {
-        const resource = await populatePronounsFields(PronounsModel.findById(pronounsId));
+        const resource = await populatePronounsFields(
+            PronounsModel.findById(pronounsId)
+        );
         if (!resource) {
             return errorResponse('Pronouns not found.', httpStatus.NOT_FOUND);
         }

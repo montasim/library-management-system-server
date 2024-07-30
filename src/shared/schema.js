@@ -646,7 +646,8 @@ const activitiesSchema = new Schema({
     category: {
         type: String,
         enum: Object.values(userConstants.activityType),
-        description: 'Describes the category of activity performed by the user, such as security, appearance.'
+        description:
+            'Describes the category of activity performed by the user, such as security, appearance.',
     },
     action: {
         type: String,
@@ -688,7 +689,7 @@ const appearanceSchema = new Schema({
             description:
                 'The name of the theme chosen by the user. This setting determines the overall look and feel of the application, enabling a personalized user experience.',
         },
-    }
+    },
 });
 
 // Define the shared profileVisibility schema

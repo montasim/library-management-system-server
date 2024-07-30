@@ -496,7 +496,8 @@ const login1 = async (adminData, userAgent, device) => {
             .populate({
                 path: 'updatedBy',
                 select: 'name image department designation isActive',
-            }).lean();
+            })
+            .lean();
         if (!adminDetails) {
             return errorResponse(
                 'No account found with that email address. Please check your email address or register for a new account.',
@@ -559,8 +560,14 @@ const login1 = async (adminData, userAgent, device) => {
         // }
 
         // Extracting permission names
-        const permissionNames = adminDetails.designation.permissions.map(perm => perm.name);
-        const { token } = await createAuthenticationToken(adminDetails, permissionNames, device);
+        const permissionNames = adminDetails.designation.permissions.map(
+            (perm) => perm.name
+        );
+        const { token } = await createAuthenticationToken(
+            adminDetails,
+            permissionNames,
+            device
+        );
 
         await UsersModel.updateOne(
             { _id: adminDetails._id },
@@ -625,15 +632,20 @@ const login1 = async (adminData, userAgent, device) => {
 const login = async (adminData, userAgent, device) => {
     try {
         // Consolidate multiple populate calls into a single, efficient query
-        const adminDetails = await AdminModel.findOne({ email: adminData.email })
+        const adminDetails = await AdminModel.findOne({
+            email: adminData.email,
+        })
             .populate({
                 path: 'designation',
                 populate: {
                     path: 'permissions createdBy updatedBy',
-                    select: 'name image department designation isActive'
-                }
+                    select: 'name image department designation isActive',
+                },
             })
-            .populate('createdBy updatedBy', 'name image department designation isActive')
+            .populate(
+                'createdBy updatedBy',
+                'name image department designation isActive'
+            )
             .lean();
 
         if (!adminDetails) {
@@ -644,16 +656,21 @@ const login = async (adminData, userAgent, device) => {
         }
 
         // Consolidate checks for email verification, password setup, and change requirement
-        if (!adminDetails.isEmailVerified || !adminDetails.passwordHash || adminDetails.mustChangePassword) {
+        if (
+            !adminDetails.isEmailVerified ||
+            !adminDetails.passwordHash ||
+            adminDetails.mustChangePassword
+        ) {
             const messages = {
-                isEmailVerified: 'Please verify your email address to proceed with logging in.',
+                isEmailVerified:
+                    'Please verify your email address to proceed with logging in.',
                 passwordHash: 'Please set your password first.',
-                mustChangePassword: 'Please change your password first.'
+                mustChangePassword: 'Please change your password first.',
             };
             const statusCodes = {
                 isEmailVerified: httpStatus.UNAUTHORIZED,
                 passwordHash: httpStatus.FORBIDDEN,
-                mustChangePassword: httpStatus.FORBIDDEN
+                mustChangePassword: httpStatus.FORBIDDEN,
             };
 
             for (const key in messages) {
@@ -664,16 +681,22 @@ const login = async (adminData, userAgent, device) => {
         }
 
         // Password validation and handling failed login attempt
-        const isPasswordValid = await comparePassword(adminData.password, adminDetails.passwordHash);
+        const isPasswordValid = await comparePassword(
+            adminData.password,
+            adminDetails.passwordHash
+        );
         if (!isPasswordValid) {
-            await AdminModel.updateOne({ _id: adminDetails._id }, {
-                $push: {
-                    'login.failed.device': {
-                        details: userAgent,
-                        dateTime: new Date(),
+            await AdminModel.updateOne(
+                { _id: adminDetails._id },
+                {
+                    $push: {
+                        'login.failed.device': {
+                            details: userAgent,
+                            dateTime: new Date(),
+                        },
                     },
-                },
-            });
+                }
+            );
 
             return errorResponse(
                 'Incorrect password. Please try again or use the forgot password option to reset it.',
@@ -681,18 +704,27 @@ const login = async (adminData, userAgent, device) => {
             );
         }
 
-        const permissionNames = adminDetails.designation.permissions.map(perm => perm.name);
-        const { token } = await createAuthenticationToken(adminDetails, permissionNames, device);
+        const permissionNames = adminDetails.designation.permissions.map(
+            (perm) => perm.name
+        );
+        const { token } = await createAuthenticationToken(
+            adminDetails,
+            permissionNames,
+            device
+        );
 
         // Updating login success details
-        await AdminModel.updateOne({ _id: adminDetails._id }, {
-            $push: {
-                'login.successful.device': {
-                    details: userAgent,
-                    dateTime: new Date(),
+        await AdminModel.updateOne(
+            { _id: adminDetails._id },
+            {
+                $push: {
+                    'login.successful.device': {
+                        details: userAgent,
+                        dateTime: new Date(),
+                    },
                 },
-            },
-        });
+            }
+        );
 
         // Prepare and send success login email
         const subject = 'Login Successfully';
@@ -720,7 +752,15 @@ const login = async (adminData, userAgent, device) => {
         );
 
         // Clean up sensitive data
-        ['passwordHash', 'emailVerifyToken', 'emailVerifyTokenExpires', 'phoneVerifyToken', 'phoneVerifyTokenExpires', 'resetPasswordVerifyToken', 'resetPasswordVerifyTokenExpires'].forEach(key => delete adminDetails[key]);
+        [
+            'passwordHash',
+            'emailVerifyToken',
+            'emailVerifyTokenExpires',
+            'phoneVerifyToken',
+            'phoneVerifyTokenExpires',
+            'resetPasswordVerifyToken',
+            'resetPasswordVerifyTokenExpires',
+        ].forEach((key) => delete adminDetails[key]);
 
         return sendResponse(
             { ...adminDetails, token },
@@ -730,7 +770,10 @@ const login = async (adminData, userAgent, device) => {
     } catch (error) {
         loggerService.error(`Failed to login: ${error}`);
 
-        return errorResponse(error.message || 'Failed to login.', httpStatus.INTERNAL_SERVER_ERROR);
+        return errorResponse(
+            error.message || 'Failed to login.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 

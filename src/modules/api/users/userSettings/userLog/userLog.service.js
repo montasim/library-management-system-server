@@ -10,20 +10,32 @@ const getActivityLog = async (requester) => {
         const activitiesProjection = {
             activities: {
                 $filter: {
-                    input: "$activities",
-                    as: "activity",
+                    input: '$activities',
+                    as: 'activity',
                     cond: {
                         $or: [
-                            { $eq: ["$$activity.category", userConstants.activityType.APPEARANCE] },
-                            { $eq: ["$$activity.category", userConstants.activityType.PROFILE] }
-                        ]
-                    }
-                }
-            }
+                            {
+                                $eq: [
+                                    '$$activity.category',
+                                    userConstants.activityType.APPEARANCE,
+                                ],
+                            },
+                            {
+                                $eq: [
+                                    '$$activity.category',
+                                    userConstants.activityType.PROFILE,
+                                ],
+                            },
+                        ],
+                    },
+                },
+            },
         };
 
-        const user = await UsersModel.findById(requester, activitiesProjection)
-            .lean();
+        const user = await UsersModel.findById(
+            requester,
+            activitiesProjection
+        ).lean();
 
         if (!user) {
             return errorResponse(
@@ -35,7 +47,7 @@ const getActivityLog = async (requester) => {
         // Now the user object will only contain the filtered activities
         return sendResponse(
             {
-                activities: user.activities
+                activities: user.activities,
             },
             'Activities fetched successfully.',
             httpStatus.OK
@@ -55,19 +67,26 @@ const getSecurityLog = async (requester) => {
         const activitiesProjection = {
             activities: {
                 $filter: {
-                    input: "$activities",
-                    as: "activity",
+                    input: '$activities',
+                    as: 'activity',
                     cond: {
                         $or: [
-                            { $eq: ["$$activity.category", userConstants.activityType.SECURITY] },
-                        ]
-                    }
-                }
-            }
+                            {
+                                $eq: [
+                                    '$$activity.category',
+                                    userConstants.activityType.SECURITY,
+                                ],
+                            },
+                        ],
+                    },
+                },
+            },
         };
 
-        const user = await UsersModel.findById(requester, activitiesProjection)
-            .lean();
+        const user = await UsersModel.findById(
+            requester,
+            activitiesProjection
+        ).lean();
 
         if (!user) {
             return errorResponse(
@@ -79,7 +98,7 @@ const getSecurityLog = async (requester) => {
         // Now the user object will only contain the filtered activities
         return sendResponse(
             {
-                activities: user.activities
+                activities: user.activities,
             },
             'Activities fetched successfully.',
             httpStatus.OK
@@ -99,19 +118,26 @@ const getAccountLog = async (requester) => {
         const activitiesProjection = {
             activities: {
                 $filter: {
-                    input: "$activities",
-                    as: "activity",
+                    input: '$activities',
+                    as: 'activity',
                     cond: {
                         $or: [
-                            { $eq: ["$$activity.category", userConstants.activityType.ACCOUNT] },
-                        ]
-                    }
-                }
-            }
+                            {
+                                $eq: [
+                                    '$$activity.category',
+                                    userConstants.activityType.ACCOUNT,
+                                ],
+                            },
+                        ],
+                    },
+                },
+            },
         };
 
-        const user = await UsersModel.findById(requester, activitiesProjection)
-            .lean();
+        const user = await UsersModel.findById(
+            requester,
+            activitiesProjection
+        ).lean();
 
         if (!user) {
             return errorResponse(
@@ -123,7 +149,7 @@ const getAccountLog = async (requester) => {
         // Now the user object will only contain the filtered activities
         return sendResponse(
             {
-                activities: user.activities
+                activities: user.activities,
             },
             'Activities fetched successfully.',
             httpStatus.OK

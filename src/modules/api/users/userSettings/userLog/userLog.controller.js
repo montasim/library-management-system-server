@@ -1,5 +1,4 @@
-import asyncErrorHandlerService
-    from '../../../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../../../utilities/asyncErrorHandler.js';
 import getRequesterId from '../../../../../utilities/getRequesterId.js';
 import userLogService from './userLog.service.js';
 
@@ -20,7 +19,6 @@ const getSecurityLog = asyncErrorHandlerService(async (req, res) => {
 
     res.status(userData.status).send(userData);
 });
-
 
 const getAccountLog = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);

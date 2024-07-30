@@ -34,7 +34,7 @@ const confirmationText = {
 };
 
 const defaultName = {
-    adminRole: 'Admin'
+    adminRole: 'Admin',
 };
 
 const constants = {

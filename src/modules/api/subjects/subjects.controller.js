@@ -23,7 +23,9 @@ const getSubjects = asyncErrorHandlerService(async (req, res) => {
 });
 
 const getSubjectById = asyncErrorHandlerService(async (req, res) => {
-    const subjectData = await subjectsService.getSubjectById(req.params.subjectId);
+    const subjectData = await subjectsService.getSubjectById(
+        req.params.subjectId
+    );
 
     subjectData.route = req.originalUrl;
 

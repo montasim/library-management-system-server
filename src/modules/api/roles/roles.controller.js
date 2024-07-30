@@ -1,13 +1,16 @@
 import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import rolesService from './roles.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
-import getRequesterPermissions
-    from '../../../utilities/getRequesterPermissions.js';
+import getRequesterPermissions from '../../../utilities/getRequesterPermissions.js';
 
 const createRole = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const availablePermissions = getRequesterPermissions(req);
-    const newRoleData = await rolesService.createRole(requester, availablePermissions, req.body);
+    const newRoleData = await rolesService.createRole(
+        requester,
+        availablePermissions,
+        req.body
+    );
 
     newRoleData.route = req.originalUrl;
 
@@ -17,7 +20,10 @@ const createRole = asyncErrorHandlerService(async (req, res) => {
 const createDefaultRole = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const availablePermissions = getRequesterPermissions(req);
-    const newRoleData = await rolesService.createDefaultRole(requester, availablePermissions);
+    const newRoleData = await rolesService.createDefaultRole(
+        requester,
+        availablePermissions
+    );
 
     newRoleData.route = req.originalUrl;
 
@@ -27,7 +33,11 @@ const createDefaultRole = asyncErrorHandlerService(async (req, res) => {
 const getRoleList = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const availablePermissions = getRequesterPermissions(req);
-    const rolesData = await rolesService.getRoleList(requester, availablePermissions, req.query);
+    const rolesData = await rolesService.getRoleList(
+        requester,
+        availablePermissions,
+        req.query
+    );
 
     rolesData.route = req.originalUrl;
 
@@ -37,7 +47,11 @@ const getRoleList = asyncErrorHandlerService(async (req, res) => {
 const getRoleById = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const availablePermissions = getRequesterPermissions(req);
-    const roleData = await rolesService.getRoleById(requester, availablePermissions, req.params.roleId);
+    const roleData = await rolesService.getRoleById(
+        requester,
+        availablePermissions,
+        req.params.roleId
+    );
 
     roleData.route = req.originalUrl;
 
@@ -63,7 +77,11 @@ const deleteRoleByList = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const availablePermissions = getRequesterPermissions(req);
     const roleIds = req.query.ids.split(',');
-    const deletedRolesData = await rolesService.deleteRoleByList(requester, availablePermissions, roleIds);
+    const deletedRolesData = await rolesService.deleteRoleByList(
+        requester,
+        availablePermissions,
+        roleIds
+    );
 
     deletedRolesData.route = req.originalUrl;
 

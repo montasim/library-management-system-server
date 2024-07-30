@@ -18,7 +18,8 @@ const roleSchema = new mongoose.Schema(
                 rolesConstants.lengths.NAME_MAX,
                 `Role name cannot exceed ${rolesConstants.lengths.NAME_MAX} characters in length.`,
             ],
-            description: 'The name of the role. It must be unique and conform to specified length constraints.',
+            description:
+                'The name of the role. It must be unique and conform to specified length constraints.',
         },
         permissions: [
             {

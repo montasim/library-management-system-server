@@ -36,11 +36,12 @@ const getPublicationById = asyncErrorHandlerService(async (req, res) => {
 
 const updatePublicationById = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const updatedPublicationData = await publicationsService.updatePublicationById(
-        requester,
-        req.params.publicationId,
-        req.body
-    );
+    const updatedPublicationData =
+        await publicationsService.updatePublicationById(
+            requester,
+            req.params.publicationId,
+            req.body
+        );
 
     updatedPublicationData.route = req.originalUrl;
 
@@ -51,7 +52,10 @@ const deletePublicationList = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const publicationIds = req.query.ids.split(',');
     const deletedPublicationsData =
-        await publicationsService.deletePublicationList(requester, publicationIds);
+        await publicationsService.deletePublicationList(
+            requester,
+            publicationIds
+        );
 
     deletedPublicationsData.route = req.originalUrl;
 
@@ -60,10 +64,11 @@ const deletePublicationList = asyncErrorHandlerService(async (req, res) => {
 
 const deletePublicationById = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const deletedPublicationData = await publicationsService.deletePublicationById(
-        requester,
-        req.params.publicationId
-    );
+    const deletedPublicationData =
+        await publicationsService.deletePublicationById(
+            requester,
+            req.params.publicationId
+        );
 
     deletedPublicationData.route = req.originalUrl;
 

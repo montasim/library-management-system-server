@@ -7,10 +7,8 @@ import usersAccountController from './userAccount/userAccount.controller.js';
 import userProfileController from './userProfile/userProfile.controller.js';
 import usersProfileValidator from './userProfile/updateProfile.validator.js';
 import methodNotSupported from '../../../../shared/methodNotSupported.js';
-import userAppearanceValidator
-    from './userAppearance/userAppearance.validator.js';
-import userAppearanceController
-    from './userAppearance/userAppearance.controller.js';
+import userAppearanceValidator from './userAppearance/userAppearance.validator.js';
+import userAppearanceController from './userAppearance/userAppearance.controller.js';
 
 const router = express.Router();
 
@@ -26,15 +24,16 @@ router
 
 router
     .route('/account')
-    .delete(usersAccountValidator.deleteAccount, usersAccountController.deleteAccount)
+    .delete(
+        usersAccountValidator.deleteAccount,
+        usersAccountController.deleteAccount
+    )
     .all(methodNotSupported);
 
 router
     // TODO: user appearance management, eg: theme, font size, etc
     .route('/appearance')
-    .get(
-        userAppearanceController.getAppearance
-    )
+    .get(userAppearanceController.getAppearance)
     .put(
         userAppearanceValidator.updateAppearance,
         userAppearanceController.updateAppearance

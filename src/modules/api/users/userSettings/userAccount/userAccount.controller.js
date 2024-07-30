@@ -1,11 +1,13 @@
-import asyncErrorHandlerService
-    from '../../../../../service/asyncErrorHandler.service.js';
+import asyncErrorHandlerService from '../../../../../service/asyncErrorHandler.service.js';
 import getRequesterId from '../../../../../utilities/getRequesterId.js';
 import userAccountService from './userAccount.service.js';
 
 const deleteAccount = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const deletedUserData = await userAccountService.deleteAccount(requester, req.body);
+    const deletedUserData = await userAccountService.deleteAccount(
+        requester,
+        req.body
+    );
 
     deletedUserData.route = req.originalUrl;
 

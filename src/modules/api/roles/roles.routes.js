@@ -11,9 +11,21 @@ const router = express.Router();
 
 router
     .route('/')
-    .post(rolesValidator.createRole, cacheMiddleware.invalidate(routesConstants.roles.routes), rolesController.createRole)
-    .get(rolesValidator.getRoleList, cacheMiddleware.create(configuration.cache.timeout), rolesController.getRoleList)
-    .delete(rolesValidator.deleteRoleByList, cacheMiddleware.invalidate(routesConstants.roles.routes), rolesController.deleteRoleByList)
+    .post(
+        rolesValidator.createRole,
+        cacheMiddleware.invalidate(routesConstants.roles.routes),
+        rolesController.createRole
+    )
+    .get(
+        rolesValidator.getRoleList,
+        cacheMiddleware.create(configuration.cache.timeout),
+        rolesController.getRoleList
+    )
+    .delete(
+        rolesValidator.deleteRoleByList,
+        cacheMiddleware.invalidate(routesConstants.roles.routes),
+        rolesController.deleteRoleByList
+    )
     .all(methodNotSupported);
 
 router
@@ -23,9 +35,21 @@ router
 
 router
     .route(`/:${routesConstants.roles.params}`)
-    .get(rolesValidator.getRoleById, cacheMiddleware.create(configuration.cache.timeout), rolesController.getRoleById)
-    .put(rolesValidator.updateRoleById, cacheMiddleware.invalidate(routesConstants.roles.routes), rolesController.updateRoleById)
-    .delete(rolesValidator.deleteRoleById, cacheMiddleware.invalidate(routesConstants.roles.routes), rolesController.deleteRoleById)
+    .get(
+        rolesValidator.getRoleById,
+        cacheMiddleware.create(configuration.cache.timeout),
+        rolesController.getRoleById
+    )
+    .put(
+        rolesValidator.updateRoleById,
+        cacheMiddleware.invalidate(routesConstants.roles.routes),
+        rolesController.updateRoleById
+    )
+    .delete(
+        rolesValidator.deleteRoleById,
+        cacheMiddleware.invalidate(routesConstants.roles.routes),
+        rolesController.deleteRoleById
+    )
     .all(methodNotSupported);
 
 export default router;

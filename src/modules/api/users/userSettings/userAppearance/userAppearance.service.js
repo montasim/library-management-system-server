@@ -15,12 +15,12 @@ const getAppearance = async (requester) => {
         }
 
         // Fetch only the appearance data of the user
-        const userAppearance = await UsersModel.findById(requester, 'appearance').lean();
+        const userAppearance = await UsersModel.findById(
+            requester,
+            'appearance'
+        ).lean();
         if (!userAppearance) {
-            return errorResponse(
-                'User not found.',
-                httpStatus.NOT_FOUND
-            );
+            return errorResponse('User not found.', httpStatus.NOT_FOUND);
         }
 
         // Successfully retrieved appearance data
@@ -58,11 +58,16 @@ const updateAppearance = async (requester, updateData) => {
         }
 
         // Capture the old theme details
-        const oldThemeName = existingUser.appearance && existingUser.appearance.theme && existingUser.appearance.theme.name ? existingUser.appearance.theme.name : 'None';
+        const oldThemeName =
+            existingUser.appearance &&
+            existingUser.appearance.theme &&
+            existingUser.appearance.theme.name
+                ? existingUser.appearance.theme.name
+                : 'None';
 
         const themeUpdate = {
             'appearance.theme.name': updateData.theme.name,
-            updatedBy: requester
+            updatedBy: requester,
         };
 
         // Prepare the activity record with old and new theme details
@@ -72,9 +77,9 @@ const updateAppearance = async (requester, updateData) => {
             details: `Theme updated from '${oldThemeName}' to '${updateData.theme.name}'`,
             metadata: {
                 oldTheme: oldThemeName,
-                updatedTheme: updateData.theme.name
+                updatedTheme: updateData.theme.name,
             },
-            date: new Date()  // Ensure date is set at the time of the operation
+            date: new Date(), // Ensure date is set at the time of the operation
         };
 
         // Update user document with theme change and log activity
@@ -82,7 +87,7 @@ const updateAppearance = async (requester, updateData) => {
             requester,
             {
                 $set: themeUpdate,
-                $push: { activities: activityRecord }  // Push the new activity to the activities array
+                $push: { activities: activityRecord }, // Push the new activity to the activities array
             },
             { new: true, runValidators: true }
         ).lean();

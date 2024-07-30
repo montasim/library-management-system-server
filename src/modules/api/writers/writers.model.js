@@ -19,13 +19,20 @@ const writerSchema = new mongoose.Schema(
                 writersConstants.lengths.NAME_MAX,
                 `Writer's name cannot exceed ${writersConstants.lengths.NAME_MAX} characters in length.`,
             ],
-            description: 'The name of the writer. It must be unique and conform to specified length constraints.',
+            description:
+                'The name of the writer. It must be unique and conform to specified length constraints.',
         },
         image: sharedSchema.imageSchema,
         review: {
             type: Number,
-            min: [writersConstants.lengths.REVIEW_MIN, `Review must be at least ${writersConstants.lengths.REVIEW_MIN}.`],
-            max: [writersConstants.lengths.REVIEW_MAX, `Review cannot be more than ${writersConstants.lengths.REVIEW_MAX}.`],
+            min: [
+                writersConstants.lengths.REVIEW_MIN,
+                `Review must be at least ${writersConstants.lengths.REVIEW_MIN}.`,
+            ],
+            max: [
+                writersConstants.lengths.REVIEW_MAX,
+                `Review cannot be more than ${writersConstants.lengths.REVIEW_MAX}.`,
+            ],
             required: [true, 'Please provide a review rating for the writer.'],
             description: `The review rating of the writer, ranging from ${writersConstants.lengths.REVIEW_MIN} to ${writersConstants.lengths.REVIEW_MAX}.`,
         },
@@ -41,7 +48,8 @@ const writerSchema = new mongoose.Schema(
                 writersConstants.lengths.SUMMARY_MAX,
                 `Summary cannot exceed ${writersConstants.lengths.SUMMARY_MAX} characters in length.`,
             ],
-            description: 'A brief summary of the writer’s profile, within specified length constraints.',
+            description:
+                'A brief summary of the writer’s profile, within specified length constraints.',
         },
         isActive: sharedSchema.isActiveSchema,
         createdBy: sharedSchema.createdByAdminSchema,

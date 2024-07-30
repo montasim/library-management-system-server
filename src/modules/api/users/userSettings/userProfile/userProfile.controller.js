@@ -1,5 +1,4 @@
-import asyncErrorHandlerService
-    from '../../../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../../../utilities/asyncErrorHandler.js';
 import getRequesterId from '../../../../../utilities/getRequesterId.js';
 import userProfileService from './getProfile.service.js';
 

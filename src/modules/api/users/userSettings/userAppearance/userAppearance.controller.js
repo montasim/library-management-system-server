@@ -1,5 +1,4 @@
-import asyncErrorHandlerService
-    from '../../../../../utilities/asyncErrorHandler.js';
+import asyncErrorHandlerService from '../../../../../utilities/asyncErrorHandler.js';
 import getRequesterId from '../../../../../utilities/getRequesterId.js';
 import userAppearanceService from './userAppearance.service.js';
 
@@ -16,7 +15,7 @@ const updateAppearance = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const updatedUserData = await userAppearanceService.updateAppearance(
         requester,
-        req.body,
+        req.body
     );
 
     updatedUserData.route = req.originalUrl;

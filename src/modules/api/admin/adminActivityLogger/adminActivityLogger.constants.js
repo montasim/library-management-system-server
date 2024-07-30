@@ -8,7 +8,7 @@ const actionTypes = {
 };
 
 const adminActivityLoggerConstants = {
-  actionTypes,
+    actionTypes,
 };
 
 export default adminActivityLoggerConstants;

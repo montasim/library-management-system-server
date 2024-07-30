@@ -7,8 +7,7 @@ import isEmptyObject from '../../../../../utilities/isEmptyObject.js';
 import validateFile from '../../../../../utilities/validateFile.js';
 import userConstants from '../../users.constants.js';
 import mimeTypesConstants from '../../../../../constant/mimeTypes.constants.js';
-import fileExtensionsConstants
-    from '../../../../../constant/fileExtensions.constants.js';
+import fileExtensionsConstants from '../../../../../constant/fileExtensions.constants.js';
 import GoogleDriveService from '../../../../../service/googleDrive.service.js';
 
 const getProfile = async (userId) => {

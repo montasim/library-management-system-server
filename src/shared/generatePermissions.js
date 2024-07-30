@@ -1,5 +1,5 @@
 const generatePermissions = (routes) => {
-    let permissions = [];
+    const permissions = [];
 
     // Iterate over each route in the routes object
     for (const key in routes) {

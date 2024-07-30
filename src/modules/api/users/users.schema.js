@@ -25,8 +25,7 @@ const userSchemaBase = Joi.object({
         )
         .pattern(new RegExp(userConstants.pattern.USERNAME))
         .messages({
-            'string.pattern.base':
-                'Username, must be unique.',
+            'string.pattern.base': 'Username, must be unique.',
         }),
     mobile: validationService.mobileField,
     address: validationService
@@ -58,13 +57,16 @@ const userSchemaBase = Joi.object({
         name: Joi.string()
             .required()
             .trim()
-            .description('The name of the theme chosen by the user. This setting determines the overall look and feel of the application, enabling a personalized user experience.')
+            .description(
+                'The name of the theme chosen by the user. This setting determines the overall look and feel of the application, enabling a personalized user experience.'
+            ),
     }),
 }).strict();
 
 const updateUserProfile = userSchemaBase
-    .fork(['name', 'username', 'mobile', 'address', 'department', 'designation'], (field) =>
-        field.optional()
+    .fork(
+        ['name', 'username', 'mobile', 'address', 'department', 'designation'],
+        (field) => field.optional()
     )
     .min(1);
 

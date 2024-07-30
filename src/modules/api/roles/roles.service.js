@@ -9,10 +9,8 @@ import PermissionsModel from '../permissions/permissions.model.js';
 import constants from '../../../constant/constants.js';
 import validatePermission from '../../../utilities/validatePermission.js';
 import routesConstants from '../../../constant/routes.constants.js';
-import AdminActivityLoggerModel
-    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 const populateRoleFields = async (query) => {
     return await query
@@ -41,13 +39,16 @@ const populateRoleFields = async (query) => {
 
 const createRole = async (requester, availablePermissions, newRoleData) => {
     try {
-        loggerService.info("Starting role creation process.");
+        loggerService.info('Starting role creation process.');
 
         // Validate requester
         loggerService.debug("Validating requester's permissions.");
-        const isAuthorized = await validatePermission(availablePermissions, routesConstants.roles.permissions.create);
+        const isAuthorized = await validatePermission(
+            availablePermissions,
+            routesConstants.roles.permissions.create
+        );
         if (!isAuthorized) {
-            loggerService.warn("Authorization failed for requester.");
+            loggerService.warn('Authorization failed for requester.');
             return errorResponse(
                 'You are not authorized to create role.',
                 httpStatus.FORBIDDEN
@@ -55,10 +56,12 @@ const createRole = async (requester, availablePermissions, newRoleData) => {
         }
 
         // Validate permissions in the role
-        loggerService.debug("Validating the permissions of the new role.");
-        const arePermissionsValid = await validatePermissions(newRoleData.permissions);
+        loggerService.debug('Validating the permissions of the new role.');
+        const arePermissionsValid = await validatePermissions(
+            newRoleData.permissions
+        );
         if (!arePermissionsValid) {
-            loggerService.warn("Validation of permissions failed.");
+            loggerService.warn('Validation of permissions failed.');
             return errorResponse(
                 'Invalid permissions provided.',
                 httpStatus.BAD_REQUEST
@@ -70,25 +73,30 @@ const createRole = async (requester, availablePermissions, newRoleData) => {
         loggerService.debug(`Set createdBy to requester: ${requester}`);
 
         // Attempt to create the role, checking for existing role in the same operation if possible
-        loggerService.debug("Attempting to create the role.");
-        const newRole = await RolesModel.create(newRoleData).catch(err => {
-            if (err.code === 11000) { // MongoDB duplicate key error on 'name'
-                loggerService.error(`Duplicate role name error: ${newRoleData.name}`);
+        loggerService.debug('Attempting to create the role.');
+        const newRole = await RolesModel.create(newRoleData).catch((err) => {
+            if (err.code === 11000) {
+                // MongoDB duplicate key error on 'name'
+                loggerService.error(
+                    `Duplicate role name error: ${newRoleData.name}`
+                );
                 return errorResponse(
                     `Role name "${newRoleData.name}" already exists.`,
                     httpStatus.BAD_REQUEST
                 );
             }
 
-            loggerService.error("Error during role creation:", err);
+            loggerService.error('Error during role creation:', err);
             throw err;
         });
 
         loggerService.info(`Role created successfully: ${newRole}`);
 
         // Populate fields immediately upon creation if supported
-        loggerService.debug("Populating role fields post-creation.");
-        const populatedRole = await populateRoleFields(RolesModel.findById(newRole._id));
+        loggerService.debug('Populating role fields post-creation.');
+        const populatedRole = await populateRoleFields(
+            RolesModel.findById(newRole._id)
+        );
 
         // Log the creation action
         await AdminActivityLoggerModel.create({
@@ -96,29 +104,44 @@ const createRole = async (requester, availablePermissions, newRoleData) => {
             action: adminActivityLoggerConstants.actionTypes.CREATE,
             description: 'Created a new role',
             details: JSON.stringify(populatedRole),
-            affectedId: newRole._id
+            affectedId: newRole._id,
         });
 
         // Successful response
-        return sendResponse(populatedRole, 'Role created successfully.', httpStatus.CREATED);
+        return sendResponse(
+            populatedRole,
+            'Role created successfully.',
+            httpStatus.CREATED
+        );
     } catch (error) {
         loggerService.error(`Failed to create role: ${error}`);
 
-        return errorResponse(error.message || 'Failed to create role.', httpStatus.INTERNAL_SERVER_ERROR);
+        return errorResponse(
+            error.message || 'Failed to create role.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 };
 
 const createDefaultRole = async (requester, availablePermissions) => {
     try {
         // Validate requester's authorization
-        const isAuthorized = await validatePermission(availablePermissions, routesConstants.roles.permissions.createDefault);
+        const isAuthorized = await validatePermission(
+            availablePermissions,
+            routesConstants.roles.permissions.createDefault
+        );
         if (!isAuthorized) {
-            return errorResponse('You are not authorized to create role.', httpStatus.FORBIDDEN);
+            return errorResponse(
+                'You are not authorized to create role.',
+                httpStatus.FORBIDDEN
+            );
         }
 
         // Fetch all permissions IDs
         const allPermissions = await PermissionsModel.find({}, '_id'); // More efficient field selection
-        const permissionsIds = allPermissions.map(permission => permission._id);
+        const permissionsIds = allPermissions.map(
+            (permission) => permission._id
+        );
 
         // Upsert operation to either update the existing role or create a new one
         const updateResult = await RolesModel.updateOne(
@@ -128,7 +151,9 @@ const createDefaultRole = async (requester, availablePermissions) => {
         );
 
         // Find the role to populate necessary fields
-        const roleDetails = await populateRoleFields(RolesModel.findById(updateResult.upsertedId || updateResult._id));
+        const roleDetails = await populateRoleFields(
+            RolesModel.findById(updateResult.upsertedId || updateResult._id)
+        );
 
         // Log the creation action; this could potentially be made asynchronous if it blocks critical processing
         await AdminActivityLoggerModel.create({
@@ -136,11 +161,13 @@ const createDefaultRole = async (requester, availablePermissions) => {
             action: adminActivityLoggerConstants.actionTypes.CREATE,
             description: 'Created default role',
             details: JSON.stringify(roleDetails),
-            affectedId: updateResult.upsertedId || updateResult._id
+            affectedId: updateResult.upsertedId || updateResult._id,
         });
 
         // Handling the response message based on the operation result
-        const message = updateResult.upsertedCount ? 'Role created successfully.' : 'Role updated successfully.';
+        const message = updateResult.upsertedCount
+            ? 'Role created successfully.'
+            : 'Role updated successfully.';
 
         return sendResponse(
             roleDetails,
@@ -159,7 +186,10 @@ const createDefaultRole = async (requester, availablePermissions) => {
 
 const getRoleList = async (requester, availablePermissions, params) => {
     try {
-        const isAuthorized = await validatePermission(availablePermissions, routesConstants.roles.permissions.getList);
+        const isAuthorized = await validatePermission(
+            availablePermissions,
+            routesConstants.roles.permissions.getList
+        );
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to create role.',
@@ -230,7 +260,10 @@ const getRoleList = async (requester, availablePermissions, params) => {
 
 const getRoleById = async (requester, availablePermissions, roleId) => {
     try {
-        const isAuthorized = await validatePermission(availablePermissions, routesConstants.roles.permissions.getById);
+        const isAuthorized = await validatePermission(
+            availablePermissions,
+            routesConstants.roles.permissions.getById
+        );
         if (!isAuthorized) {
             return errorResponse(
                 `You are not authorized to view role.`,
@@ -238,9 +271,7 @@ const getRoleById = async (requester, availablePermissions, roleId) => {
             );
         }
 
-        const resource = await populateRoleFields(
-            RolesModel.findById(roleId)
-        );
+        const resource = await populateRoleFields(RolesModel.findById(roleId));
         if (!resource) {
             return errorResponse(`Role not found.`, httpStatus.NOT_FOUND);
         }
@@ -268,9 +299,17 @@ const getRoleById = async (requester, availablePermissions, roleId) => {
     }
 };
 
-const updateRoleById = async (requester, availablePermissions, roleId, updateData) => {
+const updateRoleById = async (
+    requester,
+    availablePermissions,
+    roleId,
+    updateData
+) => {
     try {
-        const isAuthorized = await validatePermission(availablePermissions, routesConstants.roles.permissions.updateById);
+        const isAuthorized = await validatePermission(
+            availablePermissions,
+            routesConstants.roles.permissions.updateById
+        );
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to update permissions.',
@@ -295,11 +334,7 @@ const updateRoleById = async (requester, availablePermissions, roleId, updateDat
         );
 
         if (!updatedRole) {
-            return sendResponse(
-                {},
-                'Role not found.',
-                httpStatus.NOT_FOUND
-            );
+            return sendResponse({}, 'Role not found.', httpStatus.NOT_FOUND);
         }
 
         // Optionally populate if necessary (could be omitted based on requirements)
@@ -313,7 +348,7 @@ const updateRoleById = async (requester, availablePermissions, roleId, updateDat
             action: adminActivityLoggerConstants.actionTypes.UPDATE,
             description: 'Role updated',
             details: JSON.stringify(populatedRole),
-            affectedId: updatedRole._id
+            affectedId: updatedRole._id,
         });
 
         return sendResponse(
@@ -343,7 +378,10 @@ const updateRoleById = async (requester, availablePermissions, roleId, updateDat
 
 const deleteRoleByList = async (requester, availablePermissions, roleIds) => {
     try {
-        const isAuthorized = await validatePermission(availablePermissions, routesConstants.roles.permissions.deleteByList);
+        const isAuthorized = await validatePermission(
+            availablePermissions,
+            routesConstants.roles.permissions.deleteByList
+        );
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to delete role.',
@@ -403,7 +441,10 @@ const deleteRoleByList = async (requester, availablePermissions, roleIds) => {
 
 const deleteRoleById = async (requester, availablePermissions, roleId) => {
     try {
-        const isAuthorized = await validatePermission(availablePermissions, routesConstants.roles.permissions.deleteById);
+        const isAuthorized = await validatePermission(
+            availablePermissions,
+            routesConstants.roles.permissions.deleteById
+        );
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to delete role.',
@@ -419,22 +460,14 @@ const deleteRoleById = async (requester, availablePermissions, roleId) => {
             action: adminActivityLoggerConstants.actionTypes.DELETE,
             description: 'Role deleted successfully.',
             details: JSON.stringify(deletedResource),
-            affectedId: roleId
+            affectedId: roleId,
         });
 
         if (!deletedResource) {
-            return sendResponse(
-                {},
-                'Role not found.',
-                httpStatus.NOT_FOUND
-            );
+            return sendResponse({}, 'Role not found.', httpStatus.NOT_FOUND);
         }
 
-        return sendResponse(
-            {},
-            'Role deleted successfully.',
-            httpStatus.OK
-        );
+        return sendResponse({}, 'Role deleted successfully.', httpStatus.OK);
     } catch (error) {
         loggerService.error(`Failed to delete role: ${error}`);
 

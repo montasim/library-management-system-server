@@ -42,7 +42,8 @@ const createPublication = async (requester, newPublicationData) => {
 
         newPublicationData.createdBy = requester;
 
-        const newPublication = await PublicationsModel.create(newPublicationData);
+        const newPublication =
+            await PublicationsModel.create(newPublicationData);
         // Populate the necessary fields after creation
         const populatedPublication = await populatePublicationFields(
             PublicationsModel.findById(newPublication._id)
@@ -123,7 +124,9 @@ const getPublicationList = async (params) => {
 
 const getPublicationById = async (publicationId) => {
     try {
-        const publication = await populatePublicationFields(PublicationsModel.findById(publicationId));
+        const publication = await populatePublicationFields(
+            PublicationsModel.findById(publicationId)
+        );
         if (!publication) {
             return errorResponse(
                 'Publication not found.',
@@ -274,12 +277,21 @@ const deletePublicationById = async (requester, publicationId) => {
             );
         }
 
-        const deletedResource = await PublicationsModel.findByIdAndDelete(publicationId);
+        const deletedResource =
+            await PublicationsModel.findByIdAndDelete(publicationId);
         if (!deletedResource) {
-            return sendResponse({}, 'Publication not found.', httpStatus.NOT_FOUND);
+            return sendResponse(
+                {},
+                'Publication not found.',
+                httpStatus.NOT_FOUND
+            );
         }
 
-        return sendResponse({}, 'Publication deleted successfully.', httpStatus.OK);
+        return sendResponse(
+            {},
+            'Publication deleted successfully.',
+            httpStatus.OK
+        );
     } catch (error) {
         loggerService.error(`Failed to delete publication: ${error}`);
 

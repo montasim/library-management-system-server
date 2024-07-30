@@ -168,11 +168,7 @@ const updateSubject = async (requester, subjectId, updateData) => {
         );
 
         if (!updatedSubject) {
-            return sendResponse(
-                {},
-                'Subject not found.',
-                httpStatus.NOT_FOUND
-            );
+            return sendResponse({}, 'Subject not found.', httpStatus.NOT_FOUND);
         }
 
         // Optionally populate if necessary (could be omitted based on requirements)
