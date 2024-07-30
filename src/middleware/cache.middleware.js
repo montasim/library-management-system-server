@@ -10,27 +10,33 @@ const create = (duration = 3600) => {
 
         // If the requestBooks is a GET requestBooks, extract the resource name from the URL
         if (req.method === 'GET') {
-            // Extract the resource name from the URL
+            // Extract the last segment of the URL as the cache key
             const urlSegments = req.originalUrl.split('/');
 
             key = urlSegments[urlSegments.length - 1].split('?')[0];
+
+            loggerService.debug(`Cache key generated for GET request: ${key}`);
         } else {
+            // Create a unique cache key for non-GET requests based on route and method
             const routeName = req.route.path
                 .replace(/\//g, '_')
                 .replace(/:/g, '');
-
             key = `${routeName}_${req.method}_${req.originalUrl || req.url}`;
+
+            loggerService.debug(`Cache key generated for non-GET request: ${key}`);
         }
 
-        // Check if the key exists in the cache
+        // Cache retrieval for GET requests
         if (req.method === 'GET') {
             const cachedBody = cache.get(key);
-
             if (cachedBody) {
-                loggerService.info(`🍪 Serving from cache: ${key}`);
+                loggerService.info(`Cache hit: Serving from cache for key ${key}`);
 
                 return res.status(cachedBody.status).send(cachedBody.body);
             } else {
+                loggerService.warn(`Cache miss: No entry found for key ${key}`);
+
+                // Overriding response methods to cache new data
                 const originalSend = res.send.bind(res);
                 const originalStatus = res.status.bind(res);
                 let responseStatus = 200;
@@ -45,11 +51,9 @@ const create = (duration = 3600) => {
                 // Override the send method to cache the response
                 res.send = (body) => {
                     if (responseStatus >= 200 && responseStatus < 300) {
-                        cache.set(
-                            key,
-                            { body, status: responseStatus },
-                            duration
-                        );
+                        cache.set(key, { body, status: responseStatus }, duration);
+
+                        loggerService.info(`Data cached for key ${key} with status ${responseStatus}`);
                     }
 
                     originalSend(body);
@@ -72,6 +76,8 @@ const invalidate = (routeName) => {
         keys.forEach((key) => {
             if (key.startsWith(routeName)) {
                 cache.del(key);
+
+                loggerService.info(`Cache invalidated for key ${key}`);
             }
         });
 

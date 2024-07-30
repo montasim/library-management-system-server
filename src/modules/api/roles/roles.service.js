@@ -9,7 +9,10 @@ import PermissionsModel from '../permissions/permissions.model.js';
 import constants from '../../../constant/constants.js';
 import validatePermission from '../../../utilities/validatePermission.js';
 import routesConstants from '../../../constant/routes.constants.js';
-import AdminModel from '../admin/admin.model.js';
+import AdminActivityLoggerModel
+    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants
+    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 const populateRoleFields = async (query) => {
     return await query
@@ -87,31 +90,17 @@ const createRole = async (requester, availablePermissions, newRoleData) => {
         loggerService.debug("Populating role fields post-creation.");
         const populatedRole = await populateRoleFields(RolesModel.findById(newRole._id));
 
-        // Prepare the activity record with new role details
-        const activityRecord = {
-            action: routesConstants.roles.permissions.create,
-            details: `Created a new role: ${populatedRole}`,
-            metadata: {},
-            date: new Date()  // Ensure date is set at the time of the operation
-        };
-
-        // Update admin document with log activity
-        loggerService.debug("Logging the creation activity.");
-        await AdminModel.findByIdAndUpdate(
-            requester,
-            {
-                $push: { activities: activityRecord }  // Push the new activity to the activities array
-            },
-            { new: true, runValidators: true }
-        ).lean();
+        // Log the creation action
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.CREATE,
+            description: 'Created a new role',
+            details: JSON.stringify(populatedRole),
+            affectedId: newRole._id
+        });
 
         // Successful response
-        loggerService.info("Role creation process completed successfully.");
-        return sendResponse(
-            populatedRole,
-            'Role created successfully.',
-            httpStatus.CREATED
-        );
+        return sendResponse(populatedRole, 'Role created successfully.', httpStatus.CREATED);
     } catch (error) {
         loggerService.error(`Failed to create role: ${error}`);
 
@@ -141,26 +130,16 @@ const createDefaultRole = async (requester, availablePermissions) => {
         // Find the role to populate necessary fields
         const roleDetails = await populateRoleFields(RolesModel.findById(updateResult.upsertedId || updateResult._id));
 
-        // Prepare the activity record with new role details
-        const activityRecord = {
-            action: routesConstants.roles.permissions.createDefault,
-            details: `Created a new roles: ${roleDetails}`,
-            metadata: {},
-            date: new Date()  // Ensure date is set at the time of the operation
-        };
+        // Log the creation action; this could potentially be made asynchronous if it blocks critical processing
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.CREATE,
+            description: 'Created default role',
+            details: JSON.stringify(roleDetails),
+            affectedId: updateResult.upsertedId || updateResult._id
+        });
 
-        // Update admin document with log activity
-        loggerService.debug("Logging the creation activity.");
-        await AdminModel.findByIdAndUpdate(
-            requester,
-            {
-                $push: { activities: activityRecord }  // Push the new activity to the activities array
-            },
-            { new: true, runValidators: true }
-        ).lean();
-
-        // BUG: if all the permissions is already added then always returns "Role updated successfully."
-        // Determine the appropriate message based on whether the role was created or updated
+        // Handling the response message based on the operation result
         const message = updateResult.upsertedCount ? 'Role created successfully.' : 'Role updated successfully.';
 
         return sendResponse(
@@ -215,23 +194,13 @@ const getRoleList = async (requester, availablePermissions, params) => {
                 .limit(limit)
         );
 
-        // Prepare the activity record with new role details
-        const activityRecord = {
-            action: routesConstants.roles.permissions.getList,
-            details: `Fetched role list: ${roles}`,
-            metadata: {},
-            date: new Date()  // Ensure date is set at the time of the operation
-        };
-
-        // Update admin document with log activity
-        loggerService.debug("Logging the get role list activity.");
-        await AdminModel.findByIdAndUpdate(
-            requester,
-            {
-                $push: { activities: activityRecord }  // Push the new activity to the activities array
-            },
-            { new: true, runValidators: true }
-        ).lean();
+        // Log the fetched action; this could potentially be made asynchronous if it blocks critical processing
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.FETCH,
+            description: 'Fetched role list',
+            details: JSON.stringify(roles),
+        });
 
         if (!roles.length) {
             return sendResponse({}, 'No roles found.', httpStatus.NOT_FOUND);
@@ -276,23 +245,13 @@ const getRoleById = async (requester, availablePermissions, roleId) => {
             return errorResponse(`Role not found.`, httpStatus.NOT_FOUND);
         }
 
-        // Prepare the activity record with role details
-        const activityRecord = {
-            action: routesConstants.roles.permissions.getById,
-            details: `Fetched role: ${resource}`,
-            metadata: {},
-            date: new Date()  // Ensure date is set at the time of the operation
-        };
-
-        // Update admin document with log activity
-        loggerService.debug("Logging the fetched activity.");
-        await AdminModel.findByIdAndUpdate(
-            requester,
-            {
-                $push: { activities: activityRecord }  // Push the new activity to the activities array
-            },
-            { new: true, runValidators: true }
-        ).lean();
+        // Log the fetched action; this could potentially be made asynchronous if it blocks critical processing
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.FETCH,
+            description: 'Fetched role list',
+            details: JSON.stringify(resource),
+        });
 
         return sendResponse(
             resource,
@@ -348,23 +307,14 @@ const updateRoleById = async (requester, availablePermissions, roleId, updateDat
             RolesModel.findById(updatedRole._id)
         );
 
-        // Prepare the activity record with role details
-        const activityRecord = {
-            action: routesConstants.roles.permissions.updateById,
-            details: `Updated role: ${populatedRole}`,
-            metadata: {},
-            date: new Date()  // Ensure date is set at the time of the operation
-        };
-
-        // Update admin document with log activity
-        loggerService.debug("Logging the update role activity.");
-        await AdminModel.findByIdAndUpdate(
-            requester,
-            {
-                $push: { activities: activityRecord }  // Push the new activity to the activities array
-            },
-            { new: true, runValidators: true }
-        ).lean();
+        // Log the update action
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.UPDATE,
+            description: 'Role updated',
+            details: JSON.stringify(populatedRole),
+            affectedId: updatedRole._id
+        });
 
         return sendResponse(
             populatedRole,
@@ -428,23 +378,13 @@ const deleteRoleByList = async (requester, availablePermissions, roleIds) => {
         // Custom message to summarize the outcome
         const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
 
-        // Prepare the activity record with role details
-        const activityRecord = {
-            action: routesConstants.roles.permissions.deleteByList,
-            details: `Deleted role: ${results}`,
-            metadata: {},
-            date: new Date()  // Ensure date is set at the time of the operation
-        };
-
-        // Update admin document with log activity
-        loggerService.debug("Logging the delete role activity.");
-        await AdminModel.findByIdAndUpdate(
-            requester,
-            {
-                $push: { activities: activityRecord }  // Push the new activity to the activities array
-            },
-            { new: true, runValidators: true }
-        ).lean();
+        // Log the delete action
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.DELETE,
+            description: message,
+            details: JSON.stringify(deletionResult),
+        });
 
         if (results.deleted <= 0) {
             return errorResponse(message, httpStatus.OK);
@@ -473,23 +413,14 @@ const deleteRoleById = async (requester, availablePermissions, roleId) => {
 
         const deletedResource = await RolesModel.findByIdAndDelete(roleId);
 
-        // Prepare the activity record with role details
-        const activityRecord = {
-            action: routesConstants.roles.permissions.deleteById,
-            details: `Deleted role: ${deletedResource}`,
-            metadata: {},
-            date: new Date()  // Ensure date is set at the time of the operation
-        };
-
-        // Update admin document with log activity
-        loggerService.debug("Logging the delete role activity.");
-        await AdminModel.findByIdAndUpdate(
-            requester,
-            {
-                $push: { activities: activityRecord }  // Push the new activity to the activities array
-            },
-            { new: true, runValidators: true }
-        ).lean();
+        // Log the delete action
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.DELETE,
+            description: 'Role deleted successfully.',
+            details: JSON.stringify(deletedResource),
+            affectedId: roleId
+        });
 
         if (!deletedResource) {
             return sendResponse(
