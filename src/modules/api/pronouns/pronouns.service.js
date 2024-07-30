@@ -6,6 +6,19 @@ import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
 import loggerService from '../../../service/logger.service.js';
 
+const populatePronounsFields = async (query) => {
+    return await query
+        .populate({
+            path: 'createdBy',
+            select: 'name image department designation isActive',
+        })
+        .populate({
+            path: 'updatedBy',
+            select: 'name image department designation isActive',
+        });
+};
+
+
 const createPronouns = async (requester, newPronounsData) => {
     try {
         const isAuthorized = await validateAdminRequest(requester);
@@ -30,9 +43,13 @@ const createPronouns = async (requester, newPronounsData) => {
         newPronounsData.createdBy = requester;
 
         const newPronouns = await PronounsModel.create(newPronounsData);
+        // Populate the necessary fields after creation
+        const populatedPronouns = await populatePronounsFields(
+            PronounsModel.findById(newPronouns._id)
+        );
 
         return sendResponse(
-            newPronouns,
+            populatedPronouns,
             'Pronouns created successfully.',
             httpStatus.CREATED
         );
@@ -46,7 +63,7 @@ const createPronouns = async (requester, newPronounsData) => {
     }
 };
 
-const getPronounses = async (params) => {
+const getPronounsList = async (params) => {
     try {
         const {
             page = 1,
@@ -67,25 +84,27 @@ const getPronounses = async (params) => {
         };
         const totalPronouns = await PronounsModel.countDocuments(query);
         const totalPages = Math.ceil(totalPronouns / limit);
-        const pronouns = await PronounsModel.find(query)
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(limit);
+        const pronounsList = await populatePronounsFields(
+            PronounsModel.find(query)
+                .sort(sort)
+                .skip((page - 1) * limit)
+                .limit(limit)
+        );
 
-        if (!pronouns.length) {
+        if (!pronounsList.length) {
             return sendResponse({}, 'No pronouns found.', httpStatus.NOT_FOUND);
         }
 
         return sendResponse(
             {
-                pronouns,
+                pronouns: pronounsList,
                 totalPronouns,
                 totalPages,
                 currentPage: page,
                 pageSize: limit,
                 sort,
             },
-            `${pronouns.length} pronouns fetched successfully.`,
+            `${pronounsList.length} pronouns fetched successfully.`,
             httpStatus.OK
         );
     } catch (error) {
@@ -98,9 +117,9 @@ const getPronounses = async (params) => {
     }
 };
 
-const getPronouns = async (pronounsId) => {
+const getPronounsById = async (pronounsId) => {
     try {
-        const resource = await PronounsModel.findById(pronounsId);
+        const resource = await populatePronounsFields(PronounsModel.findById(pronounsId));
         if (!resource) {
             return errorResponse('Pronouns not found.', httpStatus.NOT_FOUND);
         }
@@ -120,7 +139,7 @@ const getPronouns = async (pronounsId) => {
     }
 };
 
-const updatePronouns = async (requester, pronounsId, updateData) => {
+const updatePronounsById = async (requester, pronounsId, updateData) => {
     try {
         const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
@@ -137,24 +156,15 @@ const updatePronouns = async (requester, pronounsId, updateData) => {
             );
         }
 
-        const exists = await PronounsModel.exists({
-            name: updateData.name,
-        });
-        if (exists) {
-            return sendResponse(
-                {},
-                `Pronouns name "${updateData.name}" already exists.`,
-                httpStatus.BAD_REQUEST
-            );
-        }
-
         updateData.updatedBy = requester;
 
+        // Attempt to update the pronouns
         const updatedPronouns = await PronounsModel.findByIdAndUpdate(
             pronounsId,
             updateData,
-            { new: true }
+            { new: true, runValidators: true }
         );
+
         if (!updatedPronouns) {
             return sendResponse(
                 {},
@@ -163,12 +173,27 @@ const updatePronouns = async (requester, pronounsId, updateData) => {
             );
         }
 
+        // Optionally populate if necessary (could be omitted based on requirements)
+        const populatedPronouns = await populatePronounsFields(
+            PronounsModel.findById(updatedPronouns._id)
+        );
+
         return sendResponse(
-            updatedPronouns,
+            populatedPronouns,
             'Pronouns updated successfully.',
             httpStatus.OK
         );
     } catch (error) {
+        // Handle specific errors, like duplicate names, here
+        if (error.code === 11000) {
+            // MongoDB duplicate key error
+            return sendResponse(
+                {},
+                `Pronouns name "${updateData.name}" already exists.`,
+                httpStatus.BAD_REQUEST
+            );
+        }
+
         loggerService.error(`Failed to update pronouns: ${error}`);
 
         return errorResponse(
@@ -178,7 +203,7 @@ const updatePronouns = async (requester, pronounsId, updateData) => {
     }
 };
 
-const deletePronounses = async (requester, pronounsIds) => {
+const deletePronounsList = async (requester, pronounsIds) => {
     try {
         const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
@@ -232,7 +257,7 @@ const deletePronounses = async (requester, pronounsIds) => {
     }
 };
 
-const deletePronouns = async (requester, pronounsId) => {
+const deletePronounsById = async (requester, pronounsId) => {
     const isAuthorized = await validateAdminRequest(requester);
     if (!isAuthorized) {
         return errorResponse(
@@ -251,11 +276,11 @@ const deletePronouns = async (requester, pronounsId) => {
 
 const pronounsService = {
     createPronouns,
-    getPronounses,
-    getPronouns,
-    updatePronouns,
-    deletePronounses,
-    deletePronouns,
+    getPronounsList,
+    getPronounsById,
+    updatePronounsById,
+    deletePronounsList,
+    deletePronounsById,
 };
 
 export default pronounsService;

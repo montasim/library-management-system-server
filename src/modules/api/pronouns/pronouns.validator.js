@@ -5,30 +5,30 @@ const createPronouns = validateWithSchema([
     { schema: pronounsSchema.createPronounsSchema, property: 'body' },
 ]);
 
-const getPronounses = validateWithSchema([
+const getPronounsList = validateWithSchema([
     { schema: pronounsSchema.getPronounsQuerySchema, property: 'query' },
 ]);
 
-const getPronouns = validateWithSchema([
+const getPronounsById = validateWithSchema([
     {
         schema: pronounsSchema.pronounsIdParamSchema,
         property: 'params',
     },
 ]);
 
-const updatePronouns = validateWithSchema([
+const updatePronounsById = validateWithSchema([
     { schema: pronounsSchema.pronounsIdParamSchema, property: 'params' },
     { schema: pronounsSchema.updatePronounsSchema, property: 'body' },
 ]);
 
-const deletePronounses = validateWithSchema([
+const deletePronounsList = validateWithSchema([
     {
         schema: pronounsSchema.pronounsIdsParamSchema,
         property: 'query',
     },
 ]);
 
-const deletePronouns = validateWithSchema([
+const deletePronounsById = validateWithSchema([
     {
         schema: pronounsSchema.pronounsIdParamSchema,
         property: 'params',
@@ -37,11 +37,11 @@ const deletePronouns = validateWithSchema([
 
 const pronounsValidator = {
     createPronouns,
-    getPronounses,
-    getPronouns,
-    updatePronouns,
-    deletePronounses,
-    deletePronouns,
+    getPronounsList,
+    getPronounsById,
+    updatePronounsById,
+    deletePronounsList,
+    deletePronounsById,
 };
 
 export default pronounsValidator;

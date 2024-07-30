@@ -15,26 +15,26 @@ router
         pronounsValidator.createPronouns,
         pronounsController.createPronouns
     )
-    .get(pronounsValidator.getPronounses, pronounsController.getPronounses)
+    .get(pronounsValidator.getPronounsList, pronounsController.getPronounsList)
     .delete(
         authenticateMiddleware.admin,
-        pronounsValidator.deletePronounses,
-        pronounsController.deletePronounses
+        pronounsValidator.deletePronounsList,
+        pronounsController.deletePronounsList
     )
     .all(methodNotSupported);
 
 router
     .route(`/:${routesConstants.pronouns.params}`)
-    .get(pronounsValidator.getPronouns, pronounsController.getPronouns)
+    .get(pronounsValidator.getPronounsById, pronounsController.getPronounsById)
     .put(
         authenticateMiddleware.admin,
-        pronounsValidator.updatePronouns,
-        pronounsController.updatePronouns
+        pronounsValidator.updatePronounsById,
+        pronounsController.updatePronounsById
     )
     .delete(
         authenticateMiddleware.admin,
-        pronounsValidator.deletePronouns,
-        pronounsController.deletePronouns
+        pronounsValidator.deletePronounsById,
+        pronounsController.deletePronounsById
     )
     .all(methodNotSupported);
 
