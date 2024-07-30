@@ -4,14 +4,9 @@ import permissionsConstants from './permissions.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
 import validationService from '../../../service/validation.service.js';
 import routesConstants from '../../../constant/routes.constants.js';
+import generatePermissions from '../../../shared/generatePermissions.js';
 
-const actions = ['create', 'get', 'update', 'delete', 'modify'];
-// Collect valid route names from routesConstants
-const validRoutes = Object.values(routesConstants).map((route) => route.routes);
-// Generate all valid combinations of actions and routes
-const validNames = actions.flatMap((action) =>
-    validRoutes.map((route) => `${action}-${route}`)
-);
+const validNames = generatePermissions(routesConstants);
 
 // Define base schema for permissions
 const permissionSchemaBase = Joi.object({

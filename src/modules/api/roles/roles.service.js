@@ -2,13 +2,15 @@ import validatePermissions from '../../../shared/validatePermissions.js';
 import RolesModel from './roles.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import PermissionsModel from '../permissions/permissions.model.js';
 import constants from '../../../constant/constants.js';
+import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
+import validatePermission from '../../../utilities/validatePermission.js';
+import routesConstants from '../../../constant/routes.constants.js';
 
 const populateRoleFields = async (query) => {
     return await query
@@ -37,10 +39,10 @@ const populateRoleFields = async (query) => {
         });
 };
 
-const createRole = async (requester, newRoleData) => {
+const createRole = async (availablePermissions, newRoleData) => {
     try {
         // Validate requester
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validatePermission(availablePermissions, routesConstants.roles.permissions.create);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to create role.',
@@ -93,7 +95,7 @@ const createRole = async (requester, newRoleData) => {
 const createDefaultRole = async (requester) => {
     try {
         // Validate requester's authorization
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse('You are not authorized to create role.', httpStatus.FORBIDDEN);
         }
@@ -133,7 +135,7 @@ const createDefaultRole = async (requester) => {
 
 const getRoles = async (requester, params) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to create role.',
@@ -196,7 +198,7 @@ const getRoles = async (requester, params) => {
 
 const getRoleById = async (requester, roleId) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 `You are not authorized to view role.`,
@@ -228,7 +230,7 @@ const getRoleById = async (requester, roleId) => {
 
 const updateRole = async (requester, roleId, updateData) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to update permissions.',
@@ -292,7 +294,7 @@ const updateRole = async (requester, roleId, updateData) => {
 
 const deleteRoles = async (requester, roleIds) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
+        const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
             return errorResponse(
                 'You are not authorized to delete role.',

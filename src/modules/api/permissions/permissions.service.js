@@ -106,9 +106,8 @@ const createDefaultPermission = async (requester) => {
             );
         }
 
-        // Define actions and generate permissions
-        const actions = ['create', 'get', 'update', 'delete', 'modify'];
-        const permissions = generatePermissions(actions, routesConstants);
+        // Generate permissions
+        const permissions = generatePermissions(routesConstants);
         const createdPermissions = [];
         const errors = [];
 
