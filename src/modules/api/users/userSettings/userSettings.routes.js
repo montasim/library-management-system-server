@@ -3,6 +3,7 @@ import express from 'express';
 import usersController from '../users.controller.js';
 import uploadMiddleware from '../../../../middleware/upload.middleware.js';
 import usersValidator from '../users.validator.js';
+import userLogRoutes from './userLog/userLog.routes.js';
 import methodNotSupported from '../../../../shared/methodNotSupported.js';
 
 const router = express.Router();
@@ -54,5 +55,8 @@ router
     )
     .delete(usersValidator.deleteUser, usersController.deleteUser)
     .all(methodNotSupported);
+
+// TODO: user log management, eg: security, activities
+router.use('/log', userLogRoutes);
 
 export default router;
