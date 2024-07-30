@@ -645,10 +645,6 @@ const sessionsSchema = new Schema({
 const activitiesSchema = new Schema({
     category: {
         type: String,
-        required: [
-            true,
-            'Recording the category of activity is necessary to track user activities accurately.'
-        ],
         enum: Object.values(userConstants.activityType),
         description: 'Describes the category of activity performed by the user, such as security, appearance.'
     },

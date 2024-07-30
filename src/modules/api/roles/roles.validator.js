@@ -5,7 +5,7 @@ const createRole = validateWithSchema([
     { schema: rolesSchema.createRoleSchema, property: 'body' },
 ]);
 
-const getRoles = validateWithSchema([
+const getRoleList = validateWithSchema([
     {
         schema: rolesSchema.getRolesQuerySchema,
         property: 'query',
@@ -19,7 +19,7 @@ const getRoleById = validateWithSchema([
     },
 ]);
 
-const updateRole = validateWithSchema([
+const updateRoleById = validateWithSchema([
     {
         schema: rolesSchema.roleIdParamSchema,
         property: 'params',
@@ -30,14 +30,14 @@ const updateRole = validateWithSchema([
     },
 ]);
 
-const deleteRoles = validateWithSchema([
+const deleteRoleByList = validateWithSchema([
     {
         schema: rolesSchema.roleIdsParamSchema,
         property: 'query',
     },
 ]);
 
-const deleteRole = validateWithSchema([
+const deleteRoleById = validateWithSchema([
     {
         schema: rolesSchema.roleIdParamSchema,
         property: 'params',
@@ -46,11 +46,11 @@ const deleteRole = validateWithSchema([
 
 const rolesValidator = {
     createRole,
-    getRoles,
+    getRoleList,
     getRoleById,
-    updateRole,
-    deleteRoles,
-    deleteRole,
+    updateRoleById,
+    deleteRoleByList,
+    deleteRoleById,
 };
 
 export default rolesValidator;

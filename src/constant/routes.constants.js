@@ -21,6 +21,7 @@ const routesConstants = {
             updateById: 'update-permission-by-id',
             deleteById: 'delete-permission-by-id',
             deleteByList: 'delete-permission-by-list',
+            createDefault: 'create-default-permission',
         }
     },
     pronouns: {
@@ -57,6 +58,7 @@ const routesConstants = {
             updateById: 'update-role-by-id',
             deleteById: 'delete-role-by-id',
             deleteByList: 'delete-role-by-list',
+            createDefault: 'create-default-role',
         }
     },
     subjects: {

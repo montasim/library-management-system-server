@@ -10,8 +10,8 @@ const router = express.Router();
 router
     .route('/')
     .post(rolesValidator.createRole, rolesController.createRole)
-    .get(rolesValidator.getRoles, rolesController.getRoles)
-    .delete(rolesValidator.deleteRoles, rolesController.deleteRoles)
+    .get(rolesValidator.getRoleList, rolesController.getRoleList)
+    .delete(rolesValidator.deleteRoleByList, rolesController.deleteRoleByList)
     .all(methodNotSupported);
 
 router
@@ -22,8 +22,8 @@ router
 router
     .route(`/:${routesConstants.roles.params}`)
     .get(rolesValidator.getRoleById, rolesController.getRoleById)
-    .put(rolesValidator.updateRole, rolesController.updateRole)
-    .delete(rolesValidator.deleteRole, rolesController.deleteRole)
+    .put(rolesValidator.updateRoleById, rolesController.updateRoleById)
+    .delete(rolesValidator.deleteRoleById, rolesController.deleteRoleById)
     .all(methodNotSupported);
 
 export default router;

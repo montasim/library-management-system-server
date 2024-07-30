@@ -5,8 +5,9 @@ import getRequesterPermissions
     from '../../../utilities/getRequesterPermissions.js';
 
 const createRole = asyncErrorHandlerService(async (req, res) => {
-    const permissions = getRequesterPermissions(req);
-    const newRoleData = await rolesService.createRole(permissions, req.body);
+    const requester = getRequesterId(req);
+    const availablePermissions = getRequesterPermissions(req);
+    const newRoleData = await rolesService.createRole(requester, availablePermissions, req.body);
 
     newRoleData.route = req.originalUrl;
 
@@ -15,16 +16,18 @@ const createRole = asyncErrorHandlerService(async (req, res) => {
 
 const createDefaultRole = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const newRoleData = await rolesService.createDefaultRole(requester);
+    const availablePermissions = getRequesterPermissions(req);
+    const newRoleData = await rolesService.createDefaultRole(requester, availablePermissions);
 
     newRoleData.route = req.originalUrl;
 
     res.status(newRoleData.status).send(newRoleData);
 });
 
-const getRoles = asyncErrorHandlerService(async (req, res) => {
+const getRoleList = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const rolesData = await rolesService.getRoles(requester, req.query);
+    const availablePermissions = getRequesterPermissions(req);
+    const rolesData = await rolesService.getRoleList(requester, availablePermissions, req.query);
 
     rolesData.route = req.originalUrl;
 
@@ -33,17 +36,20 @@ const getRoles = asyncErrorHandlerService(async (req, res) => {
 
 const getRoleById = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const roleData = await rolesService.getRoleById(requester, req.params.roleId);
+    const availablePermissions = getRequesterPermissions(req);
+    const roleData = await rolesService.getRoleById(requester, availablePermissions, req.params.roleId);
 
     roleData.route = req.originalUrl;
 
     res.status(roleData.status).send(roleData);
 });
 
-const updateRole = asyncErrorHandlerService(async (req, res) => {
+const updateRoleById = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const updatedRoleData = await rolesService.updateRole(
+    const availablePermissions = getRequesterPermissions(req);
+    const updatedRoleData = await rolesService.updateRoleById(
         requester,
+        availablePermissions,
         req.params.roleId,
         req.body
     );
@@ -53,20 +59,23 @@ const updateRole = asyncErrorHandlerService(async (req, res) => {
     res.status(updatedRoleData.status).send(updatedRoleData);
 });
 
-const deleteRoles = asyncErrorHandlerService(async (req, res) => {
+const deleteRoleByList = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
+    const availablePermissions = getRequesterPermissions(req);
     const roleIds = req.query.ids.split(',');
-    const deletedRolesData = await rolesService.deleteRoles(requester, roleIds);
+    const deletedRolesData = await rolesService.deleteRoleByList(requester, availablePermissions, roleIds);
 
     deletedRolesData.route = req.originalUrl;
 
     res.status(deletedRolesData.status).send(deletedRolesData);
 });
 
-const deleteRole = asyncErrorHandlerService(async (req, res) => {
+const deleteRoleById = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const deletedRoleData = await rolesService.deleteRole(
+    const availablePermissions = getRequesterPermissions(req);
+    const deletedRoleData = await rolesService.deleteRoleById(
         requester,
+        availablePermissions,
         req.params.roleId
     );
 
@@ -78,11 +87,11 @@ const deleteRole = asyncErrorHandlerService(async (req, res) => {
 const rolesController = {
     createRole,
     createDefaultRole,
-    getRoles,
+    getRoleList,
     getRoleById,
-    updateRole,
-    deleteRoles,
-    deleteRole,
+    updateRoleById,
+    deleteRoleByList,
+    deleteRoleById,
 };
 
 export default rolesController;
