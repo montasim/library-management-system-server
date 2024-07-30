@@ -14,8 +14,8 @@ const createPublication = asyncErrorHandlerService(async (req, res) => {
     res.status(newPublicationData.status).send(newPublicationData);
 });
 
-const getPublications = asyncErrorHandlerService(async (req, res) => {
-    const publicationsData = await publicationsService.getPublications(
+const getPublicationList = asyncErrorHandlerService(async (req, res) => {
+    const publicationsData = await publicationsService.getPublicationList(
         req.query
     );
 
@@ -24,8 +24,8 @@ const getPublications = asyncErrorHandlerService(async (req, res) => {
     res.status(publicationsData.status).send(publicationsData);
 });
 
-const getPublication = asyncErrorHandlerService(async (req, res) => {
-    const publicationData = await publicationsService.getPublication(
+const getPublicationById = asyncErrorHandlerService(async (req, res) => {
+    const publicationData = await publicationsService.getPublicationById(
         req.params.publicationId
     );
 
@@ -34,9 +34,9 @@ const getPublication = asyncErrorHandlerService(async (req, res) => {
     res.status(publicationData.status).send(publicationData);
 });
 
-const updatePublication = asyncErrorHandlerService(async (req, res) => {
+const updatePublicationById = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const updatedPublicationData = await publicationsService.updatePublication(
+    const updatedPublicationData = await publicationsService.updatePublicationById(
         requester,
         req.params.publicationId,
         req.body
@@ -47,20 +47,20 @@ const updatePublication = asyncErrorHandlerService(async (req, res) => {
     res.status(updatedPublicationData.status).send(updatedPublicationData);
 });
 
-const deletePublications = asyncErrorHandlerService(async (req, res) => {
+const deletePublicationList = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const publicationIds = req.query.ids.split(',');
     const deletedPublicationsData =
-        await publicationsService.deletePublications(requester, publicationIds);
+        await publicationsService.deletePublicationList(requester, publicationIds);
 
     deletedPublicationsData.route = req.originalUrl;
 
     res.status(deletedPublicationsData.status).send(deletedPublicationsData);
 });
 
-const deletePublication = asyncErrorHandlerService(async (req, res) => {
+const deletePublicationById = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const deletedPublicationData = await publicationsService.deletePublication(
+    const deletedPublicationData = await publicationsService.deletePublicationById(
         requester,
         req.params.publicationId
     );
@@ -72,11 +72,11 @@ const deletePublication = asyncErrorHandlerService(async (req, res) => {
 
 const publicationsController = {
     createPublication,
-    getPublications,
-    getPublication,
-    updatePublication,
-    deletePublications,
-    deletePublication,
+    getPublicationList,
+    getPublicationById,
+    updatePublicationById,
+    deletePublicationList,
+    deletePublicationById,
 };
 
 export default publicationsController;

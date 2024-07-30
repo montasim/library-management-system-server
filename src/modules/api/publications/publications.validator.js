@@ -8,21 +8,21 @@ const createPublication = validateWithSchema([
     },
 ]);
 
-const getPublications = validateWithSchema([
+const getPublicationList = validateWithSchema([
     {
         schema: publicationsSchema.getPublicationsQuerySchema,
         property: 'query',
     },
 ]);
 
-const getPublication = validateWithSchema([
+const getPublicationById = validateWithSchema([
     {
         schema: publicationsSchema.publicationIdParamSchema,
         property: 'params',
     },
 ]);
 
-const updatePublication = validateWithSchema([
+const updatePublicationById = validateWithSchema([
     {
         schema: publicationsSchema.publicationIdParamSchema,
         property: 'params',
@@ -33,14 +33,14 @@ const updatePublication = validateWithSchema([
     },
 ]);
 
-const deletePublications = validateWithSchema([
+const deletePublicationList = validateWithSchema([
     {
         schema: publicationsSchema.publicationIdsParamSchema,
         property: 'query',
     },
 ]);
 
-const deletePublication = validateWithSchema([
+const deletePublicationById = validateWithSchema([
     {
         schema: publicationsSchema.publicationIdParamSchema,
         property: 'params',
@@ -49,11 +49,11 @@ const deletePublication = validateWithSchema([
 
 const publicationsValidator = {
     createPublication,
-    getPublications,
-    getPublication,
-    updatePublication,
-    deletePublications,
-    deletePublication,
+    getPublicationList,
+    getPublicationById,
+    updatePublicationById,
+    deletePublicationList,
+    deletePublicationById,
 };
 
 export default publicationsValidator;

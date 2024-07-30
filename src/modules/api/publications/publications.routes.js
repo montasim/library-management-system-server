@@ -16,31 +16,31 @@ router
         publicationsController.createPublication
     )
     .get(
-        publicationsValidator.getPublications,
-        publicationsController.getPublications
+        publicationsValidator.getPublicationList,
+        publicationsController.getPublicationList
     )
     .delete(
         authenticateMiddleware.admin,
-        publicationsValidator.deletePublications,
-        publicationsController.deletePublications
+        publicationsValidator.deletePublicationList,
+        publicationsController.deletePublicationList
     )
     .all(methodNotSupported);
 
 router
-    .route(`/${routesConstants.publications.params}`)
+    .route(`/:${routesConstants.publications.params}`)
     .get(
-        publicationsValidator.getPublication,
-        publicationsController.getPublication
+        publicationsValidator.getPublicationById,
+        publicationsController.getPublicationById
     )
     .put(
         authenticateMiddleware.admin,
-        publicationsValidator.updatePublication,
-        publicationsController.updatePublication
+        publicationsValidator.updatePublicationById,
+        publicationsController.updatePublicationById
     )
     .delete(
         authenticateMiddleware.admin,
-        publicationsValidator.deletePublication,
-        publicationsController.deletePublication
+        publicationsValidator.deletePublicationById,
+        publicationsController.deletePublicationById
     )
     .all(methodNotSupported);
 
