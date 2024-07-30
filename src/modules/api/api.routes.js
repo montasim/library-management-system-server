@@ -36,7 +36,7 @@ router.use(
 );
 router.use(`/${routesConstants.subjects.routes}`, subjectsRoutes);
 router.use('/trending', trendingRoutes);
-router.use('/users', authenticateMiddleware.user, usersRoutes);
+router.use('/user', authenticateMiddleware.user, usersRoutes);
 router.use(`/${routesConstants.writers.routes}`, writersRoutes);
 router.use('/', userProfileRoutes);
 
