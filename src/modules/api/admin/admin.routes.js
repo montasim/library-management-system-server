@@ -16,8 +16,8 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.admin.permissions.create
         ),
-        adminValidator.createAdmin,
-        adminController.createAdmin
+        adminValidator.createNewAdmin,
+        adminController.createNewAdmin
     )
     // .get(adminValidator.getAdmin, adminController.getAdmin)
     // .delete(adminValidator.deleteAdmin, adminController.deleteAdmin)
@@ -25,22 +25,22 @@ router
 
 router
     .route('/verify/:token')
-    .get(adminValidator.verify, adminController.verify)
+    .get(adminValidator.verifyAdmin, adminController.verifyAdmin)
     .all(methodNotSupported);
 
 router
     .route('/resend-verification/:id')
-    .get(adminValidator.resendVerification, adminController.resendVerification)
+    .get(adminValidator.resendAdminVerification, adminController.resendAdminVerification)
     .all(methodNotSupported);
 
 router
     .route('/requestBooks-new-password')
-    .put(adminValidator.requestNewPassword, adminController.requestNewPassword)
+    .put(adminValidator.requestNewAdminPassword, adminController.requestNewAdminPassword)
     .all(methodNotSupported);
 
 router
     .route('/reset-password/:token')
-    .put(adminValidator.resetPassword, adminController.resetPassword)
+    .put(adminValidator.resetAdminPassword, adminController.resetAdminPassword)
     .all(methodNotSupported);
 
 // router
@@ -51,12 +51,12 @@ router
 
 router
     .route('/login')
-    .post(adminValidator.login, adminController.login)
+    .post(adminValidator.adminLogin, adminController.adminLogin)
     .all(methodNotSupported);
 
 router
     .route('/logout')
-    .get(authenticateMiddleware(accessTypesConstants.ADMIN), adminController.logout)
+    .get(authenticateMiddleware(accessTypesConstants.ADMIN), adminController.adminLogout)
     .all(methodNotSupported);
 
 export default router;

@@ -3,13 +3,13 @@ import getRequesterId from '../../../utilities/getRequesterId.js';
 import adminService from './admin.service.js';
 import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
 
-const createAdmin = asyncErrorHandlerService(async (req, res) => {
+const createNewAdmin = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
     const hostData = {
         hostname: req.hostname,
         port: req.port,
     };
-    const newUserData = await adminService.createAdmin(
+    const newUserData = await adminService.createNewAdmin(
         requester,
         req.body,
         hostData
@@ -20,24 +20,24 @@ const createAdmin = asyncErrorHandlerService(async (req, res) => {
     res.status(newUserData.status).send(newUserData);
 });
 
-const verify = asyncErrorHandlerService(async (req, res) => {
+const verifyAdmin = asyncErrorHandlerService(async (req, res) => {
     const hostData = {
         hostname: req.hostname,
         port: req.port,
     };
-    const verifyData = await adminService.verify(req.params.token, hostData);
+    const verifyData = await adminService.verifyAdmin(req.params.token, hostData);
 
     verifyData.route = req.originalUrl;
 
     res.status(verifyData.status).send(verifyData);
 });
 
-const resendVerification = asyncErrorHandlerService(async (req, res) => {
+const resendAdminVerification = asyncErrorHandlerService(async (req, res) => {
     const hostData = {
         hostname: req.hostname,
         port: req.port,
     };
-    const verificationData = await adminService.resendVerification(
+    const verificationData = await adminService.resendAdminVerification(
         req.params.id,
         hostData
     );
@@ -47,12 +47,12 @@ const resendVerification = asyncErrorHandlerService(async (req, res) => {
     res.status(verificationData.status).send(verificationData);
 });
 
-const requestNewPassword = asyncErrorHandlerService(async (req, res) => {
+const requestNewAdminPassword = asyncErrorHandlerService(async (req, res) => {
     const hostData = {
         hostname: req.hostname,
         port: req.port,
     };
-    const requestNewPasswordData = await adminService.requestNewPassword(
+    const requestNewPasswordData = await adminService.requestNewAdminPassword(
         req.body.email,
         hostData
     );
@@ -62,7 +62,7 @@ const requestNewPassword = asyncErrorHandlerService(async (req, res) => {
     res.status(requestNewPasswordData.status).send(requestNewPasswordData);
 });
 
-const resetPassword = asyncErrorHandlerService(async (req, res) => {
+const resetAdminPassword = asyncErrorHandlerService(async (req, res) => {
     const hostData = {
         hostname: req.hostname,
         port: req.port,
@@ -72,7 +72,7 @@ const resetPassword = asyncErrorHandlerService(async (req, res) => {
         newPassword: req.body.newPassword,
         confirmNewPassword: req.body.confirmNewPassword,
     };
-    const verificationData = await adminService.resetPassword(
+    const verificationData = await adminService.resetAdminPassword(
         hostData,
         req.params.token,
         adminData
@@ -83,11 +83,11 @@ const resetPassword = asyncErrorHandlerService(async (req, res) => {
     res.status(verificationData.status).send(verificationData);
 });
 
-const login = asyncErrorHandlerService(async (req, res) => {
+const adminLogin = asyncErrorHandlerService(async (req, res) => {
     const { headers } = req;
     const userAgentString = headers['user-agent'];
     const device = await getRequestedDeviceDetails(req);
-    const loginData = await adminService.login(
+    const loginData = await adminService.adminLogin(
         req.body,
         userAgentString,
         device
@@ -98,8 +98,8 @@ const login = asyncErrorHandlerService(async (req, res) => {
     res.status(loginData.status).send(loginData);
 });
 
-const logout = asyncErrorHandlerService(async (req, res) => {
-    const logoutData = await adminService.logout(req);
+const adminLogout = asyncErrorHandlerService(async (req, res) => {
+    const logoutData = await adminService.adminLogout(req);
 
     logoutData.route = req.originalUrl;
 
@@ -107,13 +107,13 @@ const logout = asyncErrorHandlerService(async (req, res) => {
 });
 
 const adminController = {
-    createAdmin,
-    verify,
-    resendVerification,
-    requestNewPassword,
-    resetPassword,
-    login,
-    logout,
+    createNewAdmin,
+    verifyAdmin,
+    resendAdminVerification,
+    requestNewAdminPassword,
+    resetAdminPassword,
+    adminLogin,
+    adminLogout,
 };
 
 export default adminController;

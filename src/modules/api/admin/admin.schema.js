@@ -35,21 +35,21 @@ const authSchemaBase = Joi.object({
     id: validationService.objectIdField,
 }).strict();
 
-const createAdmin = authSchemaBase.fork(['name', 'email'], (field) =>
+const createNewAdmin = authSchemaBase.fork(['name', 'email'], (field) =>
     field.required()
 );
 
-const verify = authSchemaBase.fork(['token'], (field) => field.required());
+const verifyAdmin = authSchemaBase.fork(['token'], (field) => field.required());
 
-const resendVerification = authSchemaBase.fork(['id'], (field) =>
+const resendAdminVerification = authSchemaBase.fork(['id'], (field) =>
     field.required()
 );
 
-const requestNewPassword = authSchemaBase.fork(['email'], (field) =>
+const requestNewAdminPassword = authSchemaBase.fork(['email'], (field) =>
     field.required()
 );
 
-const resetPassword = authSchemaBase.fork(
+const resetAdminPassword = authSchemaBase.fork(
     ['oldPassword', 'newPassword', 'confirmNewPassword'],
     (field) => field.required()
 );
@@ -59,11 +59,11 @@ const login = authSchemaBase.fork(['email', 'password'], (field) =>
 );
 
 const adminSchema = {
-    createAdmin,
-    verify,
-    resendVerification,
-    requestNewPassword,
-    resetPassword,
+    createNewAdmin,
+    verifyAdmin,
+    resendAdminVerification,
+    requestNewAdminPassword,
+    resetAdminPassword,
     login,
 };
 

@@ -38,7 +38,11 @@ const adminSchema = new mongoose.Schema(
         // designation is the role of the user
         designation: sharedSchema.roleSchema,
 
-        passwordHash: sharedSchema.passwordHashSchema,
+        passwordHash: {
+            type: String,
+            trim: true,
+            description: 'Stores the hashed password for secure authentication.',
+        },
         mustChangePassword: sharedSchema.mustChangePasswordSchema,
         isEmailVerified: sharedSchema.isEmailVerifiedSchema,
         isPhoneVerified: sharedSchema.isMobileVerifiedSchema,

@@ -23,7 +23,7 @@ import createAuthenticationToken from '../../../utilities/createAuthenticationTo
 import UsersModel from '../users/users.model.js';
 import loggerService from '../../../service/logger.service.js';
 
-const createAdmin = async (requester, adminData, hostData) => {
+const createNewAdmin = async (requester, adminData, hostData) => {
     try {
         const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
@@ -111,7 +111,7 @@ const createAdmin = async (requester, adminData, hostData) => {
 
         return sendResponse(
             newUser,
-            'Admin created successfully. Please verify your email.',
+            'Admin created successfully. Please tell the admin to verify email.',
             httpStatus.CREATED
         );
     } catch (error) {
@@ -124,7 +124,7 @@ const createAdmin = async (requester, adminData, hostData) => {
     }
 };
 
-const verify = async (token, hostData) => {
+const verifyAdmin = async (token, hostData) => {
     try {
         // Hash the plain token to compare with the stored hash
         const hashedToken = await generateHashedToken(token);
@@ -209,7 +209,7 @@ const verify = async (token, hostData) => {
     }
 };
 
-const resendVerification = async (adminId, hostData) => {
+const resendAdminVerification = async (adminId, hostData) => {
     try {
         const adminDetails = await AdminModel.findById(adminId);
         if (!adminDetails) {
@@ -283,7 +283,7 @@ const resendVerification = async (adminId, hostData) => {
     }
 };
 
-const requestNewPassword = async (email, hostData) => {
+const requestNewAdminPassword = async (email, hostData) => {
     try {
         const adminDetails = await AdminModel.findOne({
             email,
@@ -362,7 +362,7 @@ const requestNewPassword = async (email, hostData) => {
     }
 };
 
-const resetPassword = async (hostData, token, adminData) => {
+const resetAdminPassword = async (hostData, token, adminData) => {
     try {
         // Hash the plain token to compare with the stored hash
         const hashedToken = await generateHashedToken(token);
@@ -458,7 +458,7 @@ const resetPassword = async (hostData, token, adminData) => {
     }
 };
 
-const login = async (adminData, userAgent, device) => {
+const adminLogin = async (adminData, userAgent, device) => {
     try {
         // Consolidate multiple populate calls into a single, efficient query
         const adminDetails = await AdminModel.findOne({
@@ -604,7 +604,7 @@ const login = async (adminData, userAgent, device) => {
     }
 };
 
-const logout = async (req) => {
+const adminLogout = async (req) => {
     try {
         // Assuming these functions are well-defined and return relevant details or throw an error if something goes wrong.
         // const device = await getRequestedDeviceDetails(req);
@@ -640,13 +640,13 @@ const logout = async (req) => {
 };
 
 const adminService = {
-    createAdmin,
-    verify,
-    resendVerification,
-    requestNewPassword,
-    resetPassword,
-    login,
-    logout,
+    createNewAdmin,
+    verifyAdmin,
+    resendAdminVerification,
+    requestNewAdminPassword,
+    resetAdminPassword,
+    adminLogin,
+    adminLogout,
 };
 
 export default adminService;

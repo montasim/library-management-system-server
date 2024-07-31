@@ -1,87 +1,55 @@
 import adminSchema from './admin.schema.js';
 import validateWithSchema from '../../../shared/validateWithSchema.js';
 
-const createAdmin = validateWithSchema([
+const createNewAdmin = validateWithSchema([
     {
-        schema: adminSchema.createAdmin,
+        schema: adminSchema.createNewAdmin,
         property: 'body',
     },
 ]);
 
-const getAdmin = validateWithSchema([
+const verifyAdmin = validateWithSchema([
     {
-        schema: adminSchema.getAdmin,
+        schema: adminSchema.verifyAdmin,
         property: 'params',
     },
 ]);
 
-const deleteAdmin = validateWithSchema([
+const resendAdminVerification = validateWithSchema([
     {
-        schema: adminSchema.deleteAdmin,
+        schema: adminSchema.resendAdminVerification,
         property: 'params',
     },
 ]);
 
-const verify = validateWithSchema([
-    {
-        schema: adminSchema.verify,
-        property: 'params',
-    },
-]);
-
-const resendVerification = validateWithSchema([
-    {
-        schema: adminSchema.resendVerification,
-        property: 'params',
-    },
-]);
-
-const adminId = validateWithSchema([
-    {
-        schema: adminSchema.getAdminById,
-        property: 'params',
-    },
-]);
-
-const login = validateWithSchema([
+const adminLogin = validateWithSchema([
     {
         schema: adminSchema.login,
         property: 'body',
     },
 ]);
 
-const requestNewPassword = validateWithSchema([
+const requestNewAdminPassword = validateWithSchema([
     {
-        schema: adminSchema.requestNewPassword,
+        schema: adminSchema.requestNewAdminPassword,
         property: 'body',
     },
 ]);
 
-const resetPassword = validateWithSchema([
+const resetAdminPassword = validateWithSchema([
     {
-        schema: adminSchema.resetPassword,
-        property: 'body',
-    },
-]);
-
-const logout = validateWithSchema([
-    {
-        schema: adminSchema.signup,
+        schema: adminSchema.resetAdminPassword,
         property: 'body',
     },
 ]);
 
 const adminValidator = {
-    createAdmin,
-    getAdmin,
-    deleteAdmin,
-    verify,
-    resendVerification,
-    adminId,
-    login,
-    requestNewPassword,
-    resetPassword,
-    logout,
+    createNewAdmin,
+    verifyAdmin,
+    resendAdminVerification,
+    adminLogin,
+    requestNewAdminPassword,
+    resetAdminPassword,
 };
 
 export default adminValidator;
