@@ -512,11 +512,11 @@ const adminLogin = async (adminData, userAgent, device) => {
         // Password validation and handling failed login attempt
         const isPasswordValid = await comparePassword(
             adminData.password,
-            adminDetails.passwordHash
+            adminDetails?.passwordHash
         );
         if (!isPasswordValid) {
             await AdminModel.updateOne(
-                { _id: adminDetails._id },
+                { _id: adminDetails?._id },
                 {
                     $push: {
                         'login.failed.device': {
@@ -533,7 +533,7 @@ const adminLogin = async (adminData, userAgent, device) => {
             );
         }
 
-        const designation = adminDetails.designation._id;
+        const designation = adminDetails?.designation?._id;
         const { token } = await createAuthenticationToken(
             adminDetails,
             designation,
@@ -542,7 +542,7 @@ const adminLogin = async (adminData, userAgent, device) => {
 
         // Updating login success details
         await AdminModel.updateOne(
-            { _id: adminDetails._id },
+            { _id: adminDetails?._id },
             {
                 $push: {
                     'login.successful.device': {
@@ -556,7 +556,7 @@ const adminLogin = async (adminData, userAgent, device) => {
         // Prepare and send success login email
         const subject = 'Login Successfully';
         const emailData = {
-            userName: adminDetails.name,
+            userName: adminDetails?.name,
         };
         const {
             pageTitle,
@@ -567,7 +567,7 @@ const adminLogin = async (adminData, userAgent, device) => {
         } = prepareEmailContent(subject, emailData);
 
         EmailService.sendEmail(
-            adminDetails.email,
+            adminDetails?.email,
             subject,
             prepareEmail(
                 pageTitle,
