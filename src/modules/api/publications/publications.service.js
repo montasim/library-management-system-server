@@ -21,14 +21,6 @@ const populatePublicationFields = async (query) => {
 
 const createPublication = async (requester, newPublicationData) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to create publication.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const exists = await PublicationsModel.exists({
             name: newPublicationData.name,
         });
@@ -151,14 +143,6 @@ const getPublicationById = async (publicationId) => {
 
 const updatePublicationById = async (requester, publicationId, updateData) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to update publication.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         if (isEmptyObject(updateData)) {
             return errorResponse(
                 'Please provide update data.',
@@ -215,14 +199,6 @@ const updatePublicationById = async (requester, publicationId, updateData) => {
 
 const deletePublicationList = async (requester, publicationIds) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete permissions.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // First, check which permissions exist
         const existingPermissions = await PublicationsModel.find({
             _id: { $in: publicationIds },
@@ -269,14 +245,6 @@ const deletePublicationList = async (requester, publicationIds) => {
 
 const deletePublicationById = async (requester, publicationId) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete publication.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const deletedResource =
             await PublicationsModel.findByIdAndDelete(publicationId);
         if (!deletedResource) {
@@ -307,8 +275,8 @@ const publicationsService = {
     getPublicationList,
     getPublicationById,
     updatePublicationById,
-    deletePublicationList,
     deletePublicationById,
+    deletePublicationList,
 };
 
 export default publicationsService;

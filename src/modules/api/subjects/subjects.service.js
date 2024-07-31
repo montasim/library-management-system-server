@@ -21,14 +21,6 @@ const populateSubjectFields = async (query) => {
 
 const createSubject = async (requester, newSubjectData) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to create subjects.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const exists = await SubjectsModel.exists({
             name: newSubjectData.name,
         });
@@ -143,14 +135,6 @@ const getSubjectById = async (subjectId) => {
 
 const updateSubject = async (requester, subjectId, updateData) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to update subjects.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         if (isEmptyObject(updateData)) {
             return errorResponse(
                 'Please provide update data.',
@@ -203,14 +187,6 @@ const updateSubject = async (requester, subjectId, updateData) => {
 
 const deleteSubjects = async (requester, subjectIds) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete subjects.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // First, check which subjects exist
         const existingSubjects = await SubjectsModel.find({
             _id: { $in: subjectIds },
