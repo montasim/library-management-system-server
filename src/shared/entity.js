@@ -7,6 +7,20 @@ import getRequestedDeviceDetails
 
 // TODO: Implement the `entity` log
 
+const createNewUserEntity = (service, createFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const requester = getRequesterId(req);
+        const hostData = getHostData(req);
+        const newUserData = await service[createFunction](
+            requester,
+            req.body,
+            hostData
+        );
+
+        newUserData.route = req.originalUrl;
+        res.status(newUserData.status).send(newUserData);
+    });
+
 const signupEntity = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
@@ -193,6 +207,7 @@ const deleteEntityList = (service, deleteByIdFunction) =>
     });
 
 const entity = {
+    createNewUserEntity,
     signupEntity,
     verifyEntity,
     resendVerificationEntity,

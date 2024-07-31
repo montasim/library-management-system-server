@@ -39,7 +39,7 @@ const createNewAdmin = async (requester, adminData, hostData) => {
         if (existingAdmin) {
             return sendResponse(
                 {},
-                'This email address is already registered. Please log in or use the forgot password option if you need to recover your password.',
+                'This email address is already registered. Please tell the admin to log in or use the forgot password option if needed to recover password.',
                 httpStatus.CONFLICT
             );
         }
