@@ -5,13 +5,14 @@ import publicationsValidator from './publications.validator.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 import routesConstants from '../../../constant/routes.constants.js';
+import accessTypesConstants from '../../../constant/accessTypes.constants.js';
 
 const router = express.Router();
 
 router
     .route('/')
     .post(
-        authenticateMiddleware(routesConstants.publications.permissions.create),
+        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.publications.permissions.create),
         publicationsValidator.createPublication,
         publicationsController.createPublication
     )
@@ -21,6 +22,7 @@ router
     )
     .delete(
         authenticateMiddleware(
+            accessTypesConstants.ADMIN,
             routesConstants.publications.permissions.deleteByList
         ),
         publicationsValidator.deletePublicationList,
@@ -36,6 +38,7 @@ router
     )
     .put(
         authenticateMiddleware(
+            accessTypesConstants.ADMIN,
             routesConstants.publications.permissions.updateById
         ),
         publicationsValidator.updatePublicationById,
@@ -43,6 +46,7 @@ router
     )
     .delete(
         authenticateMiddleware(
+            accessTypesConstants.ADMIN,
             routesConstants.publications.permissions.deleteById
         ),
         publicationsValidator.deletePublicationById,

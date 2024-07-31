@@ -8,13 +8,14 @@ import uploadMiddleware from '../../../middleware/upload.middleware.js';
 import writersController from './writers.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import routesConstants from '../../../constant/routes.constants.js';
+import accessTypesConstants from '../../../constant/accessTypes.constants.js';
 
 const router = express.Router();
 
 router
     .route('/')
     .post(
-        authenticateMiddleware(routesConstants.writers.permissions.create),
+        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.writers.permissions.create),
         writersValidator.createWriter,
         uploadMiddleware.single('image'),
         cacheMiddleware.invalidate('writers'),
@@ -27,6 +28,7 @@ router
     )
     .delete(
         authenticateMiddleware(
+            accessTypesConstants.ADMIN,
             routesConstants.writers.permissions.deleteByList
         ),
         writersValidator.deleteWriters,
@@ -43,14 +45,14 @@ router
         writersController.getWriter
     )
     .put(
-        authenticateMiddleware(routesConstants.writers.permissions.updateById),
+        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.writers.permissions.updateById),
         writersValidator.updateWriter,
         uploadMiddleware.single('image'),
         cacheMiddleware.invalidate('writers'),
         writersController.updateWriter
     )
     .delete(
-        authenticateMiddleware(routesConstants.writers.permissions.deleteById),
+        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.writers.permissions.deleteById),
         writersValidator.deleteWriter,
         cacheMiddleware.invalidate('writers'),
         writersController.deleteWriter

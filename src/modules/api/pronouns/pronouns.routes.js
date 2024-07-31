@@ -5,19 +5,21 @@ import pronounsController from './pronouns.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import routesConstants from '../../../constant/routes.constants.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
+import accessTypesConstants from '../../../constant/accessTypes.constants.js';
 
 const router = express.Router();
 
 router
     .route('/')
     .post(
-        authenticateMiddleware(routesConstants.pronouns.permissions.create),
+        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.pronouns.permissions.create),
         pronounsValidator.createPronouns,
         pronounsController.createPronouns
     )
     .get(pronounsValidator.getPronounsList, pronounsController.getPronounsList)
     .delete(
         authenticateMiddleware(
+            accessTypesConstants.ADMIN,
             routesConstants.pronouns.permissions.deleteByList
         ),
         pronounsValidator.deletePronounsList,
@@ -29,12 +31,12 @@ router
     .route(`/:${routesConstants.pronouns.params}`)
     .get(pronounsValidator.getPronounsById, pronounsController.getPronounsById)
     .put(
-        authenticateMiddleware(routesConstants.pronouns.permissions.updateById),
+        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.pronouns.permissions.updateById),
         pronounsValidator.updatePronounsById,
         pronounsController.updatePronounsById
     )
     .delete(
-        authenticateMiddleware(routesConstants.pronouns.permissions.deleteById),
+        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.pronouns.permissions.deleteById),
         pronounsValidator.deletePronounsById,
         pronounsController.deletePronounsById
     )

@@ -5,19 +5,21 @@ import subjectsValidator from './subjects.validator.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 import routesConstants from '../../../constant/routes.constants.js';
+import accessTypesConstants from '../../../constant/accessTypes.constants.js';
 
 const router = express.Router();
 
 router
     .route('/')
     .post(
-        authenticateMiddleware(routesConstants.subjects.permissions.create),
+        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.subjects.permissions.create),
         subjectsValidator.createSubject,
         subjectsController.createSubject
     )
     .get(subjectsValidator.getSubjects, subjectsController.getSubjects)
     .delete(
         authenticateMiddleware(
+            accessTypesConstants.ADMIN,
             routesConstants.subjects.permissions.deleteByList
         ),
         subjectsValidator.deleteSubjects,
@@ -29,12 +31,12 @@ router
     .route(`/:${routesConstants.subjects.params}`)
     .get(subjectsValidator.getSubjectById, subjectsController.getSubjectById)
     .put(
-        authenticateMiddleware(routesConstants.subjects.permissions.updateById),
+        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.subjects.permissions.updateById),
         subjectsValidator.updateSubject,
         subjectsController.updateSubject
     )
     .delete(
-        authenticateMiddleware(routesConstants.subjects.permissions.deleteById),
+        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.subjects.permissions.deleteById),
         subjectsValidator.deleteSubject,
         subjectsController.deleteSubject
     )
