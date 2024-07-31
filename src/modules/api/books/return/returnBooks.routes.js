@@ -10,7 +10,7 @@ const router = express.Router();
 router
     .route('/')
     .delete(
-        authenticateMiddleware.admin,
+        authenticateMiddleware,
         returnBooksValidator.returnBooksSchema,
         returnBooksController.returnBook
     )

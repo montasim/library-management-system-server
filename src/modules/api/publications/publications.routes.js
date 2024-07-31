@@ -11,7 +11,7 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.publications.permissions.create),
         publicationsValidator.createPublication,
         publicationsController.createPublication
     )
@@ -20,7 +20,7 @@ router
         publicationsController.getPublicationList
     )
     .delete(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.publications.permissions.deleteByList),
         publicationsValidator.deletePublicationList,
         publicationsController.deletePublicationList
     )
@@ -33,12 +33,12 @@ router
         publicationsController.getPublicationById
     )
     .put(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.publications.permissions.updateById),
         publicationsValidator.updatePublicationById,
         publicationsController.updatePublicationById
     )
     .delete(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.publications.permissions.deleteById),
         publicationsValidator.deletePublicationById,
         publicationsController.deletePublicationById
     )

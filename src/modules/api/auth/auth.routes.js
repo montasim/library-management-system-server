@@ -14,7 +14,7 @@ router
 
 router
     .route('/logout')
-    .get(authenticateMiddleware.user, authController.logout)
+    .get(authenticateMiddleware, authController.logout)
     .all(methodNotSupported);
 
 router

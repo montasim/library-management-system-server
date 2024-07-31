@@ -10,7 +10,7 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware.admin,
+        authenticateMiddleware,
         adminValidator.createAdmin,
         adminController.createAdmin
     )
@@ -51,7 +51,7 @@ router
 
 router
     .route('/logout')
-    .get(authenticateMiddleware.admin, adminController.logout)
+    .get(authenticateMiddleware, adminController.logout)
     .all(methodNotSupported);
 
 export default router;

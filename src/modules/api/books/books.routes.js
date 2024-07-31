@@ -18,14 +18,14 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.books.permissions.create),
         // booksValidator.createBook,
         uploadMiddleware.single('image'),
         booksController.createBook
     )
     .get(booksValidator.getBooks, booksController.getBooks)
     .delete(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.books.permissions.deleteByList),
         booksValidator.deleteBooks,
         booksController.deleteBooks
     )
@@ -42,13 +42,13 @@ router
     .route(`/${routesConstants.books.params}`)
     .get(booksValidator.getBook, booksController.getBook)
     .put(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.books.permissions.updateById),
         booksValidator.updateBook,
         uploadMiddleware.single('image'),
         booksController.updateBook
     )
     .delete(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.books.permissions.deleteById),
         booksValidator.deleteBook,
         booksController.deleteBook
     )

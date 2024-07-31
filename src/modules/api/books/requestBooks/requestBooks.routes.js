@@ -11,7 +11,7 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware.user,
+        authenticateMiddleware,
         uploadMiddleware.single('image'),
         requestBooksValidator.createRequestBook,
         requestBooksController.createRequestBook

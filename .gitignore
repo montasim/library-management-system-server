@@ -7,3 +7,7 @@ logs
 
 .env
 .env.development
+.env.test
+.env.staging
+.env.uat
+.env.production

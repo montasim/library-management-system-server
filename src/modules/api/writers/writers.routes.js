@@ -14,7 +14,7 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.writers.permissions.create),
         writersValidator.createWriter,
         uploadMiddleware.single('image'),
         cacheMiddleware.invalidate('writers'),
@@ -26,7 +26,7 @@ router
         writersController.getWriters
     )
     .delete(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.writers.permissions.deleteByList),
         writersValidator.deleteWriters,
         cacheMiddleware.invalidate('writers'),
         writersController.deleteWriters
@@ -41,14 +41,14 @@ router
         writersController.getWriter
     )
     .put(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.writers.permissions.updateById),
         writersValidator.updateWriter,
         uploadMiddleware.single('image'),
         cacheMiddleware.invalidate('writers'),
         writersController.updateWriter
     )
     .delete(
-        authenticateMiddleware.admin,
+        authenticateMiddleware(routesConstants.writers.permissions.deleteById),
         writersValidator.deleteWriter,
         cacheMiddleware.invalidate('writers'),
         writersController.deleteWriter

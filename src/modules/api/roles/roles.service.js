@@ -7,8 +7,6 @@ import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import PermissionsModel from '../permissions/permissions.model.js';
 import constants from '../../../constant/constants.js';
-import validatePermission from '../../../utilities/validatePermission.js';
-import routesConstants from '../../../constant/routes.constants.js';
 import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
 import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
@@ -37,23 +35,9 @@ const populateRoleFields = async (query) => {
         });
 };
 
-const createRole = async (requester, availablePermissions, newRoleData) => {
+const createRole = async (requester, newRoleData) => {
     try {
         loggerService.info('Starting role creation process.');
-
-        // Validate requester
-        loggerService.debug("Validating requester's permissions.");
-        const isAuthorized = await validatePermission(
-            availablePermissions,
-            routesConstants.roles.permissions.create
-        );
-        if (!isAuthorized) {
-            loggerService.warn('Authorization failed for requester.');
-            return errorResponse(
-                'You are not authorized to create role.',
-                httpStatus.FORBIDDEN
-            );
-        }
 
         // Validate permissions in the role
         loggerService.debug('Validating the permissions of the new role.');
@@ -70,6 +54,7 @@ const createRole = async (requester, availablePermissions, newRoleData) => {
 
         // Set createdBy field
         newRoleData.createdBy = requester;
+
         loggerService.debug(`Set createdBy to requester: ${requester}`);
 
         // Attempt to create the role, checking for existing role in the same operation if possible
@@ -123,20 +108,8 @@ const createRole = async (requester, availablePermissions, newRoleData) => {
     }
 };
 
-const createDefaultRole = async (requester, availablePermissions) => {
+const createDefaultRole = async (requester) => {
     try {
-        // Validate requester's authorization
-        const isAuthorized = await validatePermission(
-            availablePermissions,
-            routesConstants.roles.permissions.createDefault
-        );
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to create role.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // Fetch all permissions IDs
         const allPermissions = await PermissionsModel.find({}, '_id'); // More efficient field selection
         const permissionsIds = allPermissions.map(
@@ -184,19 +157,8 @@ const createDefaultRole = async (requester, availablePermissions) => {
     }
 };
 
-const getRoleList = async (requester, availablePermissions, params) => {
+const getRoleList = async (requester, params) => {
     try {
-        const isAuthorized = await validatePermission(
-            availablePermissions,
-            routesConstants.roles.permissions.getList
-        );
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to create role.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const {
             page = 1,
             limit = 10,
@@ -258,19 +220,8 @@ const getRoleList = async (requester, availablePermissions, params) => {
     }
 };
 
-const getRoleById = async (requester, availablePermissions, roleId) => {
+const getRoleById = async (requester, roleId) => {
     try {
-        const isAuthorized = await validatePermission(
-            availablePermissions,
-            routesConstants.roles.permissions.getById
-        );
-        if (!isAuthorized) {
-            return errorResponse(
-                `You are not authorized to view role.`,
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const resource = await populateRoleFields(RolesModel.findById(roleId));
         if (!resource) {
             return errorResponse(`Role not found.`, httpStatus.NOT_FOUND);
@@ -301,22 +252,10 @@ const getRoleById = async (requester, availablePermissions, roleId) => {
 
 const updateRoleById = async (
     requester,
-    availablePermissions,
     roleId,
     updateData
 ) => {
     try {
-        const isAuthorized = await validatePermission(
-            availablePermissions,
-            routesConstants.roles.permissions.updateById
-        );
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to update permissions.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         if (isEmptyObject(updateData)) {
             return errorResponse(
                 'Please provide update data.',
@@ -376,19 +315,8 @@ const updateRoleById = async (
     }
 };
 
-const deleteRoleByList = async (requester, availablePermissions, roleIds) => {
+const deleteRoleByList = async (requester, roleIds) => {
     try {
-        const isAuthorized = await validatePermission(
-            availablePermissions,
-            routesConstants.roles.permissions.deleteByList
-        );
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete role.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // First, check which permissions exist
         const existingPermissions = await RolesModel.find({
             _id: { $in: roleIds },
@@ -439,19 +367,8 @@ const deleteRoleByList = async (requester, availablePermissions, roleIds) => {
     }
 };
 
-const deleteRoleById = async (requester, availablePermissions, roleId) => {
+const deleteRoleById = async (requester, roleId) => {
     try {
-        const isAuthorized = await validatePermission(
-            availablePermissions,
-            routesConstants.roles.permissions.deleteById
-        );
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete role.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const deletedResource = await RolesModel.findByIdAndDelete(roleId);
 
         // Log the delete action

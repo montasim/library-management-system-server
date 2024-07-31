@@ -10,7 +10,7 @@ const router = express.Router();
 router
     .route('/')
     .get(
-        authenticateMiddleware.user,
+        authenticateMiddleware,
         booksHistoryValidator.booksQueryParamSchema,
         booksHistoryController.getBooksHistory
     )
@@ -19,7 +19,7 @@ router
 router
     .route('/:bookId')
     .get(
-        authenticateMiddleware.user,
+        authenticateMiddleware,
         booksHistoryValidator.bookIdParamSchema,
         booksHistoryController.getBookHistory
     )

@@ -10,7 +10,7 @@ const router = express.Router();
 router
     .route('/')
     .get(
-        authenticateMiddleware.user,
+        authenticateMiddleware,
         favouriteBooksController.getFavouriteBooks
     )
     .all(methodNotSupported);
@@ -18,12 +18,12 @@ router
 router
     .route('/:favouriteBookId')
     .post(
-        authenticateMiddleware.user,
+        authenticateMiddleware,
         favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.createFavouriteBook
     )
     .delete(
-        authenticateMiddleware.user,
+        authenticateMiddleware,
         favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.deleteFavouriteBook
     )

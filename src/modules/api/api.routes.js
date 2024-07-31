@@ -25,18 +25,16 @@ router.use('/detect', detectRoutes);
 router.use(`/${routesConstants.pronouns.routes}`, pronounsRoutes);
 router.use(
     `/${routesConstants.permissions.routes}`,
-    authenticateMiddleware.admin,
     permissionRoutes
 );
 router.use(`/${routesConstants.publications.routes}`, publicationsRoutes);
 router.use(
     `/${routesConstants.roles.routes}`,
-    authenticateMiddleware.admin,
     rolesRoutes
 );
 router.use(`/${routesConstants.subjects.routes}`, subjectsRoutes);
 router.use('/trending', trendingRoutes);
-router.use('/user', authenticateMiddleware.user, usersRoutes);
+router.use('/user', authenticateMiddleware, usersRoutes);
 router.use(`/${routesConstants.writers.routes}`, writersRoutes);
 router.use('/', userProfileRoutes);
 

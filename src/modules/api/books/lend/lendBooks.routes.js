@@ -10,12 +10,12 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware.admin,
+        authenticateMiddleware,
         lendBooksValidator.createLendBooksSchema,
         lendBooksController.createLendBook
     )
     .get(
-        authenticateMiddleware.admin,
+        authenticateMiddleware,
         lendBooksValidator.getLendBooksQuerySchema,
         lendBooksController.getLendBooks
     )
