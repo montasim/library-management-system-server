@@ -1,8 +1,94 @@
 import asyncErrorHandlerService from '../utilities/asyncErrorHandler.js';
 import getRequesterId from '../utilities/getRequesterId.js';
 import loggerService from '../service/logger.service.js';
+import getHostData from '../utilities/getHostData.js';
+import getRequestedDeviceDetails
+    from '../utilities/getRequestedDeviceDetails.js';
 
 // TODO: Implement the `entity` log
+
+const signupEntity = (service, createFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const hostData = getHostData(req);
+        const newUserData = await service[createFunction](req.body, hostData);
+
+        newUserData.route = req.originalUrl;
+        res.status(newUserData.status).send(newUserData);
+    });
+
+const verifyEntity = (service, createFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const hostData = getHostData(req);
+        const verifyData = await service[createFunction](req.params.token, hostData);
+
+        verifyData.route = req.originalUrl;
+        res.status(verifyData.status).send(verifyData);
+    });
+
+const resendVerificationEntity = (service, createFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const hostData = getHostData(req);
+        const verificationData = await service[createFunction](req.params.id, hostData);
+
+        verificationData.route = req.originalUrl;
+        res.status(verificationData.status).send(verificationData);
+    });
+
+const requestNewPasswordEntity = (service, createFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const hostData = getHostData(req);
+        const requestNewPasswordData = await service[createFunction](req.body.email, hostData);
+
+        requestNewPasswordData.route = req.originalUrl;
+        res.status(requestNewPasswordData.status).send(requestNewPasswordData);
+    });
+
+const resetPasswordEntity = (service, createFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const hostData = getHostData(req);
+        const userData = {
+            oldPassword: req.body.oldPassword,
+            newPassword: req.body.newPassword,
+            confirmNewPassword: req.body.confirmNewPassword,
+        };
+        const requestNewPasswordData = await service[createFunction](
+            hostData,
+            req.params.token,
+            userData
+        );
+
+        requestNewPasswordData.route = req.originalUrl;
+        res.status(requestNewPasswordData.status).send(requestNewPasswordData);
+    });
+
+const loginEntity = (service, createFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const hostData = getHostData(req);
+        const device = await getRequestedDeviceDetails(req);
+        const loginData = await service[createFunction](
+            req.body,
+            req.headers['user-agent'],
+            device,
+            hostData
+        );
+
+        loginData.route = req.originalUrl;
+        res.status(loginData.status).send(loginData);
+    });
+
+const logoutEntity = (service, createFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const hostData = getHostData(req);
+        const device = await getRequestedDeviceDetails(req);
+        const logoutData = await service[createFunction](
+            req,
+            device,
+            hostData
+        );
+
+        logoutData.route = req.originalUrl;
+        res.status(logoutData.status).send(logoutData);
+    });
 
 const createEntity = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
@@ -107,6 +193,14 @@ const deleteEntityList = (service, deleteByIdFunction) =>
     });
 
 const entity = {
+    signupEntity,
+    verifyEntity,
+    resendVerificationEntity,
+    requestNewPasswordEntity,
+    resetPasswordEntity,
+    loginEntity,
+    logoutEntity,
+
     createEntity,
     getEntityList,
     getEntityById,

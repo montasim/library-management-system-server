@@ -408,7 +408,7 @@ const prepareEmailContent = (subject, emailData) => {
                       <tr>
                         <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
                           <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
-                          <p style="margin: 0;"><a href="https://github.com/montasim" target="_blank">https://github.com/montasim</a></p>
+                          <p style="margin: 0;"><a href="${emailData.resetPasswordVerificationLink}" target="_blank">${emailData.resetPasswordVerificationLink}</a></p>
                         </td>
                       </tr>
                       <!-- end copy -->
