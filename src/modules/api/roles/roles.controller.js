@@ -1,14 +1,10 @@
 import asyncErrorHandlerService from '../../../service/asyncErrorHandler.service.js';
 import rolesService from './roles.service.js';
 import getRequesterId from '../../../utilities/getRequesterId.js';
-import getRequesterPermissions from '../../../utilities/getRequesterPermissions.js';
 
 const createRole = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const newRoleData = await rolesService.createRole(
-        requester,
-        req.body
-    );
+    const newRoleData = await rolesService.createRole(requester, req.body);
 
     newRoleData.route = req.originalUrl;
 
@@ -17,9 +13,7 @@ const createRole = asyncErrorHandlerService(async (req, res) => {
 
 const createDefaultRole = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const newRoleData = await rolesService.createDefaultRole(
-        requester,
-    );
+    const newRoleData = await rolesService.createDefaultRole(requester);
 
     newRoleData.route = req.originalUrl;
 
@@ -28,10 +22,7 @@ const createDefaultRole = asyncErrorHandlerService(async (req, res) => {
 
 const getRoleList = asyncErrorHandlerService(async (req, res) => {
     const requester = getRequesterId(req);
-    const rolesData = await rolesService.getRoleList(
-        requester,
-        req.query
-    );
+    const rolesData = await rolesService.getRoleList(requester, req.query);
 
     rolesData.route = req.originalUrl;
 

@@ -26,7 +26,9 @@ router
         writersController.getWriters
     )
     .delete(
-        authenticateMiddleware(routesConstants.writers.permissions.deleteByList),
+        authenticateMiddleware(
+            routesConstants.writers.permissions.deleteByList
+        ),
         writersValidator.deleteWriters,
         cacheMiddleware.invalidate('writers'),
         writersController.deleteWriters

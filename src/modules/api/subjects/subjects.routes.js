@@ -17,7 +17,9 @@ router
     )
     .get(subjectsValidator.getSubjects, subjectsController.getSubjects)
     .delete(
-        authenticateMiddleware(routesConstants.subjects.permissions.deleteByList),
+        authenticateMiddleware(
+            routesConstants.subjects.permissions.deleteByList
+        ),
         subjectsValidator.deleteSubjects,
         subjectsController.deleteSubjects
     )

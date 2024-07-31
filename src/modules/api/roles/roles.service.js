@@ -250,11 +250,7 @@ const getRoleById = async (requester, roleId) => {
     }
 };
 
-const updateRoleById = async (
-    requester,
-    roleId,
-    updateData
-) => {
+const updateRoleById = async (requester, roleId, updateData) => {
     try {
         if (isEmptyObject(updateData)) {
             return errorResponse(

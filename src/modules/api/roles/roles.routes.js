@@ -6,8 +6,7 @@ import rolesValidator from './roles.validator.js';
 import rolesController from './roles.controller.js';
 import cacheMiddleware from '../../../middleware/cache.middleware.js';
 import configuration from '../../../configuration/configuration.js';
-import authenticateMiddleware
-    from '../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 
 const router = express.Router();
 

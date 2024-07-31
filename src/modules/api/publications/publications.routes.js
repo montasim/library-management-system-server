@@ -20,7 +20,9 @@ router
         publicationsController.getPublicationList
     )
     .delete(
-        authenticateMiddleware(routesConstants.publications.permissions.deleteByList),
+        authenticateMiddleware(
+            routesConstants.publications.permissions.deleteByList
+        ),
         publicationsValidator.deletePublicationList,
         publicationsController.deletePublicationList
     )
@@ -33,12 +35,16 @@ router
         publicationsController.getPublicationById
     )
     .put(
-        authenticateMiddleware(routesConstants.publications.permissions.updateById),
+        authenticateMiddleware(
+            routesConstants.publications.permissions.updateById
+        ),
         publicationsValidator.updatePublicationById,
         publicationsController.updatePublicationById
     )
     .delete(
-        authenticateMiddleware(routesConstants.publications.permissions.deleteById),
+        authenticateMiddleware(
+            routesConstants.publications.permissions.deleteById
+        ),
         publicationsValidator.deletePublicationById,
         publicationsController.deletePublicationById
     )

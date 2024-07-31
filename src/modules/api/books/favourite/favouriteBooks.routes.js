@@ -9,10 +9,7 @@ const router = express.Router();
 
 router
     .route('/')
-    .get(
-        authenticateMiddleware,
-        favouriteBooksController.getFavouriteBooks
-    )
+    .get(authenticateMiddleware, favouriteBooksController.getFavouriteBooks)
     .all(methodNotSupported);
 
 router

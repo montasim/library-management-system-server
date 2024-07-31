@@ -17,7 +17,9 @@ router
     )
     .get(pronounsValidator.getPronounsList, pronounsController.getPronounsList)
     .delete(
-        authenticateMiddleware(routesConstants.pronouns.permissions.deleteByList),
+        authenticateMiddleware(
+            routesConstants.pronouns.permissions.deleteByList
+        ),
         pronounsValidator.deletePronounsList,
         pronounsController.deletePronounsList
     )

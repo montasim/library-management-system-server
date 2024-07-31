@@ -23,15 +23,9 @@ router.use('/auth', authRoutes);
 router.use(`/${routesConstants.books.routes}`, booksRoutes);
 router.use('/detect', detectRoutes);
 router.use(`/${routesConstants.pronouns.routes}`, pronounsRoutes);
-router.use(
-    `/${routesConstants.permissions.routes}`,
-    permissionRoutes
-);
+router.use(`/${routesConstants.permissions.routes}`, permissionRoutes);
 router.use(`/${routesConstants.publications.routes}`, publicationsRoutes);
-router.use(
-    `/${routesConstants.roles.routes}`,
-    rolesRoutes
-);
+router.use(`/${routesConstants.roles.routes}`, rolesRoutes);
 router.use(`/${routesConstants.subjects.routes}`, subjectsRoutes);
 router.use('/trending', trendingRoutes);
 router.use('/user', authenticateMiddleware, usersRoutes);
