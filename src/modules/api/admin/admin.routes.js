@@ -4,13 +4,18 @@ import adminValidator from './admin.validator.js';
 import adminController from './admin.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
+import accessTypesConstants from '../../../constant/accessTypes.constants.js';
+import routesConstants from '../../../constant/routes.constants.js';
 
 const router = express.Router();
 
 router
     .route('/')
     .post(
-        authenticateMiddleware,
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.admin.permissions.create
+        ),
         adminValidator.createAdmin,
         adminController.createAdmin
     )
@@ -51,7 +56,7 @@ router
 
 router
     .route('/logout')
-    .get(authenticateMiddleware, adminController.logout)
+    .get(authenticateMiddleware(accessTypesConstants.ADMIN), adminController.logout)
     .all(methodNotSupported);
 
 export default router;

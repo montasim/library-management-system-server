@@ -1,4 +1,22 @@
 const routesConstants = {
+    admin: {
+        routes: 'admin',
+        permissions: {
+            create: 'create-admin',
+        },
+    },
+    auth: {
+        routes: 'auth',
+    },
+    detect: {
+        routes: 'detect',
+    },
+    trending: {
+        routes: 'trending',
+    },
+    user: {
+        routes: 'user',
+    },
     books: {
         routes: 'books',
         params: 'bookId',
@@ -9,6 +27,46 @@ const routesConstants = {
             updateById: 'update-book-by-id',
             deleteById: 'delete-book-by-id',
             deleteByList: 'delete-book-by-list',
+        },
+    },
+    favouriteBooks: {
+        routes: 'favourite',
+        params: 'favouriteBookId',
+        permissions: {
+            create: 'create-favourite',
+            getList: 'get-favourite-list',
+            deleteById: 'delete-favourite-by-id',
+        },
+    },
+    desiredBooks: {
+        routes: 'desired',
+    },
+    trendingBooks: {
+        routes: 'books',
+    },
+    booksHistory: {
+        routes: 'history',
+        params: 'bookId',
+    },
+    lendBooks: {
+        routes: 'lend',
+        permissions: {
+            create: 'create-lend',
+            getList: 'get-favourite-list',
+        },
+    },
+    requestBooks: {
+        routes: 'request',
+        params: 'favouriteBookId',
+        permissions: {
+            create: 'create-request',
+        },
+    },
+    returnBooks: {
+        routes: 'return',
+        params: 'favouriteBookId',
+        permissions: {
+            create: 'create-return',
         },
     },
     permissions: {

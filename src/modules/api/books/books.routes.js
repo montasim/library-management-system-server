@@ -38,12 +38,12 @@ router
     )
     .all(methodNotSupported);
 
-router.use('/desired', desiredBooksRoutes);
-router.use('/favourite', favouriteBooksRoutes);
-router.use('/history', booksHistoryRoutes);
-router.use('/lend', lendBooksRoutes);
-router.use('/request', requestBooksRoutes);
-router.use('/return', returnBooksRoutes);
+router.use(`/${routesConstants.desiredBooks.routes}`, desiredBooksRoutes);
+router.use(`/${routesConstants.favouriteBooks.routes}`, favouriteBooksRoutes);
+router.use(`/${routesConstants.booksHistory.routes}`, booksHistoryRoutes);
+router.use(`/${routesConstants.lendBooks.routes}`, lendBooksRoutes);
+router.use(`/${routesConstants.requestBooks.routes}`, requestBooksRoutes);
+router.use(`/${routesConstants.returnBooks.routes}`, returnBooksRoutes);
 
 router
     .route(`/${routesConstants.books.params}`)

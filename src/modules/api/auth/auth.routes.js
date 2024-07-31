@@ -4,6 +4,7 @@ import authValidator from './auth.validator.js';
 import authController from './auth.controller.js';
 import methodNotSupported from '../../../shared/methodNotSupported.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
+import accessTypesConstants from '../../../constant/accessTypes.constants.js';
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router
 
 router
     .route('/logout')
-    .get(authenticateMiddleware, authController.logout)
+    .get(authenticateMiddleware(accessTypesConstants.USER), authController.logout)
     .all(methodNotSupported);
 
 router

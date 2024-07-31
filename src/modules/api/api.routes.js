@@ -15,20 +15,21 @@ import rolesRoutes from './roles/roles.routes.js';
 import adminRoutes from './admin/admin.routes.js';
 import pronounsRoutes from './pronouns/pronouns.routes.js';
 import userProfileRoutes from './userProfile/userProfile.routes.js';
+import accessTypesConstants from '../../constant/accessTypes.constants.js';
 
 const router = express.Router();
 
-router.use('/admin', adminRoutes);
-router.use('/auth', authRoutes);
+router.use(`/${routesConstants.admin.routes}`, adminRoutes);
+router.use(`/${routesConstants.auth.routes}`, authRoutes);
 router.use(`/${routesConstants.books.routes}`, booksRoutes);
-router.use('/detect', detectRoutes);
+router.use(`/${routesConstants.detect.routes}`, detectRoutes);
 router.use(`/${routesConstants.pronouns.routes}`, pronounsRoutes);
 router.use(`/${routesConstants.permissions.routes}`, permissionRoutes);
 router.use(`/${routesConstants.publications.routes}`, publicationsRoutes);
 router.use(`/${routesConstants.roles.routes}`, rolesRoutes);
 router.use(`/${routesConstants.subjects.routes}`, subjectsRoutes);
-router.use('/trending', trendingRoutes);
-router.use('/user', authenticateMiddleware, usersRoutes);
+router.use(`/${routesConstants.trending.routes}`, trendingRoutes);
+router.use(`/${routesConstants.user.routes}`, authenticateMiddleware(accessTypesConstants.USER), usersRoutes);
 router.use(`/${routesConstants.writers.routes}`, writersRoutes);
 router.use('/', userProfileRoutes);
 
