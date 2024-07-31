@@ -24,16 +24,16 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.permissions.permissions.getList
         ),
-        permissionsValidator.getPermissions,
-        permissionsController.getPermissions
+        permissionsValidator.getPermissionList,
+        permissionsController.getPermissionList
     )
     .delete(
         authenticateMiddleware(
             accessTypesConstants.ADMIN,
             routesConstants.permissions.permissions.deleteByList
         ),
-        permissionsValidator.deletePermissions,
-        permissionsController.deletePermissions
+        permissionsValidator.deletePermissionList,
+        permissionsController.deletePermissionList
     )
     .all(methodNotSupported);
 
@@ -44,7 +44,7 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.permissions.permissions.createDefault
         ),
-        permissionsController.createDefaultPermission
+        permissionsController.createDefaultPermissionList
     )
     .all(methodNotSupported);
 
@@ -63,16 +63,16 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.permissions.permissions.updateById
         ),
-        permissionsValidator.updatePermission,
-        permissionsController.updatePermission
+        permissionsValidator.updatePermissionById,
+        permissionsController.updatePermissionById
     )
     .delete(
         authenticateMiddleware(
             accessTypesConstants.ADMIN,
             routesConstants.permissions.permissions.deleteById
         ),
-        permissionsValidator.deletePermission,
-        permissionsController.deletePermission
+        permissionsValidator.deletePermissionById,
+        permissionsController.deletePermissionById
     )
     .all(methodNotSupported);
 

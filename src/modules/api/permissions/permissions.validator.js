@@ -5,7 +5,7 @@ const createPermission = validateWithSchema([
     { schema: permissionsSchema.createPermissionSchema, property: 'body' },
 ]);
 
-const getPermissions = validateWithSchema([
+const getPermissionList = validateWithSchema([
     { schema: permissionsSchema.getPermissionsQuerySchema, property: 'query' },
 ]);
 
@@ -16,19 +16,19 @@ const getPermissionById = validateWithSchema([
     },
 ]);
 
-const updatePermission = validateWithSchema([
+const updatePermissionById = validateWithSchema([
     { schema: permissionsSchema.permissionIdParamSchema, property: 'params' },
     { schema: permissionsSchema.updatePermissionSchema, property: 'body' },
 ]);
 
-const deletePermissions = validateWithSchema([
+const deletePermissionList = validateWithSchema([
     {
         schema: permissionsSchema.permissionIdsParamSchema,
         property: 'query',
     },
 ]);
 
-const deletePermission = validateWithSchema([
+const deletePermissionById = validateWithSchema([
     {
         schema: permissionsSchema.permissionIdParamSchema,
         property: 'params',
@@ -37,11 +37,11 @@ const deletePermission = validateWithSchema([
 
 const permissionsValidator = {
     createPermission,
-    getPermissions,
+    getPermissionList,
     getPermissionById,
-    updatePermission,
-    deletePermissions,
-    deletePermission,
+    updatePermissionById,
+    deletePermissionList,
+    deletePermissionById,
 };
 
 export default permissionsValidator;

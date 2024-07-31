@@ -82,7 +82,7 @@ const createPermission = async (requester, newPermissionData) => {
     }
 };
 
-const createDefaultPermission = async (requester) => {
+const createDefaultPermissionList = async (requester) => {
     try {
         // Generate permissions
         const permissions = generatePermissions(routesConstants);
@@ -146,7 +146,7 @@ const createDefaultPermission = async (requester) => {
     }
 };
 
-const getPermissions = async (requester, params) => {
+const getPermissionList = async (requester, params) => {
     try {
         const {
             page = 1,
@@ -228,7 +228,7 @@ const getPermissionById = async (requester, permissionId) => {
     }
 };
 
-const updatePermission = async (requester, permissionId, updateData) => {
+const updatePermissionById = async (requester, permissionId, updateData) => {
     try {
         if (isEmptyObject(updateData)) {
             return errorResponse(
@@ -284,7 +284,7 @@ const updatePermission = async (requester, permissionId, updateData) => {
     }
 };
 
-const deletePermissions = async (requester, permissionIds) => {
+const deletePermissionList = async (requester, permissionIds) => {
     try {
         // First, check which permissions exist
         const existingPermissions = await PermissionsModel.find({
@@ -330,7 +330,7 @@ const deletePermissions = async (requester, permissionIds) => {
     }
 };
 
-const deletePermission = async (requester, permissionId) => {
+const deletePermissionById = async (requester, permissionId) => {
     try {
         return deleteResourceById(
             requester,
@@ -350,12 +350,12 @@ const deletePermission = async (requester, permissionId) => {
 
 const permissionsService = {
     createPermission,
-    createDefaultPermission,
-    getPermissions,
+    createDefaultPermissionList,
+    getPermissionList,
     getPermissionById,
-    updatePermission,
-    deletePermissions,
-    deletePermission,
+    updatePermissionById,
+    deletePermissionList,
+    deletePermissionById,
 };
 
 export default permissionsService;
