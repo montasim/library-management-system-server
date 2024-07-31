@@ -54,7 +54,7 @@ const authenticateMiddleware =
                 throw new Error('Invalid token.');
             }
 
-            const requester = decodedData.currentUser._id;
+            const requester = decodedData?.currentUser?._id;
             let isAuthorized;
 
             switch (roleCheck) {
@@ -93,7 +93,7 @@ const authenticateMiddleware =
             // Handle permission check if required
             if (requiredPermission) {
                 const hasPermission = await validatePermission(
-                    decodedData.currentUser.designation,
+                    decodedData?.currentUser?.designation,
                     requiredPermission
                 );
                 if (!hasPermission) {

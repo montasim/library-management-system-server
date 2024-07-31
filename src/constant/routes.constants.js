@@ -52,7 +52,7 @@ const routesConstants = {
         routes: 'lend',
         permissions: {
             create: 'create-lend',
-            getList: 'get-favourite-list',
+            getList: 'get-favourite',
         },
     },
     requestBooks: {

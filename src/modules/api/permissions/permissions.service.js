@@ -9,7 +9,6 @@ import routesConstants from '../../../constant/routes.constants.js';
 import generatePermissions from '../../../shared/generatePermissions.js';
 import RolesModel from '../roles/roles.model.js';
 import constants from '../../../constant/constants.js';
-import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
 
 const populatePermissionFields = async (query) => {
     return await query
@@ -25,14 +24,6 @@ const populatePermissionFields = async (query) => {
 
 const createPermission = async (requester, newPermissionData) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to create permissions.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const exists = await PermissionsModel.exists({
             name: newPermissionData.name,
         });
@@ -93,19 +84,6 @@ const createPermission = async (requester, newPermissionData) => {
 
 const createDefaultPermission = async (requester) => {
     try {
-        // Validate user authorization
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            loggerService.warn(
-                `Unauthorized permission creation attempt by user ${requester._id}`
-            );
-
-            return errorResponse(
-                'You are not authorized to create permissions.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // Generate permissions
         const permissions = generatePermissions(routesConstants);
         const createdPermissions = [];
@@ -170,14 +148,6 @@ const createDefaultPermission = async (requester) => {
 
 const getPermissions = async (requester, params) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to view permissions.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const {
             page = 1,
             limit = 10,
@@ -236,14 +206,6 @@ const getPermissions = async (requester, params) => {
 
 const getPermissionById = async (requester, permissionId) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                `You are not authorized to view permission.`,
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const resource = await populatePermissionFields(
             PermissionsModel.findById(permissionId)
         );
@@ -268,14 +230,6 @@ const getPermissionById = async (requester, permissionId) => {
 
 const updatePermission = async (requester, permissionId, updateData) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to update permissions.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         if (isEmptyObject(updateData)) {
             return errorResponse(
                 'Please provide update data.',
@@ -332,14 +286,6 @@ const updatePermission = async (requester, permissionId, updateData) => {
 
 const deletePermissions = async (requester, permissionIds) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete permissions.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // First, check which permissions exist
         const existingPermissions = await PermissionsModel.find({
             _id: { $in: permissionIds },
