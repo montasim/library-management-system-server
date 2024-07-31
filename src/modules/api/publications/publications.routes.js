@@ -12,7 +12,10 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.publications.permissions.create),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.publications.permissions.create
+        ),
         publicationsValidator.createPublication,
         publicationsController.createPublication
     )

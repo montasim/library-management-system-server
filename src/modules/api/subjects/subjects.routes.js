@@ -12,7 +12,10 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.subjects.permissions.create),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.subjects.permissions.create
+        ),
         subjectsValidator.createSubject,
         subjectsController.createSubject
     )
@@ -31,12 +34,18 @@ router
     .route(`/:${routesConstants.subjects.params}`)
     .get(subjectsValidator.getSubjectById, subjectsController.getSubjectById)
     .put(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.subjects.permissions.updateById),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.subjects.permissions.updateById
+        ),
         subjectsValidator.updateSubject,
         subjectsController.updateSubject
     )
     .delete(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.subjects.permissions.deleteById),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.subjects.permissions.deleteById
+        ),
         subjectsValidator.deleteSubject,
         subjectsController.deleteSubject
     )

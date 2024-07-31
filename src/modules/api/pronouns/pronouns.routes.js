@@ -12,7 +12,10 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.pronouns.permissions.create),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.pronouns.permissions.create
+        ),
         pronounsValidator.createPronouns,
         pronounsController.createPronouns
     )
@@ -31,12 +34,18 @@ router
     .route(`/:${routesConstants.pronouns.params}`)
     .get(pronounsValidator.getPronounsById, pronounsController.getPronounsById)
     .put(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.pronouns.permissions.updateById),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.pronouns.permissions.updateById
+        ),
         pronounsValidator.updatePronounsById,
         pronounsController.updatePronounsById
     )
     .delete(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.pronouns.permissions.deleteById),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.pronouns.permissions.deleteById
+        ),
         pronounsValidator.deletePronounsById,
         pronounsController.deletePronounsById
     )

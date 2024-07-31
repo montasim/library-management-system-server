@@ -19,14 +19,20 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.books.permissions.create),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.books.permissions.create
+        ),
         // booksValidator.createBook,
         uploadMiddleware.single('image'),
         booksController.createBook
     )
     .get(booksValidator.getBooks, booksController.getBooks)
     .delete(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.books.permissions.deleteByList),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.books.permissions.deleteByList
+        ),
         booksValidator.deleteBooks,
         booksController.deleteBooks
     )
@@ -43,13 +49,19 @@ router
     .route(`/${routesConstants.books.params}`)
     .get(booksValidator.getBook, booksController.getBook)
     .put(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.books.permissions.updateById),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.books.permissions.updateById
+        ),
         booksValidator.updateBook,
         uploadMiddleware.single('image'),
         booksController.updateBook
     )
     .delete(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.books.permissions.deleteById),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.books.permissions.deleteById
+        ),
         booksValidator.deleteBook,
         booksController.deleteBook
     )

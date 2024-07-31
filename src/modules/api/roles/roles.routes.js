@@ -14,19 +14,28 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.roles.permissions.create),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.roles.permissions.create
+        ),
         rolesValidator.createRole,
         cacheMiddleware.invalidate(routesConstants.roles.routes),
         rolesController.createRole
     )
     .get(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.roles.permissions.getList),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.roles.permissions.getList
+        ),
         rolesValidator.getRoleList,
         cacheMiddleware.create(configuration.cache.timeout),
         rolesController.getRoleList
     )
     .delete(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.roles.permissions.deleteByList),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.roles.permissions.deleteByList
+        ),
         rolesValidator.deleteRoleByList,
         cacheMiddleware.invalidate(routesConstants.roles.routes),
         rolesController.deleteRoleByList
@@ -36,7 +45,10 @@ router
 router
     .route('/default')
     .post(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.roles.permissions.createDefault),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.roles.permissions.createDefault
+        ),
         rolesController.createDefaultRole
     )
     .all(methodNotSupported);
@@ -44,19 +56,28 @@ router
 router
     .route(`/:${routesConstants.roles.params}`)
     .get(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.roles.permissions.getById),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.roles.permissions.getById
+        ),
         rolesValidator.getRoleById,
         cacheMiddleware.create(configuration.cache.timeout),
         rolesController.getRoleById
     )
     .put(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.roles.permissions.updateById),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.roles.permissions.updateById
+        ),
         rolesValidator.updateRoleById,
         cacheMiddleware.invalidate(routesConstants.roles.routes),
         rolesController.updateRoleById
     )
     .delete(
-        authenticateMiddleware(accessTypesConstants.ADMIN, routesConstants.roles.permissions.deleteById),
+        authenticateMiddleware(
+            accessTypesConstants.ADMIN,
+            routesConstants.roles.permissions.deleteById
+        ),
         rolesValidator.deleteRoleById,
         cacheMiddleware.invalidate(routesConstants.roles.routes),
         rolesController.deleteRoleById
