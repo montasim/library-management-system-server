@@ -5,8 +5,7 @@ import authenticateMiddleware from '../../../../middleware/authenticate.middlewa
 import returnBooksValidator from './returnBooks.validator.js';
 import returnBooksController from './returnBooks.controller.js';
 import routesConstants from '../../../../constant/routes.constants.js';
-import accessTypesConstants
-    from '../../../../constant/accessTypes.constants.js';
+import accessTypesConstants from '../../../../constant/accessTypes.constants.js';
 
 const router = express.Router();
 

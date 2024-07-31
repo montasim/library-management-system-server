@@ -67,8 +67,6 @@ const getRequestBook = async (requester, requestBookId) => {
 
         // Find the specific book requestBooks in the array of requestBooks
         const bookRequest = requestBooks.requestBooks.find((book) => {
-            console.log(book._id.toString());
-
             return book._id.toString() === requestBookId;
         });
         if (!bookRequest) {

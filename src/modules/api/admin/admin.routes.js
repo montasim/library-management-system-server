@@ -30,12 +30,18 @@ router
 
 router
     .route('/resend-verification/:id')
-    .get(adminValidator.resendAdminVerification, adminController.resendAdminVerification)
+    .get(
+        adminValidator.resendAdminVerification,
+        adminController.resendAdminVerification
+    )
     .all(methodNotSupported);
 
 router
     .route('/requestBooks-new-password')
-    .put(adminValidator.requestNewAdminPassword, adminController.requestNewAdminPassword)
+    .put(
+        adminValidator.requestNewAdminPassword,
+        adminController.requestNewAdminPassword
+    )
     .all(methodNotSupported);
 
 router
@@ -56,7 +62,10 @@ router
 
 router
     .route('/logout')
-    .get(authenticateMiddleware(accessTypesConstants.ADMIN), adminController.adminLogout)
+    .get(
+        authenticateMiddleware(accessTypesConstants.ADMIN),
+        adminController.adminLogout
+    )
     .all(methodNotSupported);
 
 export default router;

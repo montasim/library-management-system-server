@@ -5,8 +5,7 @@ import methodNotSupported from '../../../../shared/methodNotSupported.js';
 import authenticateMiddleware from '../../../../middleware/authenticate.middleware.js';
 import requestBooksValidator from './requestBooks.validator.js';
 import uploadMiddleware from '../../../../middleware/upload.middleware.js';
-import accessTypesConstants
-    from '../../../../constant/accessTypes.constants.js';
+import accessTypesConstants from '../../../../constant/accessTypes.constants.js';
 import routesConstants from '../../../../constant/routes.constants.js';
 
 const router = express.Router();

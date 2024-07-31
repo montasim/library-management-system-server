@@ -29,7 +29,11 @@ router.use(`/${routesConstants.publications.routes}`, publicationsRoutes);
 router.use(`/${routesConstants.roles.routes}`, rolesRoutes);
 router.use(`/${routesConstants.subjects.routes}`, subjectsRoutes);
 router.use(`/${routesConstants.trending.routes}`, trendingRoutes);
-router.use(`/${routesConstants.user.routes}`, authenticateMiddleware(accessTypesConstants.USER), usersRoutes);
+router.use(
+    `/${routesConstants.user.routes}`,
+    authenticateMiddleware(accessTypesConstants.USER),
+    usersRoutes
+);
 router.use(`/${routesConstants.writers.routes}`, writersRoutes);
 router.use('/', userProfileRoutes);
 

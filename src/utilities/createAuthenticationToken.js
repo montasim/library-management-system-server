@@ -13,7 +13,7 @@ const createAuthenticationToken = async (userDetails, designation, device) => {
             ),
             currentUser: {
                 _id: userDetails._id,
-                designation: designation,
+                designation,
                 device,
             },
         };

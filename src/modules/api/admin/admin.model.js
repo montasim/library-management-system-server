@@ -41,7 +41,8 @@ const adminSchema = new mongoose.Schema(
         passwordHash: {
             type: String,
             trim: true,
-            description: 'Stores the hashed password for secure authentication.',
+            description:
+                'Stores the hashed password for secure authentication.',
         },
         mustChangePassword: sharedSchema.mustChangePasswordSchema,
         isEmailVerified: sharedSchema.isEmailVerifiedSchema,

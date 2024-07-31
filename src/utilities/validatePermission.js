@@ -7,10 +7,15 @@ const validatePermission = async (designation, requiredPermission) => {
         loggerService.info(`Validating permission for role: ${designation}`);
 
         // Asynchronously find the role by ID and populate the permissions details
-        const roleWithPermissions = await RolesModel.findById(designation, 'permissions').populate({
-            path: 'permissions',
-            select: 'name -_id'
-        }).lean();
+        const roleWithPermissions = await RolesModel.findById(
+            designation,
+            'permissions'
+        )
+            .populate({
+                path: 'permissions',
+                select: 'name -_id',
+            })
+            .lean();
 
         if (!roleWithPermissions || !roleWithPermissions.permissions) {
             loggerService.warn(`No permissions found for role: ${designation}`);
@@ -19,8 +24,12 @@ const validatePermission = async (designation, requiredPermission) => {
         }
 
         // Extract only the names of the permissions from the populated documents
-        const availablePermissionNames = roleWithPermissions.permissions.map(perm => perm.name);
-        loggerService.info(`Permissions available for role ${designation}: ${availablePermissionNames.join(', ')}`);
+        const availablePermissionNames = roleWithPermissions.permissions.map(
+            (perm) => perm.name
+        );
+        loggerService.info(
+            `Permissions available for role ${designation}: ${availablePermissionNames.join(', ')}`
+        );
 
         // Get the requiredPermission from the PermissionsModel asynchronously
         const validateRequiredPermission = await PermissionsModel.findOne({
@@ -29,14 +38,19 @@ const validatePermission = async (designation, requiredPermission) => {
 
         // If the requiredPermission does not exist in the PermissionsModel, return false
         if (!validateRequiredPermission) {
-            loggerService.warn(`Required permission not found: ${requiredPermission}`);
+            loggerService.warn(
+                `Required permission not found: ${requiredPermission}`
+            );
 
             return false;
         }
 
         // Check if the requiredPermission is in the availablePermissionNames
-        const hasPermission = availablePermissionNames.includes(requiredPermission);
-        loggerService.info(`Permission ${requiredPermission} for role ${designation} validation result: ${hasPermission}`);
+        const hasPermission =
+            availablePermissionNames.includes(requiredPermission);
+        loggerService.info(
+            `Permission ${requiredPermission} for role ${designation} validation result: ${hasPermission}`
+        );
         return hasPermission;
     } catch (error) {
         loggerService.error('Error checking permissions:', error);
@@ -46,4 +60,3 @@ const validatePermission = async (designation, requiredPermission) => {
 };
 
 export default validatePermission;
-

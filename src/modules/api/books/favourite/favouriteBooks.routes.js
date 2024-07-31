@@ -5,25 +5,36 @@ import authenticateMiddleware from '../../../../middleware/authenticate.middlewa
 import favouriteBooksController from './favouriteBooks.controller.js';
 import favouriteBooksValidator from './favouriteBooks.validator.js';
 import routesConstants from '../../../../constant/routes.constants.js';
-import accessTypesConstants
-    from '../../../../constant/accessTypes.constants.js';
+import accessTypesConstants from '../../../../constant/accessTypes.constants.js';
 
 const router = express.Router();
 
 router
     .route('/')
-    .get(authenticateMiddleware(accessTypesConstants.USER, routesConstants.favouriteBooks.permissions.getList), favouriteBooksController.getFavouriteBooks)
+    .get(
+        authenticateMiddleware(
+            accessTypesConstants.USER,
+            routesConstants.favouriteBooks.permissions.getList
+        ),
+        favouriteBooksController.getFavouriteBooks
+    )
     .all(methodNotSupported);
 
 router
     .route(`/:${routesConstants.favouriteBooks.params}`)
     .post(
-        authenticateMiddleware(accessTypesConstants.USER, routesConstants.favouriteBooks.permissions.getList),
+        authenticateMiddleware(
+            accessTypesConstants.USER,
+            routesConstants.favouriteBooks.permissions.getList
+        ),
         favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.createFavouriteBook
     )
     .delete(
-        authenticateMiddleware(accessTypesConstants.USER, routesConstants.favouriteBooks.permissions.deleteById),
+        authenticateMiddleware(
+            accessTypesConstants.USER,
+            routesConstants.favouriteBooks.permissions.deleteById
+        ),
         favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.deleteFavouriteBook
     )
