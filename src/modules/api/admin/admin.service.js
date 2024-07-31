@@ -22,6 +22,7 @@ import generateTempPassword from '../../../utilities/generateTempPassword.js';
 import createAuthenticationToken from '../../../utilities/createAuthenticationToken.js';
 import UsersModel from '../users/users.model.js';
 import loggerService from '../../../service/logger.service.js';
+import defaultConstants from '../../../constant/default.constants.js';
 
 const createNewAdmin = async (requester, adminData, hostData) => {
     try {
@@ -69,6 +70,9 @@ const createNewAdmin = async (requester, adminData, hostData) => {
 
         const newUser = await AdminModel.create({
             ...adminData,
+            image: {
+                downloadLink: defaultConstants.images.user.male,
+            },
             emailVerifyToken,
             emailVerifyTokenExpires,
         });

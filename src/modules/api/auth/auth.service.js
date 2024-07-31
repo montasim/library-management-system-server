@@ -20,6 +20,7 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import AdminModel from '../admin/admin.model.js';
 import loggerService from '../../../service/logger.service.js';
+import defaultConstants from '../../../constant/default.constants.js';
 
 const signup = async (userData, hostData) => {
     try {
@@ -99,7 +100,12 @@ const signup = async (userData, hostData) => {
         };
 
         const newUser = await UsersModel.create({
-            name: { first: userData.name },
+            name: {
+                first: userData.name
+            },
+            image: {
+                downloadLink: defaultConstants.images.user.male,
+            },
             emails: [emailObject],
             dateOfBirth,
             passwordHash,
