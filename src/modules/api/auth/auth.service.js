@@ -546,10 +546,15 @@ const login = async (userData, userAgent, device) => {
         const user = await UsersModel.findOne({
             'emails.email': userData.email,
         }).lean();
-
         if (!user) {
             return errorResponse(
                 'No account found with that email address. Please check your email address or register for a new account.',
+                httpStatus.NOT_FOUND
+            );
+        }
+        if(!user.isActive) {
+            return errorResponse(
+                'Your account is disabled, please contact support.',
                 httpStatus.NOT_FOUND
             );
         }
