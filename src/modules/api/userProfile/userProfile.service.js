@@ -10,7 +10,7 @@ import privacySettings from '../privacySettings/privacySettings.constants.js';
 // authenticated user could be himself
 // authenticated user but not himself is treated as friends
 // authenticated user could be admin
-const getProfile = async (username, requester) => {
+const getProfile = async (requester, username) => {
     try {
         // Retrieve the user's details including privacy settings and ID
         const userWithSettings = await UsersModel.findOne(
