@@ -115,9 +115,7 @@ const createEntityWithId = (service, createFunction, resourceId) =>
         const paramsId = req.params[resourceId];
 
         // Determine the params to pass based on the presence of `paramsId`.
-        const body = paramsId
-            ? [requester, paramsId]
-            : [requester];
+        const body = paramsId ? [requester, paramsId] : [requester];
 
         // Call the service function with the appropriate query.
         const newData = await service[createFunction](...body);
@@ -161,7 +159,9 @@ const getEntityList = (service, getListFunction) =>
         const query = requester ? [requester, req.query] : [req.query];
 
         // Call the service function with the appropriate query.
-        const dataList = getListFunction ? await service[getListFunction](...query) : await service(...query);
+        const dataList = getListFunction
+            ? await service[getListFunction](...query)
+            : await service(...query);
 
         loggerService.info(
             `Entity list retrieved for requester ${requester || 'anonymous'} at ${req.originalUrl}`
