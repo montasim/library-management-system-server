@@ -5,6 +5,9 @@ import methodNotSupported from '../../../shared/methodNotSupported.js';
 
 const router = express.Router();
 
-router.route('/').get(testUncaughtExceptionController).all(methodNotSupported);
+router
+    .route('/')
+    .get(testUncaughtExceptionController)
+    .all(methodNotSupported);
 
 export default router;
