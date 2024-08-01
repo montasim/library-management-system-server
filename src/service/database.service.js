@@ -21,8 +21,16 @@ const connect = async () => {
         loggerService.error(`Database connection error: ${error.message}`)
     );
 
-    mongoose.connection.on('reconnected', () =>
-        loggerService.info('Database has successfully reconnected.')
+    // mongoose.connection.on('connected', () =>
+    //     loggerService.info('Database connection established.')
+    // );
+
+    // mongoose.connection.on('connecting', () =>
+    //     loggerService.info('Attempting to connect to the database...')
+    // );
+
+    mongoose.connection.on('disconnecting', () =>
+        loggerService.info('Database is disconnecting...')
     );
 
     mongoose.connection.on('disconnected', async () => {
@@ -37,6 +45,14 @@ const connect = async () => {
             );
         }
     });
+
+    mongoose.connection.on('uninitialized', () =>
+        loggerService.warn('Database connection is uninitialized.')
+    );
+
+    mongoose.connection.on('reconnected', () =>
+        loggerService.info('Database has successfully reconnected.')
+    );
 
     // Attempt to connect to the database
     try {
