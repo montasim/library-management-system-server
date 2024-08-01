@@ -7,6 +7,7 @@ let transporter;
 let isInitialized = false; // Initialized with a default value
 
 const connect = async () => {
+
     try {
         transporter = nodemailer.createTransport({
             host: configuration.email.smtp.host,
@@ -20,7 +21,7 @@ const connect = async () => {
 
         await transporter.verify();
 
-        loggerService.info('Email service is now connected and verified.');
+        loggerService.info(`Email service is now connected to SMTP host ${transporter.options.host} on port ${transporter.options.port}. Secure: ${transporter.options.secure}`);
 
         isInitialized = true;
     } catch (error) {
