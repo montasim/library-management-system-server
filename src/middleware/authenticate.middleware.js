@@ -33,13 +33,14 @@ const authenticateMiddleware =
 
         // Early exit if no token is provided
         if (!token) {
-            loggerService.error('No authentication token provided.');
+            const errorMessage = `Access Denied: No authentication token was found in your request. Please provide a valid token.`;
+            loggerService.error(errorMessage);
 
             return res
                 .status(httpStatus.FORBIDDEN)
                 .send(
                     createErrorData(
-                        'Access forbidden. No token provided.',
+                        errorMessage,
                         httpStatus.FORBIDDEN,
                         req.originalUrl
                     )
@@ -49,9 +50,8 @@ const authenticateMiddleware =
         try {
             const decodedData = await decodeAuthenticationToken(token);
             if (!decodedData) {
-                loggerService.error(
-                    'Token decoding failed. Invalid token provided.'
-                );
+                const errorMessage = `Authentication Failed: The provided token is invalid or corrupted. ${token}`;
+                loggerService.error(errorMessage);
 
                 throw new Error('Invalid token.');
             }
@@ -77,15 +77,14 @@ const authenticateMiddleware =
 
             // Early exit if not authorized
             if (!isAuthorized) {
-                loggerService.warn(
-                    `Authorization failed for user ID: ${requester}`
-                );
+                const errorMessage = `Unauthorized Access: You do not have the required role to access this resource. ${requester}`;
+                loggerService.warn(errorMessage);
 
                 return res
                     .status(httpStatus.UNAUTHORIZED)
                     .send(
                         createErrorData(
-                            'Unauthorized access.',
+                            errorMessage,
                             httpStatus.UNAUTHORIZED,
                             req.originalUrl
                         )
@@ -99,15 +98,14 @@ const authenticateMiddleware =
                     requiredPermission
                 );
                 if (!hasPermission) {
-                    loggerService.warn(
-                        `Permission check failed for user ID: ${requester} on permission: ${requiredPermission}`
-                    );
+                    const errorMessage = `Permission Denied: You lack the necessary permission ('${requiredPermission}') to perform this action.`;
+                    loggerService.warn(errorMessage);
 
                     return res
                         .status(httpStatus.UNAUTHORIZED)
                         .send(
                             createErrorData(
-                                'Insufficient permissions.',
+                                errorMessage,
                                 httpStatus.UNAUTHORIZED,
                                 req.originalUrl
                             )
