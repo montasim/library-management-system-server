@@ -1,31 +1,15 @@
-import asyncErrorHandlerService from '../../../../service/asyncErrorHandler.service.js';
-import getRequesterId from '../../../../utilities/getRequesterId.js';
 import recentlyVisitedBooksService from './recentlyVisitedBooks.service.js';
-
-const add = asyncErrorHandlerService(async (req, res) => {
-    const requester = getRequesterId(req);
-    const booksHistoryData = await recentlyVisitedBooksService.add(
-        requester,
-        req.body.book
-    );
-
-    booksHistoryData.route = req.originalUrl;
-
-    res.status(booksHistoryData.status).send(booksHistoryData);
-});
-
-const get = asyncErrorHandlerService(async (req, res) => {
-    const requester = getRequesterId(req);
-    const booksHistoryData = await recentlyVisitedBooksService.get(requester);
-
-    booksHistoryData.route = req.originalUrl;
-
-    res.status(booksHistoryData.status).send(booksHistoryData);
-});
+import entity from '../../../../shared/entity.js';
 
 const recentlyVisitedBooksController = {
-    add,
-    get,
+    add: entity.createEntity(
+        recentlyVisitedBooksService,
+        'add'
+    ),
+    get: entity.getEntityByRequester(
+        recentlyVisitedBooksService,
+        'get',
+    ),
 };
 
 export default recentlyVisitedBooksController;

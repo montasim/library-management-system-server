@@ -6,7 +6,7 @@ import RecentlyVisitedBooksModel from './recentlyVisitedBooks.model.js';
 import BooksModel from '../../books/books.model.js';
 import loggerService from '../../../../service/logger.service.js';
 
-const add = async (requester, bookId) => {
+const add = async (requester, bookData) => {
     try {
         // Validate user permission
         const isAuthorized = await validateUserRequest(requester);
@@ -17,11 +17,19 @@ const add = async (requester, bookId) => {
             );
         }
 
+        const bookId = bookData.book;
+        const isValidBook = await BooksModel.exists({ _id: bookId });
+        if (!isValidBook) {
+            return errorResponse(
+                'Please provide a valid book.',
+                httpStatus.UNAUTHORIZED
+            );
+        }
+
         // Fetch or initialize the recently visited books document
         let recentlyVisitedBooks = await RecentlyVisitedBooksModel.findOne({
             user: requester,
         });
-
         if (!recentlyVisitedBooks) {
             recentlyVisitedBooks = new RecentlyVisitedBooksModel({
                 user: requester,
@@ -33,7 +41,6 @@ const add = async (requester, bookId) => {
         const existingBook = recentlyVisitedBooks.books.find(
             (book) => book.id.toString() === bookId.toString()
         );
-
         if (existingBook) {
             return errorResponse(
                 'The book is already in your recently visited list.',
