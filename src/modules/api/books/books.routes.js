@@ -46,7 +46,7 @@ router.use(`/${routesConstants.requestBooks.routes}`, requestBooksRoutes);
 router.use(`/${routesConstants.returnBooks.routes}`, returnBooksRoutes);
 
 router
-    .route(`/${routesConstants.books.params}`)
+    .route(`/:${routesConstants.books.params}`)
     .get(booksValidator.getBook, booksController.getBook)
     .put(
         authenticateMiddleware(

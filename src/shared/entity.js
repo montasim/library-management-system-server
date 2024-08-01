@@ -107,7 +107,13 @@ const logoutEntity = (service, createFunction) =>
 const createEntity = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
-        const newData = await service[createFunction](requester, req.body);
+        const includesFile = req.file;
+
+        // Determine the query to pass based on the presence of `requester`.
+        const body = includesFile ? [requester, req.body, includesFile] : [requester, req.body];
+
+        // Call the service function with the appropriate query.
+        const newData = await service[createFunction](...body);
 
         loggerService.info(
             `Entity created by ${requester} at ${req.originalUrl}`,
@@ -159,11 +165,13 @@ const getEntityById = (service, getByIdFunction, paramsId) =>
 const updateEntityById = (service, updateByIdFunction, paramsId) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
-        const updatedData = await service[updateByIdFunction](
-            requester,
-            req.params[paramsId],
-            req.body
-        );
+        const includesFile = req.file;
+
+        // Determine the query to pass based on the presence of `requester`.
+        const body = includesFile ? [requester, req.body, includesFile] : [requester, req.body];
+
+        // Call the service function with the appropriate query.
+        const updatedData = await service[updateByIdFunction](...body);
 
         loggerService.info(
             `Entity ${req.params[paramsId]} updated by ${requester} at ${req.originalUrl}`
