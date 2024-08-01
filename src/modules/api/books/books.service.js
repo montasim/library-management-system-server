@@ -46,6 +46,23 @@ const validateSubjectIds = async (subjectIds) => {
     return subjectErrors;
 };
 
+const populateBookFields = async (query) => {
+    return await query
+        .populate({
+            path: 'writer',
+            select: '-createdBy -updatedBy'
+        })
+        .populate({
+            path: 'publication',
+            select: '-createdBy -updatedBy'
+        })
+        .populate({
+            path: 'subject',
+            select: '-createdBy -updatedBy'
+        })
+        .select('-createdBy -updatedBy');
+};
+
 /**
  * Creates a new book in the database with image upload and detailed data validation.
  *
@@ -54,7 +71,7 @@ const validateSubjectIds = async (subjectIds) => {
  * @param {Object} bookImage - The image file associated with the book, which will be uploaded to Google Drive.
  * @returns {Promise<Object>} - A promise that resolves to the response object indicating the result of the operation.
  */
-const createBook = async (requester, bookData, bookImage) => {
+const createNewBook = async (requester, bookData, bookImage) => {
     try {
         // Validate admin permission
         const isAuthorized = await validateAdminRequest(requester);
@@ -128,11 +145,9 @@ const createBook = async (requester, bookData, bookImage) => {
         const newBook = await BooksModel.create(bookData);
 
         // Get the populated book data
-        const newBookDetails = await BooksModel.findById(newBook._id)
-            .populate({ path: 'writer', select: '-createdBy -updatedBy' })
-            .populate({ path: 'publication', select: '-createdBy -updatedBy' })
-            .populate({ path: 'subject', select: '-createdBy -updatedBy' })
-            .select('-createdBy -updatedBy');
+        const newBookDetails = await populateBookFields(
+            BooksModel.findById(newBook._id)
+        );
 
         // Send success response
         return sendResponse(
@@ -150,7 +165,7 @@ const createBook = async (requester, bookData, bookImage) => {
     }
 };
 
-const getBooks = async (params) => {
+const getBookList = async (params) => {
     try {
         const {
             page = 1,
@@ -193,14 +208,12 @@ const getBooks = async (params) => {
         };
         const totalBooks = await BooksModel.countDocuments(query);
         const totalPages = Math.ceil(totalBooks / limit);
-        const books = await BooksModel.find(query)
-            .populate({ path: 'writer', select: '-createdBy -updatedBy' })
-            .populate({ path: 'publication', select: '-createdBy -updatedBy' })
-            .populate({ path: 'subject', select: '-createdBy -updatedBy' })
-            .select('-createdBy -updatedBy')
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(limit);
+        const books = await populateBookFields(
+            BooksModel.find(query)
+                .sort(sort)
+                .skip((page - 1) * limit)
+                .limit(limit)
+        );
 
         if (!books.length) {
             return sendResponse({}, 'No book found.', httpStatus.NOT_FOUND);
@@ -228,13 +241,11 @@ const getBooks = async (params) => {
     }
 };
 
-const getBook = async (bookId) => {
+const getBookById = async (bookId) => {
     try {
-        const book = await BooksModel.findById(bookId)
-            .populate({ path: 'writer', select: '-createdBy -updatedBy' })
-            .populate({ path: 'publication', select: '-createdBy -updatedBy' })
-            .populate({ path: 'subject', select: '-createdBy -updatedBy' })
-            .select('-createdBy -updatedBy');
+        const book = await populateBookFields(
+            BooksModel.findById(bookId)
+        );
 
         if (!book) {
             return errorResponse('Book not found.', httpStatus.NOT_FOUND);
@@ -260,7 +271,7 @@ const getBook = async (bookId) => {
  * @param {Object} bookImage - New image for the book, if provided.
  * @returns {Promise<Object>} - The updated book details or an error response.
  */
-const updateBook = async (requester, bookId, updateData, bookImage) => {
+const updateBookById = async (requester, bookId, updateData, bookImage) => {
     try {
         // Validate admin permission
         const isAuthorized = await validateAdminRequest(requester);
@@ -406,11 +417,9 @@ const updateBook = async (requester, bookId, updateData, bookImage) => {
 
         await book.save();
 
-        const updatedBookDetails = await BooksModel.findById(bookId)
-            .populate({ path: 'writer', select: '-createdBy -updatedBy' })
-            .populate({ path: 'publication', select: '-createdBy -updatedBy' })
-            .populate({ path: 'subject', select: '-createdBy -updatedBy' })
-            .select('-createdBy -updatedBy');
+        const updatedBookDetails = await populateBookFields(
+            BooksModel.findById(bookId)
+        );
 
         return sendResponse(
             updatedBookDetails,
@@ -427,7 +436,33 @@ const updateBook = async (requester, bookId, updateData, bookImage) => {
     }
 };
 
-const deleteBooks = async (requester, bookIds) => {
+const deleteBookById = async (requester, bookId) => {
+    try {
+        const isAuthorized = await validateAdminRequest(requester);
+        if (!isAuthorized) {
+            return errorResponse(
+                `You are not authorized to delete book.`,
+                httpStatus.FORBIDDEN
+            );
+        }
+
+        const deletedResource = await BooksModel.findByIdAndDelete(bookId);
+        if (!deletedResource) {
+            return sendResponse({}, 'Book not found.', httpStatus.NOT_FOUND);
+        }
+
+        return sendResponse({}, 'Book deleted successfully.', httpStatus.OK);
+    } catch (error) {
+        loggerService.error(`Failed to delete book: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to delete book.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+};
+
+const deleteBookList = async (requester, bookIds) => {
     try {
         const isAuthorized = await validateAdminRequest(requester);
         if (!isAuthorized) {
@@ -484,39 +519,13 @@ const deleteBooks = async (requester, bookIds) => {
     }
 };
 
-const deleteBook = async (requester, bookId) => {
-    try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                `You are not authorized to delete book.`,
-                httpStatus.FORBIDDEN
-            );
-        }
-
-        const deletedResource = await BooksModel.findByIdAndDelete(bookId);
-        if (!deletedResource) {
-            return sendResponse({}, 'Book not found.', httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse({}, 'Book deleted successfully.', httpStatus.OK);
-    } catch (error) {
-        loggerService.error(`Failed to delete book: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete book.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
-};
-
 const booksService = {
-    createBook,
-    getBooks,
-    getBook,
-    updateBook,
-    deleteBooks,
-    deleteBook,
+    createNewBook,
+    getBookList,
+    getBookById,
+    updateBookById,
+    deleteBookById,
+    deleteBookList,
 };
 
 export default booksService;

@@ -26,14 +26,14 @@ router
             routesConstants.books.permissions.create
         ),
         // TODO: fix validation when using formdata
-        // booksValidator.createBook,
+        // booksValidator.createNewBook,
         uploadMiddleware.single('image'),
-        booksController.createBook,
+        booksController.createNewBook,
         cacheMiddleware.invalidate(routesConstants.books.routes)
     )
     .get(
-        booksValidator.getBooks,
-        booksController.getBooks,
+        booksValidator.getBookList,
+        booksController.getBookList,
         cacheMiddleware.create(configuration.cache.timeout)
     )
     .delete(
@@ -41,8 +41,8 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.books.permissions.deleteByList
         ),
-        booksValidator.deleteBooks,
-        booksController.deleteBooks,
+        booksValidator.deleteBookList,
+        booksController.deleteBookList,
         cacheMiddleware.invalidate(routesConstants.books.routes)
     )
     .all(methodNotSupported);
@@ -57,8 +57,8 @@ router.use(`/${routesConstants.returnBooks.routes}`, returnBooksRoutes);
 router
     .route(`/:${routesConstants.books.params}`)
     .get(
-        booksValidator.getBook,
-        booksController.getBook,
+        booksValidator.getBookById,
+        booksController.getBookById,
         cacheMiddleware.create(configuration.cache.timeout)
     )
     .put(
@@ -66,9 +66,9 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.books.permissions.updateById
         ),
-        booksValidator.updateBook,
+        booksValidator.updateBookById,
         uploadMiddleware.single('image'),
-        booksController.updateBook,
+        booksController.updateBookById,
         cacheMiddleware.invalidate(routesConstants.books.routes)
     )
     .delete(
@@ -76,8 +76,8 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.books.permissions.deleteById
         ),
-        booksValidator.deleteBook,
-        booksController.deleteBook,
+        booksValidator.deleteBookById,
+        booksController.deleteBookById,
         cacheMiddleware.invalidate(routesConstants.books.routes)
     )
     .all(methodNotSupported);
