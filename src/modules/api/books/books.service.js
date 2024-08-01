@@ -11,8 +11,8 @@ import booksConstant from './books.constant.js';
 import SubjectsModel from '../subjects/subjects.model.js';
 import PublicationsModel from '../publications/publications.model.js';
 import WritersModel from '../writers/writers.model.js';
-import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
 import loggerService from '../../../service/logger.service.js';
+import service from '../../../shared/service.js';
 
 // Helper function to validate IDs
 const validateIds = async (writer, publication) => {
@@ -135,7 +135,7 @@ const createNewBook = async (requester, bookData, bookImage) => {
         // Create the book
         const newBook = await BooksModel.create(bookData);
 
-        // Get the populated book data
+        // Get the populated book datapo
         const newBookDetails = await populateBookFields(
             BooksModel.findById(newBook._id)
         );
@@ -233,24 +233,7 @@ const getBookList = async (params) => {
 };
 
 const getBookById = async (bookId) => {
-    try {
-        const book = await populateBookFields(
-            BooksModel.findById(bookId)
-        );
-
-        if (!book) {
-            return errorResponse('Book not found.', httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse(book, 'Book fetched successfully.', httpStatus.OK);
-    } catch (error) {
-        loggerService.error(`Failed to get book: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to get book.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.getResourceById(BooksModel, populateBookFields, bookId, 'Book');
 };
 
 /**

@@ -3,8 +3,8 @@ import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
-import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
 import loggerService from '../../../service/logger.service.js';
+import service from '../../../shared/service.js';
 
 const populatePronounsFields = async (query) => {
     return await query
@@ -109,27 +109,7 @@ const getPronounsList = async (params) => {
 };
 
 const getPronounsById = async (pronounsId) => {
-    try {
-        const resource = await populatePronounsFields(
-            PronounsModel.findById(pronounsId)
-        );
-        if (!resource) {
-            return errorResponse('Pronouns not found.', httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse(
-            resource,
-            'Pronouns fetched successfully.',
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to get pronouns: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to get pronouns.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.getResourceById(PronounsModel, populatePronounsFields, pronounsId, 'Pronouns');
 };
 
 const updatePronounsById = async (requester, pronounsId, updateData) => {

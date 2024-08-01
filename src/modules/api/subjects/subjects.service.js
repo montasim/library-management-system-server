@@ -5,7 +5,7 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import deleteResourceById from '../../../shared/deleteResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
-import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
+import service from '../../../shared/service.js';
 
 const populateSubjectFields = async (query) => {
     return await query
@@ -110,27 +110,7 @@ const getSubjects = async (params) => {
 };
 
 const getSubjectById = async (subjectId) => {
-    try {
-        const resource = await populateSubjectFields(
-            SubjectsModel.findById(subjectId)
-        );
-        if (!resource) {
-            return errorResponse(`Subject not found.`, httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse(
-            resource,
-            `Subject fetched successfully.`,
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to get subject: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to get subject.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.getResourceById(SubjectsModel, populateSubjectFields, subjectId, 'Subject');
 };
 
 const updateSubject = async (requester, subjectId, updateData) => {

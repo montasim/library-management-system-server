@@ -1,11 +1,10 @@
 import PublicationsModel from './publications.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
-import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
+import service from '../../../shared/service.js';
 
 const populatePublicationFields = async (query) => {
     return await query
@@ -115,30 +114,7 @@ const getPublicationList = async (params) => {
 };
 
 const getPublicationById = async (publicationId) => {
-    try {
-        const publication = await populatePublicationFields(
-            PublicationsModel.findById(publicationId)
-        );
-        if (!publication) {
-            return errorResponse(
-                'Publication not found.',
-                httpStatus.NOT_FOUND
-            );
-        }
-
-        return sendResponse(
-            publication,
-            'Publication fetched successfully.',
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to get publication: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to get publication.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.getResourceById(PublicationsModel, populatePublicationFields, publicationId, 'Publication');
 };
 
 const updatePublicationById = async (requester, publicationId, updateData) => {

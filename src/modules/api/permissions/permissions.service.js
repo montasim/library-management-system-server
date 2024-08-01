@@ -9,6 +9,7 @@ import routesConstants from '../../../constant/routes.constants.js';
 import generatePermissions from '../../../shared/generatePermissions.js';
 import RolesModel from '../roles/roles.model.js';
 import constants from '../../../constant/constants.js';
+import service from '../../../shared/service.js';
 
 const populatePermissionFields = async (query) => {
     return await query
@@ -204,28 +205,8 @@ const getPermissionList = async (requester, params) => {
     }
 };
 
-const getPermissionById = async (requester, permissionId) => {
-    try {
-        const resource = await populatePermissionFields(
-            PermissionsModel.findById(permissionId)
-        );
-        if (!resource) {
-            return errorResponse(`Permission not found.`, httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse(
-            resource,
-            `Permission fetched successfully.`,
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to get permission: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to get permission.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+const getPermissionById = async (permissionId) => {
+    return service.getResourceById(PermissionsModel, populatePermissionFields, permissionId, 'Permission');
 };
 
 const updatePermissionById = async (requester, permissionId, updateData) => {
