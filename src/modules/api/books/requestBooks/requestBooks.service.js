@@ -150,7 +150,7 @@ const getRequestBooks = async () => {
 
         if (!requestBooks || requestBooks.length === 0) {
             return errorResponse(
-                'You have no favourite books.',
+                'You have not requested any books.',
                 httpStatus.NOT_FOUND
             );
         }

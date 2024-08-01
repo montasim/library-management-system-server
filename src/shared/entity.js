@@ -161,7 +161,7 @@ const getEntityList = (service, getListFunction) =>
         const query = requester ? [requester, req.query] : [req.query];
 
         // Call the service function with the appropriate query.
-        const dataList = await service[getListFunction](...query);
+        const dataList = getListFunction ? await service[getListFunction](...query) : await service(...query);
 
         loggerService.info(
             `Entity list retrieved for requester ${requester || 'anonymous'} at ${req.originalUrl}`
