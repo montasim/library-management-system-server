@@ -20,12 +20,12 @@ router
         ),
         publicationsValidator.createPublication,
         publicationsController.createPublication,
-        cacheMiddleware.invalidate(routesConstants.publications.routes),
+        cacheMiddleware.invalidate(routesConstants.publications.routes)
     )
     .get(
         publicationsValidator.getPublicationList,
         publicationsController.getPublicationList,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .delete(
         authenticateMiddleware(
@@ -34,7 +34,7 @@ router
         ),
         publicationsValidator.deletePublicationList,
         publicationsController.deletePublicationList,
-        cacheMiddleware.invalidate(routesConstants.publications.routes),
+        cacheMiddleware.invalidate(routesConstants.publications.routes)
     )
     .all(methodNotSupported);
 
@@ -43,7 +43,7 @@ router
     .get(
         publicationsValidator.getPublicationById,
         publicationsController.getPublicationById,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .put(
         authenticateMiddleware(
@@ -52,7 +52,7 @@ router
         ),
         publicationsValidator.updatePublicationById,
         publicationsController.updatePublicationById,
-        cacheMiddleware.invalidate(routesConstants.publications.routes),
+        cacheMiddleware.invalidate(routesConstants.publications.routes)
     )
     .delete(
         authenticateMiddleware(
@@ -61,7 +61,7 @@ router
         ),
         publicationsValidator.deletePublicationById,
         publicationsController.deletePublicationById,
-        cacheMiddleware.invalidate(routesConstants.publications.routes),
+        cacheMiddleware.invalidate(routesConstants.publications.routes)
     )
     .all(methodNotSupported);
 

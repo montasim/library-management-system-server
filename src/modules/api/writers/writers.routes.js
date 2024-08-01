@@ -22,12 +22,12 @@ router
         writersValidator.createWriter,
         uploadMiddleware.single('image'),
         writersController.createWriter,
-        cacheMiddleware.invalidate('writers'),
+        cacheMiddleware.invalidate('writers')
     )
     .get(
         writersValidator.getWriters,
         writersController.getWriters,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .delete(
         authenticateMiddleware(
@@ -36,7 +36,7 @@ router
         ),
         writersValidator.deleteWriters,
         writersController.deleteWriters,
-        cacheMiddleware.invalidate('writers'),
+        cacheMiddleware.invalidate('writers')
     )
     .all(methodNotSupported);
 
@@ -45,7 +45,7 @@ router
     .get(
         writersValidator.getWriter,
         writersController.getWriter,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .put(
         authenticateMiddleware(
@@ -55,7 +55,7 @@ router
         writersValidator.updateWriter,
         uploadMiddleware.single('image'),
         writersController.updateWriter,
-        cacheMiddleware.invalidate('writers'),
+        cacheMiddleware.invalidate('writers')
     )
     .delete(
         authenticateMiddleware(
@@ -64,7 +64,7 @@ router
         ),
         writersValidator.deleteWriter,
         writersController.deleteWriter,
-        cacheMiddleware.invalidate('writers'),
+        cacheMiddleware.invalidate('writers')
     )
     .all(methodNotSupported);
 

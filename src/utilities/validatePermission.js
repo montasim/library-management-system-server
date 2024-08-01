@@ -32,7 +32,9 @@ const validatePermission = async (designation, requiredPermission) => {
         );
 
         // Get the requiredPermission from the PermissionsModel asynchronously
-        const validateRequiredPermission = await PermissionsModel.exists({ name: requiredPermission });
+        const validateRequiredPermission = await PermissionsModel.exists({
+            name: requiredPermission,
+        });
 
         // If the requiredPermission does not exist in the PermissionsModel, return false
         if (!validateRequiredPermission) {

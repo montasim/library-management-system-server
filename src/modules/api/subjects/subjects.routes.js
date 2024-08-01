@@ -20,12 +20,12 @@ router
         ),
         subjectsValidator.createSubject,
         subjectsController.createSubject,
-        cacheMiddleware.invalidate(routesConstants.subjects.routes),
+        cacheMiddleware.invalidate(routesConstants.subjects.routes)
     )
     .get(
         subjectsValidator.getSubjects,
         subjectsController.getSubjects,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .delete(
         authenticateMiddleware(
@@ -34,7 +34,7 @@ router
         ),
         subjectsValidator.deleteSubjects,
         subjectsController.deleteSubjects,
-        cacheMiddleware.invalidate(routesConstants.subjects.routes),
+        cacheMiddleware.invalidate(routesConstants.subjects.routes)
     )
     .all(methodNotSupported);
 
@@ -43,7 +43,7 @@ router
     .get(
         subjectsValidator.getSubjectById,
         subjectsController.getSubjectById,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .put(
         authenticateMiddleware(
@@ -52,7 +52,7 @@ router
         ),
         subjectsValidator.updateSubject,
         subjectsController.updateSubject,
-        cacheMiddleware.invalidate(routesConstants.subjects.routes),
+        cacheMiddleware.invalidate(routesConstants.subjects.routes)
     )
     .delete(
         authenticateMiddleware(
@@ -61,7 +61,7 @@ router
         ),
         subjectsValidator.deleteSubject,
         subjectsController.deleteSubject,
-        cacheMiddleware.invalidate(routesConstants.subjects.routes),
+        cacheMiddleware.invalidate(routesConstants.subjects.routes)
     )
     .all(methodNotSupported);
 

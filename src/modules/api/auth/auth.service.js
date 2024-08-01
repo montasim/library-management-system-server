@@ -101,7 +101,7 @@ const signup = async (userData, hostData) => {
 
         const newUser = await UsersModel.create({
             name: {
-                first: userData.name
+                first: userData.name,
             },
             image: {
                 downloadLink: defaultConstants.images.user.male,
@@ -558,7 +558,7 @@ const login = async (userData, userAgent, device) => {
                 httpStatus.NOT_FOUND
             );
         }
-        if(!user.isActive) {
+        if (!user.isActive) {
             return errorResponse(
                 'Your account is disabled, please contact support.',
                 httpStatus.NOT_FOUND

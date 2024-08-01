@@ -28,12 +28,12 @@ router
         // booksValidator.createBook,
         uploadMiddleware.single('image'),
         booksController.createBook,
-        cacheMiddleware.invalidate(routesConstants.books.routes),
+        cacheMiddleware.invalidate(routesConstants.books.routes)
     )
     .get(
         booksValidator.getBooks,
         booksController.getBooks,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .delete(
         authenticateMiddleware(
@@ -42,7 +42,7 @@ router
         ),
         booksValidator.deleteBooks,
         booksController.deleteBooks,
-        cacheMiddleware.invalidate(routesConstants.books.routes),
+        cacheMiddleware.invalidate(routesConstants.books.routes)
     )
     .all(methodNotSupported);
 
@@ -58,7 +58,7 @@ router
     .get(
         booksValidator.getBook,
         booksController.getBook,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .put(
         authenticateMiddleware(
@@ -68,7 +68,7 @@ router
         booksValidator.updateBook,
         uploadMiddleware.single('image'),
         booksController.updateBook,
-        cacheMiddleware.invalidate(routesConstants.books.routes),
+        cacheMiddleware.invalidate(routesConstants.books.routes)
     )
     .delete(
         authenticateMiddleware(
@@ -77,7 +77,7 @@ router
         ),
         booksValidator.deleteBook,
         booksController.deleteBook,
-        cacheMiddleware.invalidate(routesConstants.books.routes),
+        cacheMiddleware.invalidate(routesConstants.books.routes)
     )
     .all(methodNotSupported);
 

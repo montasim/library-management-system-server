@@ -2,8 +2,7 @@ import asyncErrorHandlerService from '../utilities/asyncErrorHandler.js';
 import getRequesterId from '../utilities/getRequesterId.js';
 import loggerService from '../service/logger.service.js';
 import getHostData from '../utilities/getHostData.js';
-import getRequestedDeviceDetails
-    from '../utilities/getRequestedDeviceDetails.js';
+import getRequestedDeviceDetails from '../utilities/getRequestedDeviceDetails.js';
 
 // TODO: Implement the `entity` log
 
@@ -33,7 +32,10 @@ const signupEntity = (service, createFunction) =>
 const verifyEntity = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
-        const verifyData = await service[createFunction](req.params.token, hostData);
+        const verifyData = await service[createFunction](
+            req.params.token,
+            hostData
+        );
 
         verifyData.route = req.originalUrl;
         res.status(verifyData.status).send(verifyData);
@@ -42,7 +44,10 @@ const verifyEntity = (service, createFunction) =>
 const resendVerificationEntity = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
-        const verificationData = await service[createFunction](req.params.id, hostData);
+        const verificationData = await service[createFunction](
+            req.params.id,
+            hostData
+        );
 
         verificationData.route = req.originalUrl;
         res.status(verificationData.status).send(verificationData);
@@ -51,7 +56,10 @@ const resendVerificationEntity = (service, createFunction) =>
 const requestNewPasswordEntity = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
-        const requestNewPasswordData = await service[createFunction](req.body.email, hostData);
+        const requestNewPasswordData = await service[createFunction](
+            req.body.email,
+            hostData
+        );
 
         requestNewPasswordData.route = req.originalUrl;
         res.status(requestNewPasswordData.status).send(requestNewPasswordData);
@@ -94,11 +102,7 @@ const logoutEntity = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
         const device = await getRequestedDeviceDetails(req);
-        const logoutData = await service[createFunction](
-            req,
-            device,
-            hostData
-        );
+        const logoutData = await service[createFunction](req, device, hostData);
 
         logoutData.route = req.originalUrl;
         res.status(logoutData.status).send(logoutData);
@@ -110,7 +114,9 @@ const createEntity = (service, createFunction) =>
         const includesFile = req.file;
 
         // Determine the query to pass based on the presence of `requester`.
-        const body = includesFile ? [requester, req.body, includesFile] : [requester, req.body];
+        const body = includesFile
+            ? [requester, req.body, includesFile]
+            : [requester, req.body];
 
         // Call the service function with the appropriate query.
         const newData = await service[createFunction](...body);
@@ -168,7 +174,9 @@ const updateEntityById = (service, updateByIdFunction, paramsId) =>
         const includesFile = req.file;
 
         // Determine the query to pass based on the presence of `requester`.
-        const body = includesFile ? [requester, paramsId, req.body, includesFile] : [requester, paramsId, req.body];
+        const body = includesFile
+            ? [requester, paramsId, req.body, includesFile]
+            : [requester, paramsId, req.body];
 
         // Call the service function with the appropriate query.
         const updatedData = await service[updateByIdFunction](...body);

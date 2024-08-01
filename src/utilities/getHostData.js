@@ -3,6 +3,6 @@ const getHostData = (req) => {
         hostname: req.hostname,
         port: req.port,
     };
-}
+};
 
 export default getHostData;

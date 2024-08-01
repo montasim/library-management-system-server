@@ -20,7 +20,7 @@ router
         ),
         rolesValidator.createRole,
         rolesController.createRole,
-        cacheMiddleware.invalidate(routesConstants.roles.routes),
+        cacheMiddleware.invalidate(routesConstants.roles.routes)
     )
     .get(
         authenticateMiddleware(
@@ -29,7 +29,7 @@ router
         ),
         rolesValidator.getRoleList,
         rolesController.getRoleList,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .delete(
         authenticateMiddleware(
@@ -38,7 +38,7 @@ router
         ),
         rolesValidator.deleteRoleByList,
         rolesController.deleteRoleByList,
-        cacheMiddleware.invalidate(routesConstants.roles.routes),
+        cacheMiddleware.invalidate(routesConstants.roles.routes)
     )
     .all(methodNotSupported);
 
@@ -50,7 +50,7 @@ router
             routesConstants.roles.permissions.createDefault
         ),
         rolesController.createDefaultRole,
-        cacheMiddleware.invalidate(routesConstants.roles.routes),
+        cacheMiddleware.invalidate(routesConstants.roles.routes)
     )
     .all(methodNotSupported);
 
@@ -63,7 +63,7 @@ router
         ),
         rolesValidator.getRoleById,
         rolesController.getRoleById,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .put(
         authenticateMiddleware(
@@ -72,7 +72,7 @@ router
         ),
         rolesValidator.updateRoleById,
         rolesController.updateRoleById,
-        cacheMiddleware.invalidate(routesConstants.roles.routes),
+        cacheMiddleware.invalidate(routesConstants.roles.routes)
     )
     .delete(
         authenticateMiddleware(
@@ -81,7 +81,7 @@ router
         ),
         rolesValidator.deleteRoleById,
         rolesController.deleteRoleById,
-        cacheMiddleware.invalidate(routesConstants.roles.routes),
+        cacheMiddleware.invalidate(routesConstants.roles.routes)
     )
     .all(methodNotSupported);
 

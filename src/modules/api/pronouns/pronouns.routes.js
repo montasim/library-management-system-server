@@ -20,12 +20,12 @@ router
         ),
         pronounsValidator.createPronouns,
         pronounsController.createPronouns,
-        cacheMiddleware.invalidate(routesConstants.pronouns.routes),
+        cacheMiddleware.invalidate(routesConstants.pronouns.routes)
     )
     .get(
         pronounsValidator.getPronounsList,
         pronounsController.getPronounsList,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .delete(
         authenticateMiddleware(
@@ -34,7 +34,7 @@ router
         ),
         pronounsValidator.deletePronounsList,
         pronounsController.deletePronounsList,
-        cacheMiddleware.invalidate(routesConstants.pronouns.routes),
+        cacheMiddleware.invalidate(routesConstants.pronouns.routes)
     )
     .all(methodNotSupported);
 
@@ -43,7 +43,7 @@ router
     .get(
         pronounsValidator.getPronounsById,
         pronounsController.getPronounsById,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .put(
         authenticateMiddleware(
@@ -52,7 +52,7 @@ router
         ),
         pronounsValidator.updatePronounsById,
         pronounsController.updatePronounsById,
-        cacheMiddleware.invalidate(routesConstants.pronouns.routes),
+        cacheMiddleware.invalidate(routesConstants.pronouns.routes)
     )
     .delete(
         authenticateMiddleware(
@@ -61,7 +61,7 @@ router
         ),
         pronounsValidator.deletePronounsById,
         pronounsController.deletePronounsById,
-        cacheMiddleware.invalidate(routesConstants.pronouns.routes),
+        cacheMiddleware.invalidate(routesConstants.pronouns.routes)
     )
     .all(methodNotSupported);
 

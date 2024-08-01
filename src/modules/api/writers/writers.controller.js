@@ -4,10 +4,7 @@ import routesConstants from '../../../constant/routes.constants.js';
 
 const writersController = {
     createWriter: entity.createEntity(writersService, 'createWriter'),
-    getWriters: entity.getEntityList(
-        writersService,
-        'getWriters',
-    ),
+    getWriters: entity.getEntityList(writersService, 'getWriters'),
     getWriter: entity.getEntityById(
         writersService,
         'getWriter',
@@ -23,10 +20,7 @@ const writersController = {
         'deleteWriter',
         routesConstants.writers.params
     ),
-    deleteWriters: entity.deleteEntityList(
-        writersService,
-        'deleteWriters',
-    )
+    deleteWriters: entity.deleteEntityList(writersService, 'deleteWriters'),
 };
 
 export default writersController;

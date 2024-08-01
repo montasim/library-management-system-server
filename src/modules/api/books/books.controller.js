@@ -4,10 +4,7 @@ import routesConstants from '../../../constant/routes.constants.js';
 
 const booksController = {
     createBook: entity.createEntity(booksService, 'createBook'),
-    getBooks: entity.getEntityList(
-        booksService,
-        'getBooks',
-    ),
+    getBooks: entity.getEntityList(booksService, 'getBooks'),
     getBook: entity.getEntityById(
         booksService,
         'getBook',
@@ -23,10 +20,7 @@ const booksController = {
         'deleteBook',
         routesConstants.books.params
     ),
-    deleteBooks: entity.deleteEntityList(
-        booksService,
-        'deleteBook',
-    ),
+    deleteBooks: entity.deleteEntityList(booksService, 'deleteBook'),
 };
 
 export default booksController;

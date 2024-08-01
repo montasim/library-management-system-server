@@ -9,10 +9,7 @@ const router = express.Router();
 
 router
     .route('/')
-    .get(
-        homeController,
-        cacheMiddleware.create(configuration.cache.timeout),
-    )
+    .get(homeController, cacheMiddleware.create(configuration.cache.timeout))
     .all(methodNotSupported);
 
 export default router;

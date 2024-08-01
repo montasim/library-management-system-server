@@ -20,7 +20,7 @@ router
         ),
         permissionsValidator.createPermission,
         permissionsController.createPermission,
-        cacheMiddleware.invalidate(routesConstants.permissions.routes),
+        cacheMiddleware.invalidate(routesConstants.permissions.routes)
     )
     .get(
         authenticateMiddleware(
@@ -29,7 +29,7 @@ router
         ),
         permissionsValidator.getPermissionList,
         permissionsController.getPermissionList,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .delete(
         authenticateMiddleware(
@@ -38,7 +38,7 @@ router
         ),
         permissionsValidator.deletePermissionList,
         permissionsController.deletePermissionList,
-        cacheMiddleware.invalidate(routesConstants.permissions.routes),
+        cacheMiddleware.invalidate(routesConstants.permissions.routes)
     )
     .all(methodNotSupported);
 
@@ -50,7 +50,7 @@ router
             routesConstants.permissions.permissions.createDefault
         ),
         permissionsController.createDefaultPermissionList,
-        cacheMiddleware.invalidate(routesConstants.permissions.routes),
+        cacheMiddleware.invalidate(routesConstants.permissions.routes)
     )
     .all(methodNotSupported);
 
@@ -63,7 +63,7 @@ router
         ),
         permissionsValidator.getPermissionById,
         permissionsController.getPermissionById,
-        cacheMiddleware.create(configuration.cache.timeout),
+        cacheMiddleware.create(configuration.cache.timeout)
     )
     .put(
         authenticateMiddleware(
@@ -72,7 +72,7 @@ router
         ),
         permissionsValidator.updatePermissionById,
         permissionsController.updatePermissionById,
-        cacheMiddleware.invalidate(routesConstants.permissions.routes),
+        cacheMiddleware.invalidate(routesConstants.permissions.routes)
     )
     .delete(
         authenticateMiddleware(
@@ -81,7 +81,7 @@ router
         ),
         permissionsValidator.deletePermissionById,
         permissionsController.deletePermissionById,
-        cacheMiddleware.invalidate(routesConstants.permissions.routes),
+        cacheMiddleware.invalidate(routesConstants.permissions.routes)
     )
     .all(methodNotSupported);
 
