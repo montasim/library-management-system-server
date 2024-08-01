@@ -73,15 +73,6 @@ const populateBookFields = async (query) => {
  */
 const createNewBook = async (requester, bookData, bookImage) => {
     try {
-        // Validate admin permission
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to create book.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // Check if book name already exists
         const exists = await BooksModel.findOne({
             name: bookData.name,
@@ -273,15 +264,6 @@ const getBookById = async (bookId) => {
  */
 const updateBookById = async (requester, bookId, updateData, bookImage) => {
     try {
-        // Validate admin permission
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to create book.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         if (isEmptyObject(updateData)) {
             return errorResponse(
                 'Please provide update data.',
@@ -438,14 +420,6 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
 
 const deleteBookById = async (requester, bookId) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                `You are not authorized to delete book.`,
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const deletedResource = await BooksModel.findByIdAndDelete(bookId);
         if (!deletedResource) {
             return sendResponse({}, 'Book not found.', httpStatus.NOT_FOUND);
@@ -464,11 +438,6 @@ const deleteBookById = async (requester, bookId) => {
 
 const deleteBookList = async (requester, bookIds) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse('User not authorized.', httpStatus.FORBIDDEN);
-        }
-
         const results = {
             deleted: [],
             notFound: [],

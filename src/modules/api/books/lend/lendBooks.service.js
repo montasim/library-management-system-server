@@ -9,15 +9,6 @@ import loggerService from '../../../../service/logger.service.js';
 
 const createLendBook = async (requester, lendBookData) => {
     try {
-        // Step 1: Validate if the requester is authorized
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to lend books.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const lenderDetails = await UsersModel.findById(lendBookData.user);
         if (!lenderDetails) {
             return errorResponse(
@@ -131,15 +122,6 @@ const createLendBook = async (requester, lendBookData) => {
 
 const getLendBooks = async (requester) => {
     try {
-        // Step 1: Validate if the requester is authorized
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to get lend books.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // Step 2: Fetch the lend books for the requester
         const lendBooks = await LendBooksModel.findOne({
             lender: requester,

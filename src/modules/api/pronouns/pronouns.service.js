@@ -20,14 +20,6 @@ const populatePronounsFields = async (query) => {
 
 const createPronouns = async (requester, newPronounsData) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to create pronouns.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const exists = await PronounsModel.exists({
             name: newPronounsData.name,
         });
@@ -142,14 +134,6 @@ const getPronounsById = async (pronounsId) => {
 
 const updatePronounsById = async (requester, pronounsId, updateData) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to update pronouns.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         if (isEmptyObject(updateData)) {
             return errorResponse(
                 'Please provide update data.',
@@ -206,14 +190,6 @@ const updatePronounsById = async (requester, pronounsId, updateData) => {
 
 const deletePronounsList = async (requester, pronounsIds) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete pronouns.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // First, check which pronouns exist
         const existingPronouns = await PronounsModel.find({
             _id: { $in: pronounsIds },
@@ -259,14 +235,6 @@ const deletePronounsList = async (requester, pronounsIds) => {
 };
 
 const deletePronounsById = async (requester, pronounsId) => {
-    const isAuthorized = await validateAdminRequest(requester);
-    if (!isAuthorized) {
-        return errorResponse(
-            'You are not authorized to delete pronouns.',
-            httpStatus.FORBIDDEN
-        );
-    }
-
     const deletedResource = await PronounsModel.findByIdAndDelete(pronounsId);
     if (!deletedResource) {
         return sendResponse({}, 'Pronouns not found.', httpStatus.NOT_FOUND);

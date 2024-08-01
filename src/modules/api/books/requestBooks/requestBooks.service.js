@@ -12,15 +12,6 @@ import loggerService from '../../../../service/logger.service.js';
 
 const createRequestBook = async (requester, bookData, bookImage) => {
     try {
-        // Validate if the user is authorized to make a requestBooks
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to requestBooks book.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // Check for existing requestBooks document for the user
         const existingRequest = await RequestBooksModel.findOne({
             owner: requester,
@@ -269,14 +260,6 @@ const getRequestedBooksByOwnerId = async (ownerId) => {
 
 const deleteRequestBook = async (requester, requestBookId) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete book requests.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const requestBook = await RequestBooksModel.findOne({
             owner: requester,
         });

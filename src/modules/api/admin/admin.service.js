@@ -26,14 +26,6 @@ import defaultConstants from '../../../constant/default.constants.js';
 
 const createNewAdmin = async (requester, adminData, hostData) => {
     try {
-        const isAuthorized = await validateAdminRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const existingAdmin = await AdminModel.findOne({
             email: adminData.email,
         }).lean();
