@@ -227,6 +227,25 @@ const updateEntityById = (service, updateByIdFunction, paramsId) =>
         res.status(updatedData.status).send(updatedData);
     });
 
+const updateEntityByRequester = (service, updateByIdFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const requester = getRequesterId(req);
+        const includesFile = req.file;
+
+        // Determine the query to pass based on the presence of `requester`.
+        const body = [requester, req.body, includesFile];
+
+        // Call the service function with the appropriate query.
+        const updatedData = await service[updateByIdFunction](...body);
+
+        loggerService.info(
+            `Entity ${req.params[requester]} updated by ${requester} at ${req.originalUrl}`
+        );
+
+        updatedData.route = req.originalUrl;
+        res.status(updatedData.status).send(updatedData);
+    });
+
 const deleteEntityById = (service, deleteByIdFunction, paramsId) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
@@ -276,6 +295,7 @@ const entity = {
     getEntityById,
     getEntityByRequester,
     updateEntityById,
+    updateEntityByRequester,
     deleteEntityById,
     deleteEntityList,
 };

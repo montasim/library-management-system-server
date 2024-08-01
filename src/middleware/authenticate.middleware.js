@@ -7,6 +7,8 @@ import validatePermission from '../utilities/validatePermission.js';
 import loggerService from '../service/logger.service.js';
 import accessTypesConstants from '../constant/accessTypes.constants.js';
 
+// TODO: add proper message for failed authentication including reason
+
 const AUTH_HEADER = 'authorization';
 
 // Helper to create error response data
