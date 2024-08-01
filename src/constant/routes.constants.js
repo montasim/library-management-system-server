@@ -32,11 +32,6 @@ const routesConstants = {
     favouriteBooks: {
         routes: 'favourite',
         params: 'favouriteBookId',
-        permissions: {
-            create: 'create-favourite',
-            getList: 'get-favourite-list',
-            deleteById: 'delete-favourite-by-id',
-        },
     },
     desiredBooks: {
         routes: 'desired',

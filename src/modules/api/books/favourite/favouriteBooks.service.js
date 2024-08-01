@@ -8,14 +8,6 @@ import loggerService from '../../../../service/logger.service.js';
 
 const createFavouriteBook = async (requester, favouriteBookId) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to create favourite book.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // Assuming BooksModel contains the book details
         const bookDetails = await BooksModel.findById(favouriteBookId);
         if (!bookDetails) {
@@ -71,14 +63,6 @@ const createFavouriteBook = async (requester, favouriteBookId) => {
 
 const getFavouriteBooks = async (requester) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to get favourite books.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const favouriteBooks = await FavouriteBooksModel.findOne({
             owner: requester,
         }).populate({
@@ -125,14 +109,6 @@ const getFavouriteBooks = async (requester) => {
 
 const deleteFavouriteBook = async (requester, favouriteBookId) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete favourite books.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const favouriteBooks = await FavouriteBooksModel.findOne({
             owner: requester,
         });

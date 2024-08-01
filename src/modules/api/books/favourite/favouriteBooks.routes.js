@@ -14,7 +14,6 @@ router
     .get(
         authenticateMiddleware(
             accessTypesConstants.USER,
-            routesConstants.favouriteBooks.permissions.getList
         ),
         favouriteBooksController.getFavouriteBooks
     )
@@ -25,7 +24,6 @@ router
     .post(
         authenticateMiddleware(
             accessTypesConstants.USER,
-            routesConstants.favouriteBooks.permissions.getList
         ),
         favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.createFavouriteBook
@@ -33,7 +31,6 @@ router
     .delete(
         authenticateMiddleware(
             accessTypesConstants.USER,
-            routesConstants.favouriteBooks.permissions.deleteById
         ),
         favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.deleteFavouriteBook

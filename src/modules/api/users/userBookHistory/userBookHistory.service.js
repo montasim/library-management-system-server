@@ -7,15 +7,6 @@ import loggerService from '../../../../service/logger.service.js';
 
 const getBooksHistory = async (requester) => {
     try {
-        // Validate user permission
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'Please login to access book history.',
-                httpStatus.UNAUTHORIZED
-            );
-        }
-
         // Fetch all lending and returning records associated with the requester
         const bookHistories = await BooksHistoryModel.find({
             $or: [{ 'lend.user': requester }, { 'return.user': requester }],
@@ -60,15 +51,6 @@ const getBooksHistory = async (requester) => {
  */
 const getBookHistoryByBookId = async (requester, bookId) => {
     try {
-        // Validate user permission
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'Please login to access book history.',
-                httpStatus.UNAUTHORIZED
-            );
-        }
-
         // Fetch the book's history with specific conditions on the user involved in the transactions
         const bookHistory = await BooksHistoryModel.findOne({
             book: bookId,

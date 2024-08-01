@@ -8,15 +8,6 @@ import loggerService from '../../../../service/logger.service.js';
 
 const returnBook = async (requester, bookData) => {
     try {
-        // Step 1: Validate if the requester is authorized
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to return books.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // Step 2: Validate if the book is currently lent by the user
         const lendRecord = await LendBooksModel.findOne({
             lender: bookData.user,
