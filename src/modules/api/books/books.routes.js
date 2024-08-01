@@ -25,6 +25,7 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.books.permissions.create
         ),
+        // TODO: fix validation when using formdata
         // booksValidator.createBook,
         uploadMiddleware.single('image'),
         booksController.createBook,

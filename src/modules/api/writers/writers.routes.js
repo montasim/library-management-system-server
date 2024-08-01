@@ -19,7 +19,8 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.writers.permissions.create
         ),
-        writersValidator.createWriter,
+        // TODO: fix validation when using formdata
+        // writersValidator.createWriter,
         uploadMiddleware.single('image'),
         writersController.createWriter,
         cacheMiddleware.invalidate('writers')

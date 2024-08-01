@@ -1,29 +1,14 @@
-import asyncErrorHandlerService from '../../../../service/asyncErrorHandler.service.js';
 import booksHistoryService from './booksHistory.service.js';
-
-const getBooksHistory = asyncErrorHandlerService(async (req, res) => {
-    const booksHistoryData = await booksHistoryService.getBooksHistory(
-        req.query
-    );
-
-    booksHistoryData.route = req.originalUrl;
-
-    res.status(booksHistoryData.status).send(booksHistoryData);
-});
-
-const getBookHistory = asyncErrorHandlerService(async (req, res) => {
-    const booksHistoryData = await booksHistoryService.getBookHistory(
-        req.params.bookId
-    );
-
-    booksHistoryData.route = req.originalUrl;
-
-    res.status(booksHistoryData.status).send(booksHistoryData);
-});
+import entity from '../../../../shared/entity.js';
+import routesConstants from '../../../../constant/routes.constants.js';
 
 const booksHistoryController = {
-    getBooksHistory,
-    getBookHistory,
+    getBooksHistory: entity.getEntityList(booksHistoryService, 'getBooksHistory'),
+    getBookHistory: entity.getEntityById(
+        booksHistoryService,
+        'getBooksHistory',
+        routesConstants.booksHistory.params
+    ),
 };
 
 export default booksHistoryController;

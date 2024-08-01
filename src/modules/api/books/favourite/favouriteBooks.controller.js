@@ -1,47 +1,22 @@
-import asyncErrorHandlerService from '../../../../service/asyncErrorHandler.service.js';
 import favouriteBooksService from './favouriteBooks.service.js';
-import getRequesterId from '../../../../utilities/getRequesterId.js';
-
-const createFavouriteBook = asyncErrorHandlerService(async (req, res) => {
-    const requester = getRequesterId(req);
-    const newFavouriteBookData =
-        await favouriteBooksService.createFavouriteBook(
-            requester,
-            req.params.favouriteBookId
-        );
-
-    newFavouriteBookData.route = req.originalUrl;
-
-    res.status(newFavouriteBookData.status).send(newFavouriteBookData);
-});
-
-const getFavouriteBooks = asyncErrorHandlerService(async (req, res) => {
-    const requester = getRequesterId(req);
-    const favouriteBooksData =
-        await favouriteBooksService.getFavouriteBooks(requester);
-
-    favouriteBooksData.route = req.originalUrl;
-
-    res.status(favouriteBooksData.status).send(favouriteBooksData);
-});
-
-const deleteFavouriteBook = asyncErrorHandlerService(async (req, res) => {
-    const requester = getRequesterId(req);
-    const deletedFavouriteBookData =
-        await favouriteBooksService.deleteFavouriteBook(
-            requester,
-            req.params.favouriteBookId
-        );
-
-    deletedFavouriteBookData.route = req.originalUrl;
-
-    res.status(deletedFavouriteBookData.status).send(deletedFavouriteBookData);
-});
+import entity from '../../../../shared/entity.js';
+import routesConstants from '../../../../constant/routes.constants.js';
 
 const favouriteBooksController = {
-    createFavouriteBook,
-    getFavouriteBooks,
-    deleteFavouriteBook,
+    createFavouriteBook: entity.createEntityWithId(
+        favouriteBooksService,
+        'createFavouriteBook',
+        routesConstants.favouriteBooks.params
+    ),
+    getFavouriteBooks: entity.getEntityByRequester(
+        favouriteBooksService,
+        'getFavouriteBooks'
+    ),
+    deleteFavouriteBook: entity.deleteEntityById(
+        favouriteBooksService,
+        'deleteFavouriteBook',
+        routesConstants.favouriteBooks.params
+    ),
 };
 
 export default favouriteBooksController;

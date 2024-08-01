@@ -5,6 +5,7 @@ import getHostData from '../utilities/getHostData.js';
 import getRequestedDeviceDetails from '../utilities/getRequestedDeviceDetails.js';
 
 // TODO: Implement the `entity` log
+// TODO: utilize the hostData for every entity
 
 const createNewUserEntity = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
@@ -108,12 +109,34 @@ const logoutEntity = (service, createFunction) =>
         res.status(logoutData.status).send(logoutData);
     });
 
+const createEntityWithId = (service, createFunction, resourceId) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const requester = getRequesterId(req);
+        const paramsId = req.params[resourceId];
+
+        // Determine the params to pass based on the presence of `paramsId`.
+        const body = paramsId
+            ? [requester, paramsId]
+            : [requester];
+
+        // Call the service function with the appropriate query.
+        const newData = await service[createFunction](...body);
+
+        loggerService.info(
+            `Entity created by ${requester} at ${req.originalUrl}`,
+            newData
+        );
+
+        newData.route = req.originalUrl;
+        res.status(newData.status).send(newData);
+    });
+
 const createEntity = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
         const includesFile = req.file;
 
-        // Determine the query to pass based on the presence of `requester`.
+        // Determine the body to pass based on the presence of `includesFile`.
         const body = includesFile
             ? [requester, req.body, includesFile]
             : [requester, req.body];
@@ -166,6 +189,21 @@ const getEntityById = (service, getByIdFunction, paramsId) =>
 
         data.route = req.originalUrl;
         res.status(data.status).send(data);
+    });
+
+const getEntityByRequester = (service, getByIdFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const requester = getRequesterId(req);
+
+        // Call the service function with the appropriate parameters.
+        const requesterData = await service[getByIdFunction](requester);
+
+        loggerService.info(
+            `Details retrieved for entity ID ${req.params[requester]} by ${requester} at ${req.originalUrl}`
+        );
+
+        requesterData.route = req.originalUrl;
+        res.status(requesterData.status).send(requesterData);
     });
 
 const updateEntityById = (service, updateByIdFunction, paramsId) =>
@@ -232,9 +270,11 @@ const entity = {
     loginEntity,
     logoutEntity,
 
+    createEntityWithId,
     createEntity,
     getEntityList,
     getEntityById,
+    getEntityByRequester,
     updateEntityById,
     deleteEntityById,
     deleteEntityList,

@@ -1,16 +1,11 @@
-import asyncErrorHandlerService from '../../../../service/asyncErrorHandler.service.js';
 import desiredBooksService from './desiredBooks.service.js';
-
-const getDesiredBooks = asyncErrorHandlerService(async (req, res) => {
-    const desiredBooksData = await desiredBooksService.getDesiredBooks();
-
-    desiredBooksData.route = req.originalUrl;
-
-    res.status(desiredBooksData.status).send(desiredBooksData);
-});
+import entity from '../../../../shared/entity.js';
 
 const desiredBooksController = {
-    getDesiredBooks,
+    getDesiredBooks: entity.getEntityList(
+        desiredBooksService,
+        'getDesiredBooks'
+    ),
 };
 
 export default desiredBooksController;

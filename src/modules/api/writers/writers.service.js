@@ -1,7 +1,6 @@
 import WritersModel from './writers.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import GoogleDriveService from '../../../service/googleDrive.service.js';
-import validateUserRequest from '../../../utilities/validateUserRequest.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
@@ -14,17 +13,7 @@ import loggerService from '../../../service/logger.service.js';
 
 const createWriter = async (requester, writerData, writerImage) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to create writer.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
-        const exists = await WritersModel.findOne({
-            name: writerData.name,
-        }).lean();
+        const exists = await WritersModel.exists({ name: writerData.name });
         if (exists) {
             return sendResponse(
                 {},
@@ -160,14 +149,6 @@ const getWriter = async (writerId) => {
 
 const updateWriter = async (requester, writerId, updateData, writerImage) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to update writer.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         if (isEmptyObject(updateData)) {
             return errorResponse(
                 'Please provide update data.',
@@ -250,12 +231,6 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
 
 const deleteWriters = async (requester, writerIds) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-
-        if (!isAuthorized) {
-            return errorResponse('User not authorized.', httpStatus.FORBIDDEN);
-        }
-
         const results = {
             deleted: [],
             notFound: [],
