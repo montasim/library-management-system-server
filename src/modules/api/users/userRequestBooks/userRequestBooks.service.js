@@ -1,5 +1,4 @@
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import RequestBooksModel from '../../books/requestBooks/requestBooks.model.js';
@@ -7,14 +6,6 @@ import loggerService from '../../../../service/logger.service.js';
 
 const getRequestBooks = async (requester) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to get requestBooks book.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const requestBooks = await RequestBooksModel.findOne({
             owner: requester,
         });
@@ -46,14 +37,6 @@ const getRequestBooks = async (requester) => {
 
 const getRequestBook = async (requester, requestBookId) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to access requested books.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         // Retrieve the whole document of requests from the specific user
         const requestBooks = await RequestBooksModel.findOne({
             owner: requester,
@@ -94,14 +77,6 @@ const getRequestBook = async (requester, requestBookId) => {
 
 const deleteRequestBook = async (requester, requestBookId) => {
     try {
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'You are not authorized to delete book requests.',
-                httpStatus.FORBIDDEN
-            );
-        }
-
         const requestBook = await RequestBooksModel.findOne({
             owner: requester,
         });

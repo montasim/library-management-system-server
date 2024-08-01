@@ -8,15 +8,6 @@ import loggerService from '../../../../service/logger.service.js';
 
 const add = async (requester, bookData) => {
     try {
-        // Validate user permission
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'Please login to save recently visited book.',
-                httpStatus.UNAUTHORIZED
-            );
-        }
-
         const bookId = bookData.book;
         const isValidBook = await BooksModel.exists({ _id: bookId });
         if (!isValidBook) {
@@ -85,15 +76,6 @@ const add = async (requester, bookData) => {
 
 const get = async (requester) => {
     try {
-        // Validate user permission
-        const isAuthorized = await validateUserRequest(requester);
-        if (!isAuthorized) {
-            return errorResponse(
-                'Please login to access recently visited book.',
-                httpStatus.UNAUTHORIZED
-            );
-        }
-
         // Fetch recently visited books for the user
         const recentlyVisitedBooks = await RecentlyVisitedBooksModel.findOne({
             user: requester,
