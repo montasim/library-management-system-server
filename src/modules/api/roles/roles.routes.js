@@ -19,8 +19,8 @@ router
             routesConstants.roles.permissions.create
         ),
         rolesValidator.createRole,
+        rolesController.createRole,
         cacheMiddleware.invalidate(routesConstants.roles.routes),
-        rolesController.createRole
     )
     .get(
         authenticateMiddleware(
@@ -28,8 +28,8 @@ router
             routesConstants.roles.permissions.getList
         ),
         rolesValidator.getRoleList,
+        rolesController.getRoleList,
         cacheMiddleware.create(configuration.cache.timeout),
-        rolesController.getRoleList
     )
     .delete(
         authenticateMiddleware(
@@ -37,8 +37,8 @@ router
             routesConstants.roles.permissions.deleteByList
         ),
         rolesValidator.deleteRoleByList,
+        rolesController.deleteRoleByList,
         cacheMiddleware.invalidate(routesConstants.roles.routes),
-        rolesController.deleteRoleByList
     )
     .all(methodNotSupported);
 
@@ -49,7 +49,8 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.roles.permissions.createDefault
         ),
-        rolesController.createDefaultRole
+        rolesController.createDefaultRole,
+        cacheMiddleware.invalidate(routesConstants.roles.routes),
     )
     .all(methodNotSupported);
 
@@ -61,8 +62,8 @@ router
             routesConstants.roles.permissions.getById
         ),
         rolesValidator.getRoleById,
+        rolesController.getRoleById,
         cacheMiddleware.create(configuration.cache.timeout),
-        rolesController.getRoleById
     )
     .put(
         authenticateMiddleware(
@@ -70,8 +71,8 @@ router
             routesConstants.roles.permissions.updateById
         ),
         rolesValidator.updateRoleById,
+        rolesController.updateRoleById,
         cacheMiddleware.invalidate(routesConstants.roles.routes),
-        rolesController.updateRoleById
     )
     .delete(
         authenticateMiddleware(
@@ -79,8 +80,8 @@ router
             routesConstants.roles.permissions.deleteById
         ),
         rolesValidator.deleteRoleById,
+        rolesController.deleteRoleById,
         cacheMiddleware.invalidate(routesConstants.roles.routes),
-        rolesController.deleteRoleById
     )
     .all(methodNotSupported);
 

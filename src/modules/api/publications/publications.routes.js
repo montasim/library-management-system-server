@@ -6,6 +6,8 @@ import methodNotSupported from '../../../shared/methodNotSupported.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 import routesConstants from '../../../constant/routes.constants.js';
 import accessTypesConstants from '../../../constant/accessTypes.constants.js';
+import cacheMiddleware from '../../../middleware/cache.middleware.js';
+import configuration from '../../../configuration/configuration.js';
 
 const router = express.Router();
 
@@ -17,11 +19,13 @@ router
             routesConstants.publications.permissions.create
         ),
         publicationsValidator.createPublication,
-        publicationsController.createPublication
+        publicationsController.createPublication,
+        cacheMiddleware.invalidate(routesConstants.publications.routes),
     )
     .get(
         publicationsValidator.getPublicationList,
-        publicationsController.getPublicationList
+        publicationsController.getPublicationList,
+        cacheMiddleware.create(configuration.cache.timeout),
     )
     .delete(
         authenticateMiddleware(
@@ -29,7 +33,8 @@ router
             routesConstants.publications.permissions.deleteByList
         ),
         publicationsValidator.deletePublicationList,
-        publicationsController.deletePublicationList
+        publicationsController.deletePublicationList,
+        cacheMiddleware.invalidate(routesConstants.publications.routes),
     )
     .all(methodNotSupported);
 
@@ -37,7 +42,8 @@ router
     .route(`/:${routesConstants.publications.params}`)
     .get(
         publicationsValidator.getPublicationById,
-        publicationsController.getPublicationById
+        publicationsController.getPublicationById,
+        cacheMiddleware.create(configuration.cache.timeout),
     )
     .put(
         authenticateMiddleware(
@@ -45,7 +51,8 @@ router
             routesConstants.publications.permissions.updateById
         ),
         publicationsValidator.updatePublicationById,
-        publicationsController.updatePublicationById
+        publicationsController.updatePublicationById,
+        cacheMiddleware.invalidate(routesConstants.publications.routes),
     )
     .delete(
         authenticateMiddleware(
@@ -53,7 +60,8 @@ router
             routesConstants.publications.permissions.deleteById
         ),
         publicationsValidator.deletePublicationById,
-        publicationsController.deletePublicationById
+        publicationsController.deletePublicationById,
+        cacheMiddleware.invalidate(routesConstants.publications.routes),
     )
     .all(methodNotSupported);
 

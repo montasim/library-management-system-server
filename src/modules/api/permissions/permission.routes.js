@@ -6,6 +6,8 @@ import methodNotSupported from '../../../shared/methodNotSupported.js';
 import routesConstants from '../../../constant/routes.constants.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 import accessTypesConstants from '../../../constant/accessTypes.constants.js';
+import cacheMiddleware from '../../../middleware/cache.middleware.js';
+import configuration from '../../../configuration/configuration.js';
 
 const router = express.Router();
 
@@ -17,7 +19,8 @@ router
             routesConstants.permissions.permissions.create
         ),
         permissionsValidator.createPermission,
-        permissionsController.createPermission
+        permissionsController.createPermission,
+        cacheMiddleware.invalidate(routesConstants.permissions.routes),
     )
     .get(
         authenticateMiddleware(
@@ -25,7 +28,8 @@ router
             routesConstants.permissions.permissions.getList
         ),
         permissionsValidator.getPermissionList,
-        permissionsController.getPermissionList
+        permissionsController.getPermissionList,
+        cacheMiddleware.create(configuration.cache.timeout),
     )
     .delete(
         authenticateMiddleware(
@@ -33,7 +37,8 @@ router
             routesConstants.permissions.permissions.deleteByList
         ),
         permissionsValidator.deletePermissionList,
-        permissionsController.deletePermissionList
+        permissionsController.deletePermissionList,
+        cacheMiddleware.invalidate(routesConstants.permissions.routes),
     )
     .all(methodNotSupported);
 
@@ -44,7 +49,8 @@ router
             accessTypesConstants.ADMIN,
             routesConstants.permissions.permissions.createDefault
         ),
-        permissionsController.createDefaultPermissionList
+        permissionsController.createDefaultPermissionList,
+        cacheMiddleware.invalidate(routesConstants.permissions.routes),
     )
     .all(methodNotSupported);
 
@@ -56,7 +62,8 @@ router
             routesConstants.permissions.permissions.getById
         ),
         permissionsValidator.getPermissionById,
-        permissionsController.getPermissionById
+        permissionsController.getPermissionById,
+        cacheMiddleware.create(configuration.cache.timeout),
     )
     .put(
         authenticateMiddleware(
@@ -64,7 +71,8 @@ router
             routesConstants.permissions.permissions.updateById
         ),
         permissionsValidator.updatePermissionById,
-        permissionsController.updatePermissionById
+        permissionsController.updatePermissionById,
+        cacheMiddleware.invalidate(routesConstants.permissions.routes),
     )
     .delete(
         authenticateMiddleware(
@@ -72,7 +80,8 @@ router
             routesConstants.permissions.permissions.deleteById
         ),
         permissionsValidator.deletePermissionById,
-        permissionsController.deletePermissionById
+        permissionsController.deletePermissionById,
+        cacheMiddleware.invalidate(routesConstants.permissions.routes),
     )
     .all(methodNotSupported);
 

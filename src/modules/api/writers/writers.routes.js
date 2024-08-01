@@ -21,13 +21,13 @@ router
         ),
         writersValidator.createWriter,
         uploadMiddleware.single('image'),
+        writersController.createWriter,
         cacheMiddleware.invalidate('writers'),
-        writersController.createWriter
     )
     .get(
         writersValidator.getWriters,
+        writersController.getWriters,
         cacheMiddleware.create(configuration.cache.timeout),
-        writersController.getWriters
     )
     .delete(
         authenticateMiddleware(
@@ -35,8 +35,8 @@ router
             routesConstants.writers.permissions.deleteByList
         ),
         writersValidator.deleteWriters,
+        writersController.deleteWriters,
         cacheMiddleware.invalidate('writers'),
-        writersController.deleteWriters
     )
     .all(methodNotSupported);
 
@@ -44,8 +44,8 @@ router
     .route(`/:${routesConstants.writers.params}`)
     .get(
         writersValidator.getWriter,
+        writersController.getWriter,
         cacheMiddleware.create(configuration.cache.timeout),
-        writersController.getWriter
     )
     .put(
         authenticateMiddleware(
@@ -54,8 +54,8 @@ router
         ),
         writersValidator.updateWriter,
         uploadMiddleware.single('image'),
+        writersController.updateWriter,
         cacheMiddleware.invalidate('writers'),
-        writersController.updateWriter
     )
     .delete(
         authenticateMiddleware(
@@ -63,8 +63,8 @@ router
             routesConstants.writers.permissions.deleteById
         ),
         writersValidator.deleteWriter,
+        writersController.deleteWriter,
         cacheMiddleware.invalidate('writers'),
-        writersController.deleteWriter
     )
     .all(methodNotSupported);
 

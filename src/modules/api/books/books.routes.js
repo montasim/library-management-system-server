@@ -13,6 +13,8 @@ import requestBooksRoutes from './requestBooks/requestBooks.routes.js';
 import returnBooksRoutes from './return/returnBooks.routes.js';
 import routesConstants from '../../../constant/routes.constants.js';
 import accessTypesConstants from '../../../constant/accessTypes.constants.js';
+import cacheMiddleware from '../../../middleware/cache.middleware.js';
+import configuration from '../../../configuration/configuration.js';
 
 const router = express.Router();
 
@@ -25,16 +27,22 @@ router
         ),
         // booksValidator.createBook,
         uploadMiddleware.single('image'),
-        booksController.createBook
+        booksController.createBook,
+        cacheMiddleware.invalidate(routesConstants.books.routes),
     )
-    .get(booksValidator.getBooks, booksController.getBooks)
+    .get(
+        booksValidator.getBooks,
+        booksController.getBooks,
+        cacheMiddleware.create(configuration.cache.timeout),
+    )
     .delete(
         authenticateMiddleware(
             accessTypesConstants.ADMIN,
             routesConstants.books.permissions.deleteByList
         ),
         booksValidator.deleteBooks,
-        booksController.deleteBooks
+        booksController.deleteBooks,
+        cacheMiddleware.invalidate(routesConstants.books.routes),
     )
     .all(methodNotSupported);
 
@@ -47,7 +55,11 @@ router.use(`/${routesConstants.returnBooks.routes}`, returnBooksRoutes);
 
 router
     .route(`/:${routesConstants.books.params}`)
-    .get(booksValidator.getBook, booksController.getBook)
+    .get(
+        booksValidator.getBook,
+        booksController.getBook,
+        cacheMiddleware.create(configuration.cache.timeout),
+    )
     .put(
         authenticateMiddleware(
             accessTypesConstants.ADMIN,
@@ -55,7 +67,8 @@ router
         ),
         booksValidator.updateBook,
         uploadMiddleware.single('image'),
-        booksController.updateBook
+        booksController.updateBook,
+        cacheMiddleware.invalidate(routesConstants.books.routes),
     )
     .delete(
         authenticateMiddleware(
@@ -63,7 +76,8 @@ router
             routesConstants.books.permissions.deleteById
         ),
         booksValidator.deleteBook,
-        booksController.deleteBook
+        booksController.deleteBook,
+        cacheMiddleware.invalidate(routesConstants.books.routes),
     )
     .all(methodNotSupported);
 
