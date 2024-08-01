@@ -168,7 +168,7 @@ const updateEntityById = (service, updateByIdFunction, paramsId) =>
         const includesFile = req.file;
 
         // Determine the query to pass based on the presence of `requester`.
-        const body = includesFile ? [requester, req.body, includesFile] : [requester, req.body];
+        const body = includesFile ? [requester, paramsId, req.body, includesFile] : [requester, paramsId, req.body];
 
         // Call the service function with the appropriate query.
         const updatedData = await service[updateByIdFunction](...body);

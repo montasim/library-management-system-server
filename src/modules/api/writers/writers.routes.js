@@ -41,7 +41,7 @@ router
     .all(methodNotSupported);
 
 router
-    .route(`/${routesConstants.writers.params}`)
+    .route(`/:${routesConstants.writers.params}`)
     .get(
         writersValidator.getWriter,
         cacheMiddleware.create(configuration.cache.timeout),
