@@ -2,7 +2,6 @@ import PermissionsModel from './permissions.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
-import deleteResourceById from '../../../shared/deleteResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import routesConstants from '../../../constant/routes.constants.js';
@@ -312,21 +311,7 @@ const deletePermissionList = async (requester, permissionIds) => {
 };
 
 const deletePermissionById = async (requester, permissionId) => {
-    try {
-        return deleteResourceById(
-            requester,
-            permissionId,
-            PermissionsModel,
-            'permission'
-        );
-    } catch (error) {
-        loggerService.error(`Failed to delete permission: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete permission.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.deleteResourceById(requester, permissionId, PermissionsModel, 'permission');
 };
 
 const permissionsService = {

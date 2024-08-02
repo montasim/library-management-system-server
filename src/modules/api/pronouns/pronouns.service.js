@@ -215,12 +215,7 @@ const deletePronounsList = async (requester, pronounsIds) => {
 };
 
 const deletePronounsById = async (requester, pronounsId) => {
-    const deletedResource = await PronounsModel.findByIdAndDelete(pronounsId);
-    if (!deletedResource) {
-        return sendResponse({}, 'Pronouns not found.', httpStatus.NOT_FOUND);
-    }
-
-    return sendResponse({}, 'Pronouns deleted successfully.', httpStatus.OK);
+    return service.deleteResourceById(requester, pronounsId, PronounsModel, 'pronouns');
 };
 
 const pronounsService = {

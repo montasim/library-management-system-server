@@ -220,30 +220,7 @@ const deletePublicationList = async (requester, publicationIds) => {
 };
 
 const deletePublicationById = async (requester, publicationId) => {
-    try {
-        const deletedResource =
-            await PublicationsModel.findByIdAndDelete(publicationId);
-        if (!deletedResource) {
-            return sendResponse(
-                {},
-                'Publication not found.',
-                httpStatus.NOT_FOUND
-            );
-        }
-
-        return sendResponse(
-            {},
-            'Publication deleted successfully.',
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to delete publication: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete publication.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.deleteResourceById(requester, publicationId, PublicationsModel, 'publication');
 };
 
 const publicationsService = {

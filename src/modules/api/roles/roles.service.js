@@ -9,6 +9,7 @@ import PermissionsModel from '../permissions/permissions.model.js';
 import constants from '../../../constant/constants.js';
 import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
 import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import service from '../../../shared/service.js';
 
 const populateRoleFields = async (query) => {
     return await query
@@ -364,31 +365,7 @@ const deleteRoleByList = async (requester, roleIds) => {
 };
 
 const deleteRoleById = async (requester, roleId) => {
-    try {
-        const deletedResource = await RolesModel.findByIdAndDelete(roleId);
-
-        // Log the delete action
-        await AdminActivityLoggerModel.create({
-            user: requester,
-            action: adminActivityLoggerConstants.actionTypes.DELETE,
-            description: 'Role deleted successfully.',
-            details: JSON.stringify(deletedResource),
-            affectedId: roleId,
-        });
-
-        if (!deletedResource) {
-            return sendResponse({}, 'Role not found.', httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse({}, 'Role deleted successfully.', httpStatus.OK);
-    } catch (error) {
-        loggerService.error(`Failed to delete role: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete role.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.deleteResourceById(requester, roleId, RolesModel, 'role');
 };
 
 const rolesService = {

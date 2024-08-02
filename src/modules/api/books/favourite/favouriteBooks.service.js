@@ -1,6 +1,5 @@
 import FavouriteBooksModel from './favouriteBooks.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import BooksModel from '../books.model.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';

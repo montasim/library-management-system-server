@@ -402,21 +402,7 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
 };
 
 const deleteBookById = async (requester, bookId) => {
-    try {
-        const deletedResource = await BooksModel.findByIdAndDelete(bookId);
-        if (!deletedResource) {
-            return sendResponse({}, 'Book not found.', httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse({}, 'Book deleted successfully.', httpStatus.OK);
-    } catch (error) {
-        loggerService.error(`Failed to delete book: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete book.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.deleteResourceById(requester, bookId, BooksModel, 'book');
 };
 
 const deleteBookList = async (requester, bookIds) => {
