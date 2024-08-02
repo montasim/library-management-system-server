@@ -174,49 +174,7 @@ const updatePublicationById = async (requester, publicationId, updateData) => {
 };
 
 const deletePublicationList = async (requester, publicationIds) => {
-    try {
-        // First, check which permissions exist
-        const existingPermissions = await PublicationsModel.find({
-            _id: { $in: publicationIds },
-        })
-            .select('_id')
-            .lean();
-
-        const existingIds = existingPermissions.map((p) => p._id.toString());
-        const notFoundIds = publicationIds.filter(
-            (id) => !existingIds.includes(id)
-        );
-
-        // Perform deletion on existing permissions only
-        const deletionResult = await PublicationsModel.deleteMany({
-            _id: { $in: existingIds },
-        });
-
-        const results = {
-            deleted: deletionResult.deletedCount,
-            notFound: notFoundIds.length,
-            failed:
-                publicationIds.length -
-                deletionResult.deletedCount -
-                notFoundIds.length,
-        };
-
-        // Custom message to summarize the outcome
-        const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
-
-        if (results.deleted <= 0) {
-            return errorResponse(message, httpStatus.OK);
-        }
-
-        return sendResponse({}, message, httpStatus.OK);
-    } catch (error) {
-        loggerService.error(`Failed to delete publications: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete publications.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return await service.deleteResourcesByList(requester, PublicationsModel, publicationIds, 'publication');
 };
 
 const deletePublicationById = async (requester, publicationId) => {

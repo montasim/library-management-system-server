@@ -2,7 +2,6 @@ import SubjectsModel from './subjects.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
-import deleteResourceById from '../../../shared/deleteResourceById.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
@@ -166,49 +165,7 @@ const updateSubject = async (requester, subjectId, updateData) => {
 };
 
 const deleteSubjects = async (requester, subjectIds) => {
-    try {
-        // First, check which subjects exist
-        const existingSubjects = await SubjectsModel.find({
-            _id: { $in: subjectIds },
-        })
-            .select('_id')
-            .lean();
-
-        const existingIds = existingSubjects.map((p) => p._id.toString());
-        const notFoundIds = subjectIds.filter(
-            (id) => !existingIds.includes(id)
-        );
-
-        // Perform deletion on existing subjects only
-        const deletionResult = await SubjectsModel.deleteMany({
-            _id: { $in: existingIds },
-        });
-
-        const results = {
-            deleted: deletionResult.deletedCount,
-            notFound: notFoundIds.length,
-            failed:
-                subjectIds.length -
-                deletionResult.deletedCount -
-                notFoundIds.length,
-        };
-
-        // Custom message to summarize the outcome
-        const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
-
-        if (results.deleted <= 0) {
-            return errorResponse(message, httpStatus.OK);
-        }
-
-        return sendResponse({}, message, httpStatus.OK);
-    } catch (error) {
-        loggerService.error(`Failed to delete subjects: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete subjects.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return await service.deleteResourcesByList(requester, SubjectsModel, subjectIds, 'subject');
 };
 
 const deleteSubject = async (requester, subjectId) => {

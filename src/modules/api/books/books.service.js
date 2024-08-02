@@ -406,55 +406,7 @@ const deleteBookById = async (requester, bookId) => {
 };
 
 const deleteBookList = async (requester, bookIds) => {
-    try {
-        const results = {
-            deleted: [],
-            notFound: [],
-            failed: [],
-        };
-
-        // Process each bookId
-        for (const bookId of bookIds) {
-            try {
-                const book = await BooksModel.findById(bookId).lean();
-
-                if (!book) {
-                    results.notFound.push(bookId);
-                }
-
-                // Delete the old file from Google Drive if it exists
-                const oldFileId = book.image?.fileId;
-                if (oldFileId) {
-                    await GoogleDriveService.deleteFile(oldFileId);
-                }
-
-                const deletedBook = await BooksModel.findByIdAndDelete(bookId);
-
-                if (deletedBook) {
-                    results.deleted.push(bookId);
-                }
-            } catch (error) {
-                // Log the error and mark this ID as failed
-                loggerService.error(
-                    `Failed to delete book with ID ${bookId}: ${error}`
-                );
-                results.failed.push(bookId);
-            }
-        }
-
-        return sendResponse(
-            results,
-            `Deleted ${results.deleted.length}, Not found ${results.notFound.length}, Failed ${results.failed.length}`,
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to delete books: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete books.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return await service.deleteResourcesByList(requester, BooksModel, bookIds, 'books');
 };
 
 const booksService = {

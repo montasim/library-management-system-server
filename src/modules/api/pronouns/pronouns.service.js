@@ -169,49 +169,7 @@ const updatePronounsById = async (requester, pronounsId, updateData) => {
 };
 
 const deletePronounsList = async (requester, pronounsIds) => {
-    try {
-        // First, check which pronouns exist
-        const existingPronouns = await PronounsModel.find({
-            _id: { $in: pronounsIds },
-        })
-            .select('_id')
-            .lean();
-
-        const existingIds = existingPronouns.map((p) => p._id.toString());
-        const notFoundIds = pronounsIds.filter(
-            (id) => !existingIds.includes(id)
-        );
-
-        // Perform deletion on existing pronouns only
-        const deletionResult = await PronounsModel.deleteMany({
-            _id: { $in: existingIds },
-        });
-
-        const results = {
-            deleted: deletionResult.deletedCount,
-            notFound: notFoundIds.length,
-            failed:
-                pronounsIds.length -
-                deletionResult.deletedCount -
-                notFoundIds.length,
-        };
-
-        // Custom message to summarize the outcome
-        const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
-
-        if (results.deleted <= 0) {
-            return errorResponse(message, httpStatus.OK);
-        }
-
-        return sendResponse({}, message, httpStatus.OK);
-    } catch (error) {
-        loggerService.error(`Failed to delete pronouns: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete pronouns.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return await service.deleteResourcesByList(requester, PronounsModel, pronounsIds, 'pronouns');
 };
 
 const deletePronounsById = async (requester, pronounsId) => {

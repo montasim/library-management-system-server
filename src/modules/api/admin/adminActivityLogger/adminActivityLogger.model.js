@@ -27,11 +27,13 @@ const adminActivityLoggerSchema = new mongoose.Schema(
             type: Schema.Types.Mixed, // Changed to Mixed to allow any data type
             description: 'Additional details about the action in any format.',
         },
-        affectedId: {
-            type: Schema.Types.ObjectId,
-            description:
-                'ID of the entity affected by the action, if applicable.',
-        },
+        affectedId: [
+            {
+                type: Schema.Types.ObjectId,
+                description:
+                    'ID of the entity affected by the action, if applicable.',
+            }
+        ],
     },
     {
         timestamps: { createdAt: true, updatedAt: false },

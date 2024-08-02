@@ -313,55 +313,7 @@ const updateRoleById = async (requester, roleId, updateData) => {
 };
 
 const deleteRoleByList = async (requester, roleIds) => {
-    try {
-        // First, check which permissions exist
-        const existingPermissions = await RolesModel.find({
-            _id: { $in: roleIds },
-        })
-            .select('_id')
-            .lean();
-
-        const existingIds = existingPermissions.map((p) => p._id.toString());
-        const notFoundIds = roleIds.filter((id) => !existingIds.includes(id));
-
-        // Perform deletion on existing permissions only
-        const deletionResult = await RolesModel.deleteMany({
-            _id: { $in: existingIds },
-        });
-
-        const results = {
-            deleted: deletionResult.deletedCount,
-            notFound: notFoundIds.length,
-            failed:
-                roleIds.length -
-                deletionResult.deletedCount -
-                notFoundIds.length,
-        };
-
-        // Custom message to summarize the outcome
-        const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
-
-        // Log the delete action
-        await AdminActivityLoggerModel.create({
-            user: requester,
-            action: adminActivityLoggerConstants.actionTypes.DELETE,
-            description: message,
-            details: JSON.stringify(deletionResult),
-        });
-
-        if (results.deleted <= 0) {
-            return errorResponse(message, httpStatus.OK);
-        }
-
-        return sendResponse({}, message, httpStatus.OK);
-    } catch (error) {
-        loggerService.error(`Failed to delete roles: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete roles.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return await service.deleteResourcesByList(requester, RolesModel, roleIds, 'role');
 };
 
 const deleteRoleById = async (requester, roleId) => {

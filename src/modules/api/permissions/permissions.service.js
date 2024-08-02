@@ -265,49 +265,7 @@ const updatePermissionById = async (requester, permissionId, updateData) => {
 };
 
 const deletePermissionList = async (requester, permissionIds) => {
-    try {
-        // First, check which permissions exist
-        const existingPermissions = await PermissionsModel.find({
-            _id: { $in: permissionIds },
-        })
-            .select('_id')
-            .lean();
-
-        const existingIds = existingPermissions.map((p) => p._id.toString());
-        const notFoundIds = permissionIds.filter(
-            (id) => !existingIds.includes(id)
-        );
-
-        // Perform deletion on existing permissions only
-        const deletionResult = await PermissionsModel.deleteMany({
-            _id: { $in: existingIds },
-        });
-
-        const results = {
-            deleted: deletionResult.deletedCount,
-            notFound: notFoundIds.length,
-            failed:
-                permissionIds.length -
-                deletionResult.deletedCount -
-                notFoundIds.length,
-        };
-
-        // Custom message to summarize the outcome
-        const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
-
-        if (results.deleted <= 0) {
-            return errorResponse(message, httpStatus.OK);
-        }
-
-        return sendResponse({}, message, httpStatus.OK);
-    } catch (error) {
-        loggerService.error(`Failed to delete permissions: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete permissions.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return await service.deleteResourcesByList(requester, PermissionsModel, permissionIds, 'permission');
 };
 
 const deletePermissionById = async (requester, permissionId) => {
