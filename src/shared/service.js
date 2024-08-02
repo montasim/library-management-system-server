@@ -32,6 +32,73 @@ const getResourceById = async (model, populateMethod, resourceId, resourceType) 
     }
 };
 
+const getList = async (model, populateFields, params, mapping, resourceType) => {
+    try {
+        console.log(params);
+        const {
+            page = 1,
+            limit = 10,
+            sort = '-createdAt',
+            requester,
+            ...restParams
+        } = params;
+
+        // Dynamic query construction with mapping
+        const query = Object.keys(restParams).reduce((acc, key) => {
+            if (restParams[key] !== undefined) {
+                const schemaKey = mapping[key] || key;  // Use mapped key if available, otherwise use the key as is
+                // Apply regex pattern for text search fields
+                if (['name', 'createdBy', 'updatedBy'].includes(schemaKey)) {
+                    acc[schemaKey] = new RegExp(restParams[key], 'i');
+                } else {
+                    acc[schemaKey] = restParams[key];
+                }
+            }
+            return acc;
+        }, {});
+
+        const totalItems = await model.countDocuments(query);
+        const totalPages = Math.ceil(totalItems / limit);
+        const items = await populateFields(
+            model.find(query)
+                .sort(sort)
+                .skip((page - 1) * limit)
+                .limit(limit)
+        );
+
+        if (!items.length) {
+            return sendResponse({}, `No ${resourceType} found.`, httpStatus.NOT_FOUND);
+        }
+
+        // await AdminActivityLoggerModel.create({
+        //     user: requester,
+        //     action: adminActivityLoggerConstants.actionTypes.FETCH,
+        //     description: `Fetched ${resourceType} list`,
+        //     details: JSON.stringify(items),
+        // });
+
+        return sendResponse(
+            {
+                items,
+                totalItems,
+                totalPages,
+                currentPage: page,
+                pageSize: limit,
+                sort,
+            },
+            `${items.length} ${resourceType} fetched successfully.`,
+            httpStatus.OK
+        );
+    } catch (error) {
+        loggerService.error(`Failed to get ${resourceType}: ${error}`);
+
+        return errorResponse(
+            error.message || `Failed to get ${resourceType}.`,
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+};
+
 const deleteResourceById = async (requester, Model, resourceId, resourceType) => {
     try {
         const capitalizeResourceType = toSentenceCase(resourceType);
@@ -131,6 +198,7 @@ const deleteResourcesByList = async (requester, model, ids, resourceType) => {
 
 const service = {
     getResourceById,
+    getList,
     deleteResourceById,
     deleteResourcesByList,
 };
