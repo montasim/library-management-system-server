@@ -35,9 +35,26 @@ const getResourceById = async (model, populateMethod, resourceId, resourceType) 
 const deleteResourceById = async (requester, Model, resourceId, resourceType) => {
     try {
         const capitalizeResourceType = toSentenceCase(resourceType);
-        const deletedResource = await Model.findByIdAndDelete(resourceId);
+        const resource = await Model.findById(resourceId).select('_id image.fileId').lean();
 
-        if (!deletedResource) {
+        if (!resource) {
+            return sendResponse({}, `${capitalizeResourceType} not found.`, httpStatus.NOT_FOUND);
+        }
+
+        // Check if the resource has an associated image file in Google Drive and delete it
+        if (resource.image && resource.image.fileId) {
+            try {
+                await GoogleDriveService.deleteFile(resource.image.fileId);
+            } catch (error) {
+                loggerService.error(`Failed to delete Google Drive file with ID ${resource.image.fileId} for ${resourceType}: ${error}`);
+                // Optional: Decide how to handle errors in file deletion, whether to proceed with deleting the resource or not
+            }
+        }
+
+        const deletionResult = await Model.findByIdAndDelete(resourceId);
+
+        if (!deletionResult) {
+            // This condition might be redundant, consider removing it if you're sure the document exists after the initial find.
             return sendResponse({}, `${capitalizeResourceType} not found.`, httpStatus.NOT_FOUND);
         }
 
@@ -45,7 +62,7 @@ const deleteResourceById = async (requester, Model, resourceId, resourceType) =>
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.DELETE,
             description: `${capitalizeResourceType} deleted successfully.`,
-            details: JSON.stringify(deletedResource),
+            details: JSON.stringify(deletionResult),
             affectedId: resourceId,
         });
 
