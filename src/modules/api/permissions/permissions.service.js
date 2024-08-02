@@ -311,7 +311,7 @@ const deletePermissionList = async (requester, permissionIds) => {
 };
 
 const deletePermissionById = async (requester, permissionId) => {
-    return service.deleteResourceById(requester, permissionId, PermissionsModel, 'permission');
+    return service.deleteResourceById(requester, PermissionsModel, permissionId, 'permission');
 };
 
 const permissionsService = {

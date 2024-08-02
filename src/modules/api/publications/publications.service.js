@@ -220,7 +220,7 @@ const deletePublicationList = async (requester, publicationIds) => {
 };
 
 const deletePublicationById = async (requester, publicationId) => {
-    return service.deleteResourceById(requester, publicationId, PublicationsModel, 'publication');
+    return service.deleteResourceById(requester, PublicationsModel, publicationId, 'publication');
 };
 
 const publicationsService = {

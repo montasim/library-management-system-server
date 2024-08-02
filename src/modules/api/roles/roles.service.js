@@ -365,7 +365,7 @@ const deleteRoleByList = async (requester, roleIds) => {
 };
 
 const deleteRoleById = async (requester, roleId) => {
-    return service.deleteResourceById(requester, roleId, RolesModel, 'role');
+    return service.deleteResourceById(requester, RolesModel, roleId, 'role');
 };
 
 const rolesService = {

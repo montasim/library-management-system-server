@@ -212,21 +212,7 @@ const deleteSubjects = async (requester, subjectIds) => {
 };
 
 const deleteSubject = async (requester, subjectId) => {
-    try {
-        return deleteResourceById(
-            requester,
-            subjectId,
-            SubjectsModel,
-            'subject'
-        );
-    } catch (error) {
-        loggerService.error(`Failed to delete subject: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to delete subject.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.deleteResourceById(requester, SubjectsModel, subjectId, 'subject');
 };
 
 const subjectsService = {

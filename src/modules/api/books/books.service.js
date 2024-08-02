@@ -402,7 +402,7 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
 };
 
 const deleteBookById = async (requester, bookId) => {
-    return service.deleteResourceById(requester, bookId, BooksModel, 'book');
+    return service.deleteResourceById(requester, BooksModel, bookId, 'book');
 };
 
 const deleteBookList = async (requester, bookIds) => {

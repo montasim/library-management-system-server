@@ -215,7 +215,7 @@ const deletePronounsList = async (requester, pronounsIds) => {
 };
 
 const deletePronounsById = async (requester, pronounsId) => {
-    return service.deleteResourceById(requester, pronounsId, PronounsModel, 'pronouns');
+    return service.deleteResourceById(requester, PronounsModel, pronounsId, 'pronouns');
 };
 
 const pronounsService = {
