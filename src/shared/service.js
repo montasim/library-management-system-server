@@ -32,9 +32,8 @@ const getResourceById = async (model, populateMethod, resourceId, resourceType) 
     }
 };
 
-const getList = async (model, populateFields, params, mapping, resourceType) => {
+const getResourceList = async (model, populateFields, params, paramsMapping, resourceType) => {
     try {
-        console.log(params);
         const {
             page = 1,
             limit = 10,
@@ -46,7 +45,7 @@ const getList = async (model, populateFields, params, mapping, resourceType) => 
         // Dynamic query construction with mapping
         const query = Object.keys(restParams).reduce((acc, key) => {
             if (restParams[key] !== undefined) {
-                const schemaKey = mapping[key] || key;  // Use mapped key if available, otherwise use the key as is
+                const schemaKey = paramsMapping[key] || key;  // Use mapped key if available, otherwise use the key as is
                 // Apply regex pattern for text search fields
                 if (['name', 'createdBy', 'updatedBy'].includes(schemaKey)) {
                     acc[schemaKey] = new RegExp(restParams[key], 'i');
@@ -198,7 +197,7 @@ const deleteResourcesByList = async (requester, model, ids, resourceType) => {
 
 const service = {
     getResourceById,
-    getList,
+    getResourceList,
     deleteResourceById,
     deleteResourcesByList,
 };

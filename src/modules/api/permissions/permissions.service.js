@@ -22,6 +22,8 @@ const populatePermissionFields = async (query) => {
         });
 };
 
+const permissionListParamsMapping = {};
+
 const createPermission = async (requester, newPermissionData) => {
     try {
         const exists = await PermissionsModel.exists({
@@ -147,61 +149,7 @@ const createDefaultPermissionList = async (requester) => {
 };
 
 const getPermissionList = async (requester, params) => {
-    try {
-        const {
-            page = 1,
-            limit = 10,
-            sort = '-createdAt',
-            name,
-            createdBy,
-            updatedBy,
-            createdAt,
-            updatedAt,
-        } = params;
-        const query = {
-            ...(name && { name: new RegExp(name, 'i') }),
-            ...(createdBy && { createdBy }),
-            ...(updatedBy && { updatedBy }),
-            ...(createdAt && { createdAt }),
-            ...(updatedAt && { updatedAt }),
-        };
-        const totalPermissions = await PermissionsModel.countDocuments(query);
-        const totalPages = Math.ceil(totalPermissions / limit);
-        const permissions = await populatePermissionFields(
-            PermissionsModel.find(query)
-                .sort(sort)
-                .skip((page - 1) * limit)
-                .limit(limit)
-        );
-
-        if (!permissions.length) {
-            return sendResponse(
-                {},
-                'No permissions found.',
-                httpStatus.NOT_FOUND
-            );
-        }
-
-        return sendResponse(
-            {
-                permissions,
-                totalPermissions,
-                totalPages,
-                currentPage: page,
-                pageSize: limit,
-                sort,
-            },
-            `${permissions.length} permissions fetched successfully.`,
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to get permission: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to get permission.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.getResourceList(PermissionsModel, populatePermissionFields, params, permissionListParamsMapping, 'permission');
 };
 
 const getPermissionById = async (permissionId) => {

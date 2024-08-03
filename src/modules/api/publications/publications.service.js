@@ -18,6 +18,8 @@ const populatePublicationFields = async (query) => {
         });
 };
 
+const pronounsListParamsMapping = {};
+
 const createPublication = async (requester, newPublicationData) => {
     try {
         const exists = await PublicationsModel.exists({
@@ -56,65 +58,11 @@ const createPublication = async (requester, newPublicationData) => {
 };
 
 const getPublicationList = async (params) => {
-    try {
-        const {
-            page = 1,
-            limit = 10,
-            sort = '-createdAt',
-            name,
-            createdBy,
-            updatedBy,
-            createdAt,
-            updatedAt,
-        } = params;
-        const query = {
-            ...(name && { name: new RegExp(name, 'i') }),
-            ...(createdBy && { createdBy }),
-            ...(updatedBy && { updatedBy }),
-            ...(createdAt && { createdAt }),
-            ...(updatedAt && { updatedAt }),
-        };
-        const totalPublications = await PublicationsModel.countDocuments(query);
-        const totalPages = Math.ceil(totalPublications / limit);
-        const publications = await populatePublicationFields(
-            PublicationsModel.find(query)
-                .sort(sort)
-                .skip((page - 1) * limit)
-                .limit(limit)
-        );
-
-        if (!publications.length) {
-            return sendResponse(
-                {},
-                'No publication found.',
-                httpStatus.NOT_FOUND
-            );
-        }
-
-        return sendResponse(
-            {
-                publications,
-                totalPublications,
-                totalPages,
-                currentPage: page,
-                pageSize: limit,
-                sort,
-            },
-            `${publications.length} publications fetched successfully.`,
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to get publications: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to get publications.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.getResourceList(PublicationsModel, populatePublicationFields, params, pronounsListParamsMapping, 'publication');
 };
 
 const getPublicationById = async (publicationId) => {
-    return service.getResourceById(PublicationsModel, populatePublicationFields, publicationId, 'Publication');
+    return service.getResourceById(PublicationsModel, populatePublicationFields, publicationId, 'publication');
 };
 
 const updatePublicationById = async (requester, publicationId, updateData) => {

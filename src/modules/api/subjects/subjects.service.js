@@ -18,6 +18,8 @@ const populateSubjectFields = async (query) => {
         });
 };
 
+const subjectListParamsMapping = {};
+
 const createSubject = async (requester, newSubjectData) => {
     try {
         const exists = await SubjectsModel.exists({
@@ -55,61 +57,11 @@ const createSubject = async (requester, newSubjectData) => {
 };
 
 const getSubjects = async (params) => {
-    try {
-        const {
-            page = 1,
-            limit = 10,
-            sort = '-createdAt',
-            name,
-            createdBy,
-            updatedBy,
-            createdAt,
-            updatedAt,
-        } = params;
-        const query = {
-            ...(name && { name: new RegExp(name, 'i') }),
-            ...(createdBy && { createdBy }),
-            ...(updatedBy && { updatedBy }),
-            ...(createdAt && { createdAt }),
-            ...(updatedAt && { updatedAt }),
-        };
-        const totalSubjects = await SubjectsModel.countDocuments(query);
-        const totalPages = Math.ceil(totalSubjects / limit);
-        const subjects = await populateSubjectFields(
-            SubjectsModel.find(query)
-                .sort(sort)
-                .skip((page - 1) * limit)
-                .limit(limit)
-        );
-
-        if (!subjects.length) {
-            return sendResponse({}, 'No subject found.', httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse(
-            {
-                subjects,
-                totalSubjects,
-                totalPages,
-                currentPage: page,
-                pageSize: limit,
-                sort,
-            },
-            `${subjects.length} subjects fetched successfully.`,
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to get subjects: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to get subjects.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.getResourceList(SubjectsModel, populateSubjectFields, params, subjectListParamsMapping, 'subject');
 };
 
 const getSubjectById = async (subjectId) => {
-    return service.getResourceById(SubjectsModel, populateSubjectFields, subjectId, 'Subject');
+    return service.getResourceById(SubjectsModel, populateSubjectFields, subjectId, 'subject');
 };
 
 const updateSubject = async (requester, subjectId, updateData) => {

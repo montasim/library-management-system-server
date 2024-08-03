@@ -63,6 +63,10 @@ const populateBookFields = async (query) => {
         .select('-createdBy -updatedBy');
 };
 
+const bookListParamsMapping = {
+    bookPage: 'page', // Mapping 'bookPage' from the API to 'page' in the database
+};
+
 /**
  * Creates a new book in the database with image upload and detailed data validation.
  *
@@ -157,79 +161,7 @@ const createNewBook = async (requester, bookData, bookImage) => {
 };
 
 const getBookList = async (params) => {
-    try {
-        const {
-            page = 1,
-            limit = 10,
-            sort = '-createdAt',
-            name,
-            bestSeller,
-            review,
-            writer,
-            subject,
-            publication,
-            edition,
-            summary,
-            price,
-            stockAvailable,
-            isActive,
-            createdBy,
-            updatedBy,
-            createdAt,
-            updatedAt,
-        } = params;
-        const query = {
-            ...(name && { name: new RegExp(name, 'i') }),
-            ...(bestSeller && { bestSeller: new RegExp(bestSeller, 'i') }),
-            ...(review && { review: new RegExp(review, 'i') }),
-            ...(writer && { writer: new RegExp(writer, 'i') }),
-            ...(subject && { subject: new RegExp(subject, 'i') }),
-            ...(publication && { publication: new RegExp(publication, 'i') }),
-            ...(edition && { edition: new RegExp(edition, 'i') }),
-            ...(summary && { summary: new RegExp(summary, 'i') }),
-            ...(price && { price: new RegExp(price, 'i') }),
-            ...(stockAvailable && {
-                stockAvailable: new RegExp(stockAvailable, 'i'),
-            }),
-            ...(isActive && { isActive: new RegExp(isActive, 'i') }),
-            ...(createdBy && { createdBy }),
-            ...(updatedBy && { updatedBy }),
-            ...(createdAt && { createdAt }),
-            ...(updatedAt && { updatedAt }),
-        };
-        const totalBooks = await BooksModel.countDocuments(query);
-        const totalPages = Math.ceil(totalBooks / limit);
-        const books = await populateBookFields(
-            BooksModel.find(query)
-                .sort(sort)
-                .skip((page - 1) * limit)
-                .limit(limit)
-        );
-
-        if (!books.length) {
-            return sendResponse({}, 'No book found.', httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse(
-            {
-                books,
-                totalBooks,
-                totalPages,
-                currentPage: page,
-                pageSize: limit,
-                sort,
-            },
-            `${books.length} books fetched successfully.`,
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to get books: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to get books.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.getResourceList(BooksModel, populateBookFields, params, bookListParamsMapping, 'Book');
 };
 
 const getBookById = async (bookId) => {

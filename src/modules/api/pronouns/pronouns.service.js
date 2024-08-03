@@ -18,6 +18,8 @@ const populatePronounsFields = async (query) => {
         });
 };
 
+const pronounsListParamsMapping = {};
+
 const createPronouns = async (requester, newPronounsData) => {
     try {
         const exists = await PronounsModel.exists({
@@ -55,61 +57,11 @@ const createPronouns = async (requester, newPronounsData) => {
 };
 
 const getPronounsList = async (params) => {
-    try {
-        const {
-            page = 1,
-            limit = 10,
-            sort = '-createdAt',
-            name,
-            createdBy,
-            updatedBy,
-            createdAt,
-            updatedAt,
-        } = params;
-        const query = {
-            ...(name && { name: new RegExp(name, 'i') }),
-            ...(createdBy && { createdBy }),
-            ...(updatedBy && { updatedBy }),
-            ...(createdAt && { createdAt }),
-            ...(updatedAt && { updatedAt }),
-        };
-        const totalPronouns = await PronounsModel.countDocuments(query);
-        const totalPages = Math.ceil(totalPronouns / limit);
-        const pronounsList = await populatePronounsFields(
-            PronounsModel.find(query)
-                .sort(sort)
-                .skip((page - 1) * limit)
-                .limit(limit)
-        );
-
-        if (!pronounsList.length) {
-            return sendResponse({}, 'No pronouns found.', httpStatus.NOT_FOUND);
-        }
-
-        return sendResponse(
-            {
-                pronouns: pronounsList,
-                totalPronouns,
-                totalPages,
-                currentPage: page,
-                pageSize: limit,
-                sort,
-            },
-            `${pronounsList.length} pronouns fetched successfully.`,
-            httpStatus.OK
-        );
-    } catch (error) {
-        loggerService.error(`Failed to get pronouns: ${error}`);
-
-        return errorResponse(
-            error.message || 'Failed to get pronouns.',
-            httpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+    return service.getResourceList(PronounsModel, populatePronounsFields, params, pronounsListParamsMapping, 'pronouns');
 };
 
 const getPronounsById = async (pronounsId) => {
-    return service.getResourceById(PronounsModel, populatePronounsFields, pronounsId, 'Pronouns');
+    return service.getResourceById(PronounsModel, populatePronounsFields, pronounsId, 'pronouns');
 };
 
 const updatePronounsById = async (requester, pronounsId, updateData) => {
