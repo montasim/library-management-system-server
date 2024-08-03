@@ -8,11 +8,12 @@ import validateFile from '../../../utilities/validateFile.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import writersConstant from './writers.constant.js';
-import deleteResourceById from '../../../shared/deleteResourceById.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
-import SubjectsModel from '../subjects/subjects.model.js';
-import BooksModel from '../books/books.model.js';
+import AdminActivityLoggerModel
+    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants
+    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 const populateWriterFields = async (query) => {
     return await query
@@ -73,6 +74,13 @@ const createWriter = async (requester, writerData, writerImage) => {
         const newWriter = await WritersModel.create({
             ...writerData,
             image: writerImageData,
+        });
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.CREATE,
+            description: `${writerData.name} created successfully.`,
+            details: JSON.stringify(newWriter)
         });
 
         return sendResponse(
@@ -164,6 +172,14 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
                 new: true,
             }
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.UPDATE,
+            description: `${writerId} updated successfully.`,
+            details: JSON.stringify(updatedWriter),
+            affectedId: writerId,
+        });
 
         return sendResponse(
             updatedWriter,

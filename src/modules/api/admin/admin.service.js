@@ -11,18 +11,19 @@ import prepareEmailContent from '../../../shared/prepareEmailContent.js';
 import EmailService from '../../../service/email.service.js';
 import prepareEmail from '../../../shared/prepareEmail.js';
 import errorResponse from '../../../utilities/errorResponse.js';
-import validateAdminRequest from '../../../utilities/validateAdminRequest.js';
 import generateHashedToken from '../../../utilities/generateHashedToken.js';
 import comparePassword from '../../../utilities/comparePassword.js';
 import validatePassword from '../../../utilities/validatePassword.js';
 import createHashedPassword from '../../../utilities/createHashedPassword.js';
-import getRequestedDeviceDetails from '../../../utilities/getRequestedDeviceDetails.js';
-import decodeAuthenticationToken from '../../../utilities/decodeAuthenticationToken.js';
 import generateTempPassword from '../../../utilities/generateTempPassword.js';
 import createAuthenticationToken from '../../../utilities/createAuthenticationToken.js';
 import UsersModel from '../users/users.model.js';
 import loggerService from '../../../service/logger.service.js';
 import defaultConstants from '../../../constant/default.constants.js';
+import AdminActivityLoggerModel
+    from './adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants
+    from './adminActivityLogger/adminActivityLogger.constants.js';
 
 const createNewAdmin = async (requester, adminData, hostData) => {
     try {
@@ -104,6 +105,13 @@ const createNewAdmin = async (requester, adminData, hostData) => {
                 footerContent
             )
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.CREATE,
+            description: `${adminData.email} created successfully.`,
+            details: JSON.stringify(newUser)
+        });
 
         return sendResponse(
             newUser,

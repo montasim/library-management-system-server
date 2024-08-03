@@ -13,6 +13,10 @@ import PublicationsModel from '../publications/publications.model.js';
 import WritersModel from '../writers/writers.model.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
+import AdminActivityLoggerModel
+    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants
+    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 // Helper function to validate IDs
 const validateIds = async (writer, publication) => {
@@ -139,10 +143,17 @@ const createNewBook = async (requester, bookData, bookImage) => {
         // Create the book
         const newBook = await BooksModel.create(bookData);
 
-        // Get the populated book datapo
+        // Get the populated book data
         const newBookDetails = await populateBookFields(
             BooksModel.findById(newBook._id)
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.CREATE,
+            description: `${bookData.name} created successfully.`,
+            details: JSON.stringify(newBookDetails)
+        });
 
         // Send success response
         return sendResponse(
@@ -317,6 +328,14 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
         const updatedBookDetails = await populateBookFields(
             BooksModel.findById(bookId)
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.UPDATE,
+            description: `${bookId} updated successfully.`,
+            details: JSON.stringify(newBookDetails),
+            affectedId: bookId,
+        });
 
         return sendResponse(
             updatedBookDetails,

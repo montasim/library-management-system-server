@@ -9,6 +9,10 @@ import generatePermissions from '../../../shared/generatePermissions.js';
 import RolesModel from '../roles/roles.model.js';
 import constants from '../../../constant/constants.js';
 import service from '../../../shared/service.js';
+import AdminActivityLoggerModel
+    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants
+    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 const populatePermissionFields = async (query) => {
     return await query
@@ -68,6 +72,13 @@ const createPermission = async (requester, newPermissionData) => {
         const populatedPermission = await populatePermissionFields(
             PermissionsModel.findById(newPermission._id)
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.CREATE,
+            description: `${newPermissionData.name} created successfully.`,
+            details: JSON.stringify(populatedPermission)
+        });
 
         return sendResponse(
             populatedPermission,
@@ -186,6 +197,14 @@ const updatePermissionById = async (requester, permissionId, updateData) => {
         const populatedPermission = await populatePermissionFields(
             PermissionsModel.findById(updatedPermission._id)
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.UPDATE,
+            description: `${permissionId} updated successfully.`,
+            details: JSON.stringify(populatedPermission),
+            affectedId: permissionId,
+        });
 
         return sendResponse(
             populatedPermission,

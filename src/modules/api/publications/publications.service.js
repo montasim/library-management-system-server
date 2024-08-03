@@ -5,6 +5,10 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
+import AdminActivityLoggerModel
+    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants
+    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 const populatePublicationFields = async (query) => {
     return await query
@@ -41,6 +45,13 @@ const createPublication = async (requester, newPublicationData) => {
         const populatedPublication = await populatePublicationFields(
             PublicationsModel.findById(newPublication._id)
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.CREATE,
+            description: `${newPublicationData.name} created successfully.`,
+            details: JSON.stringify(populatedPublication)
+        });
 
         return sendResponse(
             populatedPublication,
@@ -95,6 +106,14 @@ const updatePublicationById = async (requester, publicationId, updateData) => {
         const populatedPublication = await populatePublicationFields(
             PublicationsModel.findById(updatedPublication._id)
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.UPDATE,
+            description: `${publicationId} updated successfully.`,
+            details: JSON.stringify(populatedPublication),
+            affectedId: publicationId,
+        });
 
         return sendResponse(
             populatedPublication,

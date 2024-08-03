@@ -5,6 +5,10 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
+import AdminActivityLoggerModel
+    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants
+    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 const populatePronounsFields = async (query) => {
     return await query
@@ -40,6 +44,13 @@ const createPronouns = async (requester, newPronounsData) => {
         const populatedPronouns = await populatePronounsFields(
             PronounsModel.findById(newPronouns._id)
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.CREATE,
+            description: `${newPronounsData.name} created successfully.`,
+            details: JSON.stringify(populatedPronouns)
+        });
 
         return sendResponse(
             populatedPronouns,
@@ -94,6 +105,14 @@ const updatePronounsById = async (requester, pronounsId, updateData) => {
         const populatedPronouns = await populatePronounsFields(
             PronounsModel.findById(updatedPronouns._id)
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.UPDATE,
+            description: `${pronounsId} updated successfully.`,
+            details: JSON.stringify(populatedPronouns),
+            affectedId: pronounsId,
+        });
 
         return sendResponse(
             populatedPronouns,

@@ -5,6 +5,10 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
+import adminActivityLoggerConstants
+    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel
+    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
 
 const populateSubjectFields = async (query) => {
     return await query
@@ -40,6 +44,13 @@ const createSubject = async (requester, newSubjectData) => {
         const populatedSubject = await populateSubjectFields(
             SubjectsModel.findById(newSubject._id)
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.CREATE,
+            description: `${newSubjectData.name} created successfully.`,
+            details: JSON.stringify(populatedSubject)
+        });
 
         return sendResponse(
             populatedSubject,
@@ -90,6 +101,14 @@ const updateSubject = async (requester, subjectId, updateData) => {
         const populatedSubject = await populateSubjectFields(
             SubjectsModel.findById(updatedSubject._id)
         );
+
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.UPDATE,
+            description: `${subjectId} updated successfully.`,
+            details: JSON.stringify(populatedSubject),
+            affectedId: subjectId,
+        });
 
         return sendResponse(
             populatedSubject,
