@@ -6,7 +6,7 @@ const adminActivityLoggerSchema = new mongoose.Schema(
     {
         user: {
             type: Schema.Types.ObjectId,
-            ref: 'Users',
+            ref: 'Admin',
             required: [true, 'User ID is required for logging activities.'],
             description: 'The ID of the user who performed the action.',
         },
