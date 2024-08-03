@@ -1,10 +1,19 @@
-.idea
+# IDE and code editor settings
+.idea/
+.vscode/
 
-node_modules
+# Dependency directories
+node_modules/
 
-build
-logs
+# Build outputs
+build/
 
+# Log files
+logs/
+*.log  # General log files
+docker.log  # Docker-specific log files
+
+# Environment variable configurations
 .env
 .env.development
 .env.test
