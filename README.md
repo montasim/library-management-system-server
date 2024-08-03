@@ -3,12 +3,12 @@
 <!-- repository summary badges start -->
 <div>
     <img alt="Wakatime coding time badge" src="https://wakatime.com/badge/user/bb224c90-7cb7-4c45-953e-a9e26c1cb06c/project/eeb4680f-6d81-4c44-a940-6d9a600a3227.svg?labelColor=EB008B&color=00B8B5">
-    <img alt="GitHub repo file count" src="https://img.shields.io/github/directory-file-count/montasim/library-management-system-server?labelColor=EB008B&color=00B8B5">
-    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/montasim/library-management-system-server?labelColor=EB008B&color=00B8B5">
-    <img alt="GitHub" src="https://img.shields.io/github/license/montasim/library-management-system-server?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/montasim/library-management-system-server?labelColor=EB008B&color=00B8B5">
     <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/montasim/library-management-system-server?labelColor=EB008B&color=00B8B5">
     <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/montasim/library-management-system-server?labelColor=EB008B&color=00B8B5">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/montasim/library-management-system-server?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub repo file count" src="https://img.shields.io/github/directory-file-count/montasim/library-management-system-server?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/montasim/library-management-system-server?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub license" src="https://img.shields.io/github/license/montasim/library-management-system-server?labelColor=EB008B&color=00B8B5">
 </div>
 <!-- repository summary badges end -->
 
