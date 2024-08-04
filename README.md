@@ -292,42 +292,50 @@ Vercel is the recommended option for hosting the files since it is free and easy
         List of used packages:
     </summary>
 
--   `@googleapis/drive - ^8.11.0`
--   `bcrypt - ^5.1.1`
--   `compression - ^1.7.4`
--   `cors - ^2.8.5`
--   `dompurify - ^3.1.5`
--   `dotenv - ^16.4.5`
--   `express - ^4.19.2`
--   `express-useragent - ^1.0.15`
--   `geoip-lite - ^1.4.10`
--   `glob - ^10.4.2`
--   `helmet - ^7.1.0`
--   `hpp - ^0.2.3`
--   `jest - ^29.7.0`
--   `joi - ^17.13.3`
--   `jsdom - ^24.1.0`
--   `jsonwebtoken - ^9.0.2`
--   `mongodb - ^6.8.0`
--   `mongoose - ^8.4.4`
--   `morgan - ^1.10.0`
--   `multer - ^1.4.5-lts.1`
--   `node-cache - ^5.1.2`
--   `nodemailer - ^6.9.14`
--   `pm2 - ^5.4.1`
--   `request-ip - ^3.3.0`
--   `supertest - ^7.0.0`
--   `terser - ^5.31.1`
--   `uuid - ^10.0.0`
--   `winston - ^3.13.0`
--   `winston-daily-rotate-file - ^5.0.0`
--   `@babel/core - ^7.24.7`
--   `@babel/preset-env - ^7.24.7`
--   `eslint - ^9.5.0`
--   `jsdoc - ^4.0.3`
--   `nodemon - ^3.1.4`
--   `prettier - ^3.3.2`
--   `standard-version - ^9.5.0`
+1. `Node.js (v20.x or higher)`: The runtime environment for executing JavaScript on the server side.
+2. `Express.js (v4.19.x or higher)`: The web application framework for creating server-side logic.
+3. `MongoDB (v6.8.x or higher)`: The NoSQL database for storing and retrieving data.
+4. `@googleapis/drive (v8.11.0)`: A library for interacting with Google Drive API.
+5. `bcrypt (v5.1.1)`: A library to help you hash passwords.
+6. `compression (v1.7.4)`: Middleware to compress response bodies for all requests.
+7. `cors (v2.8.5)`: Middleware to enable Cross-Origin Resource Sharing.
+8. `dompurify (v3.1.5)`: A library to sanitize HTML to prevent XSS attacks.
+9. `dotenv (v16.4.5)`: A module to load environment variables from a .env file.
+10. `express-useragent (v1.0.15)`: A user agent middleware for Express.
+11. `glob (v10.4.2)`: A library to match files using the patterns the shell uses.
+12. `helmet (v7.1.0)`: Middleware to secure Express apps by setting various HTTP headers.
+13. `hpp (v0.2.3)`: Middleware to protect against HTTP Parameter Pollution attacks.
+14. `jest (v29.7.0)`: A testing framework for JavaScript.
+15. `joi (v17.13.3)`: A library for data validation.
+16. `jsdom (v24.1.0)`: A library to simulate a web browser environment in Node.js.
+17. `jsonwebtoken (v9.0.2)`: A library to sign, verify, and decode JSON Web Tokens.
+18. `moment (v2.30.1)`: A library for parsing, validating, manipulating, and formatting dates.
+19. `mongodb (v6.8.0)`: MongoDB driver for Node.js.
+20. `mongoose (v8.4.4)`: An ODM (Object Data Modeling) library for MongoDB and Node.js.
+21. `morgan (v1.10.0)`: HTTP request logger middleware for Node.js.
+22. `multer (v1.4.5-lts.1)`: Middleware for handling multipart/form-data, used for file uploads.
+23. `node-cache (v5.1.2)`: A caching library for Node.js.
+24. `nodemailer (v6.9.14)`: A module for sending emails.
+25. `pm2 (v5.4.1)`: A production process manager for Node.js applications.
+26. `request-ip (v3.3.0)`: A library to retrieve a request's IP address.
+27. `supertest (v7.0.0)`: A library for testing HTTP assertions.
+28. `terser (v5.31.1)`: A JavaScript parser, mangler, and compressor toolkit for ES6+.
+29. `uuid (v10.0.0)`: A library to generate RFC4122 UUIDs.
+30. `winston (v3.13.0)`: A logging library for Node.js.
+31. `winston-daily-rotate-file (v5.0.0)`: Transport for winston to log to daily rotated files.
+32. `winston-mongodb (v5.1.1)`: Transport for winston to log to a MongoDB collection.
+
+
+### Development Dependencies
+
+1. `@babel/core (v7.24.7)`: The core of Babel, a JavaScript compiler.
+2. `@babel/preset-env (v7.24.7)`: A Babel preset to compile ES6+ down to ES5.
+3. `eslint (v9.5.0)`: A tool for identifying and reporting on patterns in JavaScript.
+4. `jsdoc (v4.0.3)`: A tool for generating documentation from JavaScript source code.
+5. `nodemon (v3.1.4)`: A utility that will monitor for any changes in your source and automatically restart your server.
+6. `prettier (v3.3.2)`: An opinionated code formatter.
+7. `standard-version (v9.5.0)`: A utility for versioning and changelog management.
+8. 
 </details>
 
 <br/>
