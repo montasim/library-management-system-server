@@ -2,6 +2,7 @@
   "name": "library-management-system-server",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "server.js",
   "type": "module",
   "engines": {
