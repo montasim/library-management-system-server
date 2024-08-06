@@ -20,7 +20,7 @@ app.use(cors(corsConfiguration));
 app.use(hppConfiguration());
 app.use(compressionConfiguration);
 
-// Morgan HTTP requestBooks logger setup
+// Morgan HTTP requestBooks loggerService setup
 app.use(morganConfiguration);
 
 // Body parsing middleware
