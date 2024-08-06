@@ -40,52 +40,58 @@
 
 1. User
     - Auth
-        - Signup
-        - Verify signup using email
-        - Login
-        - Request password reset email
-        - Resend password reset email
-        - Reset password
-        - Delete account using email
-        - Logout
+        - Signup: `POST /api/{{VERSION}}/auth/signup`
+        - Verify signup using email: `GET /api/{{VERSION}}/auth/verify/verification-token`
+        - Login: `POST /api/{{VERSION}}/auth/login`
+        - Request password reset email: `PUT /api/{{VERSION}}/auth/request-new-password`
+        - Resend password reset email: `PUT /api/{{VERSION}}/auth/resend-verification/verification-token`
+        - Reset password: `PUT /api/{{VERSION}}/auth/reset-password/verification-token`
+        - Logout: `GET /api/{{VERSION}}/auth/logout`
     - Profile
-        - Update personal information
-        - Reset password
-        - Delete account
+        - Update personal information: 
+        - Reset password: 
+        - Delete account: 
     - Request
-        - Request a book
-        - Cancel a requested book
-        - Get all requested books
-    - Favorite
-        - Add a book to favorite
-        - Remove a book from favorite
-        - Get all favorite books
+        - Request a book: `POST /api/{{VERSION}}/books/request`
+        - Cancel a requested book: 
+        - Get all requested books: 
+    - Favorite books
+        - Add a book to favorite: `POST /api/{{VERSION}}/books/favourite/book-id`
+        - Remove a book from favorite: `GET /api/{{VERSION}}/books/favourite`
+        - Get all favorite books: `DELETE /api/{{VERSION}}/books/favourite/book-id`
     - Recently visited
-        - Add a book to recently visited
-        - Get all recently visited books
+        - Add a book to recently visited: 
+        - Get all recently visited books: 
 2. Admin
     - Admin
-        - Create admin
-        - Verify admin request using email
-        - Admin Login
-        - Request password reset email
-        - Resend password reset email
-        - Reset password
-        - Logout
+        - Create admin: `POST /api/{{VERSION}}/admin`
+        - Verify admin request using email: `GET /api/{{VERSION}}/admin/verify/verification-token`
+        - Admin Login: `/api/{{VERSION}}/admin/login`
+        - Request password reset email: `PUT /api/{{VERSION}}/admin/request-new-password`
+        - Resend password reset email: `GET /api/{{VERSION}}/admin/resend-verification/token-id`
+        - Reset password: `PUT /api/{{VERSION}}/admin/reset-password/verification-token`
+        - Logout: `GET /api/{{VERSION}}/admin/logout`
     - Permission
-        - Create permission
-        - Get all permissions
-        - Update permission
-        - Delete permission
+        - Create permission: `POST /api/{{VERSION}}/permissions`
+        - Create default permission: `POST /api/{{VERSION}}/permissions/default`
+        - Get all permissions: `GET /api/{{VERSION}}/permissions`
+        - Get permission by ID: `GET /api/{{VERSION}}/permissions/permission-id`
+        - Update permission by ID: `PUT /api/{{VERSION}}/permissions/permission-id`
+        - Delete permission by ID: `DELETE /api/{{VERSION}}/permissions/permission-id`
+        - Delete permission by list: `DELETE /api/{{VERSION}}/permissions?ids=permission-id1,permission-id2`
     - Role
-        - Create role
-        - Get all roles
-        - Update role
-        - Delete role
+       - Create role: `POST /api/{{VERSION}}/roles`
+       - Create default role: `POST /api/{{VERSION}}/roles/default`
+       - Get all roles: `GET /api/{{VERSION}}/roles`
+       - Get role by ID: `GET /api/{{VERSION}}/roles/role-id`
+       - Update role by ID: `PUT /api/{{VERSION}}/roles/role-id`
+       - Delete role by ID: `DELETE /api/{{VERSION}}/roles/role-id`
+       - Delete role by list: `DELETE /api/{{VERSION}}/roles?ids=role-id1,role-id2`
     - Books
-        - Add a book
-        - Update a book
-        - Delete a book
+        - Add a new book: `POST /api/{{VERSION}}/books`
+        - Update a book by ID: `PUT /api/{{VERSION}}/books/66ab542eb599109705f946ee`
+        - Delete a book by ID: `DELETE /api/{{VERSION}}/books/book-id`
+        - Delete book by list: `DELETE /api/{{VERSION}}/roles?ids=role-id1,role-id2`
     - Publication
         - Add a publication
         - Get all publications
@@ -102,20 +108,28 @@
         - Update a subject
         - Delete a subject
     - Lend
-        - Lend a book
-        - Return a book
-        - Get all lend books
+        - Lend a book to user: `POST /api/{{VERSION}}/books/lend`
+        - Get all lend books: `GET /api/{{VERSION}}/books/lend`
     - Return
-        - Return a book
+        - Return books to library: `DELETE /api/{{VERSION}}/books/return`
     - History
         - Get all lend history
         - Get lend history by book id
     - Desired books
         - Get all desired books
+    - Requested books
+        - Get all requested books: `GET /api/{{VERSION}}/books/request`
+        - Get requested book by book ID: `GET /api/{{VERSION}}/books/request/requested-book-id`
+        - Get requested book by requester ID: `GET /api/{{VERSION}}/books/request/owner/owner-id`
 3. Public
     - Books
-        - Get all books
-        - Get book by id
+        - Get all books: `GET /api/{{VERSION}}/books`
+        - Get book by id: `GET /api/{{VERSION}}/books/book-id`
+    - Desired books
+        - Get all books: `GET /api/{{VERSION}}/books/desired`
+    - Books history
+        - Get all books history: `GET /api/{{VERSION}}/books/history`
+        - Get book history by book ID: `GET /api/{{VERSION}}/books/history/book-id`
     - Detect
         - User device detection
     - Desired books
