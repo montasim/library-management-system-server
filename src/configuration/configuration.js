@@ -1,3 +1,16 @@
+/**
+ * @fileoverview This module configures and validates environment variables for the application
+ * using dotenv and Joi. It imports configurations, applies environment-specific settings,
+ * and validates all environmental variables against a schema to ensure they meet the required
+ * format and values before the application runs. The module helps prevent runtime errors due
+ * to misconfiguration and facilitates easier management of configuration settings across
+ * different deployment environments (development, testing, staging, production).
+ *
+ * @requires module:dotenv Used to load and parse environment variables from a .env file.
+ * @requires module:joi Used for schema description and environment validation.
+ * @requires module:constant/envTypes.constants Constants defining environment types.
+ */
+
 import dotenv from 'dotenv';
 import Joi from 'joi';
 
@@ -8,10 +21,14 @@ dotenv.config({
 });
 
 /**
- * Parses environment variables to integers with a default value.
- * @param {string} envVar - The environment variable.
- * @param {number} defaultValue - The default value if parsing fails.
- * @returns {number} - The parsed integer or the default value.
+ * Converts a given environment variable to an integer. If the conversion fails (i.e., the result is NaN),
+ * it returns a specified default value. This function is useful for ensuring that environmental configurations
+ * that are expected to be numeric are indeed treated as such, with a fallback mechanism in case of misconfiguration
+ * or absence.
+ *
+ * @param {string} envVar - The environment variable to be parsed.
+ * @param {number} defaultValue - The fallback value to use if parsing fails.
+ * @returns {number} The parsed integer or the default value.
  */
 const getInt = (envVar, defaultValue) => {
     const parsed = parseInt(envVar, 10);
@@ -20,10 +37,13 @@ const getInt = (envVar, defaultValue) => {
 };
 
 /**
- * Handles undefined, null, or empty values with a default value.
- * @param {string} envVar - The environment variable.
- * @param {*} defaultValue - The default value if the environment variable is undefined, null, or empty.
- * @returns {*} - The environment variable or the default value.
+ * Retrieves an environment variable and provides a default value if the specified variable is undefined, null, or an
+ * empty string. This function is crucial for configuration management, ensuring that no environment variable is left
+ * unset, thereby avoiding potential runtime errors or misconfigurations in the application's operational environment.
+ *
+ * @param {string} envVar - The environment variable to retrieve.
+ * @param {*} defaultValue - The default value to return if the specified environment variable is not set.
+ * @returns {*} The value of the environment variable or the default value if the variable is not set.
  */
 const getEnvVar = (envVar, defaultValue) => {
     if (envVar === undefined || envVar === null || envVar === '') {
@@ -38,6 +58,19 @@ const mongoDbUrl =
     getEnvVar(process.env.MONGODB_URL, '') +
     (process.env.NODE_ENV === environment.TEST ? '-test' : '');
 
+
+/**
+ * Defines a schema for validating environment variables using Joi. This schema ensures that all necessary
+ * environment variables are not only present but also conform to expected formats and values. Each variable
+ * is thoroughly defined with requirements such as data type, allowed values, and mandatory status. This
+ * validation schema is crucial for maintaining the integrity and consistency of the application's configuration,
+ * preventing runtime errors caused by misconfiguration or missing environment variables.
+ *
+ * The schema includes validations for various operational parameters such as the application environment, server port,
+ * database URLs, authentication tokens, CORS settings, rate limiting, SMTP details for email sending, and more. It ensures
+ * that all configurations are correctly set according to the operational requirements of different environments like
+ * development, testing, staging, or production.
+ */
 const envVarsSchema = Joi.object({
     NODE_ENV: Joi.string()
         .valid(
@@ -159,7 +192,16 @@ if (error) {
 }
 
 /**
- * Configuration object for the application.
+ * Loads environment configurations based on the current NODE_ENV setting, validates all required
+ * environment variables using a Joi schema, and constructs a comprehensive configuration object
+ * for the application. This object includes settings for the server, database, authentication,
+ * email, security, and more. The module ensures that all configurations are valid, current, and
+ * appropriately set for the running environment, contributing to the robustness and security
+ * of the application.
+ *
+ * @module configuration
+ * @function
+ * @description Configures and validates all necessary environment variables and settings for the application.
  */
 const configuration = {
     env: getEnvVar(envVars.NODE_ENV, environment.DEVELOPMENT),
