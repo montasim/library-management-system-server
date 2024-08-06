@@ -52,7 +52,7 @@ const routesConstants = {
     },
     requestBooks: {
         routes: 'request',
-        params: 'favouriteBookId',
+        params: 'requestedBookId',
         permissions: {
             create: 'create-request',
         },

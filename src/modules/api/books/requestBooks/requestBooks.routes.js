@@ -6,6 +6,7 @@ import authenticateMiddleware from '../../../../middleware/authenticate.middlewa
 import requestBooksValidator from './requestBooks.validator.js';
 import uploadMiddleware from '../../../../middleware/upload.middleware.js';
 import accessTypesConstants from '../../../../constant/accessTypes.constants.js';
+import routesConstants from '../../../../constant/routes.constants.js';
 
 const router = express.Router();
 
@@ -28,7 +29,7 @@ router
     .all(methodNotSupported);
 
 router
-    .route('/:requestedBookId')
+    .route(`/:${routesConstants.requestBooks.params}`)
     .get(
         authenticateMiddleware(
             accessTypesConstants.ADMIN,

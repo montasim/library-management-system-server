@@ -141,7 +141,7 @@ const getRequestBooks = async () => {
 
         if (!requestBooks || requestBooks.length === 0) {
             return errorResponse(
-                'You have not requested any books.',
+                'No requested books found.',
                 httpStatus.NOT_FOUND
             );
         }
@@ -151,7 +151,7 @@ const getRequestBooks = async () => {
                 total: requestBooks.length,
                 requestBooks,
             },
-            'Successfully retrieved your favourite books.',
+            'Successfully retrieved all requested books.',
             httpStatus.OK
         );
     } catch (error) {

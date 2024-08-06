@@ -1,5 +1,6 @@
 import requestBooksService from './requestBooks.service.js';
 import entity from '../../../../shared/entity.js';
+import routesConstants from '../../../../constant/routes.constants.js';
 
 const requestBooksController = {
     createRequestBook: entity.createEntity(
@@ -12,8 +13,8 @@ const requestBooksController = {
     ),
     getRequestBookByBookId: entity.getEntityById(
         requestBooksService,
-        'createRequestBook',
-        'requestedBookId'
+        'getRequestBook',
+        routesConstants.requestBooks.params
     ),
     getRequestedBooksByOwnerId: entity.getEntityById(
         requestBooksService,
@@ -23,7 +24,7 @@ const requestBooksController = {
     deleteRequestBook: entity.deleteEntityById(
         requestBooksService,
         'deleteRequestBook',
-        'requestedBookId'
+        routesConstants.requestBooks.params
     ),
 };
 
