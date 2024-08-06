@@ -4,10 +4,10 @@ import loggerService from '../service/logger.service.js';
 import getHostData from '../utilities/getHostData.js';
 import getRequestedDeviceDetails from '../utilities/getRequestedDeviceDetails.js';
 
-// TODO: Implement the `entity` log
-// TODO: utilize the hostData for every entity
+// TODO: Implement the `controller` log
+// TODO: utilize the hostData for every controller
 
-const createNewUserEntity = (service, createFunction) =>
+const createNewUser = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
         const hostData = getHostData(req);
@@ -21,7 +21,7 @@ const createNewUserEntity = (service, createFunction) =>
         res.status(newUserData.status).send(newUserData);
     });
 
-const signupEntity = (service, createFunction) =>
+const signup = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
         const newUserData = await service[createFunction](req.body, hostData);
@@ -30,7 +30,7 @@ const signupEntity = (service, createFunction) =>
         res.status(newUserData.status).send(newUserData);
     });
 
-const verifyEntity = (service, createFunction) =>
+const verify = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
         const verifyData = await service[createFunction](
@@ -42,7 +42,7 @@ const verifyEntity = (service, createFunction) =>
         res.status(verifyData.status).send(verifyData);
     });
 
-const resendVerificationEntity = (service, createFunction) =>
+const resendVerification = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
         const verificationData = await service[createFunction](
@@ -54,7 +54,7 @@ const resendVerificationEntity = (service, createFunction) =>
         res.status(verificationData.status).send(verificationData);
     });
 
-const requestNewPasswordEntity = (service, createFunction) =>
+const requestNewPassword = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
         const requestNewPasswordData = await service[createFunction](
@@ -66,7 +66,7 @@ const requestNewPasswordEntity = (service, createFunction) =>
         res.status(requestNewPasswordData.status).send(requestNewPasswordData);
     });
 
-const resetPasswordEntity = (service, createFunction) =>
+const resetPassword = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
         const userData = {
@@ -84,7 +84,7 @@ const resetPasswordEntity = (service, createFunction) =>
         res.status(requestNewPasswordData.status).send(requestNewPasswordData);
     });
 
-const loginEntity = (service, createFunction) =>
+const login = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
         const device = await getRequestedDeviceDetails(req);
@@ -99,7 +99,7 @@ const loginEntity = (service, createFunction) =>
         res.status(loginData.status).send(loginData);
     });
 
-const logoutEntity = (service, createFunction) =>
+const logout = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const hostData = getHostData(req);
         const device = await getRequestedDeviceDetails(req);
@@ -109,7 +109,7 @@ const logoutEntity = (service, createFunction) =>
         res.status(logoutData.status).send(logoutData);
     });
 
-const createEntityWithId = (service, createFunction, resourceId) =>
+const createWithId = (service, createFunction, resourceId) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
         const paramsId = req.params[resourceId];
@@ -129,7 +129,7 @@ const createEntityWithId = (service, createFunction, resourceId) =>
         res.status(newData.status).send(newData);
     });
 
-const createEntity = (service, createFunction) =>
+const create = (service, createFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
         const includesFile = req.file;
@@ -151,7 +151,7 @@ const createEntity = (service, createFunction) =>
         res.status(newData.status).send(newData);
     });
 
-const getEntityList = (service, getListFunction) =>
+const getList = (service, getListFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req) || null;
 
@@ -171,7 +171,7 @@ const getEntityList = (service, getListFunction) =>
         res.status(dataList.status).send(dataList);
     });
 
-const getEntityById = (service, getByIdFunction, paramsId) =>
+const getById = (service, getByIdFunction, paramsId) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
 
@@ -191,7 +191,7 @@ const getEntityById = (service, getByIdFunction, paramsId) =>
         res.status(data.status).send(data);
     });
 
-const getEntityByRequester = (service, getByIdFunction) =>
+const getByRequester = (service, getByIdFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
 
@@ -206,7 +206,7 @@ const getEntityByRequester = (service, getByIdFunction) =>
         res.status(requesterData.status).send(requesterData);
     });
 
-const updateEntityById = (service, updateByIdFunction, paramsId) =>
+const updateById = (service, updateByIdFunction, paramsId) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
         const includesFile = req.file;
@@ -227,7 +227,7 @@ const updateEntityById = (service, updateByIdFunction, paramsId) =>
         res.status(updatedData.status).send(updatedData);
     });
 
-const updateEntityByRequester = (service, updateByIdFunction) =>
+const updateByRequester = (service, updateByIdFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
         const includesFile = req.file;
@@ -246,7 +246,7 @@ const updateEntityByRequester = (service, updateByIdFunction) =>
         res.status(updatedData.status).send(updatedData);
     });
 
-const deleteEntityById = (service, deleteByIdFunction, paramsId) =>
+const deleteById = (service, deleteByIdFunction, paramsId) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
         const deletedData = await service[deleteByIdFunction](
@@ -262,7 +262,7 @@ const deleteEntityById = (service, deleteByIdFunction, paramsId) =>
         res.status(deletedData.status).send(deletedData);
     });
 
-const deleteEntityList = (service, deleteByIdFunction) =>
+const deleteList = (service, deleteByIdFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
         const ids = req.query.ids.split(',');
@@ -279,25 +279,25 @@ const deleteEntityList = (service, deleteByIdFunction) =>
         res.status(deletedListData.status).send(deletedListData);
     });
 
-const entity = {
-    createNewUserEntity,
-    signupEntity,
-    verifyEntity,
-    resendVerificationEntity,
-    requestNewPasswordEntity,
-    resetPasswordEntity,
-    loginEntity,
-    logoutEntity,
+const controller = {
+    createNewUser,
+    signup,
+    verify,
+    resendVerification,
+    requestNewPassword,
+    resetPassword,
+    login,
+    logout,
 
-    createEntityWithId,
-    createEntity,
-    getEntityList,
-    getEntityById,
-    getEntityByRequester,
-    updateEntityById,
-    updateEntityByRequester,
-    deleteEntityById,
-    deleteEntityList,
+    createWithId,
+    create,
+    getList,
+    getById,
+    getByRequester,
+    updateById,
+    updateByRequester,
+    deleteById,
+    deleteList,
 };
 
-export default entity;
+export default controller;

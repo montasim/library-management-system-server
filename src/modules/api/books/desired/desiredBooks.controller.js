@@ -1,8 +1,8 @@
 import desiredBooksService from './desiredBooks.service.js';
-import entity from '../../../../shared/entity.js';
+import controller from '../../../../shared/controller.js';
 
 const desiredBooksController = {
-    getDesiredBooks: entity.getEntityList(
+    getDesiredBooks: controller.getList(
         desiredBooksService,
         'getDesiredBooks'
     ),

@@ -1,26 +1,26 @@
 import subjectsService from './subjects.service.js';
-import entity from '../../../shared/entity.js';
+import controller from '../../../shared/controller.js';
 import routesConstants from '../../../constant/routes.constants.js';
 
 const subjectsController = {
-    createSubject: entity.createEntity(subjectsService, 'createSubject'),
-    getSubjects: entity.getEntityList(subjectsService, 'getSubjects'),
-    getSubjectById: entity.getEntityById(
+    createSubject: controller.create(subjectsService, 'createSubject'),
+    getSubjects: controller.getList(subjectsService, 'getSubjects'),
+    getSubjectById: controller.getById(
         subjectsService,
         'getSubjectById',
         routesConstants.subjects.params
     ),
-    updateSubject: entity.updateEntityById(
+    updateSubject: controller.updateById(
         subjectsService,
         'updateSubject',
         routesConstants.subjects.params
     ),
-    deleteSubject: entity.deleteEntityById(
+    deleteSubject: controller.deleteById(
         subjectsService,
         'deleteSubject',
         routesConstants.subjects.params
     ),
-    deleteSubjects: entity.deleteEntityList(subjectsService, 'deleteSubjects'),
+    deleteSubjects: controller.deleteList(subjectsService, 'deleteSubjects'),
 };
 
 export default subjectsController;

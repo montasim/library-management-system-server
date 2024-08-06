@@ -1,18 +1,18 @@
 import favouriteBooksService from './favouriteBooks.service.js';
-import entity from '../../../../shared/entity.js';
+import controller from '../../../../shared/controller.js';
 import routesConstants from '../../../../constant/routes.constants.js';
 
 const favouriteBooksController = {
-    createFavouriteBook: entity.createEntityWithId(
+    createFavouriteBook: controller.createWithId(
         favouriteBooksService,
         'createFavouriteBook',
         routesConstants.favouriteBooks.params
     ),
-    getFavouriteBooks: entity.getEntityByRequester(
+    getFavouriteBooks: controller.getByRequester(
         favouriteBooksService,
         'getFavouriteBooks'
     ),
-    deleteFavouriteBook: entity.deleteEntityById(
+    deleteFavouriteBook: controller.deleteById(
         favouriteBooksService,
         'deleteFavouriteBook',
         routesConstants.favouriteBooks.params

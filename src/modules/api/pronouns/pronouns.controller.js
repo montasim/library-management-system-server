@@ -1,26 +1,26 @@
-import entity from '../../../shared/entity.js';
+import controller from '../../../shared/controller.js';
 import pronounsService from './pronouns.service.js';
 import routesConstants from '../../../constant/routes.constants.js';
 
 const pronounsController = {
-    createPronouns: entity.createEntity(pronounsService, 'createPronouns'),
-    getPronounsList: entity.getEntityList(pronounsService, 'getPronounsList'),
-    getPronounsById: entity.getEntityById(
+    createPronouns: controller.create(pronounsService, 'createPronouns'),
+    getPronounsList: controller.getList(pronounsService, 'getPronounsList'),
+    getPronounsById: controller.getById(
         pronounsService,
         'getPronounsById',
         routesConstants.pronouns.params
     ),
-    updatePronounsById: entity.updateEntityById(
+    updatePronounsById: controller.updateById(
         pronounsService,
         'updatePronounsById',
         routesConstants.pronouns.params
     ),
-    deletePronounsById: entity.deleteEntityById(
+    deletePronounsById: controller.deleteById(
         pronounsService,
         'deletePronounsById',
         routesConstants.pronouns.params
     ),
-    deletePronounsList: entity.deleteEntityList(
+    deletePronounsList: controller.deleteList(
         pronounsService,
         'deletePronounsList'
     ),

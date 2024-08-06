@@ -1,12 +1,12 @@
 import userAppearanceService from './userAppearance.service.js';
-import entity from '../../../../../shared/entity.js';
+import controller from '../../../../../shared/controller.js';
 
 const userAppearanceController = {
-    getAppearance: entity.getEntityByRequester(
+    getAppearance: controller.getByRequester(
         userAppearanceService,
         'getAppearance'
     ),
-    updateAppearance: entity.updateEntityByRequester(
+    updateAppearance: controller.updateByRequester(
         userAppearanceService,
         'updateAppearance'
     ),

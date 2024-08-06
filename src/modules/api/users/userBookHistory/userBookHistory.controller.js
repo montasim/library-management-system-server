@@ -1,12 +1,12 @@
 import userBookHistoryService from './userBookHistory.service.js';
-import entity from '../../../../shared/entity.js';
+import controller from '../../../../shared/controller.js';
 
 const userBookHistoryController = {
-    getBooksHistory: entity.getEntityByRequester(
+    getBooksHistory: controller.getByRequester(
         userBookHistoryService,
         'getBooksHistory'
     ),
-    getBookHistoryByBookId: entity.getEntityById(
+    getBookHistoryByBookId: controller.getById(
         userBookHistoryService,
         'getBookHistoryByBookId',
         'bookId'

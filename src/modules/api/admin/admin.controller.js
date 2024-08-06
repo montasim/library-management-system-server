@@ -1,23 +1,23 @@
 import adminService from './admin.service.js';
-import entity from '../../../shared/entity.js';
+import controller from '../../../shared/controller.js';
 
 const adminController = {
-    createNewAdmin: entity.createNewUserEntity(adminService, 'createNewAdmin'),
-    verifyAdmin: entity.verifyEntity(adminService, 'verifyAdmin'),
-    resendAdminVerification: entity.resendVerificationEntity(
+    createNewAdmin: controller.createNewUser(adminService, 'createNewAdmin'),
+    verifyAdmin: controller.verify(adminService, 'verifyAdmin'),
+    resendAdminVerification: controller.resendVerification(
         adminService,
         'resendAdminVerification'
     ),
-    requestNewAdminPassword: entity.requestNewPasswordEntity(
+    requestNewAdminPassword: controller.requestNewPassword(
         adminService,
         'requestNewAdminPassword'
     ),
-    resetAdminPassword: entity.resetPasswordEntity(
+    resetAdminPassword: controller.resetPassword(
         adminService,
         'resetAdminPassword'
     ),
-    adminLogin: entity.loginEntity(adminService, 'adminLogin'),
-    adminLogout: entity.logoutEntity(adminService, 'adminLogout'),
+    adminLogin: controller.login(adminService, 'adminLogin'),
+    adminLogout: controller.logout(adminService, 'adminLogout'),
 };
 
 export default adminController;

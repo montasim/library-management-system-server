@@ -1,8 +1,8 @@
 import trendingBooksService from './trendingBooks.service.js';
-import entity from '../../../../shared/entity.js';
+import controller from '../../../../shared/controller.js';
 
 const trendingBooksController = {
-    getTrendingBooks: entity.getEntityList(
+    getTrendingBooks: controller.getList(
         trendingBooksService,
         'getTrendingBooks'
     ),

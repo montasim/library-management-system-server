@@ -1,16 +1,16 @@
 import userLogService from './userLog.service.js';
-import entity from '../../../../../shared/entity.js';
+import controller from '../../../../../shared/controller.js';
 
 const userLogController = {
-    getActivityLog: entity.updateEntityByRequester(
+    getActivityLog: controller.updateByRequester(
         userLogService,
         'getActivityLog'
     ),
-    getSecurityLog: entity.updateEntityByRequester(
+    getSecurityLog: controller.updateByRequester(
         userLogService,
         'getSecurityLog'
     ),
-    getAccountLog: entity.updateEntityByRequester(
+    getAccountLog: controller.updateByRequester(
         userLogService,
         'getAccountLog'
     ),

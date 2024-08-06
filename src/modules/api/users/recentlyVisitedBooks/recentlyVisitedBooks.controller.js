@@ -1,12 +1,12 @@
 import recentlyVisitedBooksService from './recentlyVisitedBooks.service.js';
-import entity from '../../../../shared/entity.js';
+import controller from '../../../../shared/controller.js';
 
 const recentlyVisitedBooksController = {
-    add: entity.createEntity(
+    add: controller.create(
         recentlyVisitedBooksService,
         'add'
     ),
-    get: entity.getEntityByRequester(
+    get: controller.getByRequester(
         recentlyVisitedBooksService,
         'get',
     ),

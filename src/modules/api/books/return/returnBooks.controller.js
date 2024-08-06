@@ -1,8 +1,8 @@
 import returnBooksService from './returnBooks.service.js';
-import entity from '../../../../shared/entity.js';
+import controller from '../../../../shared/controller.js';
 
 const returnBooksController = {
-    returnBook: entity.createEntity(returnBooksService, 'returnBook'),
+    returnBook: controller.create(returnBooksService, 'returnBook'),
 };
 
 export default returnBooksController;

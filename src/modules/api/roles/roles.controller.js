@@ -1,27 +1,27 @@
-import entity from '../../../shared/entity.js';
+import controller from '../../../shared/controller.js';
 import rolesService from './roles.service.js';
 import routesConstants from '../../../constant/routes.constants.js';
 
 const rolesController = {
-    createRole: entity.createEntity(rolesService, 'createRole'),
-    createDefaultRole: entity.createEntity(rolesService, 'createDefaultRole'),
-    getRoleList: entity.getEntityList(rolesService, 'getRoleList'),
-    getRoleById: entity.getEntityById(
+    createRole: controller.create(rolesService, 'createRole'),
+    createDefaultRole: controller.create(rolesService, 'createDefaultRole'),
+    getRoleList: controller.getList(rolesService, 'getRoleList'),
+    getRoleById: controller.getById(
         rolesService,
         'getRoleById',
         routesConstants.roles.params
     ),
-    updateRoleById: entity.updateEntityById(
+    updateRoleById: controller.updateById(
         rolesService,
         'updateRoleById',
         routesConstants.roles.params
     ),
-    deleteRoleById: entity.deleteEntityById(
+    deleteRoleById: controller.deleteById(
         rolesService,
         'deleteRoleById',
         routesConstants.roles.params
     ),
-    deleteRoleByList: entity.deleteEntityList(rolesService, 'deleteRoleList'),
+    deleteRoleByList: controller.deleteList(rolesService, 'deleteRoleList'),
 };
 
 export default rolesController;

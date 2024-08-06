@@ -1,17 +1,17 @@
 import requestBooksService from './userRequestBooks.service.js';
-import entity from '../../../../shared/entity.js';
+import controller from '../../../../shared/controller.js';
 
 const userRequestBooksController = {
-    getRequestBooks: entity.getEntityByRequester(
+    getRequestBooks: controller.getByRequester(
         requestBooksService,
         'getRequestBooks'
     ),
-    getRequestBook: entity.getEntityById(
+    getRequestBook: controller.getById(
         requestBooksService,
         'getRequestBook',
         'requestedBookId'
     ),
-    deleteRequestBook: entity.deleteEntityById(
+    deleteRequestBook: controller.deleteById(
         requestBooksService,
         'deleteRequestBook',
         'requestedBookId'

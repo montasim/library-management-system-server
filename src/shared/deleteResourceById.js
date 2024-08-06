@@ -25,7 +25,7 @@ import toSentenceCase from '../utilities/toSentenceCase.js';
  *
  * @async
  * @function deleteResourceById
- * @param {Object} requester - The user or entity requesting the deletion.
+ * @param {Object} requester - The user or controller requesting the deletion.
  * @param {string} resourceId - The ID of the resource to be deleted.
  * @param {mongoose.Model} model - The Mongoose model representing the collection from which the resource should be deleted.
  * @param {string} resourceType - A string representing the type of the resource, used in the response messages.

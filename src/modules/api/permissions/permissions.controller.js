@@ -1,33 +1,33 @@
-import entity from '../../../shared/entity.js';
+import controller from '../../../shared/controller.js';
 import permissionsService from './permissions.service.js';
 import routesConstants from '../../../constant/routes.constants.js';
 
 const permissionsController = {
-    createPermission: entity.createEntity(permissionsService.createPermission),
-    createDefaultPermissionList: entity.createEntity(
+    createPermission: controller.create(permissionsService.createPermission),
+    createDefaultPermissionList: controller.create(
         permissionsService,
         'createDefaultPermissionList'
     ),
-    getPermissionList: entity.getEntityList(
+    getPermissionList: controller.getList(
         permissionsService,
         'getPermissionList'
     ),
-    getPermissionById: entity.getEntityById(
+    getPermissionById: controller.getById(
         permissionsService,
         'getPermissionById',
         routesConstants.permissions.params
     ),
-    updatePermissionById: entity.updateEntityById(
+    updatePermissionById: controller.updateById(
         permissionsService,
         'updatePermissionById',
         routesConstants.permissions.params
     ),
-    deletePermissionById: entity.deleteEntityById(
+    deletePermissionById: controller.deleteById(
         permissionsService,
         'deletePermissionById',
         routesConstants.permissions.params
     ),
-    deletePermissionList: entity.deleteEntityList(
+    deletePermissionList: controller.deleteList(
         permissionsService,
         'deletePermissionList'
     ),

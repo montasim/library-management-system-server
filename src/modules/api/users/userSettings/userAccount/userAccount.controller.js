@@ -1,8 +1,8 @@
 import userAccountService from './userAccount.service.js';
-import entity from '../../../../../shared/entity.js';
+import controller from '../../../../../shared/controller.js';
 
 const userAccountController = {
-    deleteAccount: entity.createEntity(
+    deleteAccount: controller.create(
         userAccountService,
         'deleteAccount'
     ),

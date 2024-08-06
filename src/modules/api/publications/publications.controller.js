@@ -1,32 +1,32 @@
 import publicationsService from './publications.service.js';
-import entity from '../../../shared/entity.js';
+import controller from '../../../shared/controller.js';
 import routesConstants from '../../../constant/routes.constants.js';
 
 const publicationsController = {
-    createPublication: entity.createEntity(
+    createPublication: controller.create(
         publicationsService,
         'createPublication'
     ),
-    getPublicationList: entity.getEntityList(
+    getPublicationList: controller.getList(
         publicationsService,
         'getPublicationList'
     ),
-    getPublicationById: entity.getEntityById(
+    getPublicationById: controller.getById(
         publicationsService,
         'getPublicationById',
         routesConstants.publications.params
     ),
-    updatePublicationById: entity.updateEntityById(
+    updatePublicationById: controller.updateById(
         publicationsService,
         'updatePublicationById',
         routesConstants.publications.params
     ),
-    deletePublicationById: entity.deleteEntityById(
+    deletePublicationById: controller.deleteById(
         publicationsService,
         'deletePublicationById',
         routesConstants.publications.params
     ),
-    deletePublicationList: entity.deleteEntityList(
+    deletePublicationList: controller.deleteList(
         publicationsService,
         'deletePublicationList'
     ),

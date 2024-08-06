@@ -1,12 +1,12 @@
 import userProfileService from './getProfile.service.js';
-import entity from '../../../../../shared/entity.js';
+import controller from '../../../../../shared/controller.js';
 
 const userProfileController = {
-    getProfile: entity.updateEntityByRequester(
+    getProfile: controller.updateByRequester(
         userProfileService,
         'getProfile'
     ),
-    updateProfile: entity.updateEntityByRequester(
+    updateProfile: controller.updateByRequester(
         userProfileService,
         'updateProfile'
     ),

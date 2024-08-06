@@ -1,26 +1,26 @@
 import booksService from './books.service.js';
-import entity from '../../../shared/entity.js';
+import controller from '../../../shared/controller.js';
 import routesConstants from '../../../constant/routes.constants.js';
 
 const booksController = {
-    createNewBook: entity.createEntity(booksService, 'createNewBook'),
-    getBookList: entity.getEntityList(booksService, 'getBookList'),
-    getBookById: entity.getEntityById(
+    createNewBook: controller.create(booksService, 'createNewBook'),
+    getBookList: controller.getList(booksService, 'getBookList'),
+    getBookById: controller.getById(
         booksService,
         'getBookById',
         routesConstants.books.params
     ),
-    updateBookById: entity.updateEntityById(
+    updateBookById: controller.updateById(
         booksService,
         'updateBookById',
         routesConstants.books.params
     ),
-    deleteBookById: entity.deleteEntityById(
+    deleteBookById: controller.deleteById(
         booksService,
         'deleteBookById',
         routesConstants.books.params
     ),
-    deleteBookList: entity.deleteEntityList(booksService, 'deleteBookList'),
+    deleteBookList: controller.deleteList(booksService, 'deleteBookList'),
 };
 
 export default booksController;

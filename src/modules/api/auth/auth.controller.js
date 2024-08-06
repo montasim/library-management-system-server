@@ -1,20 +1,20 @@
 import authService from './auth.service.js';
-import entity from '../../../shared/entity.js';
+import controller from '../../../shared/controller.js';
 
 const authController = {
-    signup: entity.signupEntity(authService, 'signup'),
-    verify: entity.verifyEntity(authService, 'verify'),
-    resendVerification: entity.resendVerificationEntity(
+    signup: controller.signup(authService, 'signup'),
+    verify: controller.verify(authService, 'verify'),
+    resendVerification: controller.resendVerification(
         authService,
         'resendVerification'
     ),
-    requestNewPassword: entity.requestNewPasswordEntity(
+    requestNewPassword: controller.requestNewPassword(
         authService,
         'requestNewPassword'
     ),
-    resetPassword: entity.resetPasswordEntity(authService, 'resetPassword'),
-    login: entity.loginEntity(authService, 'login'),
-    logout: entity.logoutEntity(authService, 'logout'),
+    resetPassword: controller.resetPassword(authService, 'resetPassword'),
+    login: controller.login(authService, 'login'),
+    logout: controller.logout(authService, 'logout'),
 };
 
 export default authController;
