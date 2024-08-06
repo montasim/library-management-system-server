@@ -1,8 +1,33 @@
+/**
+ * @fileoverview This module provides a centralized error handling service for an Express application. It is designed to
+ * intercept and process all errors that occur during the execution of request handlers. This service categorizes errors,
+ * logs them appropriately, and formats a standardized error response based on the error type and the application's runtime
+ * environment. It supports a wide range of error types, including validation errors, authentication and authorization errors,
+ * database errors, and more generic server errors.
+ *
+ * The error handling service enhances application reliability by providing detailed error diagnostics in development and
+ * more generic error responses in production. It ensures that sensitive error details are not exposed in production
+ * environments, thereby protecting application integrity and user data. By distinguishing between operational and
+ * non-operational errors, the service allows for different handling strategies that can be adjusted based on the error's nature.
+ *
+ * This modular approach to error handling simplifies maintenance and enhancement of error management strategies, making it
+ * easier to extend error handling logic as the application evolves.
+ */
+
 import environment from '../constant/envTypes.constants.js';
 import httpStatus from '../constant/httpStatus.constants.js';
 import errorCodes from '../constant/errorCodes.constants.js';
 import loggerService from './logger.service.js';
 
+/**
+ * Implements a comprehensive error handling middleware for Express applications. It analyzes and processes different types
+ * of errors thrown during runtime, providing appropriate logging and client-friendly error responses. The middleware handles
+ * errors consistently across the application, ensuring that every error is caught and responded to in a way that maintains
+ * the security and usability of the application.
+ *
+ * @module errorHandlingService
+ * @description Centralizes error handling logic to provide uniform error responses and detailed logging.
+ */
 const errorHandlingService = (error, req, res, next) => {
     let message;
     let status = error.status || httpStatus.INTERNAL_SERVER_ERROR;

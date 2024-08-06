@@ -1,12 +1,51 @@
+/**
+ * @fileoverview This module provides a comprehensive validation service using the Joi library.
+ * It defines a set of reusable validation schemas and utility functions for various common data types and fields
+ * encountered in application development. These include string fields, mobile numbers, email addresses, passwords,
+ * booleans, MongoDB ObjectIds, dates, and file uploads. The validation schemas ensure that the data conforms to
+ * specified formats, patterns, and constraints, providing detailed and customized error messages when validation fails.
+ *
+ * The primary functionalities include:
+ * - `createStringField`: Generates a Joi schema for string fields with customizable minimum and maximum lengths.
+ * - `mobileField`: Validates Bangladeshi mobile numbers against specific patterns.
+ * - `emailField`: Ensures email addresses are valid and not from temporary email providers.
+ * - `passwordField`: Enforces strong password requirements using defined patterns.
+ * - `booleanField`: Validates boolean values, including string representations of booleans.
+ * - `objectIdField`: Ensures strings are valid MongoDB ObjectIds.
+ * - `objectIdsField`: Validates comma-separated lists of MongoDB ObjectIds.
+ * - `dateField`: Validates dates formatted as ISO 8601 strings.
+ * - `fileField`: Validates file uploads, checking the field name, file name, MIME type, and size.
+ *
+ * These validation schemas and functions are designed to be modular and reusable across different parts of the application,
+ * promoting consistency and reducing redundancy in validation logic. The service also provides descriptive error messages
+ * and explanations, aiding developers in debugging and users in understanding validation errors.
+ */
+
 import Joi from 'joi';
 
 import customValidationMessage from '../shared/customValidationMessage.js';
 import patterns from '../constant/patterns.constants.js';
 import constants from '../constant/constants.js';
 
+/**
+ * Generates a Joi schema for string fields with customizable minimum and maximum lengths.
+ *
+ * @param {number} min - The minimum length of the string.
+ * @param {number} max - The maximum length of the string.
+ * @returns {Joi.StringSchema} The Joi schema for the string field.
+ * @example
+ * const usernameField = createStringField(3, 30);
+ */
 const createStringField = (min, max) =>
     Joi.string().trim().min(min).max(max).messages(customValidationMessage);
 
+/**
+ * Validates Bangladeshi mobile numbers against specific patterns.
+ *
+ * @type {Joi.ObjectSchema}
+ * @example
+ * const validationResult = mobileField.validate({ mobileNumber: '017xxxxxxxx' });
+ */
 const mobileField = Joi.object({
     mobileNumber: Joi.string().pattern(patterns.MOBILE).required().messages({
         'string.base': 'Mobile number must be a string.',
@@ -17,6 +56,13 @@ const mobileField = Joi.object({
     }),
 });
 
+/**
+ * Ensures email addresses are valid and not from temporary email providers.
+ *
+ * @type {Joi.StringSchema}
+ * @example
+ * const validationResult = emailField.validate('example@example.com');
+ */
 const emailField = createStringField(
     constants.lengths.EMAIL_MIN,
     constants.lengths.EMAIL_MAX
@@ -31,6 +77,13 @@ const emailField = createStringField(
         'string.pattern.base': 'Please fill a valid email address.',
     });
 
+/**
+ * Enforces strong password requirements using defined patterns.
+ *
+ * @type {Joi.StringSchema}
+ * @example
+ * const validationResult = passwordField.validate('P@ssw0rd!');
+ */
 const passwordField = createStringField(
     constants.lengths.PASSWORD_MIN,
     constants.lengths.PASSWORD_MAX
@@ -40,6 +93,13 @@ const passwordField = createStringField(
         'string.pattern.base': 'Please provide a valid password.',
     });
 
+/**
+ * Validates boolean values, including string representations of booleans.
+ *
+ * @type {Joi.BooleanSchema}
+ * @example
+ * const validationResult = booleanField.validate(true);
+ */
 const booleanField = Joi.boolean()
     .truthy('true') // Accepting these string values as `true`
     .falsy('false') // Accepting these string values as `false`
@@ -61,6 +121,13 @@ const booleanField = Joi.boolean()
         'A boolean value, which can be true or false, including string representations.'
     );
 
+/**
+ * Ensures strings are valid MongoDB ObjectIds.
+ *
+ * @type {Joi.StringSchema}
+ * @example
+ * const validationResult = objectIdField.validate('507f1f77bcf86cd799439011');
+ */
 const objectIdField = Joi.string()
     .length(24) // MongoDB ObjectId must be exactly 24 characters long
     .hex() // Ensures the string is a hexadecimal string
@@ -73,6 +140,13 @@ const objectIdField = Joi.string()
         'A valid MongoDB ObjectId, which must be 24 hexadecimal characters.'
     );
 
+/**
+ * Validates comma-separated lists of MongoDB ObjectIds.
+ *
+ * @type {Joi.StringSchema}
+ * @example
+ * const validationResult = objectIdsField.validate('507f1f77bcf86cd799439011,507f1f77bcf86cd799439012');
+ */
 const objectIdsField = Joi.string().custom((value, helpers) => {
     const ids = value.split(',');
 
@@ -87,6 +161,13 @@ const objectIdsField = Joi.string().custom((value, helpers) => {
     return value; // Return original value if all IDs pass validation
 });
 
+/**
+ * Validates dates formatted as ISO 8601 strings.
+ *
+ * @type {Joi.StringSchema}
+ * @example
+ * const validationResult = dateField.validate('2021-03-19T04:00:00Z');
+ */
 const dateField = Joi.string()
     .regex(patterns.ISO_8601_DATE, 'ISO 8601 date')
     .custom((value, helpers) => {
@@ -111,10 +192,26 @@ const dateField = Joi.string()
         'An ISO 8601 formatted date string, including a timezone, e.g., 2021-03-19T04:00:00Z.'
     );
 
+/**
+ * Generates a regular expression pattern for allowed file extensions.
+ *
+ * @param {string[]} allowedExtensions - An array of allowed file extensions.
+ * @returns {string} The regular expression pattern.
+ * @example
+ * const regexPattern = generateExtensionRegexPattern(['.jpg', '.png']);
+ */
 const generateExtensionRegexPattern = (allowedExtensions) => {
     return `(${allowedExtensions.join('|')})$`;
 };
 
+/**
+ * Creates a Joi schema for validating file names with allowed extensions.
+ *
+ * @param {string[]} allowedExtensions - An array of allowed file extensions.
+ * @returns {Joi.StringSchema} The Joi schema for the file name.
+ * @example
+ * const fileNameSchema = createFileNameSchema(['.jpg', '.png']);
+ */
 const createFileNameSchema = (allowedExtensions) => {
     const regexPattern = generateExtensionRegexPattern(allowedExtensions);
 
@@ -138,6 +235,13 @@ const createFileNameSchema = (allowedExtensions) => {
         );
 };
 
+/**
+ * Creates a Joi schema for validating binary file buffers.
+ *
+ * @returns {Joi.BinarySchema} The Joi schema for the binary buffer.
+ * @example
+ * const fileBufferSchema = fileBufferValidationSchema();
+ */
 const fileBufferValidationSchema = () => {
     return Joi.binary()
         .max(1024 * 1024 * 25) // Example size limit of 25MB
@@ -153,6 +257,17 @@ const fileBufferValidationSchema = () => {
         );
 };
 
+/**
+ * Creates a comprehensive Joi schema for validating file uploads, including checks for field name, file name, MIME type, and size.
+ *
+ * @param {string} allowedFieldName - The allowed field name for the file upload.
+ * @param {string[]} allowedExtensions - An array of allowed file extensions.
+ * @param {string[]} validMimeTypes - An array of valid MIME types.
+ * @param {number} maxSize - The maximum allowed file size in bytes.
+ * @returns {Joi.ObjectSchema} The Joi schema for the file upload.
+ * @example
+ * const fileUploadSchema = fileField('file', ['.jpg', '.png'], ['image/jpeg', 'image/png'], 1024 * 1024 * 5);
+ */
 const fileField = (
     allowedFieldName,
     allowedExtensions,
