@@ -1,3 +1,25 @@
+/**
+ * @fileoverview This module defines and exports a structured collection of constants for routing and permissions
+ * management in the application. It encapsulates route names and permission keys for various features within the system,
+ * such as managing books, users, authentication, and more. This structured approach ensures that route and permission
+ * identifiers are centralized, promoting consistency and reusability across the application.
+ *
+ * Each major feature or resource in the application has its own section within this constants object, detailing the base
+ * route and any specific permissions related to actions that can be performed on that resource. This method simplifies
+ * the maintenance of route and permission names, making it easier to update or reference them throughout the application's
+ * authorization and routing logic.
+ */
+
+/**
+ * Provides a comprehensive dictionary of route names and associated permissions for the application, facilitating a
+ * standardized approach to defining and accessing these values. This setup not only aids in route management but also
+ * integrates closely with the application's access control mechanisms, ensuring that permissions are correctly
+ * associated with their respective routes and actions.
+ *
+ * @module routesConstants
+ * @description Centralizes route names and permissions for easy and consistent access across the application.
+ */
+
 const routesConstants = {
     admin: {
         routes: 'admin',

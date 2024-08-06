@@ -1,20 +1,165 @@
+/**
+ * Regular expression for validating email addresses.
+ *
+ * This pattern checks for a typical structure of an email address, ensuring it includes:
+ * - A local part preceding the '@' symbol
+ * - Valid characters in the local part, including alphanumeric characters and special characters
+ * - A domain part following the '@' symbol with periods separating domain labels
+ * - A top-level domain of at least two characters
+ *
+ * This regex does not validate the existence of the email domain or its active SMTP configuration.
+ *
+ * @example
+ * // Returns true for valid emails
+ * console.log(isValidEmail("example@example.com")); // true
+ * console.log(isValidEmail("user.name@sub.domain.com")); // true
+ *
+ * // Returns false for invalid emails
+ * console.log(isValidEmail("example.com")); // false (missing '@')
+ * console.log(isValidEmail("example@.com")); // false (missing domain name)
+ *
+ * @param {string} email The email string to be validated.
+ * @returns {boolean} Returns true if the email matches the pattern, false otherwise.
+ */
 const EMAIL =
     /^(?!.*\btemp\b)(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+/**
+ * Regular expression for validating Bangladeshi mobile phone numbers.
+ *
+ * This pattern ensures that the phone number:
+ * - Starts with the country code '+880' or leading '01'
+ * - Follows with a valid operator code (3-9)
+ * - Ends with the remaining eight digits which represent the subscriber number
+ *
+ * This regex ensures format adherence but does not check the actual existence or activation status of the mobile number.
+ *
+ * @example
+ * // Returns true for valid mobile numbers
+ * console.log(isValidMobile("+8801812345678")); // true
+ * console.log(isValidMobile("01912345678")); // true
+ *
+ * // Returns false for invalid mobile numbers
+ * console.log(isValidMobile("01234567890")); // false (invalid operator code)
+ * console.log(isValidMobile("8801812345678")); // false (missing leading '+')
+ *
+ * @param {string} mobile The mobile number to be validated.
+ * @returns {boolean} Returns true if the mobile matches the pattern, false otherwise.
+ */
 const MOBILE = /^(?:\+8801|01)[3-9]\d{8}$/;
 
+/**
+ * Regular expression for validating passwords.
+ *
+ * This pattern requires a password to:
+ * - Be between 8 to 30 characters in length
+ * - Contain at least one uppercase letter
+ * - Contain at least one lowercase letter
+ * - Contain at least one digit
+ * - Contain at least one special character from the set @$!%*?&
+ *
+ * This regex is designed to enforce strong password policies to enhance security.
+ *
+ * @example
+ * // Returns true for valid passwords
+ * console.log(isValidPassword("Example@123")); // true
+ * console.log(isValidPassword("Another$Password123")); // true
+ *
+ * // Returns false for invalid passwords
+ * console.log(isValidPassword("password")); // false (no uppercase, digit, or special char)
+ * console.log(isValidPassword("SHORT1!")); // false (too short)
+ *
+ * @param {string} password The password string to be validated.
+ * @returns {boolean} Returns true if the password matches the pattern, false otherwise.
+ */
 const PASSWORD =
     /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$/;
 
+/**
+ * Regular expression for validating date strings in ISO 8601 format.
+ *
+ * This pattern matches date and time strings that include:
+ * - A complete date (year, month, day)
+ * - A 'T' character separator to indicate the start of the time element
+ * - Time (hour, minute, second), optionally extended to include milliseconds
+ * - A 'Z' indicating UTC time or a +/- offset for other time zones
+ *
+ * This format is widely used in computing as a way of unambiguously representing dates and times.
+ *
+ * @example
+ * // Returns true for valid ISO 8601 dates
+ * console.log(isValidISODate("2021-12-15T12:00:00Z")); // true
+ * console.log(isValidISODate("2021-12-15T12:00:00.123+02:00")); // true
+ *
+ * // Returns false for invalid ISO 8601 dates
+ * console.log(isValidISODate("2021-12-15 12:00:00")); // false (missing 'T' and timezone)
+ * console.log(isValidISODate("15-12-2021T12:00:00")); // false (incorrect date format)
+ *
+ * @param {string} isoDate The ISO 8601 date string to be validated.
+ * @returns {boolean} Returns true if the isoDate matches the pattern, false otherwise.
+ */
 const ISO_8601_DATE =
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(Z|[+-]\d{2}:\d{2})$/s;
 
+/**
+ * Regular expression to check for the presence of uppercase letters.
+ *
+ * This simple pattern matches any string that contains at least one uppercase letter from A to Z.
+ *
+ * @example
+ * // Returns true if the string contains uppercase letters
+ * console.log(hasUppercase("Hello")); // true
+ * console.log(hasUppercase("world")); // false
+ *
+ * @param {string} text The text string to be checked.
+ * @returns {boolean} Returns true if the text contains uppercase letters, false otherwise.
+ */
 const UPPERCASE = /[A-Z]/;
 
+/**
+ * Regular expression to check for the presence of lowercase letters.
+ *
+ * This pattern matches any string that contains at least one lowercase letter from a to z.
+ *
+ * @example
+ * // Returns true if the string contains lowercase letters
+ * console.log(hasLowercase("hello")); // true
+ * console.log(hasLowercase("WORLD")); // false
+ *
+ * @param {string} text The text string to be checked.
+ * @returns {boolean} Returns true if the text contains lowercase letters, false otherwise.
+ */
 const LOWERCASE = /[a-z]/;
 
+/**
+ * Regular expression to check for the presence of digits.
+ *
+ * This pattern matches any string that contains at least one digit from 0 to 9.
+ *
+ * @example
+ * // Returns true if the string contains digits
+ * console.log(hasDigits("123abc")); // true
+ * console.log(hasDigits("abcdef")); // false
+ *
+ * @param {string} text The text string to be checked.
+ * @returns {boolean} Returns true if the text contains digits, false otherwise.
+ */
 const DIGITS = /\d/;
 
+/**
+ * Regular expression to check for the presence of special characters.
+ *
+ * This pattern matches any string that contains at least one special character from a predefined set including
+ * spaces and common punctuation marks. It helps in validating inputs that require at least one non-alphanumeric character.
+ *
+ * @example
+ * // Returns true if the string contains special characters
+ * console.log(hasSpecialCharacters("hello!")); // true
+ * console.log(hasSpecialCharacters("hello")); // false
+ *
+ * @param {string} text The text string to be checked.
+ * @returns {boolean} Returns true if the text contains special characters, false otherwise.
+ */
 const SPECIAL_CHARACTERS = /[\s~`!@#$%^&*+=\-[\]\\';,/{}|\\":<>?()._]/;
 
 /**
