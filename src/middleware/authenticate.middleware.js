@@ -1,3 +1,22 @@
+/**
+ * @fileoverview This module implements a middleware function for role-based authentication and authorization
+ * within an Express application. It verifies the presence and validity of an authentication token, decodes it,
+ * and checks the user's role and optional permissions against the requirements specified for accessing a route.
+ * This middleware is crucial for securing routes and ensuring that only authorized users can access certain
+ * functionalities or data within the application.
+ *
+ * The module utilizes various helper functions and constants to perform its duties:
+ * - It retrieves authentication tokens from the request headers.
+ * - Decodes tokens to extract user information.
+ * - Validates user roles and permissions against predefined constants.
+ * - Logs all authentication steps, successes, and failures.
+ * - Creates structured error messages for different types of authentication failures.
+ *
+ * By centralizing authentication logic in this middleware, the application maintains a consistent and manageable
+ * approach to securing routes, making it easier to update and enforce authentication and authorization rules across
+ * the application.
+ */
+
 import getAuthenticationToken from '../utilities/getAuthenticationToken.js';
 import httpStatus from '../constant/httpStatus.constants.js';
 import decodeAuthenticationToken from '../utilities/decodeAuthenticationToken.js';
@@ -21,7 +40,19 @@ const createErrorData = (message, status, route) => ({
     route,
 });
 
-// Function to process role-based authentication and authorization with optional permissions
+/**
+ * Constructs a middleware function that handles authentication and authorization based on roles and permissions.
+ * It ensures that each request to the server is accompanied by a valid authentication token and that the requestor
+ * has the appropriate permissions to perform the requested action. This middleware is vital for maintaining the
+ * security and integrity of the application, preventing unauthorized access and actions.
+ *
+ * @module authenticateMiddleware
+ * @function
+ * @param {String} roleCheck - The role required to access the route, defaults to both user and admin.
+ * @param {String|null} requiredPermission - Specific permission needed to perform the requested action, if any.
+ * @returns {Function} Express middleware function that authenticates and authorizes requests.
+ * @description Provides a middleware for role-based authentication and optional permission checks.
+ */
 const authenticateMiddleware =
     (roleCheck = accessTypesConstants.BOTH, requiredPermission = null) =>
     async (req, res, next) => {
