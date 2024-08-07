@@ -1,3 +1,11 @@
+/**
+ * @fileoverview This file defines and exports the `authService` object, which contains various
+ * asynchronous functions to manage authentication-related operations. These functions include
+ * user signup, email verification, resending verification emails, requesting new passwords,
+ * resetting passwords, logging in, and logging out. The service functions utilize models,
+ * utilities, and other services to perform the necessary operations and return standardized responses.
+ */
+
 import moment from 'moment';
 
 import httpStatus from '../../../constant/httpStatus.constants.js';
@@ -22,6 +30,17 @@ import AdminModel from '../admin/admin.model.js';
 import loggerService from '../../../service/logger.service.js';
 import defaultConstants from '../../../constant/default.constants.js';
 
+/**
+ * signup - Asynchronously signs up a new user. It validates the email, password, and date of birth,
+ * checks for existing admin and user accounts, generates a verification token, sends a verification email,
+ * and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {Object} userData - The data for the new user.
+ * @param {Object} hostData - The host data for generating links.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const signup = async (userData, hostData) => {
     try {
         // Check if the email is registered as an admin
@@ -162,6 +181,15 @@ const signup = async (userData, hostData) => {
     }
 };
 
+/**
+ * verify - Asynchronously verifies a user's email using a token. It validates the token, updates the email as verified,
+ * sends a welcome email, and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {string} token - The verification token.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const verify = async (token) => {
     try {
         // Hash the plain token to compare with the stored hash
@@ -263,6 +291,16 @@ const verify = async (token) => {
     }
 };
 
+/**
+ * resendVerification - Asynchronously resends the verification email to a user. It generates a new verification token,
+ * updates the user, sends the verification email, and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {string} userId - The ID of the user.
+ * @param {Object} hostData - The host data for generating links.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const resendVerification = async (userId, hostData) => {
     try {
         const userDetails = await UsersModel.findById(userId);
@@ -366,6 +404,16 @@ const resendVerification = async (userId, hostData) => {
     }
 };
 
+/**
+ * requestNewPassword - Asynchronously handles the request for a new password. It validates the email, generates
+ * a verification token, updates the user, sends the password reset email, and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {string} email - The email address of the user.
+ * @param {Object} hostData - The host data for generating links.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const requestNewPassword = async (email, hostData) => {
     try {
         // TODO: restrict too many password reset request
@@ -451,6 +499,17 @@ const requestNewPassword = async (email, hostData) => {
     }
 };
 
+/**
+ * resetPassword - Asynchronously resets a user's password using a token. It validates the token, compares the old password,
+ * validates the new password, updates the user, sends a success email, and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {Object} hostData - The host data for generating links.
+ * @param {string} token - The reset password token.
+ * @param {Object} userData - The data for resetting the user's password.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const resetPassword = async (hostData, token, userData) => {
     try {
         // Hash the plain token to compare with the stored hash
@@ -547,6 +606,17 @@ const resetPassword = async (hostData, token, userData) => {
     }
 };
 
+/**
+ * login - Asynchronously handles user login. It validates the email and password, generates an authentication token,
+ * updates the user, sends a success email, and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {Object} userData - The login data for the user.
+ * @param {Object} userAgent - The user agent data.
+ * @param {Object} device - The device data.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const login = async (userData, userAgent, device) => {
     try {
         const user = await UsersModel.findOne({
@@ -666,6 +736,15 @@ const login = async (userData, userAgent, device) => {
     }
 };
 
+/**
+ * logout - Asynchronously handles user logout. It validates the JWT token, performs logout actions,
+ * and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {Object} req - The Express request object.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const logout = async (req) => {
     try {
         // Assuming these functions are well-defined and return relevant details or throw an error if something goes wrong.
@@ -701,6 +780,20 @@ const logout = async (req) => {
     }
 };
 
+/**
+ * authService - An object that holds various asynchronous functions for managing authentication-related operations.
+ * These functions perform actions such as user signup, email verification, resending verification emails,
+ * requesting new passwords, resetting passwords, logging in, and logging out.
+ *
+ * @typedef {Object} AuthService
+ * @property {Function} signup - Asynchronously signs up a new user.
+ * @property {Function} verify - Asynchronously verifies a user's email using a token.
+ * @property {Function} resendVerification - Asynchronously resends the verification email to a user.
+ * @property {Function} requestNewPassword - Asynchronously handles the request for a new password.
+ * @property {Function} resetPassword - Asynchronously resets a user's password using a token.
+ * @property {Function} login - Asynchronously handles user login.
+ * @property {Function} logout - Asynchronously handles user logout.
+ */
 const authService = {
     signup,
     verify,

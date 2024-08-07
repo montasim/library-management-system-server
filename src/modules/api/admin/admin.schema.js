@@ -12,16 +12,20 @@ import adminConstants from './admin.constants.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
 
 /**
- * adminSchema - An object that holds various Joi validation schemas for admin-related operations.
- * These schemas ensure that the input data for admin endpoints meet the required criteria.
+ * authSchemaBase - Base Joi schema for validating common fields used in admin-related operations.
+ * Ensures that fields such as name, email, password, confirmPassword, oldPassword, newPassword, confirmNewPassword,
+ * token, and id meet the specified criteria.
  *
- * @typedef {Object} AdminSchema
- * @property {Object} createNewAdmin - Joi schema for validating the data to create a new admin.
- * @property {Object} verifyAdmin - Joi schema for validating the data to verify an admin.
- * @property {Object} resendAdminVerification - Joi schema for validating the data to resend admin verification.
- * @property {Object} requestNewAdminPassword - Joi schema for validating the data to request a new admin password.
- * @property {Object} resetAdminPassword - Joi schema for validating the data to reset an admin password.
- * @property {Object} login - Joi schema for validating the data for admin login.
+ * @typedef {Object} AuthSchemaBase
+ * @property {Object} name - String field representing the admin's name. Must start with an uppercase letter followed by lowercase letters for each word.
+ * @property {Object} email - String field representing the admin's email address. Validates the format and ensures it meets common email requirements.
+ * @property {Object} password - String field representing the admin's password. Validates the complexity and ensures it meets common password requirements.
+ * @property {Object} confirmPassword - String field representing the confirmation of the admin's password. Ensures it matches the password field.
+ * @property {Object} oldPassword - String field representing the admin's old password. Used for password reset operations.
+ * @property {Object} newPassword - String field representing the admin's new password. Validates the complexity and ensures it meets common password requirements.
+ * @property {Object} confirmNewPassword - String field representing the confirmation of the admin's new password. Ensures it matches the newPassword field.
+ * @property {Object} token - String field representing the verification token. Must be a 40-character hexadecimal string.
+ * @property {Object} id - ObjectId field representing the admin's ID. Validates that it is a valid ObjectId.
  */
 const authSchemaBase = Joi.object({
     name: validationService
@@ -113,6 +117,18 @@ const login = authSchemaBase.fork(['email', 'password'], (field) =>
     field.required()
 );
 
+/**
+ * adminSchema - An object that holds various Joi validation schemas for admin-related operations.
+ * These schemas ensure that the input data for admin endpoints meet the required criteria.
+ *
+ * @typedef {Object} AdminSchema
+ * @property {Object} createNewAdmin - Joi schema for validating the data to create a new admin.
+ * @property {Object} verifyAdmin - Joi schema for validating the data to verify an admin.
+ * @property {Object} resendAdminVerification - Joi schema for validating the data to resend admin verification.
+ * @property {Object} requestNewAdminPassword - Joi schema for validating the data to request a new admin password.
+ * @property {Object} resetAdminPassword - Joi schema for validating the data to reset an admin password.
+ * @property {Object} login - Joi schema for validating the data for admin login.
+ */
 const adminSchema = {
     createNewAdmin,
     verifyAdmin,

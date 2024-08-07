@@ -1,9 +1,31 @@
+/**
+ * @fileoverview This file defines and exports the service functions for handling books history operations.
+ * These functions include retrieving the history of all books and retrieving the history of a specific book.
+ * The service functions utilize Mongoose models and various utilities for error handling, response formatting, and logging.
+ */
+
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import BooksHistoryModel from './booksHistory.model.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import loggerService from '../../../../service/logger.service.js';
 
+/**
+ * getBooksHistory - Retrieves the history of books based on provided query parameters.
+ * Constructs a query based on the provided parameters, fetches the books history, and returns the results with pagination and sorting.
+ *
+ * @async
+ * @function
+ * @param {Object} params - The query parameters for retrieving books history.
+ * @param {number} params.page - The page number for pagination.
+ * @param {number} params.limit - The limit for the number of records per page.
+ * @param {string} params.sort - The sorting field and order.
+ * @param {ObjectId} params.bookId - The ID of the book to filter by.
+ * @param {ObjectId} params.user - The ID of the user to filter by.
+ * @param {string} params.from - The start date for filtering the lending period.
+ * @param {string} params.to - The end date for filtering the lending period.
+ * @returns {Promise<Object>} The response object containing the books history records, pagination details, and a status message.
+ */
 const getBooksHistory = async (params) => {
     try {
         const {
@@ -96,6 +118,15 @@ const getBooksHistory = async (params) => {
     }
 };
 
+/**
+ * getBookHistory - Retrieves the history of a specific book based on the provided book ID.
+ * Fetches the history of the specified book and returns the details.
+ *
+ * @async
+ * @function
+ * @param {ObjectId} bookId - The ID of the book to retrieve the history for.
+ * @returns {Promise<Object>} The response object containing the book history records and a status message.
+ */
 const getBookHistory = async (bookId) => {
     try {
         const bookHistory = await BooksHistoryModel.findOne({ book: bookId });
@@ -121,6 +152,14 @@ const getBookHistory = async (bookId) => {
     }
 };
 
+/**
+ * booksHistoryService - An object that holds service functions for books history-related operations.
+ * These functions handle the retrieval of books history and ensure the data meets the required criteria.
+ *
+ * @typedef {Object} BooksHistoryService
+ * @property {Function} getBooksHistory - Retrieves the history of books based on provided query parameters.
+ * @property {Function} getBookHistory - Retrieves the history of a specific book based on the provided book ID.
+ */
 const writersService = {
     getBooksHistory,
     getBookHistory,

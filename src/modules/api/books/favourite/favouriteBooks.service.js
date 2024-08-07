@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines and exports the service functions for handling favourite books-related operations.
+ * The services include functions for creating a favourite book, retrieving favourite books, and deleting a favourite book.
+ * Each function interacts with the respective Mongoose models and returns a structured response.
+ */
+
 import FavouriteBooksModel from './favouriteBooks.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import BooksModel from '../books.model.js';
@@ -5,6 +11,14 @@ import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import loggerService from '../../../../service/logger.service.js';
 
+/**
+ * createFavouriteBook - Service function to add a book to the user's favourites.
+ * Validates the book ID, checks for duplicates, and either updates the existing document or creates a new one.
+ *
+ * @param {ObjectId} requester - The ID of the user making the request.
+ * @param {ObjectId} favouriteBookId - The ID of the book to be added to favourites.
+ * @returns {Object} Response object indicating success or failure.
+ */
 const createFavouriteBook = async (requester, favouriteBookId) => {
     try {
         // Assuming BooksModel contains the book details
@@ -60,6 +74,13 @@ const createFavouriteBook = async (requester, favouriteBookId) => {
     }
 };
 
+/**
+ * getFavouriteBooks - Service function to retrieve the user's favourite books.
+ * Retrieves the user's favourite books, populates related fields, and returns the list.
+ *
+ * @param {ObjectId} requester - The ID of the user making the request.
+ * @returns {Object} Response object containing the list of favourite books.
+ */
 const getFavouriteBooks = async (requester) => {
     try {
         const favouriteBooks = await FavouriteBooksModel.findOne({
@@ -106,6 +127,14 @@ const getFavouriteBooks = async (requester) => {
     }
 };
 
+/**
+ * deleteFavouriteBook - Service function to remove a book from the user's favourites.
+ * Finds the user's favourite books, removes the specified book ID, and updates the document.
+ *
+ * @param {ObjectId} requester - The ID of the user making the request.
+ * @param {ObjectId} favouriteBookId - The ID of the book to be removed from favourites.
+ * @returns {Object} Response object indicating success or failure.
+ */
 const deleteFavouriteBook = async (requester, favouriteBookId) => {
     try {
         const favouriteBooks = await FavouriteBooksModel.findOne({
@@ -144,6 +173,15 @@ const deleteFavouriteBook = async (requester, favouriteBookId) => {
     }
 };
 
+/**
+ * favouriteBooksService - An object that holds the service functions for favourite books-related operations.
+ * These services handle creating, retrieving, and deleting favourite books for authenticated users.
+ *
+ * @typedef {Object} FavouriteBooksService
+ * @property {Function} createFavouriteBook - Service function to add a book to the user's favourites.
+ * @property {Function} getFavouriteBooks - Service function to retrieve the user's favourite books.
+ * @property {Function} deleteFavouriteBook - Service function to remove a book from the user's favourites.
+ */
 const writersService = {
     createFavouriteBook,
     getFavouriteBooks,

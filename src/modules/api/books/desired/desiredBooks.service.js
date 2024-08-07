@@ -1,9 +1,23 @@
+/**
+ * @fileoverview This file defines and exports the service for handling desired books-related operations.
+ * The service includes a function to retrieve the most desired books based on user requests,
+ * utilizing MongoDB aggregation to group, count, and fetch details for the most requested books.
+ * The service functions handle the business logic and communicate with the database models.
+ */
+
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import RequestBooksModel from '../requestBooks/requestBooks.model.js';
 import loggerService from '../../../../service/logger.service.js';
 
+/**
+ * getDesiredBooks - Service function to retrieve the most desired books based on user requests.
+ * Aggregates user request data to find and return the top 10 most requested books along with their details.
+ *
+ * @returns {Promise<Object>} The response object containing the status, message, and data (list of desired books).
+ * @throws {Error} If an error occurs during the aggregation or database query.
+ */
 const getDesiredBooks = async () => {
     try {
         // Aggregate to find the most desired books across all users' requests
@@ -70,6 +84,13 @@ const getDesiredBooks = async () => {
     }
 };
 
+/**
+ * desiredBooksService - An object that holds the service functions for desired books-related operations.
+ * Includes functions to retrieve the most desired books.
+ *
+ * @typedef {Object} DesiredBooksService
+ * @property {Function} getDesiredBooks - Service function to retrieve the most desired books based on user requests.
+ */
 const desiredBooksService = {
     getDesiredBooks,
 };

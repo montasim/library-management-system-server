@@ -1,10 +1,20 @@
+/**
+ * @fileoverview This file defines and exports Joi validation schemas for request books-related operations.
+ * These schemas are used to validate the input data for various request books endpoints, including
+ * creating a new book request, validating book IDs, and validating owner IDs.
+ * The validation schemas utilize the validationService for common field validations and include custom error messages for specific validation rules.
+ */
+
 import Joi from 'joi';
 
 import customValidationMessage from '../../../../shared/customValidationMessage.js';
 import validationService from '../../../../service/validation.service.js';
 import requestBooksConstants from './requestBooks.constant.js';
 
-// Define base schema for books
+/**
+ * requestBookSchemaBase - Base Joi schema for validating common fields used in request books-related operations.
+ * Ensures that fields such as name, writer, subject, publication, edition, summary, page, limit, sort, isActive, createdBy, updatedBy, createdAt, and updatedAt meet the specified criteria.
+ */
 const requestBookSchemaBase = Joi.object({
     name: validationService
         .createStringField(
@@ -83,22 +93,46 @@ const requestBookSchemaBase = Joi.object({
     updatedAt: validationService.dateField,
 }).strict();
 
-// Schema for creating a book, making specific fields required
+/**
+ * createRequestBookSchema - Joi schema for validating the data to create a new book request.
+ * Ensures that the name, writer, subject, publication, page, edition, and summary fields are required and meet the specified criteria.
+ *
+ * @function
+ */
 const createRequestBookSchema = requestBookSchemaBase.fork(
     ['name', 'writer', 'subject', 'publication', 'page', 'edition', 'summary'],
     (field) => field.required()
 );
 
-// Schema for single book ID validation
+/**
+ * requestBookIdSchema - Joi schema for validating a single book ID.
+ * Ensures that the requestedBookId field is required and meets the specified criteria.
+ *
+ * @function
+ */
 const requestBookIdSchema = Joi.object({
     requestedBookId: validationService.objectIdField.required(),
 }).strict();
 
-// Schema for single book ID validation
+/**
+ * ownerIdSchema - Joi schema for validating a single owner ID.
+ * Ensures that the ownerId field is required and meets the specified criteria.
+ *
+ * @function
+ */
 const ownerIdSchema = Joi.object({
     ownerId: validationService.objectIdField.required(),
 }).strict();
 
+/**
+ * booksSchema - An object that holds various Joi validation schemas for request books-related operations.
+ * These schemas ensure that the input data for request books endpoints meet the required criteria.
+ *
+ * @typedef {Object} BooksSchema
+ * @property {Object} createRequestBookSchema - Joi schema for validating the data to create a new book request.
+ * @property {Object} requestBookIdSchema - Joi schema for validating a single book ID.
+ * @property {Object} ownerIdSchema - Joi schema for validating a single owner ID.
+ */
 const booksSchema = {
     createRequestBookSchema,
     requestBookIdSchema,

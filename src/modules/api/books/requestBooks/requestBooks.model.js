@@ -1,8 +1,30 @@
+/**
+ * @fileoverview This file defines and exports the Mongoose schema and model for requested books.
+ * The schema includes fields for storing information about books requested by users, such as the book name, writer, subject, publication, etc.
+ * It ensures that all necessary fields are present and validates the input data according to the specified criteria.
+ */
+
 import mongoose, { Schema } from 'mongoose';
 
 import requestBooksConstants from '../books.constant.js';
 import sharedSchema from '../../../../shared/schema.js';
 
+/**
+ * requestBookSchema - Mongoose schema for storing information about requested books.
+ * Utilizes the requestBooksConstants and sharedSchema to define the structure of the documents in the 'RequestBooks' collection.
+ *
+ * @typedef {Object} requestBookSchema
+ * @property {Schema.Types.ObjectId} owner - Reference to the user who requested the books.
+ * @property {Array<Object>} requestBooks - Array of requested book records.
+ * @property {String} requestBooks.name - The unique name of the book.
+ * @property {Object} requestBooks.image - Image schema for the book.
+ * @property {String} requestBooks.writer - The writer of the book.
+ * @property {Array<String>} requestBooks.subject - The subject(s) of the book.
+ * @property {String} requestBooks.publication - The publication of the book.
+ * @property {Number} requestBooks.page - Total number of pages in the book.
+ * @property {String} requestBooks.edition - The specific edition of the book, if applicable.
+ * @property {String} requestBooks.summary - A brief description or overview of the book's content.
+ */
 const requestBookSchema = new mongoose.Schema(
     {
         owner: {

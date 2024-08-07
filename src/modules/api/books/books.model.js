@@ -1,12 +1,37 @@
+/**
+ * @fileoverview This file defines and exports the Mongoose schema and model for books.
+ * The schema includes fields for storing detailed information about books, such as name, image, best seller ranking,
+ * review rating, writer, subjects, publication, pages, edition, summary, price, and stock availability.
+ * The schema also includes validation criteria and descriptive messages to ensure data integrity.
+ */
+
 import mongoose, { Schema } from 'mongoose';
 
 import booksConstants from './books.constant.js';
 import sharedSchema from '../../../shared/schema.js';
 
 /**
- * Mongoose schema for books.
- * This schema defines the structure and validation criteria for book records,
- * using language that is clear and friendly to all users, with descriptions added for developer clarity.
+ * bookSchema - Mongoose schema for storing book details.
+ * This schema defines the structure and validation criteria for book records, with descriptions for developer clarity.
+ *
+ * @typedef {Object} bookSchema
+ * @property {String} name - The unique name of the book, required with min and max length constraints.
+ * @property {Object} image - Image schema containing the URL, filename, and other image details.
+ * @property {Number} bestSeller - The best seller ranking of the book, with min and max value constraints.
+ * @property {Number} review - The review rating of the book, with min and max value constraints.
+ * @property {Schema.Types.ObjectId} writer - Reference to the writer associated with the book, required.
+ * @property {Array<Schema.Types.ObjectId>} subject - List of references to subjects associated with the book, required.
+ * @property {Schema.Types.ObjectId} publication - Reference to the publication of the book, required.
+ * @property {Number} page - Total number of pages in the book, required.
+ * @property {String} edition - The specific edition of the book, required with min and max length constraints.
+ * @property {String} summary - A brief description or overview of the book's content, required with min and max length constraints.
+ * @property {Number} price - The retail price of the book, required.
+ * @property {Number} stockAvailable - The number of copies of the book currently in stock, required.
+ * @property {Object} isActive - Boolean flag indicating if the book is active.
+ * @property {Object} createdBy - Reference to the admin who created the book record.
+ * @property {Object} updatedBy - Reference to the admin who last updated the book record.
+ * @property {Date} createdAt - Timestamp for when the book record was created.
+ * @property {Date} updatedAt - Timestamp for when the book record was last updated.
  */
 const bookSchema = new mongoose.Schema(
     {
@@ -142,7 +167,9 @@ const bookSchema = new mongoose.Schema(
 // Create a unique index on the name field
 bookSchema.index({ name: 1 }, { unique: true });
 
-// Pre-save and update middleware
+/**
+ * Middleware to enforce that the creator or updater fields are set before saving or updating.
+ */
 bookSchema.pre(['save', 'findOneAndUpdate'], function (next) {
     if (
         (this.isNew && !this.createdBy) ||
@@ -153,7 +180,9 @@ bookSchema.pre(['save', 'findOneAndUpdate'], function (next) {
     next();
 });
 
-// Error handling middleware for unique constraint violations
+/**
+ * Middleware to handle unique constraint violations.
+ */
 bookSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
     if (error.name === 'MongoServerError' && error.code === 11000) {
         next(new Error('Book name already exists.'));

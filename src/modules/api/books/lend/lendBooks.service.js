@@ -1,12 +1,25 @@
+/**
+ * @fileoverview This file defines and exports the services related to lending books.
+ * It includes functions for creating a lend book record and retrieving lend books for a requester.
+ * These services interact with the database models to perform the necessary operations and return appropriate responses.
+ */
+
 import LendBooksModel from './lendBooks.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import BooksModel from '../books.model.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import UsersModel from '../../users/users.model.js';
 import loggerService from '../../../../service/logger.service.js';
 
+/**
+ * createLendBook - Service function to create a new lend book record.
+ * This function validates the input data, checks for existing lend records, and saves the new record to the database.
+ *
+ * @param {ObjectId} requester - The ID of the user making the request.
+ * @param {Object} lendBookData - The data for the lend book record.
+ * @returns {Promise<Object>} - The response object containing the status and data or error message.
+ */
 const createLendBook = async (requester, lendBookData) => {
     try {
         const lenderDetails = await UsersModel.findById(lendBookData.user);
@@ -120,6 +133,13 @@ const createLendBook = async (requester, lendBookData) => {
     }
 };
 
+/**
+ * getLendBooks - Service function to retrieve lend books for a requester.
+ * This function fetches the lend books data from the database and transforms the data for the response.
+ *
+ * @param {ObjectId} requester - The ID of the user making the request.
+ * @returns {Promise<Object>} - The response object containing the status and data or error message.
+ */
 const getLendBooks = async (requester) => {
     try {
         // Step 2: Fetch the lend books for the requester
@@ -176,6 +196,14 @@ const getLendBooks = async (requester) => {
     }
 };
 
+/**
+ * writersService - An object that holds the services for lending books.
+ * These services include creating a lend book record and retrieving lend books for a requester.
+ *
+ * @typedef {Object} WritersService
+ * @property {Function} createLendBook - Service function to create a new lend book record.
+ * @property {Function} getLendBooks - Service function to retrieve lend books for a requester.
+ */
 const writersService = {
     createLendBook,
     getLendBooks,

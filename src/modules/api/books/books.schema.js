@@ -1,10 +1,21 @@
+/**
+ * @fileoverview This file defines and exports Joi validation schemas for managing books.
+ * These schemas are used to validate the input data for various book-related operations,
+ * including creating, updating, querying, and deleting books. The validation schemas utilize
+ * custom validation messages and the validationService for common field validations.
+ */
+
 import Joi from 'joi';
 
 import booksConstants from './books.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
 import validationService from '../../../service/validation.service.js';
 
-// Define base schema for books
+/**
+ * bookSchemaBase - Base Joi schema for validating common fields used in book-related operations.
+ * Ensures that fields such as name, bestSeller, review, writer, subject, publication, page, edition,
+ * summary, price, stockAvailable, isActive, createdBy, updatedBy, createdAt, and updatedAt meet the specified criteria.
+ */
 const bookSchemaBase = Joi.object({
     name: validationService
         .createStringField(
@@ -132,7 +143,13 @@ const bookSchemaBase = Joi.object({
     updatedAt: validationService.dateField,
 }).strict();
 
-// Schema for creating a book, making specific fields required
+/**
+ * createBookSchema - Joi schema for validating the data to create a new book.
+ * Ensures that the name, writer, subject, publication, page, edition, summary, price, stockAvailable,
+ * and isActive fields are required and meet the specified criteria.
+ *
+ * @function
+ */
 const createBookSchema = bookSchemaBase.fork(
     [
         'name',
@@ -149,7 +166,12 @@ const createBookSchema = bookSchemaBase.fork(
     (field) => field.required()
 );
 
-// Schema for updating a book
+/**
+ * updateBookSchema - Joi schema for validating the data to update an existing book.
+ * Ensures that at least one of the specified fields is present and meets the required criteria.
+ *
+ * @function
+ */
 const updateBookSchema = bookSchemaBase
     .fork(
         [
@@ -171,7 +193,12 @@ const updateBookSchema = bookSchemaBase
     )
     .min(1);
 
-// Schema for validating multiple book IDs
+/**
+ * bookIdsParamSchema - Joi schema for validating a list of book IDs.
+ * Ensures that the ids field is an array of valid MongoDB ObjectIds.
+ *
+ * @function
+ */
 const bookIdsParamSchema = Joi.object({
     ids: validationService.objectIdsField
         .required()
@@ -182,6 +209,14 @@ const bookIdsParamSchema = Joi.object({
     .required()
     .messages(customValidationMessage);
 
+/**
+ * getBooksQuerySchema - Joi schema for validating query parameters when retrieving a list of books.
+ * Ensures that parameters such as name, bestSeller, review, writer, subject, publication, page,
+ * edition, summary, price, stockAvailable, isActive, limit, sort, createdBy, updatedBy, createdAt,
+ * and updatedAt are optional and meet the specified criteria.
+ *
+ * @function
+ */
 const getBooksQuerySchema = bookSchemaBase.fork(
     [
         'name',
@@ -206,13 +241,29 @@ const getBooksQuerySchema = bookSchemaBase.fork(
     (field) => field.optional()
 );
 
-// Schema for single book ID validation
+/**
+ * bookIdParamSchema - Joi schema for validating a single book ID.
+ * Ensures that the bookId field is a valid MongoDB ObjectId.
+ *
+ * @function
+ */
 const bookIdParamSchema = Joi.object({
     bookId: validationService.objectIdField
         .required()
         .description('The book ID. ID must be a valid MongoDB ObjectId.'),
 }).strict();
 
+/**
+ * booksSchema - An object that holds various Joi validation schemas for book-related operations.
+ * These schemas ensure that the input data for book endpoints meet the required criteria.
+ *
+ * @typedef {Object} BooksSchema
+ * @property {Object} createBookSchema - Joi schema for validating the data to create a new book.
+ * @property {Object} updateBookSchema - Joi schema for validating the data to update an existing book.
+ * @property {Object} getBooksQuerySchema - Joi schema for validating query parameters when retrieving a list of books.
+ * @property {Object} bookIdsParamSchema - Joi schema for validating a list of book IDs.
+ * @property {Object} bookIdParamSchema - Joi schema for validating a single book ID.
+ */
 const booksSchema = {
     createBookSchema,
     updateBookSchema,
