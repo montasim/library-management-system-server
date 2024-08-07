@@ -1,3 +1,11 @@
+/**
+ * @fileoverview This file exports an asynchronous function `loadListFromFile` which loads
+ * a list from a specified text file and returns it as a Set. The function handles the
+ * loading of various types of lists such as blocked email domains, common passwords,
+ * or temporary email domains from specified files. It ensures robust error handling
+ * and logs errors using a logger service.
+ */
+
 import { promises as fs } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -8,12 +16,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /**
- * Asynchronously loads a list from a text file and returns it as a Set.
- * This function is designed to handle the loading of various types of lists such as blocked email domains,
- * common passwords, or temporary email domains from specified files.
+ * loadListFromFile - An asynchronous function that loads a list from a specified text file
+ * and returns it as a Set. It reads the file content, splits it into lines, trims each line,
+ * converts them to lowercase, and stores them in a Set to ensure uniqueness. In case of an error
+ * during the file reading process, it logs the error and returns an empty Set to allow continued operation.
  *
+ * @function
+ * @async
  * @param {string} filePathRelative - The relative path to the text file.
- * @returns {Promise<Set<string>>} A promise that resolves to a Set containing the items from the file.
+ * @returns {Promise<Set<string>>} - A promise that resolves to a Set containing the items from the file.
  */
 const loadListFromFile = async (filePathRelative) => {
     const filePath = join(__dirname, filePathRelative);

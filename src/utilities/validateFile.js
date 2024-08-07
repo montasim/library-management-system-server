@@ -1,11 +1,21 @@
 /**
- * Validates a file based on type, size, and optional extensions.
+ * @fileoverview This file exports a function `validateFile` which validates a file based on its
+ * type, size, and optional extensions. It ensures that the file meets the specified criteria
+ * for type, size, and extension before it can be accepted for further processing.
+ */
+
+/**
+ * validateFile - A function that validates a file based on its type, size, and optional extensions.
+ * It checks if the file's MIME type is in the list of allowed types, if its size does not exceed
+ * the maximum allowed size, and if its extension is in the list of allowed extensions (if specified).
+ * The function returns an object containing a boolean `isValid` status and a validation message.
  *
+ * @function
  * @param {Object} file - The file object to validate.
  * @param {number} maxSize - Maximum file size in bytes.
  * @param {Array<string>} allowedTypes - Array of allowed MIME types.
  * @param {Array<string>} [allowedExtensions] - Optional array of allowed file extensions.
- * @returns {Object} Validation result with a boolean status and a message.
+ * @returns {Object} - An object with a boolean `isValid` status and a validation message.
  */
 const validateFile = (file, maxSize, allowedTypes, allowedExtensions = []) => {
     // Check file type

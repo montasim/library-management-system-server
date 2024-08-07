@@ -1,6 +1,25 @@
+/**
+ * @fileoverview This file exports an asynchronous function `validatePassword` which validates
+ * a password based on multiple criteria. It checks the password's length, presence of
+ * uppercase and lowercase letters, digits, and special characters. It also checks for
+ * simple patterns and common passwords.
+ */
+
 import patterns from '../constant/patterns.constants.js';
 import loadListFromFile from './loadListFromFile.js';
 
+/**
+ * validatePassword - An asynchronous function that validates a password based on several criteria.
+ * It checks if the password is between 8 and 20 characters, contains at least one uppercase letter,
+ * one lowercase letter, one digit, and one special character. The function also checks for simple
+ * patterns or common passwords and ensures that the password is not listed in a common passwords file.
+ *
+ * @function
+ * @async
+ * @param {string} password - The password to validate.
+ * @returns {Promise<string>} - A promise that resolves to 'Valid' if the password passes all checks,
+ * or an appropriate error message if it fails any check.
+ */
 const validatePassword = async (password) => {
     // Check minimum and maximum length
     if (password.length < 8 || password.length > 20) {
