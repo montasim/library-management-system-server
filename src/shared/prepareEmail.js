@@ -1,3 +1,14 @@
+/**
+ * @fileoverview This module defines the `prepareEmail` function, which is a utility to generate complete HTML email templates dynamically.
+ * It constructs an HTML email with a customizable page title, preheader text, hero section, main content section, and footer content.
+ * The function leverages inline styles to ensure compatibility across various email clients and ensures that fonts and other elements render as expected.
+ * It is particularly useful for applications that need to send stylized email notifications or updates with a consistent look and feel across different platforms.
+
+ * @description The `prepareEmail` function accepts parameters for different sections of an email, which it then uses to construct a full HTML document formatted for email use.
+ * This includes setting meta tags for responsiveness and compatibility, defining web-safe fonts, and handling common email client quirks such as image scaling and link color behavior.
+ * The result is a string that represents a complete, ready-to-send HTML email. This utility is ideal for use in backend systems where email content needs to be generated dynamically based on application data or user interactions.
+ */
+
 const prepareEmail = (
     pageTitle,
     preheaderText,

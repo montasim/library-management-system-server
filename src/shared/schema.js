@@ -1,10 +1,21 @@
+/**
+ * @fileoverview This module consolidates and exports shared schema definitions for various attributes commonly used across multiple models in the application.
+ * Each schema component is defined using Mongoose's Schema types and includes detailed validations, constraints, and descriptions to ensure data integrity and provide clarity on their intended use.
+ * The shared schemas encompass a wide range of user attributes, from basic personal information like usernames and dates of birth to more complex data like social media profiles and security settings.
+ * This modular approach to schema management facilitates reusability, maintains consistency across different parts of the application, and simplifies the maintenance of the database model.
+ */
+
 import { Schema } from 'mongoose';
 
 import constants from '../constant/constants.js';
 import userConstants from '../modules/api/users/users.constants.js';
 import patterns from '../constant/patterns.constants.js';
 
-// Define the shared username schema
+/**
+ * @schema usernameSchema
+ * Defines validation and formatting for usernames, ensuring they are unique, properly trimmed, and lowercase.
+ * The username is also required to match a specific email pattern, with validations for minimum and maximum lengths.
+ */
 const usernameSchema = {
     type: String,
     trim: true,
@@ -29,7 +40,10 @@ const usernameSchema = {
     description: 'Username, must be unique and formatted as an email address.',
 };
 
-// Define the shared dateOfBirth schema
+/**
+ * @schema dateOfBirthSchema
+ * Captures the user's date of birth, required for age-based access control. It ensures the date is in the specified format (DD-MM-YYYY) and is a valid date.
+ */
 const dateOfBirthSchema = {
     type: Date,
     trim: true,
@@ -42,7 +56,10 @@ const dateOfBirthSchema = {
         "The user's birth date, important for age-based access control.",
 };
 
-// Define the shared bio schema
+/**
+ * @schema bioSchema
+ * Stores a brief user biography. This field is trimmed for whitespace and has a maximum character length limit to ensure concise user descriptions.
+ */
 const bioSchema = {
     type: String,
     trim: true,
@@ -54,7 +71,10 @@ const bioSchema = {
         'A short description about the user, limited to a specified maximum length.',
 };
 
-// Define the shared pronouns schema
+/**
+ * @schema pronounsSchema
+ * Links to an external Pronouns model, allowing the user to select pronouns from a predefined list. This schema helps in promoting inclusivity within the application.
+ */
 const pronounsSchema = {
     type: Schema.Types.ObjectId,
     trim: true,
@@ -64,7 +84,10 @@ const pronounsSchema = {
         'Reference to an external Pronouns model, ensuring pronouns are selected from a predefined list.',
 };
 
-// Define the shared numericId schema
+/**
+ * @schema numericIdSchema
+ * Represents a unique numeric identifier for a user, which is sparse and unique. It is used for systems that require a numeric ID alongside traditional string-based identifiers.
+ */
 const numericIdSchema = {
     type: Number,
     trim: true,
@@ -78,7 +101,10 @@ const numericIdSchema = {
         'Numeric part of the unique identifier, incremented automatically.',
 };
 
-// Define the shared userId schema
+/**
+ * @schema userIdSchema
+ * Stores a unique user ID in a predefined format, ensuring uniqueness across the system. This ID is crucial for linking user activities and data securely.
+ */
 const userIdSchema = {
     type: String,
     trim: true,
@@ -95,7 +121,10 @@ const userIdSchema = {
         'User ID in the format user-X, where X is an auto-incremented number.',
 };
 
-// Define the shared image schema
+/**
+ * @schema imageSchema
+ * Manages image data including file identifiers and URLs for sharing and downloading images, ensuring links do not exceed maximum length specifications.
+ */
 const imageSchema = new Schema({
     fileId: {
         type: String,
@@ -127,7 +156,10 @@ const imageSchema = new Schema({
     },
 });
 
-// Define the shared name schema
+/**
+ * @schema nameSchema
+ * Handles storage of user names, broken down into first, middle, last, and nick names, each with specific formatting and length requirements to maintain data consistency.
+ */
 const nameSchema = new Schema({
     first: {
         type: String,
@@ -204,7 +236,10 @@ const nameSchema = new Schema({
     },
 });
 
-// Define the shared address schema
+/**
+ * @schema addressSchema
+ * Captures user address information, including country, state, and city, with each field stored as a trimmed string to ensure accurate geographic data capture.
+ */
 const addressSchema = new Schema({
     country: {
         type: String,
@@ -226,7 +261,10 @@ const addressSchema = new Schema({
     },
 });
 
-// Define the shared passwordHash schema
+/**
+ * @schema passwordHashSchema
+ * Stores a hashed version of the user's password, necessary for secure authentication and ensuring data privacy.
+ */
 const passwordHashSchema = {
     type: String,
     trim: true,
@@ -234,7 +272,10 @@ const passwordHashSchema = {
     description: 'Stores the hashed password for secure authentication.',
 };
 
-// Define the shared role schema
+/**
+ * @schema roleSchema
+ * References a RoleModel to apply role-based access control (RBAC) mechanisms, which restrict access based on the user's assigned role.
+ */
 const roleSchema = {
     type: Schema.Types.ObjectId,
     ref: 'Roles',
@@ -243,7 +284,10 @@ const roleSchema = {
         "Defines the user's role within the application by referencing the RoleModel, restricting access based on the role defined in the RoleModel.",
 };
 
-// Define the shared twoFactorEnabled schema
+/**
+ * @schema twoFactorEnabledSchema
+ * Indicates whether two-factor authentication is enabled for the user, providing an additional layer of security.
+ */
 const twoFactorEnabledSchema = {
     type: Boolean,
     trim: true,
@@ -252,7 +296,10 @@ const twoFactorEnabledSchema = {
         'Boolean flag to indicate if two-factor authentication is enabled for added security.',
 };
 
-// Define the shared twoFactorSecret schema
+/**
+ * @schema twoFactorSecretSchema
+ * Stores the secret key for two-factor authentication, crucial for generating and validating tokens used in the login process.
+ */
 const twoFactorSecretSchema = {
     type: String,
     trim: true,
@@ -260,7 +307,10 @@ const twoFactorSecretSchema = {
         'Secret key for two-factor authentication, used to generate tokens.',
 };
 
-// Define the shared mustChangePassword schema
+/**
+ * @schema mustChangePasswordSchema
+ * Flags whether the user is required to change their password at the next login, often used after administrative resets or potential security breaches.
+ */
 const mustChangePasswordSchema = {
     type: Boolean,
     trim: true,
@@ -269,7 +319,10 @@ const mustChangePasswordSchema = {
         'Flag to indicate if the user must change their password at next login for security reasons.',
 };
 
-// Define the shared resetPasswordVerifyToken schema
+/**
+ * @schema resetPasswordVerifyTokenSchema
+ * Holds a token used to verify the user's identity during the password reset process, helping secure the process against unauthorized access.
+ */
 const resetPasswordVerifyTokenSchema = {
     type: String,
     trim: true,
@@ -277,7 +330,10 @@ const resetPasswordVerifyTokenSchema = {
         "Token used to verify the user's identity for password reset process.",
 };
 
-// Define the shared resetPasswordVerifyTokenExpires schema
+/**
+ * @schema resetPasswordVerifyTokenExpiresSchema
+ * Specifies when the reset password verification token expires, adding a time constraint to the token's validity to enhance security.
+ */
 const resetPasswordVerifyTokenExpiresSchema = {
     type: Date,
     trim: true,
@@ -285,7 +341,10 @@ const resetPasswordVerifyTokenExpiresSchema = {
         ' Expiration date and time for the reset password verification token.',
 };
 
-// Define the shared url schema
+/**
+ * @schema urlSchema
+ * Validates URLs to ensure they are properly formatted, applying a maximum length restriction to accommodate database constraints.
+ */
 const urlSchema = {
     type: String,
     trim: true,
@@ -301,7 +360,10 @@ const urlSchema = {
         'A unique URL associated with the user, typically for a personal or professional website.',
 };
 
-// Define the shared email schema
+/**
+ * @schema emailSchema
+ * Validates email addresses to ensure they are unique and properly formatted, crucial for user identification and communication.
+ */
 const emailSchema = {
     type: String,
     trim: true,
@@ -327,7 +389,10 @@ const emailSchema = {
     description: 'Each email validated for uniqueness and proper format.',
 };
 
-// Define the shared isPrimaryEmail schema
+/**
+ * @schema isPrimaryEmailSchema
+ * Indicates if the specified email is the primary email for the user, ensuring that only one email is marked as primary.
+ */
 const isPrimaryEmailSchema = {
     type: Boolean,
     default: false,
@@ -335,28 +400,40 @@ const isPrimaryEmailSchema = {
         'Indicates if this is the primary email for the user. Only one email should be set as primary at any time.',
 };
 
-// Define the shared isEmailVerified schema
+/**
+ * @schema isEmailVerifiedSchema
+ * Checks if the user's email has been verified, an important step in confirming the authenticity of the user's contact information.
+ */
 const isEmailVerifiedSchema = {
     type: Boolean,
     default: false,
     description: "Flag to indicate whether the user's email has been verified.",
 };
 
-// Define the shared emailVerifyToken schema
+/**
+ * @schema emailVerifyTokenSchema
+ * Stores a token used during the email verification process, linked with actions like confirming an email change.
+ */
 const emailVerifyTokenSchema = {
     type: String,
     trim: true,
     description: 'Token used for email verification process.',
 };
 
-// Define the shared emailVerifyTokenExpires schema
+/**
+ * @schema emailVerifyTokenExpiresSchema
+ * Defines the expiration time for the email verification token, securing the process by limiting the time window in which the token is valid.
+ */
 const emailVerifyTokenExpiresSchema = {
     type: Date,
     trim: true,
     description: 'Expiration date and time for the email verification token.',
 };
 
-// Define the shared mobile schema
+/**
+ * @schema mobileSchema
+ * Validates mobile phone numbers, ensuring they are unique and properly formatted. This is important for systems that use mobile numbers as an alternative form of user identification.
+ */
 const mobileSchema = {
     type: String,
     trim: true,
@@ -380,7 +457,10 @@ const mobileSchema = {
     description: 'Mobile number, must be unique and properly formatted.',
 };
 
-// Define the shared isPrimaryMobile schema
+/**
+ * @schema isPrimaryMobileSchema
+ * Identifies if the stored mobile number is the primary contact number for the user, used in systems that handle multiple contact numbers.
+ */
 const isPrimaryMobileSchema = {
     type: Boolean,
     default: false,
@@ -388,7 +468,10 @@ const isPrimaryMobileSchema = {
         'Indicates if this is the primary mobile for the user. Only one mobile should be set as primary at any time.',
 };
 
-// Define the shared isMobileVerified schema
+/**
+ * @schema isMobileVerifiedSchema
+ * Indicates whether the user's mobile number has been verified, an important factor for systems relying on SMS or phone calls for authentication or notifications.
+ */
 const isMobileVerifiedSchema = {
     type: Boolean,
     default: false,
@@ -396,21 +479,30 @@ const isMobileVerifiedSchema = {
         "Flag to indicate whether the user's mobile number has been verified.",
 };
 
-// Define the shared mobileVerifyToken schema
+/**
+ * @schema mobileVerifyTokenSchema
+ * Stores a token used to verify the mobile number, essential for confirming the user's control over the listed phone number.
+ */
 const mobileVerifyTokenSchema = {
     type: String,
     trim: true,
     description: 'Token used for mobile number verification process.',
 };
 
-// Define the shared mobileVerifyTokenExpires schema
+/**
+ * @schema mobileVerifyTokenExpiresSchema
+ * Specifies the expiration date and time for the mobile verification token, ensuring the token is used within a designated timeframe.
+ */
 const mobileVerifyTokenExpiresSchema = {
     type: Date,
     trim: true,
     description: 'Expiration date and time for the mobile verification token.',
 };
 
-// Define the shared isActive schema
+/**
+ * @schema isActiveSchema
+ * Flags whether the user's profile or account is active or has been deactivated, allowing for easy management of user status within the system.
+ */
 const isActiveSchema = {
     type: Boolean,
     default: true,
@@ -418,7 +510,10 @@ const isActiveSchema = {
         'Flag to indicate whether the document is active or deactivated.',
 };
 
-// Define the shared facebook schema
+/**
+ * @schema facebookSchema
+ * Stores and validates a Facebook profile URL, ensuring it is unique and correctly formatted. This is used for linking a user's social media profile.
+ */
 const facebookSchema = {
     type: String,
     trim: true,
@@ -436,7 +531,10 @@ const facebookSchema = {
         'The Facebook URL must be unique across all users and follow the predefined URL pattern.',
 };
 
-// Define the shared twitter schema
+/**
+ * @schema twitterSchema
+ * Manages Twitter handles, ensuring each is unique and follows a specific format, which is crucial for integrating social media functionalities.
+ */
 const twitterSchema = {
     type: String,
     trim: true,
@@ -454,7 +552,10 @@ const twitterSchema = {
         'The Twitter handle must be unique and comply with a specific URL format.',
 };
 
-// Define the shared linkedIn schema
+/**
+ * @schema linkedInSchema
+ * Handles LinkedIn profile URLs, ensuring each is unique and adheres to a specific format, facilitating professional networking integrations.
+ */
 const linkedInSchema = {
     type: String,
     trim: true,
@@ -475,7 +576,10 @@ const linkedInSchema = {
         'LinkedIn URLs are unique to each user, adhering to the required LinkedIn format.',
 };
 
-// Define the shared github schema
+/**
+ * @schema githubSchema
+ * Manages GitHub usernames, validating uniqueness and format to integrate coding community profiles for user accounts.
+ */
 const githubSchema = {
     type: String,
     trim: true,
@@ -496,7 +600,10 @@ const githubSchema = {
         "GitHub's usernames need to follow a specific format and be unique among all system users.",
 };
 
-// Define the shared company schema
+/**
+ * @schema companySchema
+ * Stores information about a user's employer, including name and contact details, providing context for professional relationships within the application.
+ */
 const companySchema = new Schema({
     // TODO: suggest company name when a user try to add company
     name: {
@@ -517,7 +624,10 @@ const companySchema = new Schema({
     github: githubSchema,
 });
 
-// Define the shared externalOAuth schema
+/**
+ * @schema externalOAuthSchema
+ * Handles OAuth identifiers for external accounts like Google, Facebook, Twitter, LinkedIn, and GitHub, ensuring each identifier is unique and properly stored.
+ */
 const externalOAuthSchema = new Schema({
     googleId: {
         type: String,
@@ -581,7 +691,10 @@ const externalOAuthSchema = new Schema({
     },
 });
 
-// Define the shared login schema
+/**
+ * @schema loginSchema
+ * Tracks details of login attempts, both failed and successful, providing insights into user behavior and potential security incidents.
+ */
 const loginSchema = new Schema({
     failed: {
         device: [
@@ -617,7 +730,10 @@ const loginSchema = new Schema({
     },
 });
 
-// Define the shared sessions schema
+/**
+ * @schema sessionsSchema
+ * Manages session information, including tokens and their expiration times, crucial for maintaining secure and valid user sessions within the application.
+ */
 const sessionsSchema = new Schema({
     token: {
         type: String,
@@ -641,7 +757,10 @@ const sessionsSchema = new Schema({
     },
 });
 
-// Define the shared activities schema
+/**
+ * @schema activitiesSchema
+ * Captures user activities within the application, detailing the type of action, associated metadata, and the exact time it occurred, facilitating audits and behavior analysis.
+ */
 const activitiesSchema = new Schema({
     category: {
         type: String,
@@ -680,7 +799,10 @@ const activitiesSchema = new Schema({
     },
 });
 
-// Define the shared appearance schema
+/**
+ * @schema appearanceSchema
+ * Stores user preferences for application themes, allowing for a customized look and feel of the user interface based on individual preferences.
+ */
 const appearanceSchema = new Schema({
     theme: {
         name: {
@@ -692,7 +814,10 @@ const appearanceSchema = new Schema({
     },
 });
 
-// Define the shared profileVisibility schema
+/**
+ * @schema profileVisibilitySchema
+ * Controls the visibility of user profiles to others within the application, allowing users to manage privacy settings according to their preferences.
+ */
 const profileVisibilitySchema = {
     type: String,
     trim: true,
@@ -701,7 +826,10 @@ const profileVisibilitySchema = {
     description: 'Controls the visibility of the user profile to other users.',
 };
 
-// Define the shared createdByAdmin schema
+/**
+ * @schema createdByAdminSchema
+ * References the admin who created the record, used for tracking which administrator has made changes to user data or profiles.
+ */
 const createdByAdminSchema = {
     type: Schema.Types.ObjectId,
     ref: 'Admin',
@@ -709,7 +837,10 @@ const createdByAdminSchema = {
         'Reference to the admin who created this record, used for tracking record ownership.',
 };
 
-// Define the shared updatedByAdmin schema
+/**
+ * @schema updatedByAdminSchema
+ * Tracks the last admin to update the record, ensuring accountability and providing a trace of administrative actions on user data.
+ */
 const updatedByAdminSchema = {
     type: Schema.Types.ObjectId,
     ref: 'Admin',

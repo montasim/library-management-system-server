@@ -1,3 +1,18 @@
+/**
+ * @fileoverview This module provides the `prepareEmailContent` function, designed to generate the various sections of an HTML email template based on a given subject.
+ * It supports multiple email types, each with customized content including titles, preheaders, hero images, main body text, and footer information.
+ * This function is essential for creating dynamic email content that responds to different user interactions or system events within an application,
+ * such as account creation, password resets, and system alerts. It utilizes placeholders and template literals to dynamically insert data into predefined HTML structures.
+ */
+
+/**
+ * Generates email content based on the specified subject. This function selects the appropriate content template based on the subject parameter and populates it with data from the emailData object.
+ * Each email type has a specific layout and messaging designed to fit the context of the email, whether it's a welcome message, password reset, or system alert.
+ *
+ * @param {string} subject - The subject of the email, which determines the type of email content to generate.
+ * @param {Object} emailData - An object containing data to be included in the email. This may include URLs, user names, passwords, error details, etc.
+ * @returns {Object|null} An object containing the structured content for the email (pageTitle, preheaderText, heroSection, mainSection, footerContent) or null if the subject is not recognized.
+ */
 const prepareEmailContent = (subject, emailData) => {
     let pageTitle, preheaderText, heroSection, mainSection, footerContent;
 
