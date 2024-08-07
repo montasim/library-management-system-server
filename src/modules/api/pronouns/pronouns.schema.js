@@ -1,10 +1,31 @@
+/**
+ * @fileoverview This file defines various Joi schemas for validating pronouns-related data. The
+ * schemas include base validation for pronouns fields, as well as specific schemas for creating,
+ * updating, and querying pronouns. The schemas ensure that data conforms to the required formats,
+ * lengths, and patterns, and include custom validation messages for better error reporting.
+ */
+
 import Joi from 'joi';
 
 import pronounsConstants from './pronouns.constant.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
 import validationService from '../../../service/validation.service.js';
 
-// Define base schema for pronouns
+/**
+ * pronounsSchemaBase - Base Joi schema for validating pronouns-related fields. This schema includes:
+ *
+ * - name: String (trimmed, minLength, maxLength, matched against a pattern)
+ * - page: String (minLength, default value, custom parsing to integer)
+ * - limit: String (minLength, maxLength, default value, custom parsing to integer)
+ * - sort: String (trimmed, default value)
+ * - isActive: Boolean
+ * - createdBy: ObjectId
+ * - updatedBy: ObjectId
+ * - createdAt: Date
+ * - updatedAt: Date
+ *
+ * This schema is used as the base for more specific pronouns schemas.
+ */
 const pronounsSchemaBase = Joi.object({
     name: validationService
         .createStringField(
@@ -37,25 +58,40 @@ const pronounsSchemaBase = Joi.object({
     updatedAt: validationService.dateField,
 }).strict();
 
-// Schema for creating a pronouns, making specific fields required
+/**
+ * createPronounsSchema - Joi schema for validating data when creating a pronoun. This schema
+ * makes the 'name' and 'isActive' fields required.
+ */
 const createPronounsSchema = pronounsSchemaBase.fork(
     ['name', 'isActive'],
     (field) => field.required()
 );
 
-// Schema for updating a pronouns
+/**
+ * updatePronounsSchema - Joi schema for validating data when updating a pronoun. This schema
+ * makes all fields optional and requires at least one field to be provided.
+ */
 const updatePronounsSchema = pronounsSchemaBase
     .fork(Object.keys(pronounsSchemaBase.describe().keys), (field) =>
         field.optional()
     )
     .min(1);
 
+/**
+ * pronounsIdsParamSchema - Joi schema for validating a list of pronouns IDs passed as a parameter.
+ * This schema ensures that the 'ids' field is an array of valid ObjectIds and includes custom validation
+ * messages.
+ */
 const pronounsIdsParamSchema = Joi.object({
     ids: validationService.objectIdsField.required(),
 })
     .required()
     .messages(customValidationMessage);
 
+/**
+ * getPronounsQuerySchema - Joi schema for validating query parameters when retrieving pronouns.
+ * This schema makes all fields optional and uses the base pronouns schema for validation.
+ */
 const getPronounsQuerySchema = pronounsSchemaBase.fork(
     [
         'name',
@@ -71,11 +107,23 @@ const getPronounsQuerySchema = pronounsSchemaBase.fork(
     (field) => field.optional()
 );
 
-// Schema for single pronouns ID validation
+/**
+ * pronounsIdParamSchema - Joi schema for validating a single pronouns ID passed as a parameter.
+ * This schema ensures that the 'pronounsId' field is a valid ObjectId.
+ */
 const pronounsIdParamSchema = Joi.object({
     pronounsId: validationService.objectIdField.required(),
 }).strict();
 
+/**
+ * pronounsSchema - Object containing all the defined Joi schemas for pronouns validation:
+ *
+ * - createPronounsSchema: Schema for validating data when creating a pronoun.
+ * - updatePronounsSchema: Schema for validating data when updating a pronoun.
+ * - getPronounsQuerySchema: Schema for validating query parameters when retrieving pronouns.
+ * - pronounsIdsParamSchema: Schema for validating a list of pronouns IDs passed as a parameter.
+ * - pronounsIdParamSchema: Schema for validating a single pronouns ID passed as a parameter.
+ */
 const pronounsSchema = {
     createPronounsSchema,
     updatePronounsSchema,

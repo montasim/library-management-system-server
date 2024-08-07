@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This file defines the service functions for managing subjects. These services include
+ * functions for creating, retrieving, updating, and deleting subjects. The services interact with the
+ * Subjects model and utilize various utilities for logging, response handling, and validation.
+ * Additionally, functions for populating related fields and managing subjects lists are provided.
+ */
+
 import SubjectsModel from './subjects.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
@@ -10,6 +17,12 @@ import adminActivityLoggerConstants
 import AdminActivityLoggerModel
     from '../admin/adminActivityLogger/adminActivityLogger.model.js';
 
+/**
+ * populateSubjectFields - A helper function to populate related fields in the subject documents.
+ *
+ * @param {Object} query - The Mongoose query object.
+ * @returns {Promise<Object>} - The query result with populated fields.
+ */
 const populateSubjectFields = async (query) => {
     return await query
         .populate({
@@ -24,6 +37,15 @@ const populateSubjectFields = async (query) => {
 
 const subjectListParamsMapping = {};
 
+/**
+ * createSubject - Service function to create a new subject. This function validates the provided data,
+ * sets the createdBy field, and creates the subject. It also logs the creation action and populates the
+ * necessary fields upon creation.
+ *
+ * @param {Object} requester - The user creating the subject.
+ * @param {Object} newSubjectData - The data for the new subject.
+ * @returns {Promise<Object>} - The created subject or an error response.
+ */
 const createSubject = async (requester, newSubjectData) => {
     try {
         const exists = await SubjectsModel.exists({
@@ -67,14 +89,37 @@ const createSubject = async (requester, newSubjectData) => {
     }
 };
 
+/**
+ * getSubjects - Service function to retrieve a list of subjects based on provided parameters.
+ * This function builds the query, fetches the subjects, and returns the paginated result.
+ *
+ * @param {Object} params - The query parameters for retrieving the subjects list.
+ * @returns {Promise<Object>} - The retrieved list of subjects or an error response.
+ */
 const getSubjects = async (params) => {
     return service.getResourceList(SubjectsModel, populateSubjectFields, params, subjectListParamsMapping, 'subject');
 };
 
+/**
+ * getSubjectById - Service function to retrieve a subject by its ID. This function fetches the subject,
+ * populates the necessary fields, and returns the subject.
+ *
+ * @param {String} subjectId - The ID of the subject to retrieve.
+ * @returns {Promise<Object>} - The retrieved subject or an error response.
+ */
 const getSubjectById = async (subjectId) => {
     return service.getResourceById(SubjectsModel, populateSubjectFields, subjectId, 'subject');
 };
 
+/**
+ * updateSubject - Service function to update a subject by its ID. This function validates the update data,
+ * sets the updatedBy field, updates the subject, logs the action, and returns the updated subject.
+ *
+ * @param {Object} requester - The user updating the subject.
+ * @param {String} subjectId - The ID of the subject to update.
+ * @param {Object} updateData - The data to update the subject with.
+ * @returns {Promise<Object>} - The updated subject or an error response.
+ */
 const updateSubject = async (requester, subjectId, updateData) => {
     try {
         if (isEmptyObject(updateData)) {
@@ -135,14 +180,40 @@ const updateSubject = async (requester, subjectId, updateData) => {
     }
 };
 
+/**
+ * deleteSubjects - Service function to delete a list of subjects by their IDs. This function utilizes a
+ * shared service to handle the deletion process.
+ *
+ * @param {Object} requester - The user deleting the subjects.
+ * @param {Array<String>} subjectIds - The IDs of the subjects to delete.
+ * @returns {Promise<Object>} - The result of the deletion process or an error response.
+ */
 const deleteSubjects = async (requester, subjectIds) => {
     return await service.deleteResourcesByList(requester, SubjectsModel, subjectIds, 'subject');
 };
 
+/**
+ * deleteSubject - Service function to delete a subject by its ID. This function utilizes a shared service
+ * to handle the deletion process.
+ *
+ * @param {Object} requester - The user deleting the subject.
+ * @param {String} subjectId - The ID of the subject to delete.
+ * @returns {Promise<Object>} - The result of the deletion process or an error response.
+ */
 const deleteSubject = async (requester, subjectId) => {
     return service.deleteResourceById(requester, SubjectsModel, subjectId, 'subject');
 };
 
+/**
+ * subjectsService - Object containing all the defined service functions for subjects management:
+ *
+ * - createSubject: Service function to create a new subject.
+ * - getSubjects: Service function to retrieve a list of subjects based on provided parameters.
+ * - getSubjectById: Service function to retrieve a subject by its ID.
+ * - updateSubject: Service function to update a subject by its ID.
+ * - deleteSubjects: Service function to delete a list of subjects by their IDs.
+ * - deleteSubject: Service function to delete a subject by its ID.
+ */
 const subjectsService = {
     createSubject,
     getSubjects,

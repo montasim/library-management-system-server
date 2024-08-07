@@ -1,3 +1,10 @@
+/**
+ * @fileoverview
+ * This module defines the service for handling operations related to recently visited books.
+ * It includes functions for adding a book to the recently visited list and retrieving the list of recently visited books.
+ * The service interacts with the `RecentlyVisitedBooksModel` and `BooksModel` to perform database operations.
+ */
+
 import validateUserRequest from '../../../../utilities/validateUserRequest.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
@@ -6,6 +13,26 @@ import RecentlyVisitedBooksModel from './recentlyVisitedBooks.model.js';
 import BooksModel from '../../books/books.model.js';
 import loggerService from '../../../../service/logger.service.js';
 
+/**
+ * Adds a book to the recently visited books list for the requester.
+ *
+ * This function validates the provided book ID, checks if the book is already in the recently visited list,
+ * populates the book details, and saves the updated list to the database.
+ * It ensures that the list does not exceed 10 books by removing the oldest book if necessary.
+ *
+ * @function
+ * @async
+ * @name recentlyVisitedBooksService.add
+ *
+ * @param {Object} requester - The user making the request, identified by their ID.
+ * @param {Object} bookData - The data of the book to be added, containing the book ID.
+ *
+ * @returns {Promise<Object>} - A promise that resolves to the result of the addition operation:
+ * - On success: An object containing the added book details and the updated recently visited books list.
+ * - On failure: An error response with the appropriate HTTP status code and message.
+ *
+ * @throws {Error} - Throws an error if there is an issue adding the book to the recently visited list.
+ */
 const add = async (requester, bookData) => {
     try {
         const bookId = bookData.book;
@@ -74,6 +101,24 @@ const add = async (requester, bookData) => {
     }
 };
 
+/**
+ * Retrieves the list of recently visited books for the requester.
+ *
+ * This function fetches the recently visited books for the authenticated user, populates the book details,
+ * and returns the list of books.
+ *
+ * @function
+ * @async
+ * @name recentlyVisitedBooksService.get
+ *
+ * @param {Object} requester - The user making the request, identified by their ID.
+ *
+ * @returns {Promise<Object>} - A promise that resolves to the result of the retrieval operation:
+ * - On success: An array of populated book details.
+ * - On failure: An error response with the appropriate HTTP status code and message.
+ *
+ * @throws {Error} - Throws an error if there is an issue retrieving the recently visited books.
+ */
 const get = async (requester) => {
     try {
         // Fetch recently visited books for the user

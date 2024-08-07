@@ -1,3 +1,17 @@
+/**
+ * @fileoverview
+ * This module provides the user profile service, which includes functionality to fetch user profiles based on their privacy settings.
+ * The service determines which fields of the user profile are accessible depending on the requester's authentication status,
+ * whether the requester is the user themselves, an admin, or a public viewer.
+ *
+ * The service handles different privacy settings, including public, friends, and private profiles, ensuring that users
+ * can only access profiles according to their permissions.
+ *
+ * The module exports a single service object with the `getProfile` method to retrieve user profiles.
+ *
+ * @module userProfileService
+ */
+
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import loggerService from '../../../service/logger.service.js';
@@ -6,10 +20,24 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import privacySettingsRules from '../privacySettings/privacySettings.rules.js';
 import privacySettings from '../privacySettings/privacySettings.constants.js';
 
-// unauthorized user is treated as public
-// authenticated user could be himself
-// authenticated user but not himself is treated as friends
-// authenticated user could be admin
+/**
+ * Retrieves a user's profile based on the requester's authentication status and privacy settings.
+ *
+ * This function checks the privacy settings of the requested user's profile and determines the fields that should be accessible based on:
+ * - Whether the requester is the profile owner (self)
+ * - Whether the requester is an administrator
+ * - Whether the requester is authenticated but not the profile owner (friends)
+ * - Whether the requester is unauthenticated (public access)
+ *
+ * @param {Object} requester - The user making the request. Contains user details such as `_id` and `isAdmin`.
+ * @param {string} username - The username of the user whose profile is to be retrieved.
+ *
+ * @returns {Promise<Object>} - A promise that resolves to the user's profile information or an error response. The result includes:
+ * - User profile details if the requester has appropriate access.
+ * - Error message if the user is not found or access is forbidden.
+ *
+ * @throws {Error} - Throws an error if there is an issue retrieving the profile from the database.
+ */
 const getProfile = async (requester, username) => {
     try {
         // Retrieve the user's details including privacy settings and ID

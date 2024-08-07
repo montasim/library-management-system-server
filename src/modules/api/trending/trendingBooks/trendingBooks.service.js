@@ -1,9 +1,26 @@
+/**
+ * @fileoverview This file defines the service functions for managing trending books. These services include
+ * functions for retrieving the most popular books based on user favourites. The services interact with the
+ * FavouriteBooks model and utilize various utilities for logging, response handling, and error handling.
+ */
+
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import FavouriteBooksModel from '../../books/favourite/favouriteBooks.model.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import loggerService from '../../../../service/logger.service.js';
 
+/**
+ * getTrendingBooks - Service function to retrieve a list of trending books. This function aggregates
+ * data from the FavouriteBooks model to find the most popular books across all users' favourites. It
+ * returns the top trending books based on a specified threshold and limit.
+ *
+ * @returns {Promise<Object>} - The retrieved list of trending books or an error response.
+ *
+ * @example
+ * const trendingBooks = await trendingBooksService.getTrendingBooks();
+ * console.log(trendingBooks);
+ */
 const getTrendingBooks = async () => {
     try {
         // Aggregate to find the most common books across all users' favourites
@@ -69,6 +86,11 @@ const getTrendingBooks = async () => {
     }
 };
 
+/**
+ * trendingBooksService - Object containing the defined service function for trending books management:
+ *
+ * - getTrendingBooks: Service function to retrieve a list of trending books.
+ */
 const trendingBooksService = {
     getTrendingBooks,
 };

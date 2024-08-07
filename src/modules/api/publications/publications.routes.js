@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the routes for managing publications using Express. It includes routes
+ * for creating, retrieving, updating, and deleting publications, and applies various middlewares for
+ * authentication, validation, caching, and method support.
+ */
+
 import express from 'express';
 
 import publicationsController from './publications.controller.js';

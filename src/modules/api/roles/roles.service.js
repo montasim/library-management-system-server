@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This file defines the service functions for managing roles. These services include
+ * functions for creating, retrieving, updating, and deleting roles. The services interact with the
+ * Roles model and utilize various utilities for logging, response handling, and validation.
+ * Additionally, functions for populating related fields and managing roles lists are provided.
+ */
+
 import validatePermissions from '../../../shared/validatePermissions.js';
 import RolesModel from './roles.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
@@ -11,6 +18,12 @@ import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivity
 import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 import service from '../../../shared/service.js';
 
+/**
+ * populateRoleFields - A helper function to populate related fields in the role documents.
+ *
+ * @param {Object} query - The Mongoose query object.
+ * @returns {Promise<Object>} - The query result with populated fields.
+ */
 const populateRoleFields = async (query) => {
     return await query
         .populate({
@@ -36,6 +49,15 @@ const populateRoleFields = async (query) => {
         });
 };
 
+/**
+ * createRole - Service function to create a new role. This function validates the provided permissions,
+ * sets the createdBy field, and creates the role. It also logs the creation action and populates the
+ * necessary fields upon creation.
+ *
+ * @param {Object} requester - The user creating the role.
+ * @param {Object} newRoleData - The data for the new role.
+ * @returns {Promise<Object>} - The created role or an error response.
+ */
 const createRole = async (requester, newRoleData) => {
     try {
         loggerService.info('Starting role creation process.');
@@ -109,6 +131,13 @@ const createRole = async (requester, newRoleData) => {
     }
 };
 
+/**
+ * createDefaultRole - Service function to create or update the default role with all permissions.
+ * This function fetches all permissions, upserts the default role, logs the action, and handles the response.
+ *
+ * @param {Object} requester - The user creating or updating the default role.
+ * @returns {Promise<Object>} - The created or updated default role or an error response.
+ */
 const createDefaultRole = async (requester) => {
     try {
         // Fetch all permissions IDs
@@ -158,6 +187,14 @@ const createDefaultRole = async (requester) => {
     }
 };
 
+/**
+ * getRoleList - Service function to retrieve a list of roles based on provided parameters.
+ * This function builds the query, fetches the roles, logs the action, and returns the paginated result.
+ *
+ * @param {Object} requester - The user requesting the role list.
+ * @param {Object} params - The query parameters for retrieving the roles list.
+ * @returns {Promise<Object>} - The retrieved list of roles or an error response.
+ */
 const getRoleList = async (requester, params) => {
     try {
         const {
@@ -221,6 +258,14 @@ const getRoleList = async (requester, params) => {
     }
 };
 
+/**
+ * getRoleById - Service function to retrieve a role by its ID. This function fetches the role,
+ * populates the necessary fields, logs the action, and returns the role.
+ *
+ * @param {Object} requester - The user requesting the role.
+ * @param {String} roleId - The ID of the role to retrieve.
+ * @returns {Promise<Object>} - The retrieved role or an error response.
+ */
 const getRoleById = async (requester, roleId) => {
     try {
         const resource = await populateRoleFields(RolesModel.findById(roleId));
@@ -251,6 +296,15 @@ const getRoleById = async (requester, roleId) => {
     }
 };
 
+/**
+ * updateRoleById - Service function to update a role by its ID. This function validates the update data,
+ * sets the updatedBy field, updates the role, logs the action, and returns the updated role.
+ *
+ * @param {Object} requester - The user updating the role.
+ * @param {String} roleId - The ID of the role to update.
+ * @param {Object} updateData - The data to update the role with.
+ * @returns {Promise<Object>} - The updated role or an error response.
+ */
 const updateRoleById = async (requester, roleId, updateData) => {
     try {
         if (isEmptyObject(updateData)) {
@@ -312,14 +366,41 @@ const updateRoleById = async (requester, roleId, updateData) => {
     }
 };
 
+/**
+ * deleteRoleByList - Service function to delete a list of roles by their IDs. This function utilizes a
+ * shared service to handle the deletion process.
+ *
+ * @param {Object} requester - The user deleting the roles.
+ * @param {Array<String>} roleIds - The IDs of the roles to delete.
+ * @returns {Promise<Object>} - The result of the deletion process or an error response.
+ */
 const deleteRoleByList = async (requester, roleIds) => {
     return await service.deleteResourcesByList(requester, RolesModel, roleIds, 'role');
 };
 
+/**
+ * deleteRoleById - Service function to delete a role by its ID. This function utilizes a shared service
+ * to handle the deletion process.
+ *
+ * @param {Object} requester - The user deleting the role.
+ * @param {String} roleId - The ID of the role to delete.
+ * @returns {Promise<Object>} - The result of the deletion process or an error response.
+ */
 const deleteRoleById = async (requester, roleId) => {
     return service.deleteResourceById(requester, RolesModel, roleId, 'role');
 };
 
+/**
+ * rolesService - Object containing all the defined service functions for roles management:
+ *
+ * - createRole: Service function to create a new role.
+ * - createDefaultRole: Service function to create or update the default role with all permissions.
+ * - getRoleList: Service function to retrieve a list of roles based on provided parameters.
+ * - getRoleById: Service function to retrieve a role by its ID.
+ * - updateRoleById: Service function to update a role by its ID.
+ * - deleteRoleByList: Service function to delete a list of roles by their IDs.
+ * - deleteRoleById: Service function to delete a role by its ID.
+ */
 const rolesService = {
     createRole,
     createDefaultRole,

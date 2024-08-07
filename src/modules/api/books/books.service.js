@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This file defines and exports the service functions for managing books.
+ * These services include functions for creating, retrieving, updating, and deleting books.
+ * The functions handle validation, image uploads, and database operations, ensuring data integrity
+ * and proper handling of related entities such as writers, subjects, and publications.
+ */
+
 import BooksModel from './books.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import GoogleDriveService from '../../../service/googleDrive.service.js';
@@ -18,7 +25,13 @@ import AdminActivityLoggerModel
 import adminActivityLoggerConstants
     from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
-// Helper function to validate IDs
+/**
+ * Helper function to validate IDs for writer and publication.
+ *
+ * @param {string} writer - Writer ID to validate.
+ * @param {string} publication - Publication ID to validate.
+ * @returns {Array<string>} - An array of error messages, if any.
+ */
 const validateIds = async (writer, publication) => {
     const errors = [];
 
@@ -35,7 +48,12 @@ const validateIds = async (writer, publication) => {
     return errors;
 };
 
-// Helper function to validate subject IDs
+/**
+ * Helper function to validate subject IDs.
+ *
+ * @param {Array<string>} subjectIds - Array of subject IDs to validate.
+ * @returns {Array<string>} - An array of error messages, if any.
+ */
 const validateSubjectIds = async (subjectIds) => {
     const subjectErrors = [];
 
@@ -50,6 +68,12 @@ const validateSubjectIds = async (subjectIds) => {
     return subjectErrors;
 };
 
+/**
+ * Helper function to populate book fields with related data.
+ *
+ * @param {Object} query - Mongoose query object.
+ * @returns {Promise<Object>} - Populated query result.
+ */
 const populateBookFields = async (query) => {
     return await query
         .populate({
@@ -171,10 +195,22 @@ const createNewBook = async (requester, bookData, bookImage) => {
     }
 };
 
+/**
+ * Retrieves a list of books from the database based on query parameters.
+ *
+ * @param {Object} params - Query parameters for filtering and pagination.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the list of books.
+ */
 const getBookList = async (params) => {
     return service.getResourceList(BooksModel, populateBookFields, params, bookListParamsMapping, 'Book');
 };
 
+/**
+ * Retrieves a book by its ID from the database.
+ *
+ * @param {string} bookId - The ID of the book to retrieve.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the book details.
+ */
 const getBookById = async (bookId) => {
     return service.getResourceById(BooksModel, populateBookFields, bookId, 'Book');
 };
@@ -352,14 +388,41 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
     }
 };
 
+/**
+ * Deletes a book by its ID from the database.
+ *
+ * @param {string} requester - The ID of the user making the delete request.
+ * @param {string} bookId - The ID of the book to delete.
+ * @returns {Promise<Object>} - A promise that resolves to the response object indicating the result of the operation.
+ */
 const deleteBookById = async (requester, bookId) => {
     return service.deleteResourceById(requester, BooksModel, bookId, 'book');
 };
 
+/**
+ * Deletes multiple books from the database based on a list of book IDs.
+ *
+ * @param {string} requester - The ID of the user making the delete request.
+ * @param {Array<string>} bookIds - The list of book IDs to delete.
+ * @returns {Promise<Object>} - A promise that resolves to the response object indicating the result of the operation.
+ */
 const deleteBookList = async (requester, bookIds) => {
     return await service.deleteResourcesByList(requester, BooksModel, bookIds, 'books');
 };
 
+/**
+ * booksService - An object that holds the service functions for managing book-related operations.
+ * These functions handle the creation, retrieval, updating, and deletion of books, including validation
+ * of related data and handling of image uploads using Google Drive.
+ *
+ * @typedef {Object} BooksService
+ * @property {Function} createNewBook - Creates a new book in the database with image upload and detailed data validation.
+ * @property {Function} getBookList - Retrieves a list of books from the database based on query parameters.
+ * @property {Function} getBookById - Retrieves a book by its ID from the database.
+ * @property {Function} updateBookById - Updates an existing book record with new data and possibly a new image.
+ * @property {Function} deleteBookById - Deletes a book by its ID from the database.
+ * @property {Function} deleteBookList - Deletes multiple books from the database based on a list of book IDs.
+ */
 const booksService = {
     createNewBook,
     getBookList,

@@ -1,3 +1,16 @@
+/**
+ * @fileoverview This file defines constants for validating pronouns-related data. It includes
+ * constraints on the length of names and a regular expression pattern for validating names
+ * with flexible capitalization rules. These constants are used to ensure that pronouns-related
+ * data adheres to the required format and length restrictions.
+ */
+
+/**
+ * lengths - An object containing constants for the minimum and maximum lengths of names.
+ *
+ * - NAME_MIN: Minimum length for a name (3 characters).
+ * - NAME_MAX: Maximum length for a name (100 characters).
+ */
 const lengths = {
     NAME_MIN: 3,
     NAME_MAX: 100,
@@ -26,6 +39,12 @@ const pattern = {
     NAME: /^[A-Z][a-z]+(?: [a-z]+)*$/,
 };
 
+/**
+ * pronounsConstants - An object containing constants for pronouns validation:
+ *
+ * - lengths: An object containing constants for the minimum and maximum lengths of names.
+ * - pattern: An object containing regular expression patterns for validating names.
+ */
 const pronounsConstants = {
     lengths,
     pattern,

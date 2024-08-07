@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the detectService, which processes incoming requests to detect
+ * user-agent data, including browser, OS, device type, IP address, and other relevant information.
+ * It also handles potential errors during the detection process and returns appropriate responses.
+ */
+
 import expressUseragent from 'express-useragent';
 import requestIp from 'request-ip';
 // import geoip from 'geoip-lite';
@@ -7,6 +13,12 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import loggerService from '../../../service/logger.service.js';
 
+/**
+ * Processes detection requests to identify user-agent information.
+ *
+ * @param {Object} req - The request object from Express.
+ * @returns {Object} - A response object containing the detected information or an error message.
+ */
 const detectService = async (req) => {
     try {
         const source = req.headers['user-agent'];

@@ -1,3 +1,15 @@
+/**
+ * @fileoverview This file defines the service functions for managing permissions. These services include
+ * functions for creating, retrieving, updating, and deleting permissions. The services interact with the
+ * Permissions model and utilize various utilities for logging, response handling, and validation.
+ * Additionally, functions for populating related fields and managing default permissions are provided.
+ *//**
+ * @fileoverview This file defines the service functions for managing permissions. These services include
+ * functions for creating, retrieving, updating, and deleting permissions. The services interact with the
+ * Permissions model and utilize various utilities for logging, response handling, and validation.
+ * Additionally, functions for populating related fields and managing default permissions are provided.
+ */
+
 import PermissionsModel from './permissions.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
@@ -14,6 +26,12 @@ import AdminActivityLoggerModel
 import adminActivityLoggerConstants
     from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
+/**
+ * populatePermissionFields - A helper function to populate related fields in the permission documents.
+ *
+ * @param {Object} query - The Mongoose query object.
+ * @returns {Promise<Object>} - The query result with populated fields.
+ */
 const populatePermissionFields = async (query) => {
     return await query
         .populate({
@@ -28,6 +46,15 @@ const populatePermissionFields = async (query) => {
 
 const permissionListParamsMapping = {};
 
+/**
+ * createPermission - Service function to create a new permission. This function checks for the existence
+ * of a permission with the same name, creates the permission if it doesn't exist, and updates the admin role
+ * with the new permission.
+ *
+ * @param {Object} requester - The user creating the permission.
+ * @param {Object} newPermissionData - The data for the new permission.
+ * @returns {Promise<Object>} - The created permission or an error response.
+ */
 const createPermission = async (requester, newPermissionData) => {
     try {
         const exists = await PermissionsModel.exists({
@@ -95,6 +122,14 @@ const createPermission = async (requester, newPermissionData) => {
     }
 };
 
+/**
+ * createDefaultPermissionList - Service function to create a default list of permissions. This function
+ * generates permissions from predefined routes, checks for existing permissions, and creates any missing
+ * permissions.
+ *
+ * @param {Object} requester - The user creating the default permissions.
+ * @returns {Promise<Object>} - The result of the permissions creation process, including any errors.
+ */
 const createDefaultPermissionList = async (requester) => {
     try {
         // Generate permissions
@@ -159,14 +194,38 @@ const createDefaultPermissionList = async (requester) => {
     }
 };
 
+/**
+ * getPermissionList - Service function to retrieve a list of permissions based on provided parameters.
+ * This function utilizes a shared service to handle the retrieval and mapping of parameters.
+ *
+ * @param {Object} requester - The user requesting the permissions list.
+ * @param {Object} params - The query parameters for retrieving the permissions list.
+ * @returns {Promise<Object>} - The retrieved list of permissions.
+ */
 const getPermissionList = async (requester, params) => {
     return service.getResourceList(PermissionsModel, populatePermissionFields, params, permissionListParamsMapping, 'permission');
 };
 
+/**
+ * getPermissionById - Service function to retrieve a permission by its ID. This function utilizes a shared
+ * service to handle the retrieval and population of related fields.
+ *
+ * @param {String} permissionId - The ID of the permission to retrieve.
+ * @returns {Promise<Object>} - The retrieved permission or an error response.
+ */
 const getPermissionById = async (permissionId) => {
     return service.getResourceById(PermissionsModel, populatePermissionFields, permissionId, 'Permission');
 };
 
+/**
+ * updatePermissionById - Service function to update a permission by its ID. This function checks for the
+ * existence of the permission, updates it with the provided data, and logs the update action.
+ *
+ * @param {Object} requester - The user updating the permission.
+ * @param {String} permissionId - The ID of the permission to update.
+ * @param {Object} updateData - The data to update the permission with.
+ * @returns {Promise<Object>} - The updated permission or an error response.
+ */
 const updatePermissionById = async (requester, permissionId, updateData) => {
     try {
         if (isEmptyObject(updateData)) {
@@ -231,14 +290,41 @@ const updatePermissionById = async (requester, permissionId, updateData) => {
     }
 };
 
+/**
+ * deletePermissionList - Service function to delete a list of permissions by their IDs. This function
+ * utilizes a shared service to handle the deletion process.
+ *
+ * @param {Object} requester - The user deleting the permissions.
+ * @param {Array<String>} permissionIds - The IDs of the permissions to delete.
+ * @returns {Promise<Object>} - The result of the deletion process.
+ */
 const deletePermissionList = async (requester, permissionIds) => {
     return await service.deleteResourcesByList(requester, PermissionsModel, permissionIds, 'permission');
 };
 
+/**
+ * deletePermissionById - Service function to delete a permission by its ID. This function utilizes a
+ * shared service to handle the deletion process.
+ *
+ * @param {Object} requester - The user deleting the permission.
+ * @param {String} permissionId - The ID of the permission to delete.
+ * @returns {Promise<Object>} - The result of the deletion process.
+ */
 const deletePermissionById = async (requester, permissionId) => {
     return service.deleteResourceById(requester, PermissionsModel, permissionId, 'permission');
 };
 
+/**
+ * permissionsService - Object containing all the defined service functions for permissions management:
+ *
+ * - createPermission: Service function to create a new permission.
+ * - createDefaultPermissionList: Service function to create a default list of permissions.
+ * - getPermissionList: Service function to retrieve a list of permissions based on provided parameters.
+ * - getPermissionById: Service function to retrieve a permission by its ID.
+ * - updatePermissionById: Service function to update a permission by its ID.
+ * - deletePermissionList: Service function to delete a list of permissions by their IDs.
+ * - deletePermissionById: Service function to delete a permission by its ID.
+ */
 const permissionsService = {
     createPermission,
     createDefaultPermissionList,

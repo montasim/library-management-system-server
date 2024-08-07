@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This file defines the service functions for managing publications. These services include
+ * functions for creating, retrieving, updating, and deleting publications. The services interact with the
+ * Publications model and utilize various utilities for logging, response handling, and validation.
+ * Additionally, functions for populating related fields and managing publications lists are provided.
+ */
+
 import PublicationsModel from './publications.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../utilities/errorResponse.js';
@@ -10,6 +17,12 @@ import AdminActivityLoggerModel
 import adminActivityLoggerConstants
     from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
+/**
+ * populatePublicationFields - A helper function to populate related fields in the publication documents.
+ *
+ * @param {Object} query - The Mongoose query object.
+ * @returns {Promise<Object>} - The query result with populated fields.
+ */
 const populatePublicationFields = async (query) => {
     return await query
         .populate({
@@ -24,6 +37,14 @@ const populatePublicationFields = async (query) => {
 
 const pronounsListParamsMapping = {};
 
+/**
+ * createPublication - Service function to create a new publication. This function checks for the existence
+ * of a publication with the same name, creates the publication if it doesn't exist, and logs the creation action.
+ *
+ * @param {Object} requester - The user creating the publication.
+ * @param {Object} newPublicationData - The data for the new publication.
+ * @returns {Promise<Object>} - The created publication or an error response.
+ */
 const createPublication = async (requester, newPublicationData) => {
     try {
         const exists = await PublicationsModel.exists({
@@ -68,14 +89,37 @@ const createPublication = async (requester, newPublicationData) => {
     }
 };
 
+/**
+ * getPublicationList - Service function to retrieve a list of publications based on provided parameters.
+ * This function utilizes a shared service to handle the retrieval and mapping of parameters.
+ *
+ * @param {Object} params - The query parameters for retrieving the publications list.
+ * @returns {Promise<Object>} - The retrieved list of publications.
+ */
 const getPublicationList = async (params) => {
     return service.getResourceList(PublicationsModel, populatePublicationFields, params, pronounsListParamsMapping, 'publication');
 };
 
+/**
+ * getPublicationById - Service function to retrieve a publication by its ID. This function utilizes a shared
+ * service to handle the retrieval and population of related fields.
+ *
+ * @param {String} publicationId - The ID of the publication to retrieve.
+ * @returns {Promise<Object>} - The retrieved publication or an error response.
+ */
 const getPublicationById = async (publicationId) => {
     return service.getResourceById(PublicationsModel, populatePublicationFields, publicationId, 'publication');
 };
 
+/**
+ * updatePublicationById - Service function to update a publication by its ID. This function checks for the
+ * existence of the publication, updates it with the provided data, and logs the update action.
+ *
+ * @param {Object} requester - The user updating the publication.
+ * @param {String} publicationId - The ID of the publication to update.
+ * @param {Object} updateData - The data to update the publication with.
+ * @returns {Promise<Object>} - The updated publication or an error response.
+ */
 const updatePublicationById = async (requester, publicationId, updateData) => {
     try {
         if (isEmptyObject(updateData)) {
@@ -140,14 +184,40 @@ const updatePublicationById = async (requester, publicationId, updateData) => {
     }
 };
 
+/**
+ * deletePublicationList - Service function to delete a list of publications by their IDs. This function
+ * utilizes a shared service to handle the deletion process.
+ *
+ * @param {Object} requester - The user deleting the publications.
+ * @param {Array<String>} publicationIds - The IDs of the publications to delete.
+ * @returns {Promise<Object>} - The result of the deletion process.
+ */
 const deletePublicationList = async (requester, publicationIds) => {
     return await service.deleteResourcesByList(requester, PublicationsModel, publicationIds, 'publication');
 };
 
+/**
+ * deletePublicationById - Service function to delete a publication by its ID. This function utilizes a
+ * shared service to handle the deletion process.
+ *
+ * @param {Object} requester - The user deleting the publication.
+ * @param {String} publicationId - The ID of the publication to delete.
+ * @returns {Promise<Object>} - The result of the deletion process.
+ */
 const deletePublicationById = async (requester, publicationId) => {
     return service.deleteResourceById(requester, PublicationsModel, publicationId, 'publication');
 };
 
+/**
+ * publicationsService - Object containing all the defined service functions for publications management:
+ *
+ * - createPublication: Service function to create a new publication.
+ * - getPublicationList: Service function to retrieve a list of publications based on provided parameters.
+ * - getPublicationById: Service function to retrieve a publication by its ID.
+ * - updatePublicationById: Service function to update a publication by its ID.
+ * - deletePublicationList: Service function to delete a list of publications by their IDs.
+ * - deletePublicationById: Service function to delete a publication by its ID.
+ */
 const publicationsService = {
     createPublication,
     getPublicationList,

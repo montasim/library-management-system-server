@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This file defines constants for permissions-related operations.
+ * These constants include validation criteria for permission names, such as length
+ * constraints and regular expression patterns. It also provides custom error messages
+ * for validation failures.
+ */
+
 const lengths = {
     NAME_MIN: 3,
     NAME_MAX: 100,

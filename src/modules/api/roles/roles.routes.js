@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the routes for managing roles using Express. It includes routes
+ * for creating, retrieving, updating, and deleting roles, and applies various middlewares for
+ * authentication, validation, caching, and method support.
+ */
+
 import express from 'express';
 
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';

@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This file sets up the routes for permissions-related operations in an Express application.
+ * It defines the endpoints for creating, retrieving, updating, and deleting permissions,
+ * as well as assigning default permissions. The routes include middleware for authentication,
+ * validation, and caching to ensure secure and efficient handling of requests.
+ */
+
 import express from 'express';
 
 import permissionsValidator from './permissions.validator.js';

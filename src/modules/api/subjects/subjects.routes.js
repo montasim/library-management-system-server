@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the routes for managing subjects using Express. It includes routes
+ * for creating, retrieving, updating, and deleting subjects, and applies various middlewares for
+ * authentication, validation, caching, and method support.
+ */
+
 import express from 'express';
 
 import subjectsController from './subjects.controller.js';

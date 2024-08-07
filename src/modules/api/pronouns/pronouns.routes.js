@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the routes for managing pronouns using Express. It includes routes
+ * for creating, retrieving, updating, and deleting pronouns, and applies various middlewares for
+ * authentication, validation, caching, and method support.
+ */
+
 import express from 'express';
 
 import pronounsValidator from './pronouns.validator.js';
