@@ -1,9 +1,48 @@
+/**
+ * @fileoverview This file defines the Mongoose schema for the Admin model. The schema includes
+ * fields for personal details, contact information, department, designation, authentication
+ * details, verification tokens, login and session management, activity tracking, appearance
+ * settings, and status indicators. The schema also includes pre-save middleware to prevent
+ * updating of certain fields and uses shared schema components for consistency.
+ */
+
 import mongoose from 'mongoose';
 
 import adminConstants from './admin.constants.js';
 import sharedSchema from '../../../shared/schema.js';
 
-// Schema definition
+/**
+ * adminSchema - Mongoose schema for the Admin model. This schema defines the structure
+ * and constraints for storing admin-related data in the database. It includes:
+ *
+ * - name: String (required, minLength, maxLength)
+ * - image: Embedded schema for image details
+ * - email: Embedded schema for email details
+ * - mobile: Embedded schema for mobile details
+ * - address: Embedded schema for address details
+ * - department: String (minLength, maxLength)
+ * - designation: Embedded schema for role details
+ * - passwordHash: String (trimmed)
+ * - mustChangePassword: Embedded schema for password change requirement
+ * - isEmailVerified: Embedded schema for email verification status
+ * - isPhoneVerified: Embedded schema for mobile verification status
+ * - emailVerifyToken: Embedded schema for email verification token
+ * - emailVerifyTokenExpires: Embedded schema for email verification token expiry
+ * - phoneVerifyToken: Embedded schema for mobile verification token
+ * - phoneVerifyTokenExpires: Embedded schema for mobile verification token expiry
+ * - resetPasswordVerifyToken: Embedded schema for password reset verification token
+ * - resetPasswordVerifyTokenExpires: Embedded schema for password reset verification token expiry
+ * - login: Embedded schema for login details
+ * - sessions: Array of embedded schemas for session details
+ * - activities: Array of embedded schemas for activity tracking
+ * - appearance: Embedded schema for appearance settings
+ * - isActive: Embedded schema for active status
+ * - createdBy: Embedded schema for created by admin details
+ * - updatedBy: Embedded schema for updated by admin details
+ *
+ * The schema also includes automatic timestamping for creation and updates,
+ * and a pre-update middleware to prevent email updates.
+ */
 const adminSchema = new mongoose.Schema(
     {
         name: {
@@ -77,6 +116,14 @@ const adminSchema = new mongoose.Schema(
     }
 );
 
+/**
+ * Pre-update Middleware - A middleware that runs before update operations to prevent updating the email field.
+ * This middleware checks if the update operation includes a modification to the email field and throws an error
+ * if such an update is attempted.
+ *
+ * @param {Function} next - The next middleware function in the stack.
+ * @throws {Error} - Throws an error if an attempt is made to update the email field.
+ */
 adminSchema.pre(['updateOne', 'findOneAndUpdate'], function (next) {
     const update = this.getUpdate();
 

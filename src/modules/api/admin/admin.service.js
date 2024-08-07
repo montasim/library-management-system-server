@@ -1,3 +1,11 @@
+/**
+ * @fileoverview This file defines and exports the `adminService` object, which contains various
+ * asynchronous functions to manage admin-related operations. These functions include creating a new admin,
+ * verifying an admin, resending verification emails, requesting a new password, resetting passwords,
+ * logging in, and logging out. The service functions utilize models, utilities, and other services
+ * to perform the necessary operations and return standardized responses.
+ */
+
 import bcrypt from 'bcrypt';
 
 import AdminModel from './admin.model.js';
@@ -25,6 +33,17 @@ import AdminActivityLoggerModel
 import adminActivityLoggerConstants
     from './adminActivityLogger/adminActivityLogger.constants.js';
 
+/**
+ * createNewAdmin - Asynchronously creates a new admin user. It validates the email, checks for existing admin and user accounts,
+ * generates a verification token, sends a verification email, and logs the admin creation activity.
+ *
+ * @function
+ * @async
+ * @param {Object} requester - The user making the request.
+ * @param {Object} adminData - The data for the new admin user.
+ * @param {Object} hostData - The host data for generating links.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const createNewAdmin = async (requester, adminData, hostData) => {
     try {
         const existingAdmin = await AdminModel.findOne({
@@ -128,6 +147,16 @@ const createNewAdmin = async (requester, adminData, hostData) => {
     }
 };
 
+/**
+ * verifyAdmin - Asynchronously verifies an admin user using a token. It validates the token, sets the email verified flag,
+ * generates a temporary password, sends a welcome email, and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {string} token - The verification token.
+ * @param {Object} hostData - The host data for generating links.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const verifyAdmin = async (token, hostData) => {
     try {
         // Hash the plain token to compare with the stored hash
@@ -213,6 +242,16 @@ const verifyAdmin = async (token, hostData) => {
     }
 };
 
+/**
+ * resendAdminVerification - Asynchronously resends the verification email to an admin user. It generates a new verification token,
+ * updates the admin user, sends the verification email, and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {string} adminId - The ID of the admin user.
+ * @param {Object} hostData - The host data for generating links.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const resendAdminVerification = async (adminId, hostData) => {
     try {
         const adminDetails = await AdminModel.findById(adminId);
@@ -287,6 +326,16 @@ const resendAdminVerification = async (adminId, hostData) => {
     }
 };
 
+/**
+ * requestNewAdminPassword - Asynchronously handles the request for a new admin password. It validates the email, generates
+ * a verification token, updates the admin user, sends the password reset email, and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {string} email - The email address of the admin user.
+ * @param {Object} hostData - The host data for generating links.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const requestNewAdminPassword = async (email, hostData) => {
     try {
         const adminDetails = await AdminModel.findOne({
@@ -366,6 +415,17 @@ const requestNewAdminPassword = async (email, hostData) => {
     }
 };
 
+/**
+ * resetAdminPassword - Asynchronously resets an admin password using a token. It validates the token, compares the old password,
+ * validates the new password, updates the admin user, sends a success email, and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {Object} hostData - The host data for generating links.
+ * @param {string} token - The reset password token.
+ * @param {Object} adminData - The data for resetting the admin password.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const resetAdminPassword = async (hostData, token, adminData) => {
     try {
         // Hash the plain token to compare with the stored hash
@@ -462,6 +522,17 @@ const resetAdminPassword = async (hostData, token, adminData) => {
     }
 };
 
+/**
+ * adminLogin - Asynchronously handles admin user login. It validates the email and password, generates an authentication token,
+ * updates the admin user, sends a success email, and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {Object} adminData - The login data for the admin user.
+ * @param {Object} userAgent - The user agent data.
+ * @param {Object} device - The device data.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const adminLogin = async (adminData, userAgent, device) => {
     try {
         // Consolidate multiple populate calls into a single, efficient query
@@ -608,6 +679,15 @@ const adminLogin = async (adminData, userAgent, device) => {
     }
 };
 
+/**
+ * adminLogout - Asynchronously handles admin user logout. It validates the JWT token, performs logout actions,
+ * and returns a standardized response.
+ *
+ * @function
+ * @async
+ * @param {Object} req - The Express request object.
+ * @returns {Promise<Object>} - A promise that resolves to a standardized response.
+ */
 const adminLogout = async (req) => {
     try {
         // Assuming these functions are well-defined and return relevant details or throw an error if something goes wrong.
@@ -643,6 +723,20 @@ const adminLogout = async (req) => {
     }
 };
 
+/**
+ * adminService - An object that holds various asynchronous functions for managing admin-related operations.
+ * These functions perform actions such as creating a new admin, verifying an admin, resending verification
+ * emails, requesting a new password, resetting passwords, logging in, and logging out.
+ *
+ * @typedef {Object} AdminService
+ * @property {Function} createNewAdmin - Asynchronously creates a new admin user.
+ * @property {Function} verifyAdmin - Asynchronously verifies an admin user using a token.
+ * @property {Function} resendAdminVerification - Asynchronously resends the verification email to an admin user.
+ * @property {Function} requestNewAdminPassword - Asynchronously handles the request for a new admin password.
+ * @property {Function} resetAdminPassword - Asynchronously resets an admin password using a token.
+ * @property {Function} adminLogin - Asynchronously handles admin user login.
+ * @property {Function} adminLogout - Asynchronously handles admin user logout.
+ */
 const adminService = {
     createNewAdmin,
     verifyAdmin,

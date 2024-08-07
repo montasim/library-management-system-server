@@ -1,9 +1,28 @@
+/**
+ * @fileoverview This file defines and exports Joi validation schemas for admin-related operations.
+ * These schemas are used to validate the input data for various admin endpoints, including
+ * creating a new admin, verifying an admin, resending verification emails, requesting a new password,
+ * resetting passwords, and logging in. The validation schemas utilize the validationService for
+ * common field validations and include custom error messages for specific validation rules.
+ */
+
 import Joi from 'joi';
 import validationService from '../../../service/validation.service.js';
 import adminConstants from './admin.constants.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
 
-// Define base schema for subjects
+/**
+ * adminSchema - An object that holds various Joi validation schemas for admin-related operations.
+ * These schemas ensure that the input data for admin endpoints meet the required criteria.
+ *
+ * @typedef {Object} AdminSchema
+ * @property {Object} createNewAdmin - Joi schema for validating the data to create a new admin.
+ * @property {Object} verifyAdmin - Joi schema for validating the data to verify an admin.
+ * @property {Object} resendAdminVerification - Joi schema for validating the data to resend admin verification.
+ * @property {Object} requestNewAdminPassword - Joi schema for validating the data to request a new admin password.
+ * @property {Object} resetAdminPassword - Joi schema for validating the data to reset an admin password.
+ * @property {Object} login - Joi schema for validating the data for admin login.
+ */
 const authSchemaBase = Joi.object({
     name: validationService
         .createStringField(
@@ -35,25 +54,61 @@ const authSchemaBase = Joi.object({
     id: validationService.objectIdField,
 }).strict();
 
+/**
+ * createNewAdmin - Joi schema for validating the data to create a new admin.
+ * Ensures that the name and email fields are required and meet the specified criteria.
+ *
+ * @function
+ */
 const createNewAdmin = authSchemaBase.fork(['name', 'email'], (field) =>
     field.required()
 );
 
+/**
+ * verifyAdmin - Joi schema for validating the data to verify an admin.
+ * Ensures that the token field is required and meets the specified criteria.
+ *
+ * @function
+ */
 const verifyAdmin = authSchemaBase.fork(['token'], (field) => field.required());
 
+/**
+ * resendAdminVerification - Joi schema for validating the data to resend admin verification.
+ * Ensures that the id field is required and meets the specified criteria.
+ *
+ * @function
+ */
 const resendAdminVerification = authSchemaBase.fork(['id'], (field) =>
     field.required()
 );
 
+/**
+ * requestNewAdminPassword - Joi schema for validating the data to request a new admin password.
+ * Ensures that the email field is required and meets the specified criteria.
+ *
+ * @function
+ */
 const requestNewAdminPassword = authSchemaBase.fork(['email'], (field) =>
     field.required()
 );
 
+/**
+ * resetAdminPassword - Joi schema for validating the data to reset an admin password.
+ * Ensures that the oldPassword, newPassword, and confirmNewPassword fields are required and meet the specified criteria.
+ *
+ * @function
+ */
 const resetAdminPassword = authSchemaBase.fork(
     ['oldPassword', 'newPassword', 'confirmNewPassword'],
     (field) => field.required()
 );
 
+/**
+ * login - Joi schema for validating the data for admin login.
+ * Ensures that the email and password fields are required and meet the specified criteria.
+ *
+ * @function
+ */
 const login = authSchemaBase.fork(['email', 'password'], (field) =>
     field.required()
 );

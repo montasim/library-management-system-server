@@ -1,7 +1,28 @@
+/**
+ * @fileoverview This file defines the Mongoose schema for logging administrative activities.
+ * The schema captures information about user actions, including the user ID, action type,
+ * description, additional details, and affected entity IDs. It also includes automatic timestamping
+ * for the creation of each log entry.
+ */
+
 import mongoose, { Schema } from 'mongoose';
 
 import adminActivityLoggerConstants from './adminActivityLogger.constants.js';
 
+/**
+ * adminActivityLoggerSchema - Mongoose schema for logging administrative activities.
+ * This schema defines the structure and constraints for storing admin activity logs in the database.
+ * It includes:
+ *
+ * - user: ObjectId (required, reference to Admin)
+ * - action: String (required, must be one of the predefined action types)
+ * - description: String (required, brief description of the action)
+ * - details: Mixed (optional, additional details about the action)
+ * - affectedId: Array of ObjectId (optional, IDs of the entities affected by the action)
+ *
+ * The schema also includes automatic timestamping for the creation of each log entry,
+ * but does not update the timestamp on updates.
+ */
 const adminActivityLoggerSchema = new mongoose.Schema(
     {
         user: {
