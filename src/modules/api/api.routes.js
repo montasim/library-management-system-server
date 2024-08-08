@@ -32,7 +32,7 @@ const router = express.Router();
 const docsPath = join(process.cwd(), 'src', 'documentation', 'code');
 
 // Read the Swagger JSON from the file system
-const swaggerDocument = JSON.parse(fs.readFileSync('swagger.json', 'utf8'));
+const swaggerDocument = JSON.parse(fs.readFileSync('./swagger.json', 'utf8'));
 
 // Serve JSDoc documentation on the /api/v1/code-docs route
 router.use('/code-docs', express.static(docsPath));
