@@ -169,6 +169,34 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
 
 <br/>
 
+### Docker setup
+
+1. **Build the Docker Compose Services:**
+
+    ```bash
+    docker-compose -f docker-compose-development.yml build
+    ```
+
+2. **Run the Docker Compose Services:**
+
+    ```bash
+    docker-compose -f docker-compose-development.yml up
+    ```
+
+3. **Stop the Containers:**
+
+    ```bash
+    docker-compose -f docker-compose-development.yml down
+    ```
+
+4. **Rebuild the Containers:**
+
+    ```bash
+    docker-compose -f docker-compose-development.yml up --build
+    ```
+   
+<br/>
+
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=208&height=40&lines=RUNNING+THE+SCRIPT" alt="RUNNING THE SCRIPT" id="running-the-script" />
 
 1. **Running the Application:**

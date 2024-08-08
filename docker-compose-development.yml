@@ -8,7 +8,7 @@ services:
         build:
             # Build configuration for the service.
             context: . # The context is the set of files located in the current directory.
-            dockerfile: Dockerfile.development # Specifies which Dockerfile to use for the build process.
+            dockerfile: Dockerfile # Specifies which Dockerfile to use for the build process.
         ports:
             - '5000:5000' # Binds the host port 5000 to the container port 5000.
         env_file:
