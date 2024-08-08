@@ -14,6 +14,8 @@
 </div>
 <!-- repository summary badges end -->
 
+<br/>
+
 This Library Management System Server is a robust backend API developed using Express, designed to facilitate comprehensive management of library operations. It supports a wide range of features from user authentication and book management to permission controls and user profile management. The system ensures data integrity and security using bearer token authentication, making it ideal for educational institutions, public libraries, and private collections.
 
 [//]: # 'CONTENTS'
