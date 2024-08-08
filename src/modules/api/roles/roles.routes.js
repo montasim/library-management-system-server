@@ -17,6 +17,89 @@ import accessTypesConstants from '../../../constant/accessTypes.constants.js';
 
 const router = express.Router();
 
+/**
+ * @openapi
+ * /roles:
+ *   post:
+ *     summary: Creates a new role.
+ *     description: Creates a new role with specified permissions. This endpoint requires admin permissions.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Role'
+ *     responses:
+ *       201:
+ *         description: Role created successfully.
+ *       400:
+ *         description: Invalid data provided.
+ *     tags:
+ *       - Role Management
+ *   get:
+ *     summary: Retrieves a list of roles.
+ *     description: Fetches a list of roles based on pagination and filters. Requires admin permissions.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number of the roles list
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of roles per page
+ *     responses:
+ *       200:
+ *         description: A list of roles.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Role'
+ *       404:
+ *         description: No roles found.
+ *     tags:
+ *       - Role Management
+ *   delete:
+ *     summary: Deletes a list of roles by IDs.
+ *     description: Deletes roles based on a list of IDs provided in the request. Requires admin permissions.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ids:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: List of role IDs to delete
+ *     responses:
+ *       200:
+ *         description: Roles deleted successfully.
+ *       400:
+ *         description: Invalid request format.
+ *     tags:
+ *       - Role Management
+ *   all:
+ *     summary: Handles unsupported methods.
+ *     description: Returns an error if an unsupported HTTP method is used.
+ *     responses:
+ *       405:
+ *         description: Method not supported.
+ *     tags:
+ *       - Role Management
+ */
 router
     .route('/')
     .post(
@@ -48,6 +131,29 @@ router
     )
     .all(methodNotSupported);
 
+/** @openapi
+ * /roles/default:
+ *   post:
+ *     summary: Creates or updates the default role.
+ *     description: Creates or updates the default role with all available permissions. Requires admin permissions.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       201:
+ *         description: Default role created or updated successfully.
+ *       400:
+ *         description: Failed to create or update the default role.
+ *     tags:
+ *       - Role Management
+ *   all:
+ *     summary: Handles unsupported methods.
+ *     description: Returns an error if an unsupported HTTP method is used.
+ *     responses:
+ *       405:
+ *         description: Method not supported.
+ *     tags:
+ *       - Role Management
+ */
 router
     .route('/default')
     .post(
@@ -60,6 +166,66 @@ router
     )
     .all(methodNotSupported);
 
+/** @openapi
+ * /roles/{roleId}:
+ *   get:
+ *     summary: Retrieves a role by ID.
+ *     description: Fetches a role by its ID. Requires admin permissions.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: roleId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the role to retrieve.
+ *     responses:
+ *       200:
+ *         description: Role retrieved successfully.
+ *       404:
+ *         description: Role not found.
+ *     tags:
+ *       - Role Management
+ *   put:
+ *     summary: Updates a role by ID.
+ *     description: Updates the specified role's details by ID. Requires admin permissions.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Role'
+ *     responses:
+ *       200:
+ *         description: Role updated successfully.
+ *       404:
+ *         description: Role not found.
+ *     tags:
+ *       - Role Management
+ *   delete:
+ *     summary: Deletes a role by ID.
+ *     description: Deletes the specified role by its ID. Requires admin permissions.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Role deleted successfully.
+ *       404:
+ *         description: Role not found.
+ *     tags:
+ *       - Role Management
+ *   all:
+ *     summary: Handles unsupported methods.
+ *     description: Returns an error if an unsupported HTTP method is used.
+ *     responses:
+ *       405:
+ *         description: Method not supported.
+ *     tags:
+ *       - Role Management
+ */
 router
     .route(`/:${routesConstants.roles.params}`)
     .get(
