@@ -26,8 +26,83 @@ import configuration from '../../../configuration/configuration.js';
 const router = express.Router();
 
 /**
- * Route for creating, retrieving, and deleting books.
- * Includes middleware for authentication, validation, file upload, and caching.
+ * @openapi
+ * /books/:
+ *   post:
+ *     summary: Create a new book.
+ *     description: This endpoint allows admin users to create a new book record, including uploading an image for the book.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the book.
+ *               writer:
+ *                 type: string
+ *                 description: ID of the writer.
+ *               publication:
+ *                 type: string
+ *                 description: ID of the publication.
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file for the book.
+ *     responses:
+ *       201:
+ *         description: Book created successfully.
+ *       400:
+ *         description: Validation error or bad request.
+ *     tags:
+ *       - Book Management
+ *   get:
+ *     summary: Get a list of books.
+ *     description: Retrieves a list of books based on optional query parameters.
+ *     responses:
+ *       200:
+ *         description: A list of books.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Book'
+ *     tags:
+ *       - Book Management
+ *   delete:
+ *     summary: Delete multiple books.
+ *     description: Allows admin users to delete multiple books based on a list of book IDs.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               bookIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: List of book IDs to delete.
+ *     responses:
+ *       200:
+ *         description: Books deleted successfully.
+ *     tags:
+ *       - Book Management
+ *   all:
+ *     summary: Handles unsupported methods for the main books route.
+ *     responses:
+ *       405:
+ *         description: Method not supported.
+ *     tags:
+ *       - Book Management
  */
 router
     .route('/')
@@ -89,8 +164,86 @@ router.use(`/${routesConstants.requestBooks.routes}`, requestBooksRoutes);
 router.use(`/${routesConstants.returnBooks.routes}`, returnBooksRoutes);
 
 /**
- * Route for retrieving, updating, and deleting a specific book by ID.
- * Includes middleware for authentication, validation, file upload, and caching.
+ * @openapi
+ * /books/{bookId}:
+ *   get:
+ *     summary: Get a book by ID.
+ *     description: Retrieves detailed information about a specific book by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: bookId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the book to retrieve.
+ *     responses:
+ *       200:
+ *         description: Detailed book information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Book'
+ *     tags:
+ *       - Book Management
+ *   put:
+ *     summary: Update a book by ID.
+ *     description: Updates details of a book including the option to update the image.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the book to update.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               writer:
+ *                 type: string
+ *               publication:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Book updated successfully.
+ *       404:
+ *         description: Book not found.
+ *     tags:
+ *       - Book Management
+ *   delete:
+ *     summary: Delete a book by ID.
+ *     description: Deletes a single book by its ID.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the book to delete.
+ *     responses:
+ *       200:
+ *         description: Book deleted successfully.
+ *     tags:
+ *       - Book Management
+ *   all:
+ *     summary: Handles unsupported methods for the book ID route.
+ *     responses:
+ *       405:
+ *         description: Method not supported.
+ *     tags:
+ *       - Book Management
  */
 router
     .route(`/:${routesConstants.books.params}`)

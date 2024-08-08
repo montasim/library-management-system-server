@@ -16,10 +16,80 @@ import routesConstants from '../../../../constant/routes.constants.js';
 const router = express.Router();
 
 /**
- * Route for creating and retrieving lend books.
- * - POST /: Create a new lend book record. Requires ADMIN access and validates the request body.
- * - GET /: Retrieve a list of lend books. Requires ADMIN access and validates the query parameters.
- * - ALL /: Responds with a methodNotSupported handler for unsupported HTTP methods.
+ * @openapi
+ * /lend-books:
+ *   post:
+ *     summary: Creates a lend book record.
+ *     description: Creates a new lend book record with the provided data. Access is limited to admins.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user:
+ *                 type: string
+ *                 description: User ID of the lender.
+ *               bookId:
+ *                 type: string
+ *                 description: Book ID of the book to lend.
+ *               from:
+ *                 type: string
+ *                 format: date
+ *                 description: Start date of the lending period.
+ *               to:
+ *                 type: string
+ *                 format: date
+ *                 description: End date of the lending period.
+ *               remarks:
+ *                 type: string
+ *                 description: Additional remarks about the lending.
+ *     responses:
+ *       201:
+ *         description: Lend book record created successfully.
+ *       404:
+ *         description: No book or user found with the provided ID.
+ *       409:
+ *         description: Book is already lent or already in your lend list.
+ *       400:
+ *         description: Invalid date provided for 'from' or 'to'.
+ *     tags:
+ *       - Lend Books Management
+ *   get:
+ *     summary: Retrieves all lend book records.
+ *     description: Retrieves all lend book records for the authenticated admin user.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved lend book records.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                   description: Total number of lend books.
+ *                 lendBooks:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/LendBook'
+ *       404:
+ *         description: No lend books found.
+ *     tags:
+ *       - Lend Books Management
+ *   all:
+ *     summary: Handles unsupported methods.
+ *     description: Returns an error if an unsupported HTTP method is used.
+ *     responses:
+ *       405:
+ *         description: Method not supported.
+ *     tags:
+ *       - Lend Books Management
  */
 router
     .route('/')

@@ -18,10 +18,57 @@ import routesConstants from '../../../../constant/routes.constants.js';
 const router = express.Router();
 
 /**
- * Route to handle creation and retrieval of requested books.
- * - POST: Authenticated users can create a new book request. The request includes an image upload.
- * - GET: Authenticated admins can retrieve all requested books.
- * - All other methods are not supported.
+ * @openapi
+ * /request-books:
+ *   post:
+ *     summary: Create a new book request.
+ *     description: Allows a user to create a new book request. This operation requires an image upload and user authentication.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image of the requested book.
+ *               title:
+ *                 type: string
+ *                 description: Title of the requested book.
+ *               author:
+ *                 type: string
+ *                 description: Author of the requested book.
+ *     responses:
+ *       200:
+ *         description: Book request created successfully.
+ *       400:
+ *         description: Invalid request data.
+ *     tags:
+ *       - Request Books
+ *   get:
+ *     summary: Retrieve all book requests.
+ *     description: Fetches all book requests. Accessible only to admins.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all book requests.
+ *       404:
+ *         description: No book requests found.
+ *     tags:
+ *       - Request Books
+ *   all:
+ *     summary: Handles unsupported methods.
+ *     description: Returns an error if an unsupported HTTP method is used.
+ *     responses:
+ *       405:
+ *         description: Method not supported.
+ *     tags:
+ *       - Request Books
  */
 router
     .route('/')
@@ -38,9 +85,35 @@ router
     .all(methodNotSupported);
 
 /**
- * Route to handle retrieval of a specific requested book by its ID.
- * - GET: Authenticated admins can retrieve a requested book by its ID.
- * - All other methods are not supported.
+ * @openapi
+ * /request-books/{bookId}:
+ *   get:
+ *     summary: Retrieve a book request by ID.
+ *     description: Fetches a specific book request by its ID. Accessible only to admins.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the book request.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the book request.
+ *       404:
+ *         description: Book request not found.
+ *     tags:
+ *       - Request Books
+ *   all:
+ *     summary: Handles unsupported methods.
+ *     description: Returns an error if an unsupported HTTP method is used.
+ *     responses:
+ *       405:
+ *         description: Method not supported.
+ *     tags:
+ *       - Request Books
  */
 router
     .route(`/:${routesConstants.requestBooks.params}`)
@@ -52,9 +125,35 @@ router
     .all(methodNotSupported);
 
 /**
- * Route to handle retrieval of requested books by owner ID.
- * - GET: Authenticated admins can retrieve requested books by the owner's ID.
- * - All other methods are not supported.
+ * @openapi
+ * /request-books/owner/{ownerId}:
+ *   get:
+ *     summary: Retrieve book requests by owner ID.
+ *     description: Fetches all book requests associated with a specific owner ID. Accessible only to admins.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: ownerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the book request owner.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved book requests for the specified owner.
+ *       404:
+ *         description: No book requests found for this owner.
+ *     tags:
+ *       - Request Books
+ *   all:
+ *     summary: Handles unsupported methods.
+ *     description: Returns an error if an unsupported HTTP method is used.
+ *     responses:
+ *       405:
+ *         description: Method not supported.
+ *     tags:
+ *       - Request Books
  */
 router
     .route('/owner/:ownerId')

@@ -13,12 +13,50 @@ import methodNotSupported from '../../../../shared/methodNotSupported.js';
 const router = express.Router();
 
 /**
- * Desired Books Routes - This function configures the Express router with routes for desired books-related operations.
- *
- * - GET `/`: Validates the request and calls the getDesiredBooks controller to retrieve a list of desired books.
- * - All other methods on this route return a "method not supported" response.
- *
- * @returns {Object} - The configured Express router instance.
+ * @openapi
+ * /desired-books:
+ *   get:
+ *     summary: Retrieves a list of desired books.
+ *     description: Retrieves a list of the top 10 most desired books based on user requests. This endpoint uses MongoDB aggregation to fetch details of the most requested books.
+ *     responses:
+ *       200:
+ *         description: A list of desired books successfully retrieved.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   description: The response status.
+ *                 message:
+ *                   type: string
+ *                   description: A message describing the outcome of the operation.
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       bookDetails:
+ *                         type: object
+ *                         description: Details of the book.
+ *                       count:
+ *                         type: integer
+ *                         description: The number of times the book has been requested.
+ *       404:
+ *         description: No desired books found at the moment.
+ *       500:
+ *         description: Internal server error when attempting to fetch desired books.
+ *     tags:
+ *       - Book Management
+ *   all:
+ *     summary: Handles unsupported methods for the desired books endpoint.
+ *     description: Returns an error if an unsupported HTTP method is used on the desired books endpoint.
+ *     responses:
+ *       405:
+ *         description: Method not supported.
+ *     tags:
+ *       - Book Management
  */
 router
     .route('/')
