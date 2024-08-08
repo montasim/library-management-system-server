@@ -38,7 +38,6 @@ const isProduction = configuration.env === environment.PRODUCTION;
  * during development and more streamlined logging in production.
  *
  * @constant {Object} loggerService - The configured Winston logger instance.
- * @type {import('winston').Logger}
  * @example
  * import loggerService from './services/loggerService.js';
  *
