@@ -16,7 +16,6 @@ import routesConstants from '../../../constant/routes.constants.js';
 
 const router = express.Router();
 
-
 /**
  * @openapi
  * /:
