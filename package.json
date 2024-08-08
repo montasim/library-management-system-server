@@ -34,6 +34,7 @@
     "release:patch": "standard-version --release-as patch",
     "postrelease": "yarn push --tags",
     "generate-docs": "jsdoc -c jsdoc.json",
+    "generate-docs:api": "node --experimental-modules swaggerConfig.js",
     "clean": "yarn autoclean --init",
     "postinstall": "yarn autoclean --force && yarn build"
   },
@@ -90,6 +91,8 @@
     "jsdoc": "^4.0.3",
     "nodemon": "^3.1.4",
     "prettier": "^3.3.2",
-    "standard-version": "^9.5.0"
+    "standard-version": "^9.5.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }

@@ -5,6 +5,8 @@
  */
 
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
 
 import authRoutes from './auth/auth.routes.js';
 import booksRoutes from './books/books.routes.js';
@@ -25,6 +27,13 @@ import accessTypesConstants from '../../constant/accessTypes.constants.js';
 
 const router = express.Router();
 
+// Read the Swagger JSON from the file system
+const swaggerDocument = JSON.parse(fs.readFileSync('swagger.json', 'utf8'));
+
+// API documentation route setup
+router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Application routes
 router.use(`/${routesConstants.admin.routes}`, adminRoutes);
 router.use(`/${routesConstants.auth.routes}`, authRoutes);
 router.use(`/${routesConstants.books.routes}`, booksRoutes);
