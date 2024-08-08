@@ -31,14 +31,14 @@ const router = express.Router();
 // Path to the JSDoc documentation
 const docsPath = join(process.cwd(), 'src', 'documentation', 'code');
 
-// Read the Swagger JSON from the file system
-const swaggerDocument = JSON.parse(fs.readFileSync('./swagger.json', 'utf8'));
+// // Read the Swagger JSON from the file system
+// const swaggerDocument = JSON.parse(fs.readFileSync('swagger.json', 'utf8'));
 
 // Serve JSDoc documentation on the /api/v1/code-docs route
 router.use('/code-docs', express.static(docsPath));
 
-// API documentation route setup
-router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// // API documentation route setup
+// router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Application routes
 router.use(`/${routesConstants.admin.routes}`, adminRoutes);
