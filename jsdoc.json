@@ -2,7 +2,7 @@
   "source": {
     "include": ["src"],
     "includePattern": ".+\\.js$",
-    "excludePattern": "(build/|node_modules/|documentation/)"
+    "excludePattern": "(build/|node_modules/|documentation/|logs/)"
   },
   "plugins": ["plugins/markdown"],
   "templates": {
