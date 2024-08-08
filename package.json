@@ -34,7 +34,7 @@
     "release:patch": "standard-version --release-as patch",
     "postrelease": "yarn push --tags",
     "generate-docs": "jsdoc -c jsdoc.json",
-    "generate-docs:api": "node --experimental-modules swaggerConfig.js",
+    "generate-docs:api": "node --experimental-modules swagger.js",
     "clean": "yarn autoclean --init",
     "postinstall": "yarn autoclean --force && yarn build"
   },
