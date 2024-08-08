@@ -58,7 +58,6 @@ const mongoDbUrl =
     getEnvVar(process.env.MONGODB_URL, '') +
     (process.env.NODE_ENV === environment.TEST ? '-test' : '');
 
-
 /**
  * Defines a schema for validating environment variables using Joi. This schema ensures that all necessary
  * environment variables are not only present but also conform to expected formats and values. Each variable

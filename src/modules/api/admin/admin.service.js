@@ -28,10 +28,8 @@ import createAuthenticationToken from '../../../utilities/createAuthenticationTo
 import UsersModel from '../users/users.model.js';
 import loggerService from '../../../service/logger.service.js';
 import defaultConstants from '../../../constant/default.constants.js';
-import AdminActivityLoggerModel
-    from './adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from './adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from './adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from './adminActivityLogger/adminActivityLogger.constants.js';
 
 /**
  * createNewAdmin - Asynchronously creates a new admin user. It validates the email, checks for existing admin and user accounts,
@@ -129,7 +127,7 @@ const createNewAdmin = async (requester, adminData, hostData) => {
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.CREATE,
             description: `${adminData.email} created successfully.`,
-            details: JSON.stringify(newUser)
+            details: JSON.stringify(newUser),
         });
 
         return sendResponse(

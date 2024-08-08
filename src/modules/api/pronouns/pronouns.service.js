@@ -12,10 +12,8 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
-import AdminActivityLoggerModel
-    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 /**
  * populatePronounsFields - A helper function to populate related fields in the pronouns documents.
@@ -70,7 +68,7 @@ const createPronouns = async (requester, newPronounsData) => {
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.CREATE,
             description: `${newPronounsData.name} created successfully.`,
-            details: JSON.stringify(populatedPronouns)
+            details: JSON.stringify(populatedPronouns),
         });
 
         return sendResponse(
@@ -96,7 +94,13 @@ const createPronouns = async (requester, newPronounsData) => {
  * @returns {Promise<Object>} - The retrieved list of pronouns.
  */
 const getPronounsList = async (params) => {
-    return service.getResourceList(PronounsModel, populatePronounsFields, params, pronounsListParamsMapping, 'pronouns');
+    return service.getResourceList(
+        PronounsModel,
+        populatePronounsFields,
+        params,
+        pronounsListParamsMapping,
+        'pronouns'
+    );
 };
 
 /**
@@ -107,7 +111,12 @@ const getPronounsList = async (params) => {
  * @returns {Promise<Object>} - The retrieved pronoun or an error response.
  */
 const getPronounsById = async (pronounsId) => {
-    return service.getResourceById(PronounsModel, populatePronounsFields, pronounsId, 'pronouns');
+    return service.getResourceById(
+        PronounsModel,
+        populatePronounsFields,
+        pronounsId,
+        'pronouns'
+    );
 };
 
 /**
@@ -192,7 +201,12 @@ const updatePronounsById = async (requester, pronounsId, updateData) => {
  * @returns {Promise<Object>} - The result of the deletion process.
  */
 const deletePronounsList = async (requester, pronounsIds) => {
-    return await service.deleteResourcesByList(requester, PronounsModel, pronounsIds, 'pronouns');
+    return await service.deleteResourcesByList(
+        requester,
+        PronounsModel,
+        pronounsIds,
+        'pronouns'
+    );
 };
 
 /**
@@ -204,7 +218,12 @@ const deletePronounsList = async (requester, pronounsIds) => {
  * @returns {Promise<Object>} - The result of the deletion process.
  */
 const deletePronounsById = async (requester, pronounsId) => {
-    return service.deleteResourceById(requester, PronounsModel, pronounsId, 'pronouns');
+    return service.deleteResourceById(
+        requester,
+        PronounsModel,
+        pronounsId,
+        'pronouns'
+    );
 };
 
 /**

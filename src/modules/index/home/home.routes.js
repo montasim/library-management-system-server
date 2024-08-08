@@ -3,7 +3,6 @@
  * It includes routes for retrieving a list of items from the home service, with caching and method not supported handling.
  */
 
-
 import express from 'express';
 
 import homeController from './home.controller.js';

@@ -6,7 +6,6 @@
  * - Delete a user account.
  */
 
-
 import userAccountService from './userAccount.service.js';
 import controller from '../../../../../shared/controller.js';
 
@@ -25,10 +24,7 @@ import controller from '../../../../../shared/controller.js';
  * @returns {Promise<void>} - A promise that resolves with the confirmation of the account deletion.
  */
 const userAccountController = {
-    deleteAccount: controller.create(
-        userAccountService,
-        'deleteAccount'
-    ),
+    deleteAccount: controller.create(userAccountService, 'deleteAccount'),
 };
 
 export default userAccountController;

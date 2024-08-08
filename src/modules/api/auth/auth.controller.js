@@ -83,8 +83,6 @@ const authController = {
      * @function
      */
     logout: controller.logout(authService, 'logout'),
-
-
 };
 
 export default authController;

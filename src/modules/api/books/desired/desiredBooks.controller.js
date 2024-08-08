@@ -22,10 +22,7 @@ const desiredBooksController = {
      *
      * @function
      */
-    getDesiredBooks: controller.getList(
-        desiredBooksService,
-        'getDesiredBooks'
-    ),
+    getDesiredBooks: controller.getList(desiredBooksService, 'getDesiredBooks'),
 };
 
 export default desiredBooksController;

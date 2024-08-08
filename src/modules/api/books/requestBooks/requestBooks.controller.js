@@ -23,10 +23,7 @@ const requestBooksController = {
      * getRequestBooks - Controller method to retrieve a list of requested books.
      * Utilizes the getList method from the controller helper and requestBooksService.
      */
-    getRequestBooks: controller.getList(
-        requestBooksService,
-        'getRequestBooks'
-    ),
+    getRequestBooks: controller.getList(requestBooksService, 'getRequestBooks'),
 
     /**
      * getRequestBookByBookId - Controller method to fetch a requested book by its book ID.

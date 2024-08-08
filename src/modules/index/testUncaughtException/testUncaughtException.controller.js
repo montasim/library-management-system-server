@@ -13,7 +13,6 @@
  * @throws {Error} - Always throws an error with the message 'Simulated uncaught exception'.
  */
 
-
 const testUncaughtExceptionController = () => {
     throw new Error('Simulated uncaught exception');
 };

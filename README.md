@@ -48,20 +48,20 @@
         - Reset password: `PUT /api/{{VERSION}}/auth/reset-password/verification-token`
         - Logout: `GET /api/{{VERSION}}/auth/logout`
     - Profile
-        - Update personal information: 
-        - Reset password: 
-        - Delete account: 
+        - Update personal information:
+        - Reset password:
+        - Delete account:
     - Request
         - Request a book: `POST /api/{{VERSION}}/books/request`
-        - Cancel a requested book: 
-        - Get all requested books: 
+        - Cancel a requested book:
+        - Get all requested books:
     - Favorite books
         - Add a book to favorite: `POST /api/{{VERSION}}/books/favourite/book-id`
         - Remove a book from favorite: `GET /api/{{VERSION}}/books/favourite`
         - Get all favorite books: `DELETE /api/{{VERSION}}/books/favourite/book-id`
     - Recently visited
-        - Add a book to recently visited: 
-        - Get all recently visited books: 
+        - Add a book to recently visited:
+        - Get all recently visited books:
 2. Admin
     - Admin
         - Create admin: `POST /api/{{VERSION}}/admin`
@@ -80,13 +80,13 @@
         - Delete permission by ID: `DELETE /api/{{VERSION}}/permissions/permission-id`
         - Delete permission by list: `DELETE /api/{{VERSION}}/permissions?ids=permission-id1,permission-id2`
     - Role
-       - Create role: `POST /api/{{VERSION}}/roles`
-       - Create default role: `POST /api/{{VERSION}}/roles/default`
-       - Get all roles: `GET /api/{{VERSION}}/roles`
-       - Get role by ID: `GET /api/{{VERSION}}/roles/role-id`
-       - Update role by ID: `PUT /api/{{VERSION}}/roles/role-id`
-       - Delete role by ID: `DELETE /api/{{VERSION}}/roles/role-id`
-       - Delete role by list: `DELETE /api/{{VERSION}}/roles?ids=role-id1,role-id2`
+        - Create role: `POST /api/{{VERSION}}/roles`
+        - Create default role: `POST /api/{{VERSION}}/roles/default`
+        - Get all roles: `GET /api/{{VERSION}}/roles`
+        - Get role by ID: `GET /api/{{VERSION}}/roles/role-id`
+        - Update role by ID: `PUT /api/{{VERSION}}/roles/role-id`
+        - Delete role by ID: `DELETE /api/{{VERSION}}/roles/role-id`
+        - Delete role by list: `DELETE /api/{{VERSION}}/roles?ids=role-id1,role-id2`
     - Books
         - Add a new book: `POST /api/{{VERSION}}/books`
         - Update a book by ID: `PUT /api/{{VERSION}}/books/66ab542eb599109705f946ee`
@@ -339,7 +339,6 @@ Vercel is the recommended option for hosting the files since it is free and easy
 31. `winston-daily-rotate-file (v5.0.0)`: Transport for winston to log to daily rotated files.
 32. `winston-mongodb (v5.1.1)`: Transport for winston to log to a MongoDB collection.
 
-
 ### Development Dependencies
 
 1. `@babel/core (v7.24.7)`: The core of Babel, a JavaScript compiler.
@@ -349,8 +348,7 @@ Vercel is the recommended option for hosting the files since it is free and easy
 5. `nodemon (v3.1.4)`: A utility that will monitor for any changes in your source and automatically restart your server.
 6. `prettier (v3.3.2)`: An opinionated code formatter.
 7. `standard-version (v9.5.0)`: A utility for versioning and changelog management.
-8. 
-</details>
+8. </details>
 
 <br/>
 

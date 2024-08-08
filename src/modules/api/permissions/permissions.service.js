@@ -21,10 +21,8 @@ import generatePermissions from '../../../shared/generatePermissions.js';
 import RolesModel from '../roles/roles.model.js';
 import constants from '../../../constant/constants.js';
 import service from '../../../shared/service.js';
-import AdminActivityLoggerModel
-    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 /**
  * populatePermissionFields - A helper function to populate related fields in the permission documents.
@@ -104,7 +102,7 @@ const createPermission = async (requester, newPermissionData) => {
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.CREATE,
             description: `${newPermissionData.name} created successfully.`,
-            details: JSON.stringify(populatedPermission)
+            details: JSON.stringify(populatedPermission),
         });
 
         return sendResponse(
@@ -203,7 +201,13 @@ const createDefaultPermissionList = async (requester) => {
  * @returns {Promise<Object>} - The retrieved list of permissions.
  */
 const getPermissionList = async (requester, params) => {
-    return service.getResourceList(PermissionsModel, populatePermissionFields, params, permissionListParamsMapping, 'permission');
+    return service.getResourceList(
+        PermissionsModel,
+        populatePermissionFields,
+        params,
+        permissionListParamsMapping,
+        'permission'
+    );
 };
 
 /**
@@ -214,7 +218,12 @@ const getPermissionList = async (requester, params) => {
  * @returns {Promise<Object>} - The retrieved permission or an error response.
  */
 const getPermissionById = async (permissionId) => {
-    return service.getResourceById(PermissionsModel, populatePermissionFields, permissionId, 'Permission');
+    return service.getResourceById(
+        PermissionsModel,
+        populatePermissionFields,
+        permissionId,
+        'Permission'
+    );
 };
 
 /**
@@ -299,7 +308,12 @@ const updatePermissionById = async (requester, permissionId, updateData) => {
  * @returns {Promise<Object>} - The result of the deletion process.
  */
 const deletePermissionList = async (requester, permissionIds) => {
-    return await service.deleteResourcesByList(requester, PermissionsModel, permissionIds, 'permission');
+    return await service.deleteResourcesByList(
+        requester,
+        PermissionsModel,
+        permissionIds,
+        'permission'
+    );
 };
 
 /**
@@ -311,7 +325,12 @@ const deletePermissionList = async (requester, permissionIds) => {
  * @returns {Promise<Object>} - The result of the deletion process.
  */
 const deletePermissionById = async (requester, permissionId) => {
-    return service.deleteResourceById(requester, PermissionsModel, permissionId, 'permission');
+    return service.deleteResourceById(
+        requester,
+        PermissionsModel,
+        permissionId,
+        'permission'
+    );
 };
 
 /**

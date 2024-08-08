@@ -24,9 +24,7 @@ const router = express.Router();
 router
     .route('/')
     .get(
-        authenticateMiddleware(
-            accessTypesConstants.USER,
-        ),
+        authenticateMiddleware(accessTypesConstants.USER),
         favouriteBooksController.getFavouriteBooks
     )
     .all(methodNotSupported);
@@ -41,16 +39,12 @@ router
 router
     .route(`/:${routesConstants.favouriteBooks.params}`)
     .post(
-        authenticateMiddleware(
-            accessTypesConstants.USER,
-        ),
+        authenticateMiddleware(accessTypesConstants.USER),
         favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.createFavouriteBook
     )
     .delete(
-        authenticateMiddleware(
-            accessTypesConstants.USER,
-        ),
+        authenticateMiddleware(accessTypesConstants.USER),
         favouriteBooksValidator.favouriteBookIdParamSchema,
         favouriteBooksController.deleteFavouriteBook
     )

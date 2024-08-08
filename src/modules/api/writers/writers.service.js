@@ -16,10 +16,8 @@ import fileExtensionsConstants from '../../../constant/fileExtensions.constants.
 import writersConstant from './writers.constant.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
-import AdminActivityLoggerModel
-    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 /**
  * Populates writer fields with additional information.
@@ -106,7 +104,7 @@ const createWriter = async (requester, writerData, writerImage) => {
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.CREATE,
             description: `${writerData.name} created successfully.`,
-            details: JSON.stringify(newWriter)
+            details: JSON.stringify(newWriter),
         });
 
         return sendResponse(
@@ -134,7 +132,13 @@ const createWriter = async (requester, writerData, writerImage) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object containing the list of writers.
  */
 const getWriters = async (params) => {
-    return service.getResourceList(WritersModel, populateWriterFields, params, writerListParamsMapping, 'writer');
+    return service.getResourceList(
+        WritersModel,
+        populateWriterFields,
+        params,
+        writerListParamsMapping,
+        'writer'
+    );
 };
 
 /**
@@ -147,7 +151,12 @@ const getWriters = async (params) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object containing the writer details.
  */
 const getWriter = async (writerId) => {
-    return service.getResourceById(WritersModel, populateWriterFields, writerId, 'writer');
+    return service.getResourceById(
+        WritersModel,
+        populateWriterFields,
+        writerId,
+        'writer'
+    );
 };
 
 /**
@@ -263,7 +272,12 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object confirming the deletion.
  */
 const deleteWriters = async (requester, writerIds) => {
-    return await service.deleteResourcesByList(requester, WritersModel, writerIds, 'writer');
+    return await service.deleteResourcesByList(
+        requester,
+        WritersModel,
+        writerIds,
+        'writer'
+    );
 };
 
 /**
@@ -277,7 +291,12 @@ const deleteWriters = async (requester, writerIds) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object confirming the deletion.
  */
 const deleteWriter = async (requester, writerId) => {
-    return service.deleteResourceById(requester, WritersModel, writerId, 'writer');
+    return service.deleteResourceById(
+        requester,
+        WritersModel,
+        writerId,
+        'writer'
+    );
 };
 
 const writersService = {

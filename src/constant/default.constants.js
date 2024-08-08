@@ -9,7 +9,6 @@
  * that any changes to the image sources need only be updated in one location.
  */
 
-
 const images = {
     user: {
         male: 'https://drive.google.com/uc?export=view&id=1YvPc76F0FoDvJSws6rdGPxBnYvd3icHZ',

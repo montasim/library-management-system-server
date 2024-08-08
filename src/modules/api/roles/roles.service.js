@@ -375,7 +375,12 @@ const updateRoleById = async (requester, roleId, updateData) => {
  * @returns {Promise<Object>} - The result of the deletion process or an error response.
  */
 const deleteRoleByList = async (requester, roleIds) => {
-    return await service.deleteResourcesByList(requester, RolesModel, roleIds, 'role');
+    return await service.deleteResourcesByList(
+        requester,
+        RolesModel,
+        roleIds,
+        'role'
+    );
 };
 
 /**

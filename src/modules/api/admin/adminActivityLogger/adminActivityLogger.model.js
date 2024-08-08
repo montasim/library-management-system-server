@@ -53,7 +53,7 @@ const adminActivityLoggerSchema = new mongoose.Schema(
                 type: Schema.Types.ObjectId,
                 description:
                     'ID of the entity affected by the action, if applicable.',
-            }
+            },
         ],
     },
     {

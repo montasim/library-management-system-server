@@ -11,10 +11,8 @@ import httpStatus from '../constant/httpStatus.constants.js';
 import sendResponse from '../utilities/sendResponse.js';
 import loggerService from '../service/logger.service.js';
 import toSentenceCase from '../utilities/toSentenceCase.js';
-import AdminActivityLoggerModel
-    from '../modules/api/admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../modules/api/admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../modules/api/admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../modules/api/admin/adminActivityLogger/adminActivityLogger.constants.js';
 import GoogleDriveService from '../service/googleDrive.service.js';
 
 /**
@@ -27,12 +25,20 @@ import GoogleDriveService from '../service/googleDrive.service.js';
  * @param {String} resourceId - The ID of the resource to retrieve.
  * @param {String} resourceType - A descriptive name for the type of resource (used for logging and error messages).
  */
-const getResourceById = async (model, populateMethod, resourceId, resourceType) => {
+const getResourceById = async (
+    model,
+    populateMethod,
+    resourceId,
+    resourceType
+) => {
     try {
         const capitalizeResourceType = toSentenceCase(resourceType);
         const resource = await populateMethod(model.findById(resourceId));
         if (!resource) {
-            return errorResponse(`${capitalizeResourceType} not found.`, httpStatus.NOT_FOUND);
+            return errorResponse(
+                `${capitalizeResourceType} not found.`,
+                httpStatus.NOT_FOUND
+            );
         }
 
         return sendResponse(
@@ -61,7 +67,13 @@ const getResourceById = async (model, populateMethod, resourceId, resourceType) 
  * @param {Object} paramsMapping - A mapping of API field names to database schema fields.
  * @param {String} resourceType - A descriptive name for the type of resources (used for logging and error messages).
  */
-const getResourceList = async (model, populateFields, params, paramsMapping, resourceType) => {
+const getResourceList = async (
+    model,
+    populateFields,
+    params,
+    paramsMapping,
+    resourceType
+) => {
     try {
         const {
             page = 1,
@@ -74,7 +86,7 @@ const getResourceList = async (model, populateFields, params, paramsMapping, res
         // Dynamic query construction with mapping
         const query = Object.keys(restParams).reduce((acc, key) => {
             if (restParams[key] !== undefined) {
-                const schemaKey = paramsMapping[key] || key;  // Use mapped key if available, otherwise use the key as is
+                const schemaKey = paramsMapping[key] || key; // Use mapped key if available, otherwise use the key as is
                 // Apply regex pattern for text search fields
                 if (['name', 'createdBy', 'updatedBy'].includes(schemaKey)) {
                     acc[schemaKey] = new RegExp(restParams[key], 'i');
@@ -88,14 +100,19 @@ const getResourceList = async (model, populateFields, params, paramsMapping, res
         const totalItems = await model.countDocuments(query);
         const totalPages = Math.ceil(totalItems / limit);
         const items = await populateFields(
-            model.find(query)
+            model
+                .find(query)
                 .sort(sort)
                 .skip((page - 1) * limit)
                 .limit(limit)
         );
 
         if (!items.length) {
-            return sendResponse({}, `No ${resourceType} found.`, httpStatus.NOT_FOUND);
+            return sendResponse(
+                {},
+                `No ${resourceType} found.`,
+                httpStatus.NOT_FOUND
+            );
         }
 
         // await AdminActivityLoggerModel.create({
@@ -137,13 +154,24 @@ const getResourceList = async (model, populateFields, params, paramsMapping, res
  * @param {String} resourceId - The ID of the resource to delete.
  * @param {String} resourceType - A descriptive name for the type of resource (used for logging and error messages).
  */
-const deleteResourceById = async (requester, Model, resourceId, resourceType) => {
+const deleteResourceById = async (
+    requester,
+    Model,
+    resourceId,
+    resourceType
+) => {
     try {
         const capitalizeResourceType = toSentenceCase(resourceType);
-        const resource = await Model.findById(resourceId).select('_id image.fileId').lean();
+        const resource = await Model.findById(resourceId)
+            .select('_id image.fileId')
+            .lean();
 
         if (!resource) {
-            return sendResponse({}, `${capitalizeResourceType} not found.`, httpStatus.NOT_FOUND);
+            return sendResponse(
+                {},
+                `${capitalizeResourceType} not found.`,
+                httpStatus.NOT_FOUND
+            );
         }
 
         // Check if the resource has an associated image file in Google Drive and delete it
@@ -151,7 +179,9 @@ const deleteResourceById = async (requester, Model, resourceId, resourceType) =>
             try {
                 await GoogleDriveService.deleteFile(resource.image.fileId);
             } catch (error) {
-                loggerService.error(`Failed to delete Google Drive file with ID ${resource.image.fileId} for ${resourceType}: ${error}`);
+                loggerService.error(
+                    `Failed to delete Google Drive file with ID ${resource.image.fileId} for ${resourceType}: ${error}`
+                );
                 // Optional: Decide how to handle errors in file deletion, whether to proceed with deleting the resource or not
             }
         }
@@ -160,7 +190,11 @@ const deleteResourceById = async (requester, Model, resourceId, resourceType) =>
 
         if (!deletionResult) {
             // This condition might be redundant, consider removing it if you're sure the document exists after the initial find.
-            return sendResponse({}, `${capitalizeResourceType} not found.`, httpStatus.NOT_FOUND);
+            return sendResponse(
+                {},
+                `${capitalizeResourceType} not found.`,
+                httpStatus.NOT_FOUND
+            );
         }
 
         await AdminActivityLoggerModel.create({
@@ -171,7 +205,11 @@ const deleteResourceById = async (requester, Model, resourceId, resourceType) =>
             affectedId: resourceId,
         });
 
-        return sendResponse({}, `${capitalizeResourceType} deleted successfully.`, httpStatus.OK);
+        return sendResponse(
+            {},
+            `${capitalizeResourceType} deleted successfully.`,
+            httpStatus.OK
+        );
     } catch (error) {
         loggerService.error(`Failed to delete ${resourceType}: ${error}`);
 
@@ -195,9 +233,14 @@ const deleteResourceById = async (requester, Model, resourceId, resourceType) =>
 const deleteResourcesByList = async (requester, model, ids, resourceType) => {
     try {
         const capitalizeResourceType = toSentenceCase(resourceType);
-        const existingEntities = await model.find({ _id: { $in: ids } }).select('_id image.fileId').lean();
-        const existingIds = existingEntities.map(entity => entity._id.toString());
-        const notFoundIds = ids.filter(id => !existingIds.includes(id));
+        const existingEntities = await model
+            .find({ _id: { $in: ids } })
+            .select('_id image.fileId')
+            .lean();
+        const existingIds = existingEntities.map((entity) =>
+            entity._id.toString()
+        );
+        const notFoundIds = ids.filter((id) => !existingIds.includes(id));
 
         // Attempt to delete associated images from Google Drive if they exist
         for (const entity of existingEntities) {
@@ -205,17 +248,22 @@ const deleteResourcesByList = async (requester, model, ids, resourceType) => {
                 try {
                     await GoogleDriveService.deleteFile(entity.image.fileId);
                 } catch (error) {
-                    loggerService.error(`Failed to delete file with ID ${entity.image.fileId} for ${resourceType}: ${error}`);
+                    loggerService.error(
+                        `Failed to delete file with ID ${entity.image.fileId} for ${resourceType}: ${error}`
+                    );
                     // You may choose to handle this failure differently, e.g., by marking the ID as failed to delete
                 }
             }
         }
 
-        const deletionResult = await model.deleteMany({ _id: { $in: existingIds } });
+        const deletionResult = await model.deleteMany({
+            _id: { $in: existingIds },
+        });
         const results = {
             deleted: deletionResult.deletedCount,
             notFound: notFoundIds.length,
-            failed: ids.length - deletionResult.deletedCount - notFoundIds.length
+            failed:
+                ids.length - deletionResult.deletedCount - notFoundIds.length,
         };
 
         const message = `Deleted ${results.deleted}: Not found ${results.notFound}, Failed ${results.failed}`;
@@ -226,7 +274,7 @@ const deleteResourcesByList = async (requester, model, ids, resourceType) => {
             action: adminActivityLoggerConstants.actionTypes.DELETE,
             description: `${capitalizeResourceType} deleted successfully.`,
             details: JSON.stringify(results),
-            affectedId: existingEntities.map(entity => entity._id),
+            affectedId: existingEntities.map((entity) => entity._id),
         });
 
         if (results.deleted <= 0) {
@@ -250,6 +298,5 @@ const service = {
     deleteResourceById,
     deleteResourcesByList,
 };
-
 
 export default service;

@@ -12,10 +12,8 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
-import adminActivityLoggerConstants
-    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
-import AdminActivityLoggerModel
-    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
 
 /**
  * populateSubjectFields - A helper function to populate related fields in the subject documents.
@@ -71,7 +69,7 @@ const createSubject = async (requester, newSubjectData) => {
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.CREATE,
             description: `${newSubjectData.name} created successfully.`,
-            details: JSON.stringify(populatedSubject)
+            details: JSON.stringify(populatedSubject),
         });
 
         return sendResponse(
@@ -97,7 +95,13 @@ const createSubject = async (requester, newSubjectData) => {
  * @returns {Promise<Object>} - The retrieved list of subjects or an error response.
  */
 const getSubjects = async (params) => {
-    return service.getResourceList(SubjectsModel, populateSubjectFields, params, subjectListParamsMapping, 'subject');
+    return service.getResourceList(
+        SubjectsModel,
+        populateSubjectFields,
+        params,
+        subjectListParamsMapping,
+        'subject'
+    );
 };
 
 /**
@@ -108,7 +112,12 @@ const getSubjects = async (params) => {
  * @returns {Promise<Object>} - The retrieved subject or an error response.
  */
 const getSubjectById = async (subjectId) => {
-    return service.getResourceById(SubjectsModel, populateSubjectFields, subjectId, 'subject');
+    return service.getResourceById(
+        SubjectsModel,
+        populateSubjectFields,
+        subjectId,
+        'subject'
+    );
 };
 
 /**
@@ -189,7 +198,12 @@ const updateSubject = async (requester, subjectId, updateData) => {
  * @returns {Promise<Object>} - The result of the deletion process or an error response.
  */
 const deleteSubjects = async (requester, subjectIds) => {
-    return await service.deleteResourcesByList(requester, SubjectsModel, subjectIds, 'subject');
+    return await service.deleteResourcesByList(
+        requester,
+        SubjectsModel,
+        subjectIds,
+        'subject'
+    );
 };
 
 /**
@@ -201,7 +215,12 @@ const deleteSubjects = async (requester, subjectIds) => {
  * @returns {Promise<Object>} - The result of the deletion process or an error response.
  */
 const deleteSubject = async (requester, subjectId) => {
-    return service.deleteResourceById(requester, SubjectsModel, subjectId, 'subject');
+    return service.deleteResourceById(
+        requester,
+        SubjectsModel,
+        subjectId,
+        'subject'
+    );
 };
 
 /**

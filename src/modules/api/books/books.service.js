@@ -20,10 +20,8 @@ import PublicationsModel from '../publications/publications.model.js';
 import WritersModel from '../writers/writers.model.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
-import AdminActivityLoggerModel
-    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 /**
  * Helper function to validate IDs for writer and publication.
@@ -78,15 +76,15 @@ const populateBookFields = async (query) => {
     return await query
         .populate({
             path: 'writer',
-            select: '-createdBy -updatedBy'
+            select: '-createdBy -updatedBy',
         })
         .populate({
             path: 'publication',
-            select: '-createdBy -updatedBy'
+            select: '-createdBy -updatedBy',
         })
         .populate({
             path: 'subject',
-            select: '-createdBy -updatedBy'
+            select: '-createdBy -updatedBy',
         })
         .select('-createdBy -updatedBy');
 };
@@ -176,7 +174,7 @@ const createNewBook = async (requester, bookData, bookImage) => {
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.CREATE,
             description: `${bookData.name} created successfully.`,
-            details: JSON.stringify(newBookDetails)
+            details: JSON.stringify(newBookDetails),
         });
 
         // Send success response
@@ -202,7 +200,13 @@ const createNewBook = async (requester, bookData, bookImage) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object containing the list of books.
  */
 const getBookList = async (params) => {
-    return service.getResourceList(BooksModel, populateBookFields, params, bookListParamsMapping, 'Book');
+    return service.getResourceList(
+        BooksModel,
+        populateBookFields,
+        params,
+        bookListParamsMapping,
+        'Book'
+    );
 };
 
 /**
@@ -212,7 +216,12 @@ const getBookList = async (params) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object containing the book details.
  */
 const getBookById = async (bookId) => {
-    return service.getResourceById(BooksModel, populateBookFields, bookId, 'Book');
+    return service.getResourceById(
+        BooksModel,
+        populateBookFields,
+        bookId,
+        'Book'
+    );
 };
 
 /**
@@ -407,7 +416,12 @@ const deleteBookById = async (requester, bookId) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object indicating the result of the operation.
  */
 const deleteBookList = async (requester, bookIds) => {
-    return await service.deleteResourcesByList(requester, BooksModel, bookIds, 'books');
+    return await service.deleteResourcesByList(
+        requester,
+        BooksModel,
+        bookIds,
+        'books'
+    );
 };
 
 /**

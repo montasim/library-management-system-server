@@ -25,10 +25,7 @@ const userProfileController = {
      *
      * @returns {Promise<void>} - A promise that resolves with the profile details for the requester.
      */
-    getProfile: controller.updateByRequester(
-        userProfileService,
-        'getProfile'
-    ),
+    getProfile: controller.updateByRequester(userProfileService, 'getProfile'),
 
     /**
      * Updates the profile details for the requesting user.

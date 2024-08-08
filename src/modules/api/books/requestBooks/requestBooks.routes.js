@@ -26,17 +26,13 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authenticateMiddleware(
-            accessTypesConstants.USER,
-        ),
+        authenticateMiddleware(accessTypesConstants.USER),
         uploadMiddleware.single('image'),
         requestBooksValidator.createRequestBook,
         requestBooksController.createRequestBook
     )
     .get(
-        authenticateMiddleware(
-            accessTypesConstants.ADMIN,
-        ),
+        authenticateMiddleware(accessTypesConstants.ADMIN),
         requestBooksController.getRequestBooks
     )
     .all(methodNotSupported);
@@ -49,9 +45,7 @@ router
 router
     .route(`/:${routesConstants.requestBooks.params}`)
     .get(
-        authenticateMiddleware(
-            accessTypesConstants.ADMIN,
-        ),
+        authenticateMiddleware(accessTypesConstants.ADMIN),
         requestBooksValidator.requestBookId,
         requestBooksController.getRequestBookByBookId
     )
@@ -65,9 +59,7 @@ router
 router
     .route('/owner/:ownerId')
     .get(
-        authenticateMiddleware(
-            accessTypesConstants.ADMIN,
-        ),
+        authenticateMiddleware(accessTypesConstants.ADMIN),
         requestBooksValidator.ownerId,
         requestBooksController.getRequestedBooksByOwnerId
     )

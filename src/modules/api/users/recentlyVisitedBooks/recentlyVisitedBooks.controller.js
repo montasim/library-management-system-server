@@ -8,7 +8,6 @@
  * - Retrieve the list of recently visited books for the requester.
  */
 
-
 import recentlyVisitedBooksService from './recentlyVisitedBooks.service.js';
 import controller from '../../../../shared/controller.js';
 
@@ -27,10 +26,7 @@ const recentlyVisitedBooksController = {
      *
      * @returns {Promise<void>} - A promise that resolves when the book is successfully added to the list.
      */
-    add: controller.create(
-        recentlyVisitedBooksService,
-        'add'
-    ),
+    add: controller.create(recentlyVisitedBooksService, 'add'),
 
     /**
      * Retrieves the list of recently visited books for the requester.
@@ -46,10 +42,7 @@ const recentlyVisitedBooksController = {
      *
      * @returns {Promise<void>} - A promise that resolves with the list of recently visited books for the requester.
      */
-    get: controller.getByRequester(
-        recentlyVisitedBooksService,
-        'get',
-    ),
+    get: controller.getByRequester(recentlyVisitedBooksService, 'get'),
 };
 
 export default recentlyVisitedBooksController;

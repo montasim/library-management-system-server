@@ -12,10 +12,8 @@ import sendResponse from '../../../utilities/sendResponse.js';
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
-import AdminActivityLoggerModel
-    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
 /**
  * populatePublicationFields - A helper function to populate related fields in the publication documents.
@@ -71,7 +69,7 @@ const createPublication = async (requester, newPublicationData) => {
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.CREATE,
             description: `${newPublicationData.name} created successfully.`,
-            details: JSON.stringify(populatedPublication)
+            details: JSON.stringify(populatedPublication),
         });
 
         return sendResponse(
@@ -97,7 +95,13 @@ const createPublication = async (requester, newPublicationData) => {
  * @returns {Promise<Object>} - The retrieved list of publications.
  */
 const getPublicationList = async (params) => {
-    return service.getResourceList(PublicationsModel, populatePublicationFields, params, pronounsListParamsMapping, 'publication');
+    return service.getResourceList(
+        PublicationsModel,
+        populatePublicationFields,
+        params,
+        pronounsListParamsMapping,
+        'publication'
+    );
 };
 
 /**
@@ -108,7 +112,12 @@ const getPublicationList = async (params) => {
  * @returns {Promise<Object>} - The retrieved publication or an error response.
  */
 const getPublicationById = async (publicationId) => {
-    return service.getResourceById(PublicationsModel, populatePublicationFields, publicationId, 'publication');
+    return service.getResourceById(
+        PublicationsModel,
+        populatePublicationFields,
+        publicationId,
+        'publication'
+    );
 };
 
 /**
@@ -193,7 +202,12 @@ const updatePublicationById = async (requester, publicationId, updateData) => {
  * @returns {Promise<Object>} - The result of the deletion process.
  */
 const deletePublicationList = async (requester, publicationIds) => {
-    return await service.deleteResourcesByList(requester, PublicationsModel, publicationIds, 'publication');
+    return await service.deleteResourcesByList(
+        requester,
+        PublicationsModel,
+        publicationIds,
+        'publication'
+    );
 };
 
 /**
@@ -205,7 +219,12 @@ const deletePublicationList = async (requester, publicationIds) => {
  * @returns {Promise<Object>} - The result of the deletion process.
  */
 const deletePublicationById = async (requester, publicationId) => {
-    return service.deleteResourceById(requester, PublicationsModel, publicationId, 'publication');
+    return service.deleteResourceById(
+        requester,
+        PublicationsModel,
+        publicationId,
+        'publication'
+    );
 };
 
 /**

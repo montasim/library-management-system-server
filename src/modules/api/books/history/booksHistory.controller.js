@@ -23,10 +23,7 @@ const booksHistoryController = {
      *
      * @function
      */
-    getBooksHistory: controller.getList(
-        booksHistoryService,
-        'getBooksHistory'
-    ),
+    getBooksHistory: controller.getList(booksHistoryService, 'getBooksHistory'),
 
     /**
      * getBookHistory - Controller function to retrieve the history of an individual book.
