@@ -14,6 +14,8 @@
 </div>
 <!-- repository summary badges end -->
 
+This Library Management System Server is a robust backend API developed using Express, designed to facilitate comprehensive management of library operations. It supports a wide range of features from user authentication and book management to permission controls and user profile management. The system ensures data integrity and security using bearer token authentication, making it ideal for educational institutions, public libraries, and private collections.
+
 [//]: # 'CONTENTS'
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=120&height=40&lines=CONTENTS:" alt="CONTENTS:" />
@@ -41,6 +43,33 @@
 [//]: # 'FEATURES'
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=100&height=40&lines=FEATURES" alt="FEATURES" id="features" />
+
+1. Authentication:
+
+   - Handles user login, logout, password resets, and email verification processes.
+   - Ensures secure access through bearer token authentication.
+
+2. Book Management:
+
+   - Provides functionality to create, retrieve, update, and delete book records.
+   - Includes endpoints for managing book images, fetching trending books, and maintaining user-specific book favorites and histories.
+
+3. User Profile Management:
+
+   - Facilitates fetching and updating user profile information based on username. Respects privacy settings and only returns allowed information.
+
+4. Permission and Role Management:
+
+   - Manages permissions and roles within the system, allowing for the creation of new roles, modification of existing ones, and deletion of roles based on IDs.
+
+5. Subject Management:
+
+   - Allows for the creation, deletion, and retrieval of subjects, providing administrative control over subject-related data.
+
+6. Error and Request Handling:
+
+   - Includes comprehensive handling of unsupported methods and detailed error responses to ensure robustness and reliability of the API.
+
 
 ### APIs
 
