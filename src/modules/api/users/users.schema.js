@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This file defines various Joi schemas for validating user-related data.
+ * The schemas include base validation for user fields, as well as specific schemas for updating user profiles,
+ * deleting user accounts, and updating user appearance settings. These schemas ensure that data conforms to the required formats,
+ * lengths, and patterns, and include custom validation messages for better error reporting.
+ */
+
 import Joi from 'joi';
 
 import usersConstants from '../users/users.constants.js';
@@ -6,7 +13,21 @@ import customValidationMessage from '../../../shared/customValidationMessage.js'
 import constants from '../../../constant/constants.js';
 import userConstants from '../users/users.constants.js';
 
-// Define base schema for subjects
+/**
+ * Base Joi schema for validating user-related fields.
+ *
+ * @constant
+ * @type {Joi.ObjectSchema}
+ * @description This schema includes validation rules for:
+ * - name: String (pattern: uppercase followed by lowercase, no special characters or numbers)
+ * - username: String (pattern: unique, lowercase letters, numbers, underscores)
+ * - mobile: String (validated using a custom mobile field validator)
+ * - address: String (custom validation messages for address constraints)
+ * - department: String (custom validation messages for department constraints)
+ * - designation: String (custom validation messages for designation constraints)
+ * - confirmationText: String (must match the predefined confirmation text for account deletion)
+ * - theme: Object (required, containing the name of the theme)
+ */
 const userSchemaBase = Joi.object({
     name: validationService
         .createStringField(
@@ -63,6 +84,14 @@ const userSchemaBase = Joi.object({
     }),
 }).strict();
 
+/**
+ * Joi schema for validating data when updating a user profile.
+ *
+ * @constant
+ * @type {Joi.ObjectSchema}
+ * @description This schema extends the base user schema and makes fields like name, username, mobile, address, department, and designation optional.
+ * It ensures that at least one field is provided for the update.
+ */
 const updateUserProfile = userSchemaBase
     .fork(
         ['name', 'username', 'mobile', 'address', 'department', 'designation'],
@@ -70,14 +99,37 @@ const updateUserProfile = userSchemaBase
     )
     .min(1);
 
+/**
+ * Joi schema for validating data when deleting a user account.
+ *
+ * @constant
+ * @type {Joi.ObjectSchema}
+ * @description This schema extends the base user schema and requires the confirmationText field.
+ */
 const deleteUser = userSchemaBase.fork(['confirmationText'], (field) =>
     field.required()
 );
 
+/**
+ * Joi schema for validating data when updating user appearance settings.
+ *
+ * @constant
+ * @type {Joi.ObjectSchema}
+ * @description This schema extends the base user schema and requires the theme field.
+ */
 const updateAppearance = userSchemaBase.fork(['theme'], (field) =>
     field.required()
 );
 
+/**
+ * Object containing all the defined Joi schemas for user validation.
+ *
+ * @constant
+ * @type {Object}
+ * @property {Joi.ObjectSchema} updateUserProfile - Schema for validating data when updating a user profile.
+ * @property {Joi.ObjectSchema} deleteUser - Schema for validating data when deleting a user account.
+ * @property {Joi.ObjectSchema} updateAppearance - Schema for validating data when updating user appearance settings.
+ */
 const usersSchema = {
     updateUserProfile,
     deleteUser,

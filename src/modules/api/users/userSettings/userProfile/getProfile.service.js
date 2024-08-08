@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This file defines the service functions for handling operations related to user profiles.
+ * The services include methods to retrieve and update user profile details. These functions interact with the `UsersModel`
+ * and handle data retrieval, updates, error responses, and logging. Additional utilities are used for file validation and
+ * interactions with Google Drive for image uploads.
+ */
+
 import UsersModel from '../../users.model.js';
 import errorResponse from '../../../../../utilities/errorResponse.js';
 import httpStatus from '../../../../../constant/httpStatus.constants.js';
@@ -10,6 +17,19 @@ import mimeTypesConstants from '../../../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../../../constant/fileExtensions.constants.js';
 import GoogleDriveService from '../../../../../service/googleDrive.service.js';
 
+/**
+ * Retrieves the profile details for the requesting user.
+ *
+ * This function fetches the profile details of the authenticated user from the `UsersModel`.
+ * It removes sensitive data before returning the user details. If the user is not found or an error occurs,
+ * it returns an appropriate error response.
+ *
+ * @async
+ * @function
+ * @name getProfile
+ * @param {string} userId - The ID of the user requesting the profile details.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the user profile details or an error message.
+ */
 const getProfile = async (userId) => {
     try {
         const user = await UsersModel.findById(userId).lean();
@@ -44,6 +64,22 @@ const getProfile = async (userId) => {
     }
 };
 
+/**
+ * Updates the profile details for the requesting user.
+ *
+ * This function updates the profile details of the authenticated user in the `UsersModel`.
+ * It validates the provided update data and handles image uploads if an image is provided. The function also ensures
+ * the user is authenticated and exists. If successful, it returns the updated user data excluding sensitive information.
+ * If the user is not found or an error occurs, it returns an appropriate error response.
+ *
+ * @async
+ * @function
+ * @name updateProfile
+ * @param {string} requester - The ID of the user requesting the update.
+ * @param {Object} updateData - The data containing the new profile details.
+ * @param {Object} userImage - The image file to be uploaded, if provided.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the updated user profile details or an error message.
+ */
 const updateProfile = async (requester, updateData, userImage) => {
     try {
         // Fetch the existing user; no need to lean() if updates are to be applied.

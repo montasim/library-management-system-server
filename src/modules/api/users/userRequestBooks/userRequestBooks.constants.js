@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines various constants used for validating request data related to books.
+ * The constants include length constraints for various book-related fields and the maximum allowed image size.
+ * These constants ensure that the data conforms to specified requirements for book attributes and image size.
+ */
+
 const lengths = {
     NAME_MIN: 3,
     NAME_MAX: 100,
@@ -28,8 +34,18 @@ const lengths = {
     REVIEW_MAX: 5,
 };
 
+/**
+ * @constant
+ * @type {number}
+ * @description Defines the maximum allowed image size in bytes (1.1 MB).
+ */
 const imageSize = 1.1 * 1024 * 1024; // 1.1 MB
 
+/**
+ * @constant
+ * @type {Object}
+ * @description Object containing all the defined length constraints and the maximum image size for book-related requests.
+ */
 const requestBooksConstants = {
     lengths,
     imageSize,

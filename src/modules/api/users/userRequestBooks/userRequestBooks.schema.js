@@ -1,10 +1,37 @@
+/**
+ * @fileoverview This file defines various Joi schemas for validating data related to user-requested books.
+ * The schemas include base validation for book fields, as well as specific schemas for creating books and
+ * validating book IDs. These schemas ensure that data conforms to the required formats, lengths, and patterns,
+ * providing a robust validation layer for user-requested book operations.
+ */
+
 import Joi from 'joi';
 
 import customValidationMessage from '../../../../shared/customValidationMessage.js';
 import validationService from '../../../../service/validation.service.js';
 import requestBooksConstants from './userRequestBooks.constants.js';
 
-// Define base schema for books
+/**
+ * requestBookSchemaBase - Base Joi schema for validating user-requested book-related fields.
+ * This schema includes:
+ *
+ * - name: String (trimmed, minLength, maxLength)
+ * - writer: String (trimmed, minLength, maxLength)
+ * - subject: String (trimmed, minLength, maxLength)
+ * - publication: String (trimmed, minLength, maxLength)
+ * - edition: String (trimmed, minLength, maxLength)
+ * - summary: String (trimmed, minLength, maxLength)
+ * - page: String (custom validation messages)
+ * - limit: String (minLength, maxLength, default value, custom parsing to integer)
+ * - sort: String (trimmed, default value)
+ * - isActive: Boolean
+ * - createdBy: ObjectId
+ * - updatedBy: ObjectId
+ * - createdAt: Date
+ * - updatedAt: Date
+ *
+ * This schema is used as the base for more specific user-requested book schemas.
+ */
 const requestBookSchemaBase = Joi.object({
     name: validationService
         .createStringField(
@@ -77,17 +104,29 @@ const requestBookSchemaBase = Joi.object({
     updatedAt: validationService.dateField,
 }).strict();
 
-// Schema for creating a book, making specific fields required
+/**
+ * createRequestBookSchema - Joi schema for validating data when creating a requested book.
+ * This schema makes the 'name', 'writer', 'subject', 'publication', 'page', 'edition', and 'summary' fields required.
+ */
 const createRequestBookSchema = requestBookSchemaBase.fork(
     ['name', 'writer', 'subject', 'publication', 'page', 'edition', 'summary'],
     (field) => field.required()
 );
 
-// Schema for single book ID validation
+/**
+ * requestBookIdSchema - Joi schema for validating a single requested book ID passed as a parameter.
+ * This schema ensures that the 'requestedBookId' field is a valid ObjectId.
+ */
 const requestBookIdSchema = Joi.object({
     requestedBookId: validationService.objectIdField.required(),
 }).strict();
 
+/**
+ * userRequestBooksSchema - Object containing all the defined Joi schemas for user-requested books validation:
+ *
+ * - createRequestBookSchema: Schema for validating data when creating a requested book.
+ * - requestBookIdSchema: Schema for validating a single requested book ID passed as a parameter.
+ */
 const userRequestBooksSchema = {
     createRequestBookSchema,
     requestBookIdSchema,

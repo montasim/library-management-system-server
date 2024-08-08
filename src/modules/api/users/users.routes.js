@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the main router for handling user-related operations, including book history,
+ * recently visited books, requested books, and user settings. The routes are protected by authentication middleware,
+ * which ensures that only authenticated users with the appropriate access types can access these routes.
+ */
+
 import express from 'express';
 
 import usersBooksHistoryRoutes from './userBookHistory/usersBooksHistory.routes.js';

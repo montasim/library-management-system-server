@@ -1,10 +1,28 @@
-import validateUserRequest from '../../../../utilities/validateUserRequest.js';
+/**
+ * @fileoverview This file defines the service functions for handling user book history operations.
+ * The services include methods to retrieve the book history for a user and to fetch the history of a specific book for a user.
+ * These functions interact with the `BooksHistoryModel` and handle data population, error responses, and logging.
+ */
+
 import errorResponse from '../../../../utilities/errorResponse.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import BooksHistoryModel from '../../books/history/booksHistory.model.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 import loggerService from '../../../../service/logger.service.js';
 
+/**
+ * Retrieves the book history for the requesting user.
+ *
+ * This function fetches all lending and returning records associated with the requester from the `BooksHistoryModel`.
+ * It populates the book details and the users involved in the transactions, and sends a response with the history.
+ * If no history is found, it returns an appropriate error response.
+ *
+ * @async
+ * @function
+ * @name getBooksHistory
+ * @param {string} requester - The ID of the user requesting the book history.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the book history or an error message.
+ */
 const getBooksHistory = async (requester) => {
     try {
         // Fetch all lending and returning records associated with the requester
@@ -45,9 +63,16 @@ const getBooksHistory = async (requester) => {
 /**
  * Retrieves the lending and return history of a specific book identified by its ID, limited to the transactions involving the requester.
  *
+ * This function fetches the book's history with specific conditions on the user involved in the transactions from the `BooksHistoryModel`.
+ * It populates the book details and the users involved in the transactions, ensuring the requester is part of the history.
+ * If no relevant history is found, it returns an appropriate error response.
+ *
+ * @async
+ * @function
+ * @name getBookHistoryByBookId
  * @param {string} requester - The ID of the user requesting the history.
  * @param {string} bookId - The ID of the book for which history is being requested.
- * @returns {Promise<Object>} - A promise that resolves to the response object detailing the book's history relevant to the requester.
+ * @returns {Promise<Object>} - A promise that resolves to the response object detailing the book's history relevant to the requester or an error message.
  */
 const getBookHistoryByBookId = async (requester, bookId) => {
     try {

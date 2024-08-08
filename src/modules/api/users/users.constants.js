@@ -1,3 +1,33 @@
+/**
+ * @fileoverview This file defines various constants used for validating and managing user-related data.
+ * The constants include length constraints for different fields, regex patterns for validation, image size limits, and activity types.
+ * These constants ensure that the user data conforms to the required formats and constraints for various operations in the application.
+ */
+
+/**
+ * Length constraints for various user-related fields.
+ *
+ * @constant
+ * @type {Object}
+ * @property {Object} NAME - Length constraints for different parts of a name.
+ * @property {number} NAME.FIRST_MIN - Minimum length for the first name.
+ * @property {number} NAME.FIRST_MAX - Maximum length for the first name.
+ * @property {number} NAME.MIDDLE_MIN - Minimum length for the middle name.
+ * @property {number} NAME.MIDDLE_MAX - Maximum length for the middle name.
+ * @property {number} NAME.LAST_MIN - Minimum length for the last name.
+ * @property {number} NAME.LAST_MAX - Maximum length for the last name.
+ * @property {number} NAME.NICK_MIN - Minimum length for the nickname.
+ * @property {number} NAME.NICK_MAX - Maximum length for the nickname.
+ * @property {Object} COMPANY - Length constraints for company-related fields.
+ * @property {number} COMPANY.NAME_MAX - Maximum length for the company name.
+ * @property {number} BIO_MAX - Maximum length for the bio.
+ * @property {number} ADDRESS_MIN - Minimum length for the address.
+ * @property {number} ADDRESS_MAX - Maximum length for the address.
+ * @property {number} DEPARTMENT_MIN - Minimum length for the department.
+ * @property {number} DEPARTMENT_MAX - Maximum length for the department.
+ * @property {number} DESIGNATION_MIN - Minimum length for the designation.
+ * @property {number} DESIGNATION_MAX - Maximum length for the designation.
+ */
 const lengths = {
     NAME: {
         FIRST_MIN: 2,
@@ -29,6 +59,15 @@ const lengths = {
     DESIGNATION_MAX: 100,
 };
 
+/**
+ * Regex patterns for validating various user-related fields.
+ *
+ * @constant
+ * @type {Object}
+ * @property {RegExp} NAME - Pattern for validating names.
+ * @property {RegExp} USERNAME - Pattern for validating usernames.
+ * @property {RegExp} DATE_OF_BIRTH - Pattern for validating dates of birth in the format DD-MM-YYYY.
+ */
 const pattern = {
     /**
      * Regular expression for validating names.
@@ -110,8 +149,24 @@ const pattern = {
     DATE_OF_BIRTH: /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\d{2}$/,
 };
 
+/**
+ * Maximum image size allowed in bytes (1.1 MB).
+ *
+ * @constant
+ * @type {number}
+ */
 const imageSize = 1.1 * 1024 * 1024; // 1.1 MB
 
+/**
+ * Types of user activities for logging purposes.
+ *
+ * @constant
+ * @type {Object}
+ * @property {string} APPEARANCE - Activity type for appearance-related changes.
+ * @property {string} PROFILE - Activity type for profile-related changes.
+ * @property {string} ACCOUNT - Activity type for account-related changes.
+ * @property {string} SECURITY - Activity type for security-related changes.
+ */
 const activityType = {
     APPEARANCE: 'appearance',
     PROFILE: 'profile',

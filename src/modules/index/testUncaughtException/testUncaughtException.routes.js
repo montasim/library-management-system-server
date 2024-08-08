@@ -1,3 +1,8 @@
+/**
+ * @fileoverview This module defines the router for testing uncaught exceptions.
+ * It includes a route for triggering a simulated uncaught exception and handles unsupported methods.
+ */
+
 import express from 'express';
 
 import testUncaughtExceptionController from './testUncaughtException.controller.js';

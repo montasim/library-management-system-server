@@ -1,9 +1,28 @@
+/**
+ * @fileoverview This file defines the service functions for handling operations related to user appearance settings.
+ * The services include methods to retrieve and update the appearance settings for a user.
+ * These functions interact with the `UsersModel` and handle data retrieval, updates, error responses, and logging.
+ */
+
 import UsersModel from '../../users.model.js';
 import errorResponse from '../../../../../utilities/errorResponse.js';
 import httpStatus from '../../../../../constant/httpStatus.constants.js';
 import sendResponse from '../../../../../utilities/sendResponse.js';
 import loggerService from '../../../../../service/logger.service.js';
 
+/**
+ * Retrieves the appearance settings for the requesting user.
+ *
+ * This function fetches the appearance settings of the authenticated user from the `UsersModel`.
+ * It ensures the user is authenticated and exists in the database. If successful, it returns the appearance settings.
+ * If the user is not found or an error occurs, it returns an appropriate error response.
+ *
+ * @async
+ * @function
+ * @name getAppearance
+ * @param {string} requester - The ID of the user requesting the appearance settings.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the appearance settings or an error message.
+ */
 const getAppearance = async (requester) => {
     try {
         const user = await UsersModel.findById(requester).lean();
@@ -39,6 +58,21 @@ const getAppearance = async (requester) => {
     }
 };
 
+/**
+ * Updates the appearance settings for the requesting user.
+ *
+ * This function updates the appearance settings of the authenticated user in the `UsersModel`.
+ * It validates the update data, logs the change in the user's activity record, and ensures the user is authenticated and exists.
+ * If successful, it returns the updated user data excluding sensitive information.
+ * If the user is not found or an error occurs, it returns an appropriate error response.
+ *
+ * @async
+ * @function
+ * @name updateAppearance
+ * @param {string} requester - The ID of the user requesting the update.
+ * @param {Object} updateData - The data containing the new appearance settings.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the updated user data or an error message.
+ */
 const updateAppearance = async (requester, updateData) => {
     try {
         const existingUser = await UsersModel.findById(requester);

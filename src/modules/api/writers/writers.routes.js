@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This file defines the routes for managing writer-related operations.
+ * The routes handle HTTP requests for creating, retrieving, updating, and deleting writer records.
+ * Each route is protected by authentication middleware to ensure that only authorized users can perform certain actions.
+ * Additionally, the routes utilize validation, caching, and file upload middleware.
+ */
+
 import express from 'express';
 
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';

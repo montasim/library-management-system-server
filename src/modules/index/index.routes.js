@@ -1,3 +1,8 @@
+/**
+ * @fileoverview This module defines the main router for the application, which handles various routes for different functionalities.
+ * It includes routes for home-related operations, status checks, and testing uncaught exceptions.
+ */
+
 import express from 'express';
 
 import homeRoutes from './home/home.routes.js';

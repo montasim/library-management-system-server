@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This module defines the service functions for managing writer-related operations.
+ * It includes functions for creating, retrieving, updating, and deleting writer records.
+ * The service handles validation, file uploads to Google Drive, and logging of admin activities.
+ */
+
 import WritersModel from './writers.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import GoogleDriveService from '../../../service/googleDrive.service.js';
@@ -15,6 +21,15 @@ import AdminActivityLoggerModel
 import adminActivityLoggerConstants
     from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 
+/**
+ * Populates writer fields with additional information.
+ *
+ * @async
+ * @function
+ * @name populateWriterFields
+ * @param {mongoose.Query} query - The Mongoose query to populate fields.
+ * @returns {Promise<mongoose.Document>} - The populated document.
+ */
 const populateWriterFields = async (query) => {
     return await query
         .populate({
@@ -29,6 +44,17 @@ const populateWriterFields = async (query) => {
 
 const writerListParamsMapping = {};
 
+/**
+ * Creates a new writer.
+ *
+ * @async
+ * @function
+ * @name createWriter
+ * @param {Object} requester - The user requesting the creation.
+ * @param {Object} writerData - The data for the new writer.
+ * @param {Object} writerImage - The image file for the writer.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the created writer.
+ */
 const createWriter = async (requester, writerData, writerImage) => {
     try {
         const exists = await WritersModel.exists({ name: writerData.name });
@@ -98,14 +124,44 @@ const createWriter = async (requester, writerData, writerImage) => {
     }
 };
 
+/**
+ * Retrieves a list of writers.
+ *
+ * @async
+ * @function
+ * @name getWriters
+ * @param {Object} params - The query parameters for retrieving writers.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the list of writers.
+ */
 const getWriters = async (params) => {
     return service.getResourceList(WritersModel, populateWriterFields, params, writerListParamsMapping, 'writer');
 };
 
+/**
+ * Retrieves details of a specific writer by ID.
+ *
+ * @async
+ * @function
+ * @name getWriter
+ * @param {string} writerId - The ID of the writer to be retrieved.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the writer details.
+ */
 const getWriter = async (writerId) => {
     return service.getResourceById(WritersModel, populateWriterFields, writerId, 'writer');
 };
 
+/**
+ * Updates a specific writer by ID.
+ *
+ * @async
+ * @function
+ * @name updateWriter
+ * @param {Object} requester - The user requesting the update.
+ * @param {string} writerId - The ID of the writer to be updated.
+ * @param {Object} updateData - The data to update the writer with.
+ * @param {Object} writerImage - The new image file for the writer.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the updated writer.
+ */
 const updateWriter = async (requester, writerId, updateData, writerImage) => {
     try {
         if (isEmptyObject(updateData)) {
@@ -196,10 +252,30 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
     }
 };
 
+/**
+ * Deletes multiple writers by their IDs.
+ *
+ * @async
+ * @function
+ * @name deleteWriters
+ * @param {Object} requester - The user requesting the deletion.
+ * @param {Array<string>} writerIds - The IDs of the writers to be deleted.
+ * @returns {Promise<Object>} - A promise that resolves to the response object confirming the deletion.
+ */
 const deleteWriters = async (requester, writerIds) => {
     return await service.deleteResourcesByList(requester, WritersModel, writerIds, 'writer');
 };
 
+/**
+ * Deletes a specific writer by ID.
+ *
+ * @async
+ * @function
+ * @name deleteWriter
+ * @param {Object} requester - The user requesting the deletion.
+ * @param {string} writerId - The ID of the writer to be deleted.
+ * @returns {Promise<Object>} - A promise that resolves to the response object confirming the deletion.
+ */
 const deleteWriter = async (requester, writerId) => {
     return service.deleteResourceById(requester, WritersModel, writerId, 'writer');
 };

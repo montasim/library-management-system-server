@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the routes for user account, profile, appearance, and log operations.
+ * The routes handle HTTP requests to manage user profiles, accounts, appearance settings, and logs.
+ * Unsupported HTTP methods on these routes will return a "Method Not Supported" response.
+ */
+
 import express from 'express';
 
 import uploadMiddleware from '../../../../middleware/upload.middleware.js';
