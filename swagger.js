@@ -6,14 +6,33 @@ import fs from 'fs'; // Import the fs module to write to a file
 const swaggerDefinition = {
     openapi: '3.0.0',
     info: {
-        title: 'Express API for My Application',
+        title: 'Library Management System Server',
         version: '1.0.0',
-        description: 'This is the swagger doc for the API',
+        description:
+            'This Library Management System Server is a robust backend API developed using Express, designed to facilitate comprehensive management of library operations. It supports a wide range of features from user authentication and book management to permission controls and user profile management. The system ensures data integrity and security using bearer token authentication, making it ideal for educational institutions, public libraries, and private collections.',
     },
     servers: [
         {
             url: `http://localhost:${configuration.port}/api/${configuration.version}`,
-            description: `${toSentenceCase(configuration.env)} server`,
+            description: 'Development server',
+            variables: {
+                version: {
+                    default: configuration.version,
+                },
+            },
+        },
+        {
+            url: `http://stg.example.com/api/${configuration.version}`,
+            description: 'Staging server',
+            variables: {
+                version: {
+                    default: configuration.version,
+                },
+            },
+        },
+        {
+            url: `https://library-management-system-server-green.vercel.app/api/${configuration.version}`,
+            description: 'Production server',
             variables: {
                 version: {
                     default: configuration.version,

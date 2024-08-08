@@ -1,14 +1,32 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Express API for My Application",
+    "title": "Library Management System Server",
     "version": "1.0.0",
-    "description": "This is the swagger doc for the API"
+    "description": "This Library Management System Server is a robust backend API developed using Express, designed to facilitate comprehensive management of library operations. It supports a wide range of features from user authentication and book management to permission controls and user profile management. The system ensures data integrity and security using bearer token authentication, making it ideal for educational institutions, public libraries, and private collections."
   },
   "servers": [
     {
       "url": "http://localhost:5000/api/v1",
       "description": "Development server",
+      "variables": {
+        "version": {
+          "default": "v1"
+        }
+      }
+    },
+    {
+      "url": "http://stg.example.com/api/v1",
+      "description": "Staging server",
+      "variables": {
+        "version": {
+          "default": "v1"
+        }
+      }
+    },
+    {
+      "url": "https://library-management-system-server-green.vercel.app/api/v1",
+      "description": "Production server",
       "variables": {
         "version": {
           "default": "v1"
