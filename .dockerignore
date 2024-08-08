@@ -50,4 +50,4 @@ docker.log
 # Purpose: Exclude directories containing generated or large-scale documentation.
 # Use: Prevent cluttering the repository with documentation which might be generated or too voluminous.
 ####################################################
-src/documentation/
+src/modules/api/documentation/

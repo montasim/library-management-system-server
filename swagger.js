@@ -31,6 +31,10 @@ const options = {
 const swaggerSpec = swaggerJsdoc(options);
 
 // Write the Swagger specification to a JSON file
-fs.writeFileSync('swagger.json', JSON.stringify(swaggerSpec, null, 2), 'utf8');
+fs.writeFileSync(
+    './src/modules/api/documentation/api/swagger.json',
+    JSON.stringify(swaggerSpec, null, 2),
+    'utf8'
+);
 
 export default swaggerSpec;

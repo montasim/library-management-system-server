@@ -15,7 +15,7 @@
   "opts": {
     "recurse": true,
     "encoding": "utf8",
-    "destination": "./src/documentation/code"
+    "destination": "./src/modules/api/documentation/code"
   },
   "markdown": {
     "parser": "gfm",

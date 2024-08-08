@@ -24,7 +24,7 @@ logs
 documentation
 LICENSE
 SECURITY.md
-src/documentation/
+src/modules/api/documentation/
 
 ####################################################
 # DEPENDENCY LOCK FILE
