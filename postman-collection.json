@@ -1,0 +1,4171 @@
+{
+	"info": {
+		"_postman_id": "26b988d7-364e-4808-bed8-4ba06bea2c77",
+		"name": "library-management-system-server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12432462",
+		"_collection_link": "https://bold-shadow-700506.postman.co/workspace/restoman~f98ef84e-46bf-4b30-b5a3-0a563f495445/collection/12432462-26b988d7-364e-4808-bed8-4ba06bea2c77?action=share&source=collection_link&creator=12432462"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "admin",
+					"item": [
+						{
+							"name": "create admin",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Montasim\",\r\n    \"email\": \"montasimmamun@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/admin",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"admin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "verify admin",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Tahmid\",\r\n    \"email\": \"tahmidshabab@gmail.com\",\r\n    \"password\": \"Qweqwe@1234\",\r\n    \"confirmPassword\": \"Qweqwe@1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/admin/verify/63c31eca4f7b77a4cfe58edfb8d45a777623639ba42fbbb0e4912397974de834",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"admin",
+										"verify",
+										"63c31eca4f7b77a4cfe58edfb8d45a777623639ba42fbbb0e4912397974de834"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "resend verification email",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Tahmid\",\r\n    \"email\": \"tahmidshabab@gmail.com\",\r\n    \"password\": \"Qweqwe@1234\",\r\n    \"confirmPassword\": \"Qweqwe@1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/admin/resend-verification/668d0d3730f505b0f3f935d4",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"admin",
+										"resend-verification",
+										"668d0d3730f505b0f3f935d4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "request new password",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"montasimmamun@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/admin/request-new-password",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"admin",
+										"request-new-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reset password",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"oldPassword\": \"0a!0!!0A0\",\r\n    \"newPassword\": \"Qweqwe@12345\",\r\n    \"confirmNewPassword\": \"Qweqwe@12345\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/admin/reset-password/a91501bb4b6ad3497798b91883eaa1ed59c4a9d5",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"admin",
+										"reset-password",
+										"a91501bb4b6ad3497798b91883eaa1ed59c4a9d5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"montasimmamun@gmail.com\",\r\n    \"password\": \"Qweqwe@1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/admin/login",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"admin",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "logout",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/admin/logout",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"admin",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "auth",
+					"item": [
+						{
+							"name": "signup",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Montasim\",\r\n    \"dateOfBirth\": \"16-12-1998\",\r\n    \"email\": \"montasimmamun@gmail.com\",\r\n    \"password\": \"Qweqwe@1234\",\r\n    \"confirmPassword\": \"Qweqwe@1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/auth/signup",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "verify user",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Tahmid\",\r\n    \"email\": \"tahmidshabab@gmail.com\",\r\n    \"password\": \"Qweqwe@1234\",\r\n    \"confirmPassword\": \"Qweqwe@1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/auth/verify/56548520fb09197a116dd5897619b6f755969dee",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"auth",
+										"verify",
+										"56548520fb09197a116dd5897619b6f755969dee"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "resend verification email",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Tahmid\",\r\n    \"email\": \"tahmidshabab@gmail.com\",\r\n    \"password\": \"Qweqwe@1234\",\r\n    \"confirmPassword\": \"Qweqwe@1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/auth/resend-verification/66a4fd2b8e007a512af012f9",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"auth",
+										"resend-verification",
+										"66a4fd2b8e007a512af012f9"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "request new password",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"montasimmamun@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/auth/request-new-password",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"auth",
+										"request-new-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reset password",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"oldPassword\": \"Qweqwe@1234\",\r\n    \"newPassword\": \"Qweqwe@12345\",\r\n    \"confirmNewPassword\": \"Qweqwe@12345\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/auth/reset-password/2acca903983448744410606e70babe76174d8fb2",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"auth",
+										"reset-password",
+										"2acca903983448744410606e70babe76174d8fb2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"montasimmamun@gmail.com\",\r\n    \"password\": \"Qweqwe@1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/auth/login",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "logout",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"tahmidshabab@gmail.com\",\r\n    \"password\": \"Qweqwe@12345\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/auth/logout",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "books",
+					"item": [
+						{
+							"name": "desiered books",
+							"item": [
+								{
+									"name": "get desiered books",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/desired",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"desired"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "favourite books",
+							"item": [
+								{
+									"name": "create favourite book",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/favourite/66ab5406b599109705f946d4",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"favourite",
+												"66ab5406b599109705f946d4"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get favourite books",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/favourite",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"favourite"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete favourite book",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/favourite/668a3c109d4ec3e5daaf4f59",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"favourite",
+												"668a3c109d4ec3e5daaf4f59"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "books history",
+							"item": [
+								{
+									"name": "get all books history",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/history",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"history"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get books history by query",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/history",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"history"
+											],
+											"query": [
+												{
+													"key": "user",
+													"value": "668a39919d4ec3e5daaf4f27",
+													"disabled": true
+												},
+												{
+													"key": "bookId",
+													"value": "668a3c109d4ec3e5daaf4f59",
+													"disabled": true
+												},
+												{
+													"key": "sort",
+													"value": "name,-price",
+													"disabled": true
+												},
+												{
+													"key": "page",
+													"value": "1",
+													"disabled": true
+												},
+												{
+													"key": "limit",
+													"value": "100",
+													"disabled": true
+												},
+												{
+													"key": "from",
+													"value": "2024-07-08T00:00:00.000Z",
+													"disabled": true
+												},
+												{
+													"key": "to",
+													"value": "2024-07-15T23:59:59.000Z",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get book history by book id",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/history/668a3da058a5504259340528",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"history",
+												"668a3da058a5504259340528"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "lend books",
+							"item": [
+								{
+									"name": "lend a book to user",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"user\": \"668d0d3730f505b0f3f935d4\",\r\n    \"bookId\": \"668a3c109d4ec3e5daaf4f59\",\r\n    \"from\": \"2024-07-10T00:00:00Z\",\r\n    \"to\": \"2024-07-15T23:59:59Z\",\r\n    \"remarks\": \"Handle with care, it's a rare edition.\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/lend",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"lend"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get all lend books",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/lend",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"lend"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "return books",
+							"item": [
+								{
+									"name": "return books to library",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"user\": \"668a39919d4ec3e5daaf4f27\",\r\n    \"bookId\": \"668a3c109d4ec3e5daaf4f59\",\r\n    \"remarks\": \"Handle with care, it's a rare edition.\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/return",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"return"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "request books",
+							"item": [
+								{
+									"name": "create request book",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "name",
+													"value": "সাইমুম সমগ্র- ৬ (হার্ডকভার) 2",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/E:/OTHERS/DOWNLOADS/WALLPAPERS/bloom-windows-11-4500x3000-11486.jpg"
+												},
+												{
+													"key": "writer",
+													"value": "Abul Asad",
+													"type": "text"
+												},
+												{
+													"key": "subject[0]",
+													"value": "Novel",
+													"type": "text"
+												},
+												{
+													"key": "publication",
+													"value": "Guardian",
+													"type": "text"
+												},
+												{
+													"key": "page",
+													"value": "200",
+													"type": "text"
+												},
+												{
+													"key": "edition",
+													"value": "1st Published, 2019",
+													"type": "text"
+												},
+												{
+													"key": "summary",
+													"value": "আহমদ মুসা। অন্যায়ের বিরুদ্ধে এক প্রচণ্ড বিদ্রোহের নাম, একজন লড়াকু বীর সৈনিক। অন্ধকার ভেদ করে আলো খুঁজে ফেরেন জনপদে। মুক্তির মিছিল নিয়ে ছুটতে থাকেন ক্লান্তিহীন। সীমানার সীমাবদ্ধতা পেড়িয়ে তিনি একজন বিশ্ব নাগরিক। কখনো সামষ্টিক লড়াই, কখনো দুঃসাহসী একক অভিযানে জুলুমের বিষদাঁত উপড়ে ফেলেন। চ্যালেঞ্জ, ঝুঁকি, ষড়যন্ত্র মাড়িয়ে মঞ্জিলপানে অবিচল আহমদ মুসাকে হামেশাই আবেগ, ভালোবাসা, রোমাঞ্চ এসে এক মায়াবি দুনিয়ার মুখোমুখি করে। তবুও দুর্নিবার এগিয়ে চলেন মুক্তির পতাকাবাহী আহমদ মুসা। এ এক শিহরণ জাগানিয়া সফর!",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/request",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"request"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get all request books",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/request",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"request"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get request book by query",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books?name=সাইমুম সমগ্র&sort=name,-price&page=1&limit=100",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "সাইমুম সমগ্র"
+												},
+												{
+													"key": "writer",
+													"value": "আবুল আসাদ 1",
+													"disabled": true
+												},
+												{
+													"key": "sort",
+													"value": "name,-price"
+												},
+												{
+													"key": "page",
+													"value": "1"
+												},
+												{
+													"key": "limit",
+													"value": "100"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get requested book by book ID",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ADMIN_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/request/66af36df9a19d05cb06c309a",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"request",
+												"66af36df9a19d05cb06c309a"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get request book by owner",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/request/owner/668d0d3730f505b0f3f935d4",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"request",
+												"owner",
+												"668d0d3730f505b0f3f935d4"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "update request book",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"addSubject\": [\r\n    \"6684d9ffd738b515fa621b6f\",\r\n    \"6684da0dd738b515fa621b71\"\r\n  ],\r\n  \"deleteSubject\": [\r\n    \"6684da1dd738b515fa621b73\",\r\n    \"6684da22d738b515fa621b75\"\r\n  ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/request/668a6b54f6423ec3fa364a7d",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"request",
+												"668a6b54f6423ec3fa364a7d"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete request book",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/request/668a6b54f6423ec3fa364a7d",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books",
+												"request",
+												"668a6b54f6423ec3fa364a7d"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "patch book",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "create book",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "সাইমুম সমগ্র- ১ (হার্ডকভার)",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/C:/Users/MontasimAlMamun/Downloads/library-management-system.jpg"
+										},
+										{
+											"key": "writer",
+											"value": "66ab2536c06d14ee1e48f2ba",
+											"type": "text"
+										},
+										{
+											"key": "subject[0]",
+											"value": "668a3a469d4ec3e5daaf4f36",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "subject[1]",
+											"value": "668a3a4e9d4ec3e5daaf4f38",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "publication",
+											"value": "66ab22c3a5a93a809507e453",
+											"type": "text"
+										},
+										{
+											"key": "page",
+											"value": "744",
+											"type": "text"
+										},
+										{
+											"key": "edition",
+											"value": "1st Published, 2019",
+											"type": "text"
+										},
+										{
+											"key": "summary",
+											"value": "আহমদ মুসা। অন্যায়ের বিরুদ্ধে এক প্রচণ্ড বিদ্রোহের নাম, একজন লড়াকু বীর সৈনিক। অন্ধকার ভেদ করে আলো খুঁজে ফেরেন জনপদে। মুক্তির মিছিল নিয়ে ছুটতে থাকেন ক্লান্তিহীন। সীমানার সীমাবদ্ধতা পেড়িয়ে তিনি একজন বিশ্ব নাগরিক। কখনো সামষ্টিক লড়াই, কখনো দুঃসাহসী একক অভিযানে জুলুমের বিষদাঁত উপড়ে ফেলেন। চ্যালেঞ্জ, ঝুঁকি, ষড়যন্ত্র মাড়িয়ে মঞ্জিলপানে অবিচল আহমদ মুসাকে হামেশাই আবেগ, ভালোবাসা, রোমাঞ্চ এসে এক মায়াবি দুনিয়ার মুখোমুখি করে। তবুও দুর্নিবার এগিয়ে চলেন মুক্তির পতাকাবাহী আহমদ মুসা। এ এক শিহরণ জাগানিয়া সফর!",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "466",
+											"type": "text"
+										},
+										{
+											"key": "stockAvailable",
+											"value": "50",
+											"type": "text"
+										},
+										{
+											"key": "isActive",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/books",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"books"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all books",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/books",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"books"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get books by query",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/books?limit=1",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"books"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "\"সাইমুম সমগ্র- ১ (হার্ডকভার) 2",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "name,-price",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "1"
+										},
+										{
+											"key": "writer",
+											"value": "668a3da058a5504259340528",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get book by ID",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/66ab2683a3c0462c9ff57453",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"books",
+										"66ab2683a3c0462c9ff57453"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update book by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "সাইমুম সমগ্র- ৬ (হার্ডকভার) 1",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/E:/OTHERS/DOWNLOADS/WALLPAPERS/waves-purple-3840x2400-11757.png",
+											"disabled": true
+										},
+										{
+											"key": "writer",
+											"value": "668a39cf9d4ec3e5daaf4f34",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "subject[0]",
+											"value": "668a3a6e9d4ec3e5daaf4f3c",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "subject[1]",
+											"value": "668a3a799d4ec3e5daaf4f3e",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "subject[2]",
+											"value": "668a3a919d4ec3e5daaf4f44",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "publication",
+											"value": "668d198843f382f15b2855df",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "4",
+											"type": "text"
+										},
+										{
+											"key": "edition",
+											"value": "1st Published, 2019",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "summary",
+											"value": "আহমদ মুসা। অন্যায়ের বিরুদ্ধে এক প্রচণ্ড বিদ্রোহের নাম, একজন লড়াকু বীর সৈনিক। অন্ধকার ভেদ করে আলো খুঁজে ফেরেন জনপদে। মুক্তির মিছিল নিয়ে ছুটতে থাকেন ক্লান্তিহীন। সীমানার সীমাবদ্ধতা পেড়িয়ে তিনি একজন বিশ্ব নাগরিক। কখনো সামষ্টিক লড়াই, কখনো দুঃসাহসী একক অভিযানে জুলুমের বিষদাঁত উপড়ে ফেলেন। চ্যালেঞ্জ, ঝুঁকি, ষড়যন্ত্র মাড়িয়ে মঞ্জিলপানে অবিচল আহমদ মুসাকে হামেশাই আবেগ, ভালোবাসা, রোমাঞ্চ এসে এক মায়াবি দুনিয়ার মুখোমুখি করে। তবুও দুর্নিবার এগিয়ে চলেন মুক্তির পতাকাবাহী আহমদ মুসা। এ এক শিহরণ জাগানিয়া সফর!",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "price",
+											"value": "466",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "stockAvailable",
+											"value": "50",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "isActive",
+											"value": "true",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "addSubject[0]",
+											"value": "6684d9ffd738b515fa621b6f",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "deleteSubject[0]",
+											"value": "6684da1dd738b515fa621b73",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/66ab542eb599109705f946ee",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"books",
+										"66ab542eb599109705f946ee"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete book by list",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/books?ids=66ac82a2b364cfb425caffc6",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"books"
+									],
+									"query": [
+										{
+											"key": "ids",
+											"value": "66ac82a2b364cfb425caffc6"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete book by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/books/66acb9334cd1b88bd2d486c2",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"books",
+										"66acb9334cd1b88bd2d486c2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "patch book",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/books",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"books"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "detect",
+					"item": [
+						{
+							"name": "details",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/detect?browser=true&browserVersion=true&ip=true&language=true&os=true&timeZone=true&referrer=true&cookies=true&geo=true",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"detect"
+									],
+									"query": [
+										{
+											"key": "browser",
+											"value": "true"
+										},
+										{
+											"key": "browserVersion",
+											"value": "true"
+										},
+										{
+											"key": "ip",
+											"value": "true"
+										},
+										{
+											"key": "language",
+											"value": "true"
+										},
+										{
+											"key": "os",
+											"value": "true"
+										},
+										{
+											"key": "timeZone",
+											"value": "true"
+										},
+										{
+											"key": "referrer",
+											"value": "true"
+										},
+										{
+											"key": "cookies",
+											"value": "true"
+										},
+										{
+											"key": "geo",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "logs",
+					"item": [
+						{
+							"name": "get logs",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{DEVELOPMENT_URL}}/api/{{VERSION}}/logs",
+									"host": [
+										"{{DEVELOPMENT_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"logs"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "permissions",
+					"item": [
+						{
+							"name": "create permission",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"create-permission\",\r\n  \"isActive\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/permissions",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"permissions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create default permisions",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/permissions/default",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"permissions",
+										"default"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all permissions",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/permissions",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"permissions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get permissions by query",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/permissions?name=delete-book-by-id",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"permissions"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "delete-book-by-id"
+										},
+										{
+											"key": "sort",
+											"value": "name",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "100",
+											"disabled": true
+										},
+										{
+											"key": "createdAt",
+											"value": "2024-07-08T11:52:16.973Z",
+											"disabled": true
+										},
+										{
+											"key": "updatedAt",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "createdBy",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "updatedBy",
+											"value": "",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get permission by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/permissions/66a7e726ff5694253fe2e979",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"permissions",
+										"66a7e726ff5694253fe2e979"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update permission by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    // \"name\": \"modify-writers\",\r\n    \"isActive\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/permissions/66a7e726ff5694253fe2e979",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"permissions",
+										"66a7e726ff5694253fe2e979"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete permissions by list",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/permissions?ids=66a9e328a57d8b4f5d9a0c69",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"permissions"
+									],
+									"query": [
+										{
+											"key": "ids",
+											"value": "66a9e328a57d8b4f5d9a0c69"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete permission",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/permissions/66a7db2204a411517089ff75",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"permissions",
+										"66a7db2204a411517089ff75"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "patch subject",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/permissions",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"permissions"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "pronouns",
+					"item": [
+						{
+							"name": "create pronouns",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Rather not say\",\r\n  \"isActive\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/pronouns",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"pronouns"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all pronouns",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/pronouns",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"pronouns"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get pronouns by query",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/pronouns?name=Rather not say",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"pronouns"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Rather not say"
+										},
+										{
+											"key": "sort",
+											"value": "name",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "100",
+											"disabled": true
+										},
+										{
+											"key": "createdAt",
+											"value": "2024-07-08T11:52:16.973Z",
+											"disabled": true
+										},
+										{
+											"key": "updatedAt",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "createdBy",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "updatedBy",
+											"value": "",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get pronouns by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/pronouns/66aa5d780b2f8043ab10fdb7",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"pronouns",
+										"66aa5d780b2f8043ab10fdb7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update pronouns",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Female\",\r\n    \"isActive\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/pronouns/66aa59bc26888e8777b7aca4",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"pronouns",
+										"66aa59bc26888e8777b7aca4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete pronouns",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/pronouns?ids=66aa59bc26888e8777b7aca4",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"pronouns"
+									],
+									"query": [
+										{
+											"key": "ids",
+											"value": "66aa59bc26888e8777b7aca4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete pronouns",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/pronouns/66aa59bc26888e8777b7aca4",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"pronouns",
+										"66aa59bc26888e8777b7aca4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "patch pronouns",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/permissions",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"permissions"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "publications",
+					"item": [
+						{
+							"name": "create publication",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"গার্ডিয়ান পাবলিকেশন্স\",\r\n  \"isActive\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/publications",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"publications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all publications",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/publications",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"publications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get publications by query",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/publications?name=সাইমুম সমগ্র 1",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"publications"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "সাইমুম সমগ্র 1"
+										},
+										{
+											"key": "sort",
+											"value": "name",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "100",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get publication by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/publications/66aa707f9600e99c2747c6e8",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"publications",
+										"66aa707f9600e99c2747c6e8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update publication by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"গার্ডিয়ান পাবলিকেশন্স 1\",\r\n  \"isActive\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/publications/66aa707f9600e99c2747c6e8",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"publications",
+										"66aa707f9600e99c2747c6e8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete publication by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/publications/66aa707f9600e99c2747c6e8",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"publications",
+										"66aa707f9600e99c2747c6e8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete publications",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/publications?ids=66a851b5f8dc90a2b9d459fb",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"publications"
+									],
+									"query": [
+										{
+											"key": "ids",
+											"value": "66a851b5f8dc90a2b9d459fb"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "patch subject",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/publications",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"publications"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "roles",
+					"item": [
+						{
+							"name": "create role",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Test role\",\r\n  \"permissions\": [\r\n    \"66a9e328a57d8b4f5d9a0c60\"\r\n  ],\r\n  \"isActive\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/roles",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"roles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create default role",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/roles/default",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"roles",
+										"default"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all roles",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/roles",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"roles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get roles by query",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/roles?page=1&limit=100",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"roles"
+									],
+									"query": [
+										{
+											"key": "permission[0]",
+											"value": "6684c51f4b73e9aaded3f3aa",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "name",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "100"
+										},
+										{
+											"key": "isActive",
+											"value": "true",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get role by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/roles/66a9e356aa31f97eadfbdee6",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"roles",
+										"66a9e356aa31f97eadfbdee6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update role by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"isActive\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/roles/66aa4eb7d48af3cfa941933c",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"roles",
+										"66aa4eb7d48af3cfa941933c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete role by list",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/roles?ids=66a8edbf623fb82ca05f7885",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"roles"
+									],
+									"query": [
+										{
+											"key": "ids",
+											"value": "66a8edbf623fb82ca05f7885"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete role by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/roles/66aa4eb7d48af3cfa941933c",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"roles",
+										"66aa4eb7d48af3cfa941933c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "patch subject",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/roles",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"roles"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "subjects",
+					"item": [
+						{
+							"name": "create subject",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"ভৌতিক 11\",\r\n  \"isActive\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/subjects",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"subjects"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all subjects",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/subjects",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"subjects"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get subjects by query",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/subjects?name=ভৌতিক 111",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"subjects"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "ভৌতিক 111"
+										},
+										{
+											"key": "sort",
+											"value": "name",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "100",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get subject by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/subjects/66aa6d1827e000e6d3417b2f",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"subjects",
+										"66aa6d1827e000e6d3417b2f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update subject",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n//   \"name\": \"ভৌতিক\",\r\n  \"isActive\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/subjects/66aa6d1827e000e6d3417b2f",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"subjects",
+										"66aa6d1827e000e6d3417b2f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete subjects",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/subjects?ids=66aa6d1827e000e6d3417b2f",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"subjects"
+									],
+									"query": [
+										{
+											"key": "ids",
+											"value": "66aa6d1827e000e6d3417b2f"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete subject",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/subjects/66aa6d1827e000e6d3417b2f",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"subjects",
+										"66aa6d1827e000e6d3417b2f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "patch subject",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/subjects",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"subjects"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "trending",
+					"item": [
+						{
+							"name": "trending books",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/trending/books",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"trending",
+										"books"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "users",
+					"item": [
+						{
+							"name": "book history",
+							"item": [
+								{
+									"name": "get user book history",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/history",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"user",
+												"history"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get user book history by book id",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/history/668a3da058a5504259340528",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"user",
+												"history",
+												"668a3da058a5504259340528"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "requested book",
+							"item": [
+								{
+									"name": "get all request books",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/requested",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"user",
+												"requested"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get request book by query",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/requested?name=সাইমুম সমগ্র&sort=name,-price&page=1&limit=100",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"user",
+												"requested"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "সাইমুম সমগ্র"
+												},
+												{
+													"key": "writer",
+													"value": "আবুল আসাদ 1",
+													"disabled": true
+												},
+												{
+													"key": "sort",
+													"value": "name,-price"
+												},
+												{
+													"key": "page",
+													"value": "1"
+												},
+												{
+													"key": "limit",
+													"value": "100"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get request book",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/requested/66928c9a0a2f3b19bc6f59f7",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"user",
+												"requested",
+												"66928c9a0a2f3b19bc6f59f7"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "update request book",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"addSubject\": [\r\n    \"6684d9ffd738b515fa621b6f\",\r\n    \"6684da0dd738b515fa621b71\"\r\n  ],\r\n  \"deleteSubject\": [\r\n    \"6684da1dd738b515fa621b73\",\r\n    \"6684da22d738b515fa621b75\"\r\n  ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/requested/668a6b54f6423ec3fa364a7d",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"user",
+												"requested",
+												"668a6b54f6423ec3fa364a7d"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "patch book",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/books",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"books"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "recently visited books",
+							"item": [
+								{
+									"name": "add recently visited book",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"book\": \"66ab2683a3c0462c9ff57453\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/recently-visited",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"user",
+												"recently-visited"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get recently visited books",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/recently-visited",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{VERSION}}",
+												"user",
+												"recently-visited"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "settings",
+							"item": [
+								{
+									"name": "account",
+									"item": [
+										{
+											"name": "delete account",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"confirmationText\": \"Delete my account\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/settings/account",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{VERSION}}",
+														"user",
+														"settings",
+														"account"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "appearance",
+									"item": [
+										{
+											"name": "get appearance",
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/settings/appearance",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{VERSION}}",
+														"user",
+														"settings",
+														"appearance"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "update appearance",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"theme\": {\r\n        \"name\": \"Light\"\r\n    }\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/settings/appearance",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{VERSION}}",
+														"user",
+														"settings",
+														"appearance"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "log",
+									"item": [
+										{
+											"name": "account log",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/settings/log/account",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{VERSION}}",
+														"user",
+														"settings",
+														"log",
+														"account"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "activity log",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/settings/log/activity",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{VERSION}}",
+														"user",
+														"settings",
+														"log",
+														"activity"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "security log",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/settings/log/security",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{VERSION}}",
+														"user",
+														"settings",
+														"log",
+														"security"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "profile",
+									"item": [
+										{
+											"name": "view profile",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/settings/profile",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{VERSION}}",
+														"user",
+														"settings",
+														"profile"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "update profile",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "name.first",
+															"value": "Montasim",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "image",
+															"type": "file",
+															"src": "/E:/OTHERS/DOWNLOADS/WALLPAPERS/windows-11-dark-3840x2400-11771.png",
+															"disabled": true
+														},
+														{
+															"key": "mobile",
+															"value": "01722815469",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "address",
+															"value": "Dhaka, Bangladesh",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "department",
+															"value": "IT",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "designation",
+															"value": "Software Engineer",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "username",
+															"value": "montasim",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{VERSION}}/user/settings/profile",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{VERSION}}",
+														"user",
+														"settings",
+														"profile"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "writers",
+					"item": [
+						{
+							"name": "create writer",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ADMIN_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "আবুল আসাদ",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/C:/Users/MontasimAlMamun/Downloads/library-management-system.jpg"
+										},
+										{
+											"key": "review",
+											"value": "4.8",
+											"type": "text"
+										},
+										{
+											"key": "summary",
+											"value": "দেশের অন্যতম জনপ্রিয় উপন্যাস সিরিজ ‘সাইমুম সিরিজ’ হলো লেখক আবুল আসাদ এর বই। এই একটি বাক্যই যথেষ্ট প্রখ্যাত সাংবাদিক, প্রাবন্ধিক, কলামিস্ট এবং সাহিত্যিক আবুল আসাদকে পরিচিত করিয়ে দেবার জন্য। গুণী এই লেখক ও সাংবাদিক ১৯৪২ সালের ৫ই আগস্ট রাজশাহী জেলার অন্তর্গত বাগমারা থানার নরসিংহপুর গ্রামে জন্মগ্রহণ করেন। তার পিতা এ. কে. ছামছালুল হক ভারতের বেনারসের মাদ্রাসা থেকে শিক্ষা লাভকারী একজন আলেম ছিলেন। সে সূত্রে পারিবারিকভাবেই তিনি ইসলামিক শিক্ষা লাভ করেন। মেধাবী ছাত্র আবুল আসাদ মাধ্যমিক শেষ করে রাজশাহী বিশ্ববিদ্যালয়ে ভর্তি হন এবং অর্থনীতিতে এম.এ পাস করেন। ছাত্রজীবনেই সাংবাদিকতায় হাতেখড়ি হয় তার। রাজশাহীর একাধিক দৈনিক এবং সাপ্তাহিক পত্রিকায় কাজ করার অভিজ্ঞতা নিয়ে ১৯৭০ সালে দৈনিক সংগ্রামে সহকারী সম্পাদক হিসেবে যোগ দেন তিনি। ১৯৮১ সালে তিনি সংগ্রামের সম্পাদক হিসেবে দায়িত্ব পালন শুরু করেন, যে পদে তিনি আজও কর্মরত আছেন। আবুল আসাদ এর বই সমগ্র পাঠকদের কেবল আনন্দই দেয় না, বিভিন্ন বিষয় সম্পর্কে সচেতনও করে। বিশেষ করে সাইমুম সিরিজের প্রকাশিত ৬১টি বই কেবল থ্রিলারই নয়, এগুলো ইসলামিক ইতিহাস, ভূগোল আর সংস্কৃতির পাঠও। সাইমুম সিরিজ ছাড়াও আবুল আসাদ এর বই সমূহ এর মাঝে আছে ‘কাল পঁচিশের আগে ও পরে’, ‘আমরা সেই সে জাতি’ (৩ খণ্ড) ‘সময়ের সাক্ষী’ এবং প্রবন্ধ সংকলন ‘একুশ শতকের এজেন্ডা’। গুণী এ লেখক তার রাজনৈতিক কর্মকাণ্ডের জন্য একাধিকবার গ্রেফতার হয়েছেন।",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/writers",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"writers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all writers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/writers",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"writers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get writers by query",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/writers?name=আবুল আসাদ&sort=name&page=1&limit=100",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"writers"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "আবুল আসাদ"
+										},
+										{
+											"key": "sort",
+											"value": "name"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get writer",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/writers/66ab2536c06d14ee1e48f2ba",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"writers",
+										"66ab2536c06d14ee1e48f2ba"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update writer",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/C:/Users/MontasimAlMamun/Downloads/live-icon.svg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/writers/6687e872cd24fe13b745d6e2",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"writers",
+										"6687e872cd24fe13b745d6e2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete writers",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/writers?ids=6687ee1bd45ea5c337942b73",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"writers"
+									],
+									"query": [
+										{
+											"key": "ids",
+											"value": "6687ee1bd45ea5c337942b73"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete writer",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/writers/668a36877e1e30e6bfc29d05",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"writers",
+										"668a36877e1e30e6bfc29d05"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "patch writer",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/writers",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"writers"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "user public profile",
+					"item": [
+						{
+							"name": "profile",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SERVER_URL}}/api/{{VERSION}}/montasim",
+									"host": [
+										"{{SERVER_URL}}"
+									],
+									"path": [
+										"api",
+										"{{VERSION}}",
+										"montasim"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "status",
+			"item": [
+				{
+					"name": "get status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/status",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "undefined",
+			"item": [
+				{
+					"name": "get undefinded",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/undefined",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"undefined"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "home",
+			"item": [
+				{
+					"name": "get home",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "test uncaught exception",
+			"item": [
+				{
+					"name": "test uncaught exception",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/test-uncaught-exception",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"test-uncaught-exception"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
