@@ -6,8 +6,9 @@
 
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
-import { join } from 'path';
+import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 import authRoutes from './auth/auth.routes.js';
 import booksRoutes from './books/books.routes.js';
@@ -27,9 +28,10 @@ import userProfileRoutes from './userProfile/userProfile.routes.js';
 import accessTypesConstants from '../../constant/accessTypes.constants.js';
 
 const router = express.Router();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Path to the JSDoc documentation
-const docsPath = join(
+const docsPath = path.join(
     process.cwd(),
     'src',
     'modules',
@@ -38,20 +40,24 @@ const docsPath = join(
     'code'
 );
 
-// // Read the Swagger JSON from the file system
-// const swaggerDocument = JSON.parse(
-//     fs.readFileSync('./src/modules/api/documentation/api/swagger.json', 'utf8')
-// );
+// Read the Swagger JSON from the file system
+const swaggerDocument = JSON.parse(
+    // fs.readFileSync('./src/modules/api/documentation/api/swagger.json', 'utf8')
+    fs.readFileSync(
+        path.join(__dirname, 'documentation', 'api', 'swagger.json'),
+        'utf8'
+    )
+);
 
 // Serve JSDoc documentation on the /api/v1/code-docs route
 router.use('/documentation/code', express.static(docsPath));
 
-// // API documentation route setup
-// router.use(
-//     '/documentation/api',
-//     swaggerUi.serve,
-//     swaggerUi.setup(swaggerDocument)
-// );
+// API documentation route setup
+router.use(
+    '/documentation/api',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument)
+);
 
 // Application routes
 router.use(`/${routesConstants.admin.routes}`, adminRoutes);
