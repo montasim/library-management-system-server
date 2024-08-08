@@ -18,6 +18,47 @@ const router = express.Router();
 
 router
     .route('/')
+    /**
+     * @openapi
+     * /:
+     *   post:
+     *     summary: Creates a new admin.
+     *     description: Creates a new administrator account. This endpoint is accessible only to users with admin permissions.
+     *     security:
+     *       - bearerAuth: []
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               email:
+     *                 type: string
+     *                 description: Email address for the new admin.
+     *               password:
+     *                 type: string
+     *                 description: Password for the new admin account.
+     *     responses:
+     *       201:
+     *         description: Admin created successfully.
+     *       409:
+     *         description: Email already registered.
+     *       403:
+     *         description: Email already registered as a user.
+     *       400:
+     *         description: Invalid email provided.
+     *     tags:
+     *       - Admin Management
+     *   all:
+     *     summary: Handles unsupported methods.
+     *     description: Returns an error if an unsupported HTTP method is used.
+     *     responses:
+     *       405:
+     *         description: Method not supported.
+     *     tags:
+     *       - Admin Management
+     */
     .post(
         authenticateMiddleware(
             accessTypesConstants.ADMIN,

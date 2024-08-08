@@ -26,6 +26,20 @@ router.use('/', indexRoutes);
 
 router.use(`/api/${configuration.version}`, ApiRoutes);
 
+/**
+ * @openapi
+ * /*:
+ *   all:
+ *     summary: Handle undefined routes.
+ *     description: Returns an error response for any requests made to undefined routes.
+ *     responses:
+ *       404:
+ *         description: Invalid route!
+ *       500:
+ *         description: Internal server error.
+ *     tags:
+ *       - Error Handling
+ */
 router.use('*', undefinedController);
 
 export default router;
