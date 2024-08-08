@@ -44,3 +44,10 @@ docker.log
 .env.staging
 .env.uat
 .env.production
+
+####################################################
+# DOCUMENTATION FILES
+# Purpose: Exclude directories containing generated or large-scale documentation.
+# Use: Prevent cluttering the repository with documentation which might be generated or too voluminous.
+####################################################
+src/documentation/

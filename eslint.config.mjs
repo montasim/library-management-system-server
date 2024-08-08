@@ -58,5 +58,6 @@ export default {
         'build/**', // Ignores all files in the build output directory
         'logs/**', // Ignores log files
         'yarn.lock', // Ignores the yarn lock file
+        'src/documentation/**', // Ignores documentation files
     ],
 };
