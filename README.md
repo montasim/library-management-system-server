@@ -1,3 +1,4 @@
+[//]: # (LIBRARY MANAGEMENT SYSTEM SERVER)
 # <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=24&duration=1&pause=1&color=EB008B&center=true&vCenter=true&repeat=false&width=475&height=40&lines=LIBRARY+MANAGEMENT+SYSTEM+SERVER" alt="LIBRARY MANAGEMENT SYSTEM SERVER" />
 
 <!-- repository summary badges start -->
@@ -12,6 +13,8 @@
 </div>
 <!-- repository summary badges end -->
 
+
+[//]: # (CONTENTS)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=120&height=40&lines=CONTENTS:" alt="CONTENTS:" />
 
 -   [FEATURES](#features)
@@ -34,6 +37,8 @@
 
 <br/>
 
+
+[//]: # (FEATURES)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=100&height=40&lines=FEATURES" alt="FEATURES" id="features" />
 
 ### APIs
@@ -139,6 +144,8 @@
 
 <br/>
 
+
+[//]: # (PREREQUISITES)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=148&height=40&lines=PREREQUISITES" alt="PREREQUISITES" id="prerequisites" />
 
 1. Node.js (v20.x or higher)
@@ -148,6 +155,8 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
 
 <br/>
 
+
+[//]: # (SETUP)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=60&height=40&lines=SETUP" alt="SETUP" id="setup" />
 
 1. **Clone the repository and navigate to the directory:**
@@ -197,6 +206,8 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
    
 <br/>
 
+
+[//]: # (RUNNING THE SCRIPT)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=208&height=40&lines=RUNNING+THE+SCRIPT" alt="RUNNING THE SCRIPT" id="running-the-script" />
 
 1. **Running the Application:**
@@ -293,10 +304,14 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
     This command initializes the auto cleanup process and then forces a rebuild.
     <br/>
 
+   
+[//]: # (ERROR HANDLING)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=170&height=40&lines=ERROR+HANDLING" alt="ERROR HANDLING" id="error-handling" />
 
 <br/>
 
+
+[//]: # (HOSTING)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=90&height=40&lines=HOSTING" alt="HOSTING" id="hosting" />
 
 [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/montasim/library-management-system-server)
@@ -327,6 +342,8 @@ Vercel is the recommended option for hosting the files since it is free and easy
 
 <br/>
 
+
+[//]: # (USED PACKAGES)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=165&height=40&lines=USED+PACKAGES" alt="USED PACKAGES" id="used-packages" />
 
 <details>
@@ -380,6 +397,8 @@ Vercel is the recommended option for hosting the files since it is free and easy
 
 <br/>
 
+
+[//]: # (TOOLS)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=65&height=40&lines=TOOLS" alt="TOOLS" id="tools" />
 
 1. [WebStorm](https://www.jetbrains.com/webstorm/)
@@ -388,26 +407,36 @@ Vercel is the recommended option for hosting the files since it is free and easy
 
 <br/>
 
+
+[//]: # (ARTICLES)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=95&height=40&lines=ARTICLES" alt="ARTICLES" id="articles" />
 
 1. [StackOverflow answer on file upload to Google Drive](https://stackoverflow.com/questions/65181932/how-i-can-upload-file-to-google-drive-with-google-drive-api).
 
 <br/>
 
+
+[//]: # (DO NOT FORGET TO DO)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=230&height=40&lines=DO+NOT+FORGET+TO+DO" alt="DO NOT FORGET TO DO" id="do-not-forget-to-do" />
 
 <br/>
 
+
+[//]: # (TUTORIALS)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=110&height=40&lines=TUTORIALS" alt="TUTORIALS" id="tutorials" />
 
 1. [Google Drive file upload tutorial](https://www.youtube.com/watch?v=bkaQTLCBBeo&t=600s).
 
 <br/>
 
+
+[//]: # (INSPIRATIONS)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=140&height=40&lines=INSPIRATIONS" alt="INSPIRATIONS" id="inspirations" />
 
 <br/>
 
+
+[//]: # (CONTRIBUTE)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=125&height=40&lines=CONTRIBUTE" alt="CONTRIBUTE" id="contribute" />
 
 Contributions are always welcome!
@@ -415,22 +444,30 @@ Please read the [contribution guidelines](CONTRIBUTION.md) first.
 
 <br/>
 
+
+[//]: # (CONTRIBUTORS)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=160&height=40&lines=CONTRIBUTORS" alt="CONTRIBUTORS" id="contributors" />
 
 <img loading="lazy" src="https://badges.pufler.dev/contributors/montasim/library-management-system-server?size=50&padding=5&perRow=10&bots=true" alt="contributors" />
 
 <br/>
 
+
+[//]: # (SPECIAL THANKS)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=168&height=40&lines=SPECIAL+THANKS" alt="SPECIAL THANKS" id="special-thanks" />
 
 <br/>
 
+
+[//]: # (LICENSE)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=78&height=40&lines=LICENSE" alt="LICENSE" id="license" />
 
 [![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
 
 <br/>
 
+
+[//]: # (CONTACT)
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=100&height=40&lines=CONTACT" alt="CONTACT" id="contact" />
 
 <!-- social media links start -->

@@ -1,6 +1,5 @@
-# Use the official Node.js 20 image from Docker Hub.
-# @image node:20
-FROM node:20
+# Use the official Node.js 20 Alpine image from Docker Hub.
+FROM node:20-alpine
 
 # Set the working directory inside the container.
 # @workdir /usr/src/app
