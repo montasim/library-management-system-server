@@ -78,4 +78,11 @@ router.use(
 router.use(`/${routesConstants.writers.routes}`, writersRoutes);
 router.use('/', userProfileRoutes);
 
+// TODO: dashboard route
+// TODO: application route
+// TODO: gallery route
+// TODO: blog route
+// TODO: social media route
+// TODO: notice route
+
 export default router;
