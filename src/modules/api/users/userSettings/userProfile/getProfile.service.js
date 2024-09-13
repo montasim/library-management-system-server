@@ -5,6 +5,8 @@
  * interactions with Google Drive for image uploads.
  */
 
+import { v2 as cloudinary } from 'cloudinary';
+
 import UsersModel from '../../users.model.js';
 import errorResponse from '../../../../../utilities/errorResponse.js';
 import httpStatus from '../../../../../constant/httpStatus.constants.js';
@@ -16,6 +18,7 @@ import userConstants from '../../users.constants.js';
 import mimeTypesConstants from '../../../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../../../constant/fileExtensions.constants.js';
 import GoogleDriveService from '../../../../../service/googleDrive.service.js';
+import configuration from '../../../../../configuration/configuration.js';
 
 /**
  * Retrieves the profile details for the requesting user.
@@ -83,13 +86,13 @@ const getProfile = async (userId) => {
 const updateProfile = async (requester, updateData, userImage) => {
     try {
         // Fetch the existing user; no need to lean() if updates are to be applied.
-        const existingUser = await UsersModel.findById(requester);
-        if (!existingUser) {
-            return errorResponse(
-                'Unauthorized. Please login first.',
-                httpStatus.UNAUTHORIZED
-            );
-        }
+        // const existingUser = await UsersModel.exists({ id: requester });
+        // if (!existingUser) {
+        //     return errorResponse(
+        //         'Unauthorized. Please login first.',
+        //         httpStatus.UNAUTHORIZED
+        //     );
+        // }
 
         // Validate provided update data
         if (isEmptyObject(updateData)) {
@@ -122,26 +125,48 @@ const updateProfile = async (requester, updateData, userImage) => {
                 );
             }
 
-            // Remove the old image file if it exists
-            const oldFileId = existingUser.image?.fileId;
-            if (oldFileId) {
-                await GoogleDriveService.deleteFile(oldFileId);
-            }
+            // // Remove the old image file if it exists
+            // const oldFileId = existingUser.image?.fileId;
+            // if (oldFileId) {
+            //     await GoogleDriveService.deleteFile(oldFileId);
+            // }
 
-            // Upload new image file
-            const newImageData = await GoogleDriveService.uploadFile(userImage);
-            if (!newImageData || newImageData instanceof Error) {
-                return errorResponse(
-                    'Failed to update image.',
-                    httpStatus.INTERNAL_SERVER_ERROR
-                );
-            }
+            // // Upload new image file to google drive
+            // const newImageData = await GoogleDriveService.uploadFile(userImage);
+            // if (!newImageData || newImageData instanceof Error) {
+            //     return errorResponse(
+            //         'Failed to update image.',
+            //         httpStatus.INTERNAL_SERVER_ERROR
+            //     );
+            // }
+            //
+            // // Update image data in update object
+            // updateData.image = {
+            //     fileId: newImageData.fileId,
+            //     shareableLink: newImageData.shareableLink,
+            //     downloadLink: newImageData.downloadLink,
+            // };
+
+            cloudinary.config({
+                cloud_name: configuration.cloudinary.cloudName,
+                api_key: configuration.cloudinary.apiKey,
+                api_secret: configuration.cloudinary.apiSecret,
+            });
+
+            const file = userImage;
+            const result = await cloudinary.uploader.upload(
+                `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+                {
+                    folder: 'library-management-system-server',
+                    public_id: file.originalname,
+                }
+            );
 
             // Update image data in update object
             updateData.image = {
-                fileId: newImageData.fileId,
-                shareableLink: newImageData.shareableLink,
-                downloadLink: newImageData.downloadLink,
+                fileId: result?.asset_id,
+                shareableLink: result?.secure_url,
+                downloadLink: result.url,
             };
         }
 

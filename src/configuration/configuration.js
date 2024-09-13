@@ -178,6 +178,15 @@ const envVarsSchema = Joi.object({
     GOOGLE_DRIVE_FOLDER_KEY: Joi.string()
         .required()
         .description('Folder key for Google Drive API.'),
+    CLOUDINARY_CLOUD_NAME: Joi.string()
+        .required()
+        .description('Cloud name for cloudinary.'),
+    CLOUDINARY_CLOUD_API_KEY: Joi.string()
+        .required()
+        .description('Cloudinary API key.'),
+    CLOUDINARY_CLOUD_API_SECRET: Joi.string()
+        .required()
+        .description('Cloudinary API secret.'),
 }).unknown();
 
 const { value: envVars, error } = envVarsSchema.validate(process.env, {
@@ -285,6 +294,11 @@ const configuration = {
         client: getEnvVar(envVars.GOOGLE_DRIVE_CLIENT_EMAIL, ''),
         privateKey: getEnvVar(envVars.GOOGLE_DRIVE_PRIVATE_KEY, ''),
         folderKey: getEnvVar(envVars.GOOGLE_DRIVE_FOLDER_KEY, ''),
+    },
+    cloudinary: {
+        cloudName: getEnvVar(envVars.CLOUDINARY_CLOUD_NAME, ''),
+        apiKey: getEnvVar(envVars.CLOUDINARY_CLOUD_API_KEY, ''),
+        apiSecret: getEnvVar(envVars.CLOUDINARY_CLOUD_API_SECRET, ''),
     },
 };
 
