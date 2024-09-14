@@ -5,16 +5,25 @@
  * and use various utilities for validation and file handling.
  */
 
+import { v2 as cloudinary } from 'cloudinary';
+
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import errorResponse from '../../../../utilities/errorResponse.js';
-import validateFile from '../../../../utilities/validateFile.js';
 import requestBooksConstant from './requestBooks.constant.js';
 import mimeTypesConstants from '../../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../../constant/fileExtensions.constants.js';
-import GoogleDriveService from '../../../../service/googleDrive.service.js';
-import sendResponse from '../../../../utilities/sendResponse.js';
 import RequestBooksModel from './requestBooks.model.js';
 import loggerService from '../../../../service/logger.service.js';
+import configuration from '../../../../configuration/configuration.js';
+
+import errorResponse from '../../../../utilities/errorResponse.js';
+import validateFile from '../../../../utilities/validateFile.js';
+import sendResponse from '../../../../utilities/sendResponse.js';
+
+cloudinary.config({
+    cloud_name: configuration.cloudinary.cloudName,
+    api_key: configuration.cloudinary.apiKey,
+    api_secret: configuration.cloudinary.apiSecret,
+});
 
 /**
  * @description Handles the creation of a book request. Validates the request data and image,
@@ -64,18 +73,22 @@ const createRequestBook = async (requester, bookData, bookImage) => {
                 );
             }
 
-            // Upload image and handle possible errors
-            const bookImageData =
-                await GoogleDriveService.uploadFile(bookImage);
-            if (!bookImageData || bookImageData instanceof Error) {
-                return errorResponse(
-                    'Failed to save image.',
-                    httpStatus.INTERNAL_SERVER_ERROR
-                );
-            }
+            const file = bookImage;
+            const result = await cloudinary.uploader.upload(
+                `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+                {
+                    folder: 'library-management-system-server',
+                    public_id: file.originalname,
+                }
+            );
 
+            // Update image data in update object
             // Add the extra data
-            bookData.image = bookImageData;
+            bookData.image = {
+                fileId: result?.asset_id,
+                shareableLink: result?.secure_url,
+                downloadLink: result.url,
+            };
             bookData.createdBy = requester;
 
             // Add new book to the existing requestBooks document
@@ -109,18 +122,22 @@ const createRequestBook = async (requester, bookData, bookImage) => {
                 );
             }
 
-            // Upload image and handle possible errors
-            const bookImageData =
-                await GoogleDriveService.uploadFile(bookImage);
-            if (!bookImageData || bookImageData instanceof Error) {
-                return errorResponse(
-                    'Failed to save image.',
-                    httpStatus.INTERNAL_SERVER_ERROR
-                );
-            }
+            const file = bookImage;
+            const result = await cloudinary.uploader.upload(
+                `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+                {
+                    folder: 'library-management-system-server',
+                    public_id: file.originalname,
+                }
+            );
 
+            // Update image data in update object
             // Add the extra data
-            bookData.image = bookImageData;
+            bookData.image = {
+                fileId: result?.asset_id,
+                shareableLink: result?.secure_url,
+                downloadLink: result.url,
+            };
             bookData.createdBy = requester;
 
             // Create a new requestBooks document if none exists

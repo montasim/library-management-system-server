@@ -8,17 +8,17 @@
 import { v2 as cloudinary } from 'cloudinary';
 
 import UsersModel from '../../users.model.js';
-import errorResponse from '../../../../../utilities/errorResponse.js';
 import httpStatus from '../../../../../constant/httpStatus.constants.js';
-import sendResponse from '../../../../../utilities/sendResponse.js';
 import loggerService from '../../../../../service/logger.service.js';
-import isEmptyObject from '../../../../../utilities/isEmptyObject.js';
-import validateFile from '../../../../../utilities/validateFile.js';
 import userConstants from '../../users.constants.js';
 import mimeTypesConstants from '../../../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../../../constant/fileExtensions.constants.js';
-import GoogleDriveService from '../../../../../service/googleDrive.service.js';
 import configuration from '../../../../../configuration/configuration.js';
+
+import errorResponse from '../../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../../utilities/sendResponse.js';
+import isEmptyObject from '../../../../../utilities/isEmptyObject.js';
+import validateFile from '../../../../../utilities/validateFile.js';
 
 /**
  * Retrieves the profile details for the requesting user.

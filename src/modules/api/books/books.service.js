@@ -5,13 +5,10 @@
  * and proper handling of related entities such as writers, subjects, and publications.
  */
 
+import { v2 as cloudinary } from 'cloudinary';
+
 import BooksModel from './books.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import GoogleDriveService from '../../../service/googleDrive.service.js';
-import isEmptyObject from '../../../utilities/isEmptyObject.js';
-import errorResponse from '../../../utilities/errorResponse.js';
-import sendResponse from '../../../utilities/sendResponse.js';
-import validateFile from '../../../utilities/validateFile.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import booksConstant from './books.constant.js';
@@ -22,6 +19,18 @@ import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
 import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
 import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import configuration from '../../../configuration/configuration.js';
+
+import isEmptyObject from '../../../utilities/isEmptyObject.js';
+import errorResponse from '../../../utilities/errorResponse.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import validateFile from '../../../utilities/validateFile.js';
+
+cloudinary.config({
+    cloud_name: configuration.cloudinary.cloudName,
+    api_key: configuration.cloudinary.apiKey,
+    api_secret: configuration.cloudinary.apiSecret,
+});
 
 /**
  * Helper function to validate IDs for writer and publication.
@@ -149,14 +158,21 @@ const createNewBook = async (requester, bookData, bookImage) => {
             );
         }
 
-        // Upload image and handle possible errors
-        const bookImageData = await GoogleDriveService.uploadFile(bookImage);
-        if (!bookImageData || bookImageData instanceof Error) {
-            return errorResponse(
-                'Failed to save image.',
-                httpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
+        const file = bookImage;
+        const result = await cloudinary.uploader.upload(
+            `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+            {
+                folder: 'library-management-system-server',
+                public_id: file.originalname,
+            }
+        );
+
+        // Update image data in update object
+        const bookImageData = {
+            fileId: result?.asset_id,
+            shareableLink: result?.secure_url,
+            downloadLink: result.url,
+        };
 
         // Add the extra data
         bookData.image = bookImageData;
@@ -325,8 +341,6 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
 
         Object.assign(book, otherUpdates);
 
-        let bookImageData = {};
-
         // Handle file update
         if (bookImage) {
             const fileValidationResults = validateFile(
@@ -342,25 +356,20 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                 );
             }
 
-            // Delete the old file from Google Drive if it exists
-            const oldFileId = book.image?.fileId;
-            if (oldFileId) {
-                await GoogleDriveService.deleteFile(oldFileId);
-            }
+            const file = bookImage;
+            const result = await cloudinary.uploader.upload(
+                `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+                {
+                    folder: 'library-management-system-server',
+                    public_id: file.originalname,
+                }
+            );
 
-            bookImageData = await GoogleDriveService.uploadFile(bookImage);
-
-            if (!bookImageData || bookImageData instanceof Error) {
-                return errorResponse(
-                    'Failed to save image.',
-                    httpStatus.INTERNAL_SERVER_ERROR
-                );
-            }
-
-            bookImageData = {
-                fileId: bookImageData.fileId,
-                shareableLink: bookImageData.shareableLink,
-                downloadLink: bookImageData.downloadLink,
+            // Update image data in update object
+            const bookImageData = {
+                fileId: result?.asset_id,
+                shareableLink: result?.secure_url,
+                downloadLink: result.url,
             };
 
             if (bookImageData) {
