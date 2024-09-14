@@ -86,13 +86,13 @@ const getProfile = async (userId) => {
 const updateProfile = async (requester, updateData, userImage) => {
     try {
         // Fetch the existing user; no need to lean() if updates are to be applied.
-        // const existingUser = await UsersModel.exists({ id: requester });
-        // if (!existingUser) {
-        //     return errorResponse(
-        //         'Unauthorized. Please login first.',
-        //         httpStatus.UNAUTHORIZED
-        //     );
-        // }
+        const existingUser = await UsersModel.findById(requester);
+        if (!existingUser) {
+            return errorResponse(
+                'Unauthorized. Please login first.',
+                httpStatus.UNAUTHORIZED
+            );
+        }
 
         // Validate provided update data
         if (isEmptyObject(updateData)) {
@@ -102,12 +102,17 @@ const updateProfile = async (requester, updateData, userImage) => {
             );
         }
 
-        // // Optionally, check if the updates are allowed based on the schema
-        // const updatesAllowed = ['name', 'bio', 'username']; // Example fields that can be updated
-        // const updates = Object.keys(updateData).filter(key => updatesAllowed.includes(key));
-        // if (updates.length === 0) {
-        //     return errorResponse('Invalid update fields.', httpStatus.BAD_REQUEST);
-        // }
+        // Optionally, check if the updates are allowed based on the schema
+        const updatesAllowed = ['name', 'bio', 'username']; // Example fields that can be updated
+        const updates = Object.keys(updateData).filter((key) =>
+            updatesAllowed.includes(key)
+        );
+        if (updates.length === 0) {
+            return errorResponse(
+                'Invalid update fields.',
+                httpStatus.BAD_REQUEST
+            );
+        }
 
         // Handle image upload and update if provided
         if (userImage) {
@@ -124,28 +129,6 @@ const updateProfile = async (requester, updateData, userImage) => {
                     httpStatus.BAD_REQUEST
                 );
             }
-
-            // // Remove the old image file if it exists
-            // const oldFileId = existingUser.image?.fileId;
-            // if (oldFileId) {
-            //     await GoogleDriveService.deleteFile(oldFileId);
-            // }
-
-            // // Upload new image file to google drive
-            // const newImageData = await GoogleDriveService.uploadFile(userImage);
-            // if (!newImageData || newImageData instanceof Error) {
-            //     return errorResponse(
-            //         'Failed to update image.',
-            //         httpStatus.INTERNAL_SERVER_ERROR
-            //     );
-            // }
-            //
-            // // Update image data in update object
-            // updateData.image = {
-            //     fileId: newImageData.fileId,
-            //     shareableLink: newImageData.shareableLink,
-            //     downloadLink: newImageData.downloadLink,
-            // };
 
             cloudinary.config({
                 cloud_name: configuration.cloudinary.cloudName,
