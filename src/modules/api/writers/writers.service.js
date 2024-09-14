@@ -4,13 +4,10 @@
  * The service handles validation, file uploads to Google Drive, and logging of admin activities.
  */
 
+import { v2 as cloudinary } from 'cloudinary';
+
 import WritersModel from './writers.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import GoogleDriveService from '../../../service/googleDrive.service.js';
-import isEmptyObject from '../../../utilities/isEmptyObject.js';
-import errorResponse from '../../../utilities/errorResponse.js';
-import sendResponse from '../../../utilities/sendResponse.js';
-import validateFile from '../../../utilities/validateFile.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import writersConstant from './writers.constant.js';
@@ -18,6 +15,12 @@ import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
 import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
 import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import configuration from '../../../configuration/configuration.js';
+
+import isEmptyObject from '../../../utilities/isEmptyObject.js';
+import errorResponse from '../../../utilities/errorResponse.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import validateFile from '../../../utilities/validateFile.js';
 
 /**
  * Populates writer fields with additional information.
@@ -84,14 +87,21 @@ const createWriter = async (requester, writerData, writerImage) => {
             );
         }
 
-        const writerImageData =
-            await GoogleDriveService.uploadFile(writerImage);
-        if (!writerImageData || writerImageData instanceof Error) {
-            return errorResponse(
-                'Failed to save image.',
-                httpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
+        const file = writerImage;
+        const result = await cloudinary.uploader.upload(
+            `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+            {
+                folder: 'library-management-system-server',
+                public_id: file.originalname,
+            }
+        );
+
+        // Update image data in update object
+        const writerImageData = {
+            fileId: result?.asset_id,
+            shareableLink: result?.secure_url,
+            downloadLink: result.url,
+        };
 
         writerData.createdBy = requester;
 
@@ -200,30 +210,22 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
             );
         }
 
-        const existingWriter = await WritersModel.findById(writerId).lean();
-
         updateData.updatedBy = requester;
 
-        let writerImageData;
-        // Delete the old file from Google Drive if it exists
-        const oldFileId = existingWriter.image?.fileId;
-        if (oldFileId) {
-            await GoogleDriveService.deleteFile(oldFileId);
-        }
+        const file = writerImage;
+        const result = await cloudinary.uploader.upload(
+            `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+            {
+                folder: 'library-management-system-server',
+                public_id: file.originalname,
+            }
+        );
 
-        writerImageData = await GoogleDriveService.uploadFile(writerImage);
-
-        if (!writerImageData || writerImageData instanceof Error) {
-            return errorResponse(
-                'Failed to save image.',
-                httpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
-
-        writerImageData = {
-            fileId: writerImageData.fileId,
-            shareableLink: writerImageData.shareableLink,
-            downloadLink: writerImageData.downloadLink,
+        // Update image data in update object
+        const writerImageData = {
+            fileId: result?.asset_id,
+            shareableLink: result?.secure_url,
+            downloadLink: result.url,
         };
 
         if (writerImageData) {
