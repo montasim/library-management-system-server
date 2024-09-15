@@ -67,41 +67,44 @@ const createWriter = async (requester, writerData, writerImage) => {
             );
         }
 
-        if (!writerImage) {
-            return errorResponse(
-                'Please provide an image.',
-                httpStatus.BAD_REQUEST
-            );
-        }
+        // if (!writerImage) {
+        //     return errorResponse(
+        //         'Please provide an image.',
+        //         httpStatus.BAD_REQUEST
+        //     );
+        // }
 
-        const fileValidationResults = validateFile(
-            writerImage,
-            writersConstant.imageSize,
-            [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
-            [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
-        );
-        if (!fileValidationResults.isValid) {
-            return errorResponse(
-                fileValidationResults.message,
-                httpStatus.BAD_REQUEST
+        let writerImageData;
+        if (writerImage) {
+            const fileValidationResults = validateFile(
+                writerImage,
+                writersConstant.imageSize,
+                [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
+                [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
             );
-        }
-
-        const file = writerImage;
-        const result = await cloudinary.uploader.upload(
-            `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
-            {
-                folder: 'library-management-system-server',
-                public_id: file.originalname,
+            if (!fileValidationResults.isValid) {
+                return errorResponse(
+                    fileValidationResults.message,
+                    httpStatus.BAD_REQUEST
+                );
             }
-        );
 
-        // Update image data in update object
-        const writerImageData = {
-            fileId: result?.asset_id,
-            shareableLink: result?.secure_url,
-            downloadLink: result.url,
-        };
+            const file = writerImage;
+            const result = await cloudinary.uploader.upload(
+                `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+                {
+                    folder: 'library-management-system-server',
+                    public_id: file.originalname,
+                }
+            );
+
+            // Update image data in update object
+            writerImageData = {
+                fileId: result?.asset_id,
+                shareableLink: result?.secure_url,
+                downloadLink: result.url,
+            };
+        }
 
         writerData.createdBy = requester;
 
@@ -190,47 +193,49 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
             );
         }
 
-        if (!writerImage) {
-            return errorResponse(
-                'Please provide an image.',
-                httpStatus.BAD_REQUEST
-            );
-        }
+        // if (!writerImage) {
+        //     return errorResponse(
+        //         'Please provide an image.',
+        //         httpStatus.BAD_REQUEST
+        //     );
+        // }
 
-        const fileValidationResults = validateFile(
-            writerImage,
-            writersConstant.imageSize,
-            [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
-            [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
-        );
-        if (!fileValidationResults.isValid) {
-            return errorResponse(
-                fileValidationResults.message,
-                httpStatus.BAD_REQUEST
+        if (writerImage) {
+            const fileValidationResults = validateFile(
+                writerImage,
+                writersConstant.imageSize,
+                [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
+                [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
             );
+            if (!fileValidationResults.isValid) {
+                return errorResponse(
+                    fileValidationResults.message,
+                    httpStatus.BAD_REQUEST
+                );
+            }
+
+            const file = writerImage;
+            const result = await cloudinary.uploader.upload(
+                `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+                {
+                    folder: 'library-management-system-server',
+                    public_id: file.originalname,
+                }
+            );
+
+            // Update image data in update object
+            const writerImageData = {
+                fileId: result?.asset_id,
+                shareableLink: result?.secure_url,
+                downloadLink: result.url,
+            };
+
+            if (writerImageData) {
+                updateData.image = writerImageData;
+            }
         }
 
         updateData.updatedBy = requester;
-
-        const file = writerImage;
-        const result = await cloudinary.uploader.upload(
-            `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
-            {
-                folder: 'library-management-system-server',
-                public_id: file.originalname,
-            }
-        );
-
-        // Update image data in update object
-        const writerImageData = {
-            fileId: result?.asset_id,
-            shareableLink: result?.secure_url,
-            downloadLink: result.url,
-        };
-
-        if (writerImageData) {
-            updateData.image = writerImageData;
-        }
 
         const updatedWriter = await WritersModel.findByIdAndUpdate(
             writerId,

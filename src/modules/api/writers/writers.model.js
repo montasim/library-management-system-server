@@ -60,13 +60,11 @@ const writerSchema = new mongoose.Schema(
                 writersConstants.lengths.REVIEW_MAX,
                 `Review cannot be more than ${writersConstants.lengths.REVIEW_MAX}.`,
             ],
-            required: [true, 'Please provide a review rating for the writer.'],
             description: `The review rating of the writer, ranging from ${writersConstants.lengths.REVIEW_MIN} to ${writersConstants.lengths.REVIEW_MAX}.`,
         },
         summary: {
             type: String,
             trim: true,
-            required: [true, 'Please provide a summary for the writer.'],
             minlength: [
                 writersConstants.lengths.SUMMARY_MIN,
                 `Summary must be at least ${writersConstants.lengths.SUMMARY_MIN} characters long.`,

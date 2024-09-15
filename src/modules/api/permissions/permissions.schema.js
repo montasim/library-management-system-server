@@ -44,7 +44,6 @@ const permissionSchemaBase = Joi.object({
         }),
     page: Joi.string()
         .min(1)
-        .default(1)
         .custom((value, helpers) => parseInt(value)),
     limit: Joi.string()
         .min(1)

@@ -76,7 +76,7 @@ const getResourceList = async (
 ) => {
     try {
         const {
-            page = 1,
+            page, // No default value, check if it's provided
             limit = 10,
             sort = '-createdAt',
             requester,
@@ -97,43 +97,60 @@ const getResourceList = async (
             return acc;
         }, {});
 
+        // Get total items count
         const totalItems = await model.countDocuments(query);
-        const totalPages = Math.ceil(totalItems / limit);
-        const items = await populateFields(
-            model
-                .find(query)
-                .sort(sort)
-                .skip((page - 1) * limit)
-                .limit(limit)
-        );
 
-        if (!items.length) {
+        // Conditionally apply pagination if `page` is provided, else return all data
+        let itemsQuery = model.find(query).sort(sort);
+
+        if (page) {
+            const totalPages = Math.ceil(totalItems / limit);
+            itemsQuery = itemsQuery.skip((page - 1) * limit).limit(limit);
+
+            const items = await populateFields(itemsQuery);
+
+            if (!items.length) {
+                return sendResponse(
+                    {},
+                    `No ${resourceType} found.`,
+                    httpStatus.NOT_FOUND
+                );
+            }
+
             return sendResponse(
-                {},
-                `No ${resourceType} found.`,
-                httpStatus.NOT_FOUND
+                {
+                    items,
+                    totalItems,
+                    totalPages,
+                    currentPage: page,
+                    pageSize: limit,
+                    sort,
+                },
+                `${items.length} ${resourceType} fetched successfully.`,
+                httpStatus.OK
+            );
+        } else {
+            // If no page is provided, return all data without pagination
+            const items = await populateFields(itemsQuery);
+
+            if (!items.length) {
+                return sendResponse(
+                    {},
+                    `No ${resourceType} found.`,
+                    httpStatus.NOT_FOUND
+                );
+            }
+
+            return sendResponse(
+                {
+                    items,
+                    totalItems,
+                    sort,
+                },
+                `${items.length} ${resourceType} fetched successfully.`,
+                httpStatus.OK
             );
         }
-
-        // await AdminActivityLoggerModel.create({
-        //     user: requester,
-        //     action: adminActivityLoggerConstants.actionTypes.FETCH,
-        //     description: `Fetched ${resourceType} list`,
-        //     details: JSON.stringify(items),
-        // });
-
-        return sendResponse(
-            {
-                items,
-                totalItems,
-                totalPages,
-                currentPage: page,
-                pageSize: limit,
-                sort,
-            },
-            `${items.length} ${resourceType} fetched successfully.`,
-            httpStatus.OK
-        );
     } catch (error) {
         loggerService.error(`Failed to get ${resourceType}: ${error}`);
 

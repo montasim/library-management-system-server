@@ -35,12 +35,10 @@ const subjectSchemaBase = Joi.object({
         .messages(customValidationMessage),
     page: Joi.string()
         .min(1)
-        .default(1)
         .custom((value, helpers) => parseInt(value)),
     limit: Joi.string()
         .min(1)
         .max(100)
-        .default(10)
         .custom((value, helpers) => parseInt(value)),
     sort: Joi.string().trim().default('createdAt'),
     isActive: validationService.booleanField,
