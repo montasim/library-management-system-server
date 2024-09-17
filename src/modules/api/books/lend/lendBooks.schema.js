@@ -17,11 +17,6 @@ import lendBooksConstants from './lendBooks.constant.js';
 const lendBookSchemaBase = Joi.object({
     user: validationService.objectIdField,
     bookId: validationService.objectIdField,
-    from: Joi.string().messages({
-        'date.base': '"from" must be a valid date in ISO 8601 format',
-        'date.iso': '"from" date must strictly follow ISO 8601 format',
-        'any.required': '"from" date is required',
-    }),
     to: Joi.string().messages({
         'date.base': '"to" must be a valid date in ISO 8601 format',
         'date.iso': '"to" date must strictly follow ISO 8601 format',
@@ -55,7 +50,7 @@ const lendBookSchemaBase = Joi.object({
  * @function
  */
 const createLendBooksSchema = lendBookSchemaBase.fork(
-    ['user', 'bookId', 'from', 'to', 'remarks'],
+    ['user', 'bookId', 'to', 'remarks'],
     (field) => field.required()
 );
 
@@ -69,7 +64,6 @@ const getLendBooksQuerySchema = lendBookSchemaBase.fork(
     [
         'user',
         'bookId',
-        'from',
         'to',
         'remarks',
         'page',

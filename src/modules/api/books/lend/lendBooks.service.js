@@ -54,7 +54,7 @@ const createLendBook = async (requester, lendBookData) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0); // Reset time to the start of the day
 
-        const fromDate = new Date(lendBookData.from);
+        const fromDate = new Date();
         const toDate = new Date(lendBookData.to);
 
         if (fromDate < today) {
@@ -74,6 +74,7 @@ const createLendBook = async (requester, lendBookData) => {
             );
         }
 
+        lendBookData.from = fromDate; // Update the 'to' date to the validated value
         // Step 5: Find existing document for the user or create a new one
         const existingLend = await LendBooksModel.findOne({
             lender: lendBookData.user,
