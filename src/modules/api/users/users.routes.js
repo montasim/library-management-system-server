@@ -12,8 +12,22 @@ import recentlyVisitedBooksRoutes from './recentlyVisitedBooks/recentlyVisitedBo
 import userSettingsRoutes from './userSettings/userSettings.routes.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 import accessTypesConstants from '../../../constant/accessTypes.constants.js';
+import cacheMiddleware from '../../../middleware/cache.middleware.js';
+import configuration from '../../../configuration/configuration.js';
+import methodNotSupported from '../../../shared/methodNotSupported.js';
+import usersValidator from './users.validators.js';
+import usersController from './users.controller.js';
 
 const router = express.Router();
+
+router
+    .route('/')
+    .get(
+        usersValidator.getUsersList,
+        usersController.getUsersList,
+        cacheMiddleware.create(configuration.cache.timeout)
+    )
+    .all(methodNotSupported);
 
 router.use(
     '/history',

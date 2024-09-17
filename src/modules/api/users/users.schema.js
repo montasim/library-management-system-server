@@ -82,6 +82,25 @@ const userSchemaBase = Joi.object({
                 'The name of the theme chosen by the user. This setting determines the overall look and feel of the application, enabling a personalized user experience.'
             ),
     }),
+    limit: Joi.string()
+        .min(1)
+        .max(100)
+        .default(10)
+        .custom((value, helpers) => parseInt(value))
+        .description(
+            'Limit for query results, used in pagination to specify how many items to return.'
+        ),
+    sort: Joi.string()
+        .trim()
+        .default('createdAt')
+        .description(
+            'Sorting parameter for the query results, defaulting to the creation date.'
+        ),
+    isActive: validationService.booleanField,
+    createdBy: validationService.objectIdField,
+    updatedBy: validationService.objectIdField,
+    createdAt: validationService.dateField,
+    updatedAt: validationService.dateField,
 }).strict();
 
 /**
@@ -122,6 +141,39 @@ const updateAppearance = userSchemaBase.fork(['theme'], (field) =>
 );
 
 /**
+ * getBooksQuerySchema - Joi schema for validating query parameters when retrieving a list of books.
+ * Ensures that parameters such as name, isActive, limit, sort, createdBy, updatedBy, createdAt,
+ * and updatedAt are optional and meet the specified criteria.
+ *
+ * @function
+ */
+const getUsersQuerySchema = userSchemaBase.fork(
+    [
+        'name',
+        'isActive',
+        'limit',
+        'sort',
+        'createdBy',
+        'updatedBy',
+        'createdAt',
+        'updatedBy',
+    ],
+    (field) => field.optional()
+);
+
+/**
+ * userIdParamSchema - Joi schema for validating a single user ID.
+ * Ensures that the userId field is a valid MongoDB ObjectId.
+ *
+ * @function
+ */
+const userIdParamSchema = Joi.object({
+    userId: validationService.objectIdField
+        .required()
+        .description('The user ID. ID must be a valid MongoDB ObjectId.'),
+}).strict();
+
+/**
  * Object containing all the defined Joi schemas for user validation.
  *
  * @constant
@@ -129,11 +181,15 @@ const updateAppearance = userSchemaBase.fork(['theme'], (field) =>
  * @property {Joi.ObjectSchema} updateUserProfile - Schema for validating data when updating a user profile.
  * @property {Joi.ObjectSchema} deleteUser - Schema for validating data when deleting a user account.
  * @property {Joi.ObjectSchema} updateAppearance - Schema for validating data when updating user appearance settings.
+ * @property {Object} getUsersQuerySchema - Joi schema for validating query parameters when retrieving a list of users.
+ * @property {Object} userIdParamSchema - Joi schema for validating a single user ID.
  */
 const usersSchema = {
     updateUserProfile,
     deleteUser,
     updateAppearance,
+    getUsersQuerySchema,
+    userIdParamSchema,
 };
 
 export default usersSchema;

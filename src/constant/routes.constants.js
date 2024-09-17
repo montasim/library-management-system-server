@@ -36,6 +36,14 @@ const routesConstants = {
     trending: {
         routes: 'trending',
     },
+    users: {
+        routes: 'users',
+        params: 'userId',
+        permissions: {
+            getList: 'get-user-list',
+            getById: 'get-user-by-id',
+        },
+    },
     user: {
         routes: 'user',
     },
