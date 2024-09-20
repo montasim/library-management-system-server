@@ -7,9 +7,9 @@
 
 import express from 'express';
 
-import userRequestBooksController from './userRequestBooks.controller.js';
-import methodNotSupported from '../../../../shared/methodNotSupported.js';
-import userRequestBooksValidator from './userRequestBooks.validator.js';
+import requestedController from './requested.controller.js';
+import methodNotSupported from '../../../../../shared/methodNotSupported.js';
+import requestedValidator from './requested.validator.js';
 
 const router = express.Router();
 
@@ -61,7 +61,7 @@ const router = express.Router();
  */
 router
     .route('/')
-    .get(userRequestBooksController.getRequestBooks)
+    .get(requestedController.getRequestBooks)
     .all(methodNotSupported);
 
 /**
@@ -131,12 +131,12 @@ router
 router
     .route('/:requestedBookId')
     .get(
-        userRequestBooksValidator.requestBookId,
-        userRequestBooksController.getRequestBook
+        requestedValidator.requestBookId,
+        requestedController.getRequestBook
     )
     .delete(
-        userRequestBooksValidator.requestBookId,
-        userRequestBooksController.deleteRequestBook
+        requestedValidator.requestBookId,
+        requestedController.deleteRequestBook
     )
     .all(methodNotSupported);
 

@@ -10167,7 +10167,7 @@ This schema makes the 'name', 'writer', 'subject', 'publication', 'page', 'editi
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html">modules/api/users/userRequestBooks/userRequestBooks.schema.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html#line111">line 111</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html">modules/api/users/userRequestBooks/requested.schema.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html#line111">line 111</a>
     </li></ul></dd>
 
 
@@ -13436,7 +13436,7 @@ This schema makes all fields optional and uses the base subjects schema for vali
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.constants.js.html">modules/api/users/userRequestBooks/userRequestBooks.constants.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.constants.js.html#line42">line 42</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.constants.js.html">modules/api/users/userRequestBooks/requested.constants.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.constants.js.html#line42">line 42</a>
     </li></ul></dd>
 
 
@@ -19261,7 +19261,7 @@ This schema ensures that the 'requestedBookId' field is a valid ObjectId.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html">modules/api/users/userRequestBooks/userRequestBooks.schema.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html#line120">line 120</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html">modules/api/users/userRequestBooks/requested.schema.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html#line120">line 120</a>
     </li></ul></dd>
 
 
@@ -19404,7 +19404,7 @@ This schema includes:</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html">modules/api/users/userRequestBooks/userRequestBooks.schema.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html#line35">line 35</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html">modules/api/users/userRequestBooks/requested.schema.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html#line35">line 35</a>
     </li></ul></dd>
 
 
@@ -19476,7 +19476,7 @@ This schema includes:</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.constants.js.html">modules/api/users/userRequestBooks/userRequestBooks.constants.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.constants.js.html#line49">line 49</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.constants.js.html">modules/api/users/userRequestBooks/requested.constants.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.constants.js.html#line49">line 49</a>
     </li></ul></dd>
 
 
@@ -22699,13 +22699,13 @@ It ensures that at least one field is provided for the update.</p>
 
 
 
-<h4 class="name" id="userRequestBooksSchema"><span class="type-signature">(constant) </span>userRequestBooksSchema<span class="type-signature"></span></h4>
+<h4 class="name" id="userRequestBooksSchema"><span class="type-signature">(constant) </span>requestedSchema<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    <p>userRequestBooksSchema - Object containing all the defined Joi schemas for user-requested books validation:</p>
+    <p>requestedSchema - Object containing all the defined Joi schemas for user-requested books validation:</p>
 <ul>
 <li>createRequestBookSchema: Schema for validating data when creating a requested book.</li>
 <li>requestBookIdSchema: Schema for validating a single requested book ID passed as a parameter.</li>
@@ -22747,7 +22747,7 @@ It ensures that at least one field is provided for the update.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html">modules/api/users/userRequestBooks/userRequestBooks.schema.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html#line130">line 130</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html">modules/api/users/userRequestBooks/requested.schema.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.schema.js.html#line130">line 130</a>
     </li></ul></dd>
 
 
@@ -29936,7 +29936,7 @@ checks for duplicate requests, uploads the image, and saves the request to the d
 
 <div class="description">
     <p>Middleware to validate the request body for creating a requested book.</p>
-<p>This function uses the <code>userRequestBooksSchema.createRequestBookSchema</code> schema to validate the request body.<br>
+<p>This function uses the <code>requestedSchema.createRequestBookSchema</code> schema to validate the request body.<br>
 It ensures that the book data provided in the body conforms to the required formats, lengths, and patterns.</p>
 </div>
 
@@ -30076,7 +30076,7 @@ It ensures that the book data provided in the body conforms to the required form
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.validator.js.html">modules/api/users/userRequestBooks/userRequestBooks.validator.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.validator.js.html#line10">line 10</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.validator.js.html">modules/api/users/userRequestBooks/requested.validator.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.validator.js.html#line10">line 10</a>
     </li></ul></dd>
 
 
@@ -34370,7 +34370,7 @@ If the book is not found, it returns an appropriate error response.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html">modules/api/users/userRequestBooks/userRequestBooks.service.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html#line112">line 112</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html">modules/api/users/userRequestBooks/requested.service.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html#line112">line 112</a>
     </li></ul></dd>
 
 
@@ -43151,7 +43151,7 @@ If the book is not found, it returns an appropriate error response.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html">modules/api/users/userRequestBooks/userRequestBooks.service.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html#line58">line 58</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html">modules/api/users/userRequestBooks/requested.service.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html#line58">line 58</a>
     </li></ul></dd>
 
 
@@ -43427,7 +43427,7 @@ If no books are found, it returns an appropriate error response.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html">modules/api/users/userRequestBooks/userRequestBooks.service.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html#line14">line 14</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html">modules/api/users/userRequestBooks/requested.service.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.service.js.html#line14">line 14</a>
     </li></ul></dd>
 
 
@@ -51037,7 +51037,7 @@ Each email type has a specific layout and messaging designed to fit the context 
 
 <div class="description">
     <p>Middleware to validate a single requested book ID passed as a parameter.</p>
-<p>This function uses the <code>userRequestBooksSchema.requestBookIdSchema</code> schema to validate the book ID parameter.<br>
+<p>This function uses the <code>requestedSchema.requestBookIdSchema</code> schema to validate the book ID parameter.<br>
 It ensures that the book ID provided in the parameters conforms to the required ObjectId format.</p>
 </div>
 
@@ -51177,7 +51177,7 @@ It ensures that the book ID provided in the parameters conforms to the required 
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userRequestBooks_userRequestBooks.validator.js.html">modules/api/users/userRequestBooks/userRequestBooks.validator.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.validator.js.html#line30">line 30</a>
+        <a href="modules_api_users_userRequestBooks_userRequestBooks.validator.js.html">modules/api/users/userRequestBooks/requested.validator.js</a>, <a href="modules_api_users_userRequestBooks_userRequestBooks.validator.js.html#line30">line 30</a>
     </li></ul></dd>
 
 
@@ -74569,7 +74569,7 @@ Allows users to request another verification email if the first was not received
 Handles user requests to reset their password using a token provided through a previous password reset request.</a></li><li><a href="global.html#resetPasswordVerifyTokenExpiresSchema">resetPasswordVerifyTokenExpiresSchema</a></li><li><a href="global.html#resetPasswordVerifyTokenSchema">resetPasswordVerifyTokenSchema</a></li><li><a href="global.html#returnBook">returnBook</a></li><li><a href="global.html#returnBookSchemaBase">returnBookSchemaBase</a></li><li><a href="global.html#returnBooksSchema">returnBooksSchema</a></li><li><a href="global.html#returnSchema">returnSchema</a></li><li><a href="global.html#roleIdParamSchema">roleIdParamSchema</a></li><li><a href="global.html#roleIdsParamSchema">roleIdsParamSchema</a></li><li><a href="global.html#roleSchema">roleSchema</a></li><li><a href="global.html#roleSchemaBase">roleSchemaBase</a></li><li><a href="global.html#rolesConstants">rolesConstants</a></li><li><a href="global.html#rolesController">rolesController</a></li><li><a href="global.html#rolesSchema">rolesSchema</a></li><li><a href="global.html#rolesService">rolesService</a></li><li><a href="global.html#rolesValidator">rolesValidator</a></li><li><a href="global.html#router">router</a></li><li><a href="global.html#sanitize">sanitize</a></li><li><a href="global.html#sanitizeRequestConfiguration">sanitizeRequestConfiguration</a></li><li><a href="global.html#sendEmail">sendEmail</a></li><li><a href="global.html#sendResponse">sendResponse</a></li><li><a href="global.html#sessionsSchema">sessionsSchema</a></li><li><a href="global.html#shutdownHandler">shutdownHandler</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#signupHandlesusersignuprequests.Extractshostdatafromtherequestandcallstheprovidedservicefunction.">signup
 Handles user signup requests. Extracts host data from the request and calls the provided service function.</a></li><li><a href="global.html#statusController">statusController</a></li><li><a href="global.html#statusService">statusService</a></li><li><a href="global.html#subjectIdParamSchema">subjectIdParamSchema</a></li><li><a href="global.html#subjectIdsParamSchema">subjectIdsParamSchema</a></li><li><a href="global.html#subjectSchema">subjectSchema</a></li><li><a href="global.html#subjectSchemaBase">subjectSchemaBase</a></li><li><a href="global.html#subjectsConstants">subjectsConstants</a></li><li><a href="global.html#subjectsController">subjectsController</a></li><li><a href="global.html#subjectsSchema">subjectsSchema</a></li><li><a href="global.html#subjectsService">subjectsService</a></li><li><a href="global.html#subjectsValidator">subjectsValidator</a></li><li><a href="global.html#testUncaughtExceptionController">testUncaughtExceptionController</a></li><li><a href="global.html#toSentenceCase">toSentenceCase</a></li><li><a href="global.html#trendingBooksController">trendingBooksController</a></li><li><a href="global.html#trendingBooksService">trendingBooksService</a></li><li><a href="global.html#twitterSchema">twitterSchema</a></li><li><a href="global.html#twoFactorEnabledSchema">twoFactorEnabledSchema</a></li><li><a href="global.html#twoFactorSecretSchema">twoFactorSecretSchema</a></li><li><a href="global.html#undefinedController">undefinedController</a></li><li><a href="global.html#undefinedService">undefinedService</a></li><li><a href="global.html#uniqueConstraintErrorHandlingMiddleware">uniqueConstraintErrorHandlingMiddleware</a></li><li><a href="global.html#updateAppearance">updateAppearance</a></li><li><a href="global.html#updateBookById">updateBookById</a></li><li><a href="global.html#updateBookSchema">updateBookSchema</a></li><li><a href="global.html#updateByIdUpdatesaspecificresourcebasedonitsIDprovidedintherequestparameters,handlingcomplexupdatesincludingfileuploads.">updateById
 Updates a specific resource based on its ID provided in the request parameters, handling complex updates including file uploads.</a></li><li><a href="global.html#updateByRequesterUpdatesdataspecifictotherequester,supportingupdatesthatincludefileuploads.">updateByRequester
-Updates data specific to the requester, supporting updates that include file uploads.</a></li><li><a href="global.html#updatePermissionById">updatePermissionById</a></li><li><a href="global.html#updatePermissionSchema">updatePermissionSchema</a></li><li><a href="global.html#updateProfile">updateProfile</a></li><li><a href="global.html#updatePronounsById">updatePronounsById</a></li><li><a href="global.html#updatePronounsSchema">updatePronounsSchema</a></li><li><a href="global.html#updatePublicationById">updatePublicationById</a></li><li><a href="global.html#updatePublicationSchema">updatePublicationSchema</a></li><li><a href="global.html#updateRoleById">updateRoleById</a></li><li><a href="global.html#updateRoleSchema">updateRoleSchema</a></li><li><a href="global.html#updateSubject">updateSubject</a></li><li><a href="global.html#updateSubjectSchema">updateSubjectSchema</a></li><li><a href="global.html#updateUserProfile">updateUserProfile</a></li><li><a href="global.html#updateWriter">updateWriter</a></li><li><a href="global.html#updateWriterSchema">updateWriterSchema</a></li><li><a href="global.html#updatedByAdminSchema">updatedByAdminSchema</a></li><li><a href="global.html#uploadFile">uploadFile</a></li><li><a href="global.html#urlSchema">urlSchema</a></li><li><a href="global.html#userBookHistorySchema">historySchema</a></li><li><a href="global.html#userIdSchema">userIdSchema</a></li><li><a href="global.html#userProfileController">userProfileController</a></li><li><a href="global.html#userRequestBooksSchema">userRequestBooksSchema</a></li><li><a href="global.html#userSchema">userSchema</a></li><li><a href="global.html#userSchemaBase">userSchemaBase</a></li><li><a href="global.html#usernameSchema">usernameSchema</a></li><li><a href="global.html#usersSchema">usersSchema</a></li><li><a href="global.html#validateAdminRequest">validateAdminRequest</a></li><li><a href="global.html#validateEmail">validateEmail</a></li><li><a href="global.html#validateEmails">validateEmails</a></li><li><a href="global.html#validateFile">validateFile</a></li><li><a href="global.html#validateIds">validateIds</a></li><li><a href="global.html#validatePassword">validatePassword</a></li><li><a href="global.html#validatePermission">validatePermission</a></li><li><a href="global.html#validatePermissionsChecksifallthespecifiedpermissionIDsexistinthedatabase.Thisfunctionisessentialforvalidatingpermissionsaspartofaccesscontrolmechanisms.ItretrievespermissiondocumentsfromthedatabasebasedontheprovidedIDsandcomparesthecountoffoundpermissionswiththecountofrequestedIDs.">validatePermissions
+Updates data specific to the requester, supporting updates that include file uploads.</a></li><li><a href="global.html#updatePermissionById">updatePermissionById</a></li><li><a href="global.html#updatePermissionSchema">updatePermissionSchema</a></li><li><a href="global.html#updateProfile">updateProfile</a></li><li><a href="global.html#updatePronounsById">updatePronounsById</a></li><li><a href="global.html#updatePronounsSchema">updatePronounsSchema</a></li><li><a href="global.html#updatePublicationById">updatePublicationById</a></li><li><a href="global.html#updatePublicationSchema">updatePublicationSchema</a></li><li><a href="global.html#updateRoleById">updateRoleById</a></li><li><a href="global.html#updateRoleSchema">updateRoleSchema</a></li><li><a href="global.html#updateSubject">updateSubject</a></li><li><a href="global.html#updateSubjectSchema">updateSubjectSchema</a></li><li><a href="global.html#updateUserProfile">updateUserProfile</a></li><li><a href="global.html#updateWriter">updateWriter</a></li><li><a href="global.html#updateWriterSchema">updateWriterSchema</a></li><li><a href="global.html#updatedByAdminSchema">updatedByAdminSchema</a></li><li><a href="global.html#uploadFile">uploadFile</a></li><li><a href="global.html#urlSchema">urlSchema</a></li><li><a href="global.html#userBookHistorySchema">historySchema</a></li><li><a href="global.html#userIdSchema">userIdSchema</a></li><li><a href="global.html#userProfileController">userProfileController</a></li><li><a href="global.html#userRequestBooksSchema">requestedSchema</a></li><li><a href="global.html#userSchema">userSchema</a></li><li><a href="global.html#userSchemaBase">userSchemaBase</a></li><li><a href="global.html#usernameSchema">usernameSchema</a></li><li><a href="global.html#usersSchema">usersSchema</a></li><li><a href="global.html#validateAdminRequest">validateAdminRequest</a></li><li><a href="global.html#validateEmail">validateEmail</a></li><li><a href="global.html#validateEmails">validateEmails</a></li><li><a href="global.html#validateFile">validateFile</a></li><li><a href="global.html#validateIds">validateIds</a></li><li><a href="global.html#validatePassword">validatePassword</a></li><li><a href="global.html#validatePermission">validatePermission</a></li><li><a href="global.html#validatePermissionsChecksifallthespecifiedpermissionIDsexistinthedatabase.Thisfunctionisessentialforvalidatingpermissionsaspartofaccesscontrolmechanisms.ItretrievespermissiondocumentsfromthedatabasebasedontheprovidedIDsandcomparesthecountoffoundpermissionswiththecountofrequestedIDs.">validatePermissions
 Checks if all the specified permission IDs exist in the database. This function is essential for validating permissions as part of access control mechanisms.
 It retrieves permission documents from the database based on the provided IDs and compares the count of found permissions with the count of requested IDs.</a></li><li><a href="global.html#validateSubjectIds">validateSubjectIds</a></li><li><a href="global.html#validateUserRequest">validateUserRequest</a></li><li><a href="global.html#validateWithSchemaAmiddlewaregeneratorfunctionthatcreatesamiddlewaretovalidatespecifiedpropertiesoftherequestobjectagainstprovidedJoischemas.ItappliescustomvalidationmessagesandallowsconfigurationofJoivalidationoptions.Ifvalidationfails,itsendsaformattederrorresponse;otherwise,itsanitizesthedatabytypeconversionandproceedstothenextmiddleware.">validateWithSchema
 A middleware generator function that creates a middleware to validate specified properties of the request object against provided Joi schemas.

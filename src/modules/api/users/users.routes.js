@@ -7,7 +7,7 @@
 import express from 'express';
 
 import usersBooksHistoryRoutes from './books/history/history.routes.js';
-import userRequestBooksRoutes from './userRequestBooks/userRequestBooks.routes.js';
+import userRequestBooksRoutes from './books/requested/requested.routes.js';
 import recentlyVisitedBooksRoutes from './books/recentlyVisited/recentlyVisited.routes.js';
 import userSettingsRoutes from './userSettings/userSettings.routes.js';
 import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';

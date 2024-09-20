@@ -7,9 +7,9 @@
 
 import Joi from 'joi';
 
-import customValidationMessage from '../../../../shared/customValidationMessage.js';
-import validationService from '../../../../service/validation.service.js';
-import requestBooksConstants from './userRequestBooks.constants.js';
+import customValidationMessage from '../../../../../shared/customValidationMessage.js';
+import validationService from '../../../../../service/validation.service.js';
+import requestBooksConstants from './requested.constants.js';
 
 /**
  * requestBookSchemaBase - Base Joi schema for validating user-requested book-related fields.
@@ -122,14 +122,14 @@ const requestBookIdSchema = Joi.object({
 }).strict();
 
 /**
- * userRequestBooksSchema - Object containing all the defined Joi schemas for user-requested books validation:
+ * requestedSchema - Object containing all the defined Joi schemas for user-requested books validation:
  *
  * - createRequestBookSchema: Schema for validating data when creating a requested book.
  * - requestBookIdSchema: Schema for validating a single requested book ID passed as a parameter.
  */
-const userRequestBooksSchema = {
+const requestedSchema = {
     createRequestBookSchema,
     requestBookIdSchema,
 };
 
-export default userRequestBooksSchema;
+export default requestedSchema;
