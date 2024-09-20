@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: modules/api/users/userBookHistory/userBookHistory.controller.js</title>
+    <title>JSDoc: Source: modules/api/users/userBookHistory/history.controller.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: modules/api/users/userBookHistory/userBookHistory.controller.js</h1>
+    <h1 class="page-title">Source: modules/api/users/userBookHistory/history.controller.js</h1>
 
 
 
@@ -31,31 +31,31 @@
  * This module defines the controller for handling operations related to a user's book history.
  * It leverages the shared controller utilities to fetch and manage records of books a user has interacted with.
  *
- * The `userBookHistoryController` object includes methods to:
+ * The `historyController` object includes methods to:
  * - Retrieve the book history for the requesting user.
  * - Retrieve the book history for a specific book identified by its ID.
  */
 
-import userBookHistoryService from './userBookHistory.service.js';
+import historyService from './history.service.js';
 import controller from '../../../../shared/controller.js';
 
-const userBookHistoryController = {
+const historyController = {
     /**
      * Retrieves the book history for the requesting user.
      *
      * This function uses the `getByRequester` method from the shared controller utilities
      * to fetch the book history for the authenticated requester.
-     * It delegates the actual service logic to the `userBookHistoryService` and specifies the `getBooksHistory` method.
+     * It delegates the actual service logic to the `historyService` and specifies the `getBooksHistory` method.
      *
      * @function
-     * @name userBookHistoryController.getBooksHistory
+     * @name historyController.getBooksHistory
      * @param {Object} request - The request object containing the requester's details.
      * @param {Object} response - The response object used to send back the book history.
      *
      * @returns {Promise&lt;void>} - A promise that resolves with the book history for the requester.
      */
     getBooksHistory: controller.getByRequester(
-        userBookHistoryService,
+        historyService,
         'getBooksHistory'
     ),
 
@@ -64,23 +64,23 @@ const userBookHistoryController = {
      *
      * This function uses the `getById` method from the shared controller utilities
      * to fetch the book history for a specific book based on the provided book ID.
-     * It delegates the actual service logic to the `userBookHistoryService` and specifies the `getBookHistoryByBookId` method.
+     * It delegates the actual service logic to the `historyService` and specifies the `getBookHistoryByBookId` method.
      *
      * @function
-     * @name userBookHistoryController.getBookHistoryByBookId
+     * @name historyController.getBookHistoryByBookId
      * @param {Object} request - The request object containing the book ID.
      * @param {Object} response - The response object used to send back the book history for the specified book ID.
      *
      * @returns {Promise&lt;void>} - A promise that resolves with the book history for the specified book ID.
      */
     getBookHistoryByBookId: controller.getById(
-        userBookHistoryService,
+        historyService,
         'getBookHistoryByBookId',
         'bookId'
     ),
 };
 
-export default userBookHistoryController;
+export default historyController;
 </code></pre>
         </article>
     </section>
@@ -116,7 +116,7 @@ Allows users to request another verification email if the first was not received
 Handles user requests to reset their password using a token provided through a previous password reset request.</a></li><li><a href="global.html#resetPasswordVerifyTokenExpiresSchema">resetPasswordVerifyTokenExpiresSchema</a></li><li><a href="global.html#resetPasswordVerifyTokenSchema">resetPasswordVerifyTokenSchema</a></li><li><a href="global.html#returnBook">returnBook</a></li><li><a href="global.html#returnBookSchemaBase">returnBookSchemaBase</a></li><li><a href="global.html#returnBooksSchema">returnBooksSchema</a></li><li><a href="global.html#returnSchema">returnSchema</a></li><li><a href="global.html#roleIdParamSchema">roleIdParamSchema</a></li><li><a href="global.html#roleIdsParamSchema">roleIdsParamSchema</a></li><li><a href="global.html#roleSchema">roleSchema</a></li><li><a href="global.html#roleSchemaBase">roleSchemaBase</a></li><li><a href="global.html#rolesConstants">rolesConstants</a></li><li><a href="global.html#rolesController">rolesController</a></li><li><a href="global.html#rolesSchema">rolesSchema</a></li><li><a href="global.html#rolesService">rolesService</a></li><li><a href="global.html#rolesValidator">rolesValidator</a></li><li><a href="global.html#router">router</a></li><li><a href="global.html#sanitize">sanitize</a></li><li><a href="global.html#sanitizeRequestConfiguration">sanitizeRequestConfiguration</a></li><li><a href="global.html#sendEmail">sendEmail</a></li><li><a href="global.html#sendResponse">sendResponse</a></li><li><a href="global.html#sessionsSchema">sessionsSchema</a></li><li><a href="global.html#shutdownHandler">shutdownHandler</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#signupHandlesusersignuprequests.Extractshostdatafromtherequestandcallstheprovidedservicefunction.">signup
 Handles user signup requests. Extracts host data from the request and calls the provided service function.</a></li><li><a href="global.html#statusController">statusController</a></li><li><a href="global.html#statusService">statusService</a></li><li><a href="global.html#subjectIdParamSchema">subjectIdParamSchema</a></li><li><a href="global.html#subjectIdsParamSchema">subjectIdsParamSchema</a></li><li><a href="global.html#subjectSchema">subjectSchema</a></li><li><a href="global.html#subjectSchemaBase">subjectSchemaBase</a></li><li><a href="global.html#subjectsConstants">subjectsConstants</a></li><li><a href="global.html#subjectsController">subjectsController</a></li><li><a href="global.html#subjectsSchema">subjectsSchema</a></li><li><a href="global.html#subjectsService">subjectsService</a></li><li><a href="global.html#subjectsValidator">subjectsValidator</a></li><li><a href="global.html#testUncaughtExceptionController">testUncaughtExceptionController</a></li><li><a href="global.html#toSentenceCase">toSentenceCase</a></li><li><a href="global.html#trendingBooksController">trendingBooksController</a></li><li><a href="global.html#trendingBooksService">trendingBooksService</a></li><li><a href="global.html#twitterSchema">twitterSchema</a></li><li><a href="global.html#twoFactorEnabledSchema">twoFactorEnabledSchema</a></li><li><a href="global.html#twoFactorSecretSchema">twoFactorSecretSchema</a></li><li><a href="global.html#undefinedController">undefinedController</a></li><li><a href="global.html#undefinedService">undefinedService</a></li><li><a href="global.html#uniqueConstraintErrorHandlingMiddleware">uniqueConstraintErrorHandlingMiddleware</a></li><li><a href="global.html#updateAppearance">updateAppearance</a></li><li><a href="global.html#updateBookById">updateBookById</a></li><li><a href="global.html#updateBookSchema">updateBookSchema</a></li><li><a href="global.html#updateByIdUpdatesaspecificresourcebasedonitsIDprovidedintherequestparameters,handlingcomplexupdatesincludingfileuploads.">updateById
 Updates a specific resource based on its ID provided in the request parameters, handling complex updates including file uploads.</a></li><li><a href="global.html#updateByRequesterUpdatesdataspecifictotherequester,supportingupdatesthatincludefileuploads.">updateByRequester
-Updates data specific to the requester, supporting updates that include file uploads.</a></li><li><a href="global.html#updatePermissionById">updatePermissionById</a></li><li><a href="global.html#updatePermissionSchema">updatePermissionSchema</a></li><li><a href="global.html#updateProfile">updateProfile</a></li><li><a href="global.html#updatePronounsById">updatePronounsById</a></li><li><a href="global.html#updatePronounsSchema">updatePronounsSchema</a></li><li><a href="global.html#updatePublicationById">updatePublicationById</a></li><li><a href="global.html#updatePublicationSchema">updatePublicationSchema</a></li><li><a href="global.html#updateRoleById">updateRoleById</a></li><li><a href="global.html#updateRoleSchema">updateRoleSchema</a></li><li><a href="global.html#updateSubject">updateSubject</a></li><li><a href="global.html#updateSubjectSchema">updateSubjectSchema</a></li><li><a href="global.html#updateUserProfile">updateUserProfile</a></li><li><a href="global.html#updateWriter">updateWriter</a></li><li><a href="global.html#updateWriterSchema">updateWriterSchema</a></li><li><a href="global.html#updatedByAdminSchema">updatedByAdminSchema</a></li><li><a href="global.html#uploadFile">uploadFile</a></li><li><a href="global.html#urlSchema">urlSchema</a></li><li><a href="global.html#userBookHistorySchema">userBookHistorySchema</a></li><li><a href="global.html#userIdSchema">userIdSchema</a></li><li><a href="global.html#userProfileController">userProfileController</a></li><li><a href="global.html#userRequestBooksSchema">userRequestBooksSchema</a></li><li><a href="global.html#userSchema">userSchema</a></li><li><a href="global.html#userSchemaBase">userSchemaBase</a></li><li><a href="global.html#usernameSchema">usernameSchema</a></li><li><a href="global.html#usersSchema">usersSchema</a></li><li><a href="global.html#validateAdminRequest">validateAdminRequest</a></li><li><a href="global.html#validateEmail">validateEmail</a></li><li><a href="global.html#validateEmails">validateEmails</a></li><li><a href="global.html#validateFile">validateFile</a></li><li><a href="global.html#validateIds">validateIds</a></li><li><a href="global.html#validatePassword">validatePassword</a></li><li><a href="global.html#validatePermission">validatePermission</a></li><li><a href="global.html#validatePermissionsChecksifallthespecifiedpermissionIDsexistinthedatabase.Thisfunctionisessentialforvalidatingpermissionsaspartofaccesscontrolmechanisms.ItretrievespermissiondocumentsfromthedatabasebasedontheprovidedIDsandcomparesthecountoffoundpermissionswiththecountofrequestedIDs.">validatePermissions
+Updates data specific to the requester, supporting updates that include file uploads.</a></li><li><a href="global.html#updatePermissionById">updatePermissionById</a></li><li><a href="global.html#updatePermissionSchema">updatePermissionSchema</a></li><li><a href="global.html#updateProfile">updateProfile</a></li><li><a href="global.html#updatePronounsById">updatePronounsById</a></li><li><a href="global.html#updatePronounsSchema">updatePronounsSchema</a></li><li><a href="global.html#updatePublicationById">updatePublicationById</a></li><li><a href="global.html#updatePublicationSchema">updatePublicationSchema</a></li><li><a href="global.html#updateRoleById">updateRoleById</a></li><li><a href="global.html#updateRoleSchema">updateRoleSchema</a></li><li><a href="global.html#updateSubject">updateSubject</a></li><li><a href="global.html#updateSubjectSchema">updateSubjectSchema</a></li><li><a href="global.html#updateUserProfile">updateUserProfile</a></li><li><a href="global.html#updateWriter">updateWriter</a></li><li><a href="global.html#updateWriterSchema">updateWriterSchema</a></li><li><a href="global.html#updatedByAdminSchema">updatedByAdminSchema</a></li><li><a href="global.html#uploadFile">uploadFile</a></li><li><a href="global.html#urlSchema">urlSchema</a></li><li><a href="global.html#userBookHistorySchema">historySchema</a></li><li><a href="global.html#userIdSchema">userIdSchema</a></li><li><a href="global.html#userProfileController">userProfileController</a></li><li><a href="global.html#userRequestBooksSchema">userRequestBooksSchema</a></li><li><a href="global.html#userSchema">userSchema</a></li><li><a href="global.html#userSchemaBase">userSchemaBase</a></li><li><a href="global.html#usernameSchema">usernameSchema</a></li><li><a href="global.html#usersSchema">usersSchema</a></li><li><a href="global.html#validateAdminRequest">validateAdminRequest</a></li><li><a href="global.html#validateEmail">validateEmail</a></li><li><a href="global.html#validateEmails">validateEmails</a></li><li><a href="global.html#validateFile">validateFile</a></li><li><a href="global.html#validateIds">validateIds</a></li><li><a href="global.html#validatePassword">validatePassword</a></li><li><a href="global.html#validatePermission">validatePermission</a></li><li><a href="global.html#validatePermissionsChecksifallthespecifiedpermissionIDsexistinthedatabase.Thisfunctionisessentialforvalidatingpermissionsaspartofaccesscontrolmechanisms.ItretrievespermissiondocumentsfromthedatabasebasedontheprovidedIDsandcomparesthecountoffoundpermissionswiththecountofrequestedIDs.">validatePermissions
 Checks if all the specified permission IDs exist in the database. This function is essential for validating permissions as part of access control mechanisms.
 It retrieves permission documents from the database based on the provided IDs and compares the count of found permissions with the count of requested IDs.</a></li><li><a href="global.html#validateSubjectIds">validateSubjectIds</a></li><li><a href="global.html#validateUserRequest">validateUserRequest</a></li><li><a href="global.html#validateWithSchemaAmiddlewaregeneratorfunctionthatcreatesamiddlewaretovalidatespecifiedpropertiesoftherequestobjectagainstprovidedJoischemas.ItappliescustomvalidationmessagesandallowsconfigurationofJoivalidationoptions.Ifvalidationfails,itsendsaformattederrorresponse;otherwise,itsanitizesthedatabytypeconversionandproceedstothenextmiddleware.">validateWithSchema
 A middleware generator function that creates a middleware to validate specified properties of the request object against provided Joi schemas.

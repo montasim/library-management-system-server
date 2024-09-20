@@ -6,12 +6,12 @@
 
 import mongoose from 'mongoose';
 
-import httpStatus from '../../../../constant/httpStatus.constants.js';
-import BooksHistoryModel from '../../books/history/booksHistory.model.js';
-import loggerService from '../../../../service/logger.service.js';
+import httpStatus from '../../../../../constant/httpStatus.constants.js';
+import BooksHistoryModel from '../../../books/history/booksHistory.model.js';
+import loggerService from '../../../../../service/logger.service.js';
 
-import errorResponse from '../../../../utilities/errorResponse.js';
-import sendResponse from '../../../../utilities/sendResponse.js';
+import errorResponse from '../../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../../utilities/sendResponse.js';
 
 /**
  * Retrieves the book history for the requesting user.
@@ -260,9 +260,9 @@ const getBookHistoryByBookId = async (requester, bookId) => {
     }
 };
 
-const userBookHistoryService = {
+const historyService = {
     getBooksHistory,
     getBookHistoryByBookId,
 };
 
-export default userBookHistoryService;
+export default historyService;

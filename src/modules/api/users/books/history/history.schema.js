@@ -7,7 +7,7 @@
 
 import Joi from 'joi';
 
-import validationService from '../../../../service/validation.service.js';
+import validationService from '../../../../../service/validation.service.js';
 
 /**
  * permissionSchemaBase - Base Joi schema for validating user book history-related fields.
@@ -69,14 +69,14 @@ const bookIdParamSchema = Joi.object({
 }).strict();
 
 /**
- * userBookHistorySchema - Object containing all the defined Joi schemas for user book history validation:
+ * historySchema - Object containing all the defined Joi schemas for user book history validation:
  *
  * - booksQueryParamSchema: Schema for validating query parameters when retrieving user book histories.
  * - bookIdParamSchema: Schema for validating a single book ID passed as a parameter.
  */
-const userBookHistorySchema = {
+const historySchema = {
     booksQueryParamSchema,
     bookIdParamSchema,
 };
 
-export default userBookHistorySchema;
+export default historySchema;

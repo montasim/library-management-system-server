@@ -9328,7 +9328,7 @@ This schema ensures that the 'bookId' field is a valid ObjectId.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html">modules/api/users/userBookHistory/userBookHistory.schema.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html#line67">line 67</a>
+        <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html">modules/api/users/userBookHistory/history.schema.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html#line67">line 67</a>
     </li></ul></dd>
 
 
@@ -9455,7 +9455,7 @@ This schema makes all fields optional and uses the base permissions schema for v
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html">modules/api/users/userBookHistory/userBookHistory.schema.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html#line49">line 49</a>
+        <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html">modules/api/users/userBookHistory/history.schema.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html#line49">line 49</a>
     </li></ul></dd>
 
 
@@ -17159,7 +17159,7 @@ This schema includes:</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html">modules/api/users/userBookHistory/userBookHistory.schema.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html#line27">line 27</a>
+        <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html">modules/api/users/userBookHistory/history.schema.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html#line27">line 27</a>
     </li></ul></dd>
 
 
@@ -22510,13 +22510,13 @@ It ensures that at least one field is provided for the update.</p>
 
 
 
-<h4 class="name" id="userBookHistorySchema"><span class="type-signature">(constant) </span>userBookHistorySchema<span class="type-signature"></span></h4>
+<h4 class="name" id="userBookHistorySchema"><span class="type-signature">(constant) </span>historySchema<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    <p>userBookHistorySchema - Object containing all the defined Joi schemas for user book history validation:</p>
+    <p>historySchema - Object containing all the defined Joi schemas for user book history validation:</p>
 <ul>
 <li>booksQueryParamSchema: Schema for validating query parameters when retrieving user book histories.</li>
 <li>bookIdParamSchema: Schema for validating a single book ID passed as a parameter.</li>
@@ -22558,7 +22558,7 @@ It ensures that at least one field is provided for the update.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html">modules/api/users/userBookHistory/userBookHistory.schema.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html#line77">line 77</a>
+        <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html">modules/api/users/userBookHistory/history.schema.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.schema.js.html#line77">line 77</a>
     </li></ul></dd>
 
 
@@ -25286,7 +25286,7 @@ Ensures that the book ID meets the specified criteria defined in the booksHistor
 
 <div class="description">
     <p>bookIdParamSchema - Middleware to validate a single book ID passed as a parameter.<br>
-This function uses the <code>userBookHistorySchema.bookIdParamSchema</code> schema to validate the book ID<br>
+This function uses the <code>historySchema.bookIdParamSchema</code> schema to validate the book ID<br>
 and ensures it conforms to the required ObjectId format.</p>
 </div>
 
@@ -25426,7 +25426,7 @@ and ensures it conforms to the required ObjectId format.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userBookHistory_userBookHistory.validator.js.html">modules/api/users/userBookHistory/userBookHistory.validator.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.validator.js.html#line29">line 29</a>
+        <a href="modules_api_users_userBookHistory_userBookHistory.validator.js.html">modules/api/users/userBookHistory/history.validator.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.validator.js.html#line29">line 29</a>
     </li></ul></dd>
 
 
@@ -25756,7 +25756,7 @@ Ensures that the parameters meet the specified criteria defined in the booksHist
 
 <div class="description">
     <p>booksQueryParamSchema - Middleware to validate query parameters for retrieving user book histories.<br>
-This function uses the <code>userBookHistorySchema.booksQueryParamSchema</code> schema to validate the parameters<br>
+This function uses the <code>historySchema.booksQueryParamSchema</code> schema to validate the parameters<br>
 and ensures they conform to the required formats, lengths, and patterns.</p>
 </div>
 
@@ -25896,7 +25896,7 @@ and ensures they conform to the required formats, lengths, and patterns.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userBookHistory_userBookHistory.validator.js.html">modules/api/users/userBookHistory/userBookHistory.validator.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.validator.js.html#line10">line 10</a>
+        <a href="modules_api_users_userBookHistory_userBookHistory.validator.js.html">modules/api/users/userBookHistory/history.validator.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.validator.js.html#line10">line 10</a>
     </li></ul></dd>
 
 
@@ -38875,7 +38875,7 @@ If no relevant history is found, it returns an appropriate error response.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userBookHistory_userBookHistory.service.js.html">modules/api/users/userBookHistory/userBookHistory.service.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.service.js.html#line63">line 63</a>
+        <a href="modules_api_users_userBookHistory_userBookHistory.service.js.html">modules/api/users/userBookHistory/history.service.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.service.js.html#line63">line 63</a>
     </li></ul></dd>
 
 
@@ -39547,7 +39547,7 @@ If no history is found, it returns an appropriate error response.</p>
 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_api_users_userBookHistory_userBookHistory.service.js.html">modules/api/users/userBookHistory/userBookHistory.service.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.service.js.html#line13">line 13</a>
+        <a href="modules_api_users_userBookHistory_userBookHistory.service.js.html">modules/api/users/userBookHistory/history.service.js</a>, <a href="modules_api_users_userBookHistory_userBookHistory.service.js.html#line13">line 13</a>
     </li></ul></dd>
 
 
@@ -74569,7 +74569,7 @@ Allows users to request another verification email if the first was not received
 Handles user requests to reset their password using a token provided through a previous password reset request.</a></li><li><a href="global.html#resetPasswordVerifyTokenExpiresSchema">resetPasswordVerifyTokenExpiresSchema</a></li><li><a href="global.html#resetPasswordVerifyTokenSchema">resetPasswordVerifyTokenSchema</a></li><li><a href="global.html#returnBook">returnBook</a></li><li><a href="global.html#returnBookSchemaBase">returnBookSchemaBase</a></li><li><a href="global.html#returnBooksSchema">returnBooksSchema</a></li><li><a href="global.html#returnSchema">returnSchema</a></li><li><a href="global.html#roleIdParamSchema">roleIdParamSchema</a></li><li><a href="global.html#roleIdsParamSchema">roleIdsParamSchema</a></li><li><a href="global.html#roleSchema">roleSchema</a></li><li><a href="global.html#roleSchemaBase">roleSchemaBase</a></li><li><a href="global.html#rolesConstants">rolesConstants</a></li><li><a href="global.html#rolesController">rolesController</a></li><li><a href="global.html#rolesSchema">rolesSchema</a></li><li><a href="global.html#rolesService">rolesService</a></li><li><a href="global.html#rolesValidator">rolesValidator</a></li><li><a href="global.html#router">router</a></li><li><a href="global.html#sanitize">sanitize</a></li><li><a href="global.html#sanitizeRequestConfiguration">sanitizeRequestConfiguration</a></li><li><a href="global.html#sendEmail">sendEmail</a></li><li><a href="global.html#sendResponse">sendResponse</a></li><li><a href="global.html#sessionsSchema">sessionsSchema</a></li><li><a href="global.html#shutdownHandler">shutdownHandler</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#signupHandlesusersignuprequests.Extractshostdatafromtherequestandcallstheprovidedservicefunction.">signup
 Handles user signup requests. Extracts host data from the request and calls the provided service function.</a></li><li><a href="global.html#statusController">statusController</a></li><li><a href="global.html#statusService">statusService</a></li><li><a href="global.html#subjectIdParamSchema">subjectIdParamSchema</a></li><li><a href="global.html#subjectIdsParamSchema">subjectIdsParamSchema</a></li><li><a href="global.html#subjectSchema">subjectSchema</a></li><li><a href="global.html#subjectSchemaBase">subjectSchemaBase</a></li><li><a href="global.html#subjectsConstants">subjectsConstants</a></li><li><a href="global.html#subjectsController">subjectsController</a></li><li><a href="global.html#subjectsSchema">subjectsSchema</a></li><li><a href="global.html#subjectsService">subjectsService</a></li><li><a href="global.html#subjectsValidator">subjectsValidator</a></li><li><a href="global.html#testUncaughtExceptionController">testUncaughtExceptionController</a></li><li><a href="global.html#toSentenceCase">toSentenceCase</a></li><li><a href="global.html#trendingBooksController">trendingBooksController</a></li><li><a href="global.html#trendingBooksService">trendingBooksService</a></li><li><a href="global.html#twitterSchema">twitterSchema</a></li><li><a href="global.html#twoFactorEnabledSchema">twoFactorEnabledSchema</a></li><li><a href="global.html#twoFactorSecretSchema">twoFactorSecretSchema</a></li><li><a href="global.html#undefinedController">undefinedController</a></li><li><a href="global.html#undefinedService">undefinedService</a></li><li><a href="global.html#uniqueConstraintErrorHandlingMiddleware">uniqueConstraintErrorHandlingMiddleware</a></li><li><a href="global.html#updateAppearance">updateAppearance</a></li><li><a href="global.html#updateBookById">updateBookById</a></li><li><a href="global.html#updateBookSchema">updateBookSchema</a></li><li><a href="global.html#updateByIdUpdatesaspecificresourcebasedonitsIDprovidedintherequestparameters,handlingcomplexupdatesincludingfileuploads.">updateById
 Updates a specific resource based on its ID provided in the request parameters, handling complex updates including file uploads.</a></li><li><a href="global.html#updateByRequesterUpdatesdataspecifictotherequester,supportingupdatesthatincludefileuploads.">updateByRequester
-Updates data specific to the requester, supporting updates that include file uploads.</a></li><li><a href="global.html#updatePermissionById">updatePermissionById</a></li><li><a href="global.html#updatePermissionSchema">updatePermissionSchema</a></li><li><a href="global.html#updateProfile">updateProfile</a></li><li><a href="global.html#updatePronounsById">updatePronounsById</a></li><li><a href="global.html#updatePronounsSchema">updatePronounsSchema</a></li><li><a href="global.html#updatePublicationById">updatePublicationById</a></li><li><a href="global.html#updatePublicationSchema">updatePublicationSchema</a></li><li><a href="global.html#updateRoleById">updateRoleById</a></li><li><a href="global.html#updateRoleSchema">updateRoleSchema</a></li><li><a href="global.html#updateSubject">updateSubject</a></li><li><a href="global.html#updateSubjectSchema">updateSubjectSchema</a></li><li><a href="global.html#updateUserProfile">updateUserProfile</a></li><li><a href="global.html#updateWriter">updateWriter</a></li><li><a href="global.html#updateWriterSchema">updateWriterSchema</a></li><li><a href="global.html#updatedByAdminSchema">updatedByAdminSchema</a></li><li><a href="global.html#uploadFile">uploadFile</a></li><li><a href="global.html#urlSchema">urlSchema</a></li><li><a href="global.html#userBookHistorySchema">userBookHistorySchema</a></li><li><a href="global.html#userIdSchema">userIdSchema</a></li><li><a href="global.html#userProfileController">userProfileController</a></li><li><a href="global.html#userRequestBooksSchema">userRequestBooksSchema</a></li><li><a href="global.html#userSchema">userSchema</a></li><li><a href="global.html#userSchemaBase">userSchemaBase</a></li><li><a href="global.html#usernameSchema">usernameSchema</a></li><li><a href="global.html#usersSchema">usersSchema</a></li><li><a href="global.html#validateAdminRequest">validateAdminRequest</a></li><li><a href="global.html#validateEmail">validateEmail</a></li><li><a href="global.html#validateEmails">validateEmails</a></li><li><a href="global.html#validateFile">validateFile</a></li><li><a href="global.html#validateIds">validateIds</a></li><li><a href="global.html#validatePassword">validatePassword</a></li><li><a href="global.html#validatePermission">validatePermission</a></li><li><a href="global.html#validatePermissionsChecksifallthespecifiedpermissionIDsexistinthedatabase.Thisfunctionisessentialforvalidatingpermissionsaspartofaccesscontrolmechanisms.ItretrievespermissiondocumentsfromthedatabasebasedontheprovidedIDsandcomparesthecountoffoundpermissionswiththecountofrequestedIDs.">validatePermissions
+Updates data specific to the requester, supporting updates that include file uploads.</a></li><li><a href="global.html#updatePermissionById">updatePermissionById</a></li><li><a href="global.html#updatePermissionSchema">updatePermissionSchema</a></li><li><a href="global.html#updateProfile">updateProfile</a></li><li><a href="global.html#updatePronounsById">updatePronounsById</a></li><li><a href="global.html#updatePronounsSchema">updatePronounsSchema</a></li><li><a href="global.html#updatePublicationById">updatePublicationById</a></li><li><a href="global.html#updatePublicationSchema">updatePublicationSchema</a></li><li><a href="global.html#updateRoleById">updateRoleById</a></li><li><a href="global.html#updateRoleSchema">updateRoleSchema</a></li><li><a href="global.html#updateSubject">updateSubject</a></li><li><a href="global.html#updateSubjectSchema">updateSubjectSchema</a></li><li><a href="global.html#updateUserProfile">updateUserProfile</a></li><li><a href="global.html#updateWriter">updateWriter</a></li><li><a href="global.html#updateWriterSchema">updateWriterSchema</a></li><li><a href="global.html#updatedByAdminSchema">updatedByAdminSchema</a></li><li><a href="global.html#uploadFile">uploadFile</a></li><li><a href="global.html#urlSchema">urlSchema</a></li><li><a href="global.html#userBookHistorySchema">historySchema</a></li><li><a href="global.html#userIdSchema">userIdSchema</a></li><li><a href="global.html#userProfileController">userProfileController</a></li><li><a href="global.html#userRequestBooksSchema">userRequestBooksSchema</a></li><li><a href="global.html#userSchema">userSchema</a></li><li><a href="global.html#userSchemaBase">userSchemaBase</a></li><li><a href="global.html#usernameSchema">usernameSchema</a></li><li><a href="global.html#usersSchema">usersSchema</a></li><li><a href="global.html#validateAdminRequest">validateAdminRequest</a></li><li><a href="global.html#validateEmail">validateEmail</a></li><li><a href="global.html#validateEmails">validateEmails</a></li><li><a href="global.html#validateFile">validateFile</a></li><li><a href="global.html#validateIds">validateIds</a></li><li><a href="global.html#validatePassword">validatePassword</a></li><li><a href="global.html#validatePermission">validatePermission</a></li><li><a href="global.html#validatePermissionsChecksifallthespecifiedpermissionIDsexistinthedatabase.Thisfunctionisessentialforvalidatingpermissionsaspartofaccesscontrolmechanisms.ItretrievespermissiondocumentsfromthedatabasebasedontheprovidedIDsandcomparesthecountoffoundpermissionswiththecountofrequestedIDs.">validatePermissions
 Checks if all the specified permission IDs exist in the database. This function is essential for validating permissions as part of access control mechanisms.
 It retrieves permission documents from the database based on the provided IDs and compares the count of found permissions with the count of requested IDs.</a></li><li><a href="global.html#validateSubjectIds">validateSubjectIds</a></li><li><a href="global.html#validateUserRequest">validateUserRequest</a></li><li><a href="global.html#validateWithSchemaAmiddlewaregeneratorfunctionthatcreatesamiddlewaretovalidatespecifiedpropertiesoftherequestobjectagainstprovidedJoischemas.ItappliescustomvalidationmessagesandallowsconfigurationofJoivalidationoptions.Ifvalidationfails,itsendsaformattederrorresponse;otherwise,itsanitizesthedatabytypeconversionandproceedstothenextmiddleware.">validateWithSchema
 A middleware generator function that creates a middleware to validate specified properties of the request object against provided Joi schemas.

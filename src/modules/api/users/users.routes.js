@@ -6,7 +6,7 @@
 
 import express from 'express';
 
-import usersBooksHistoryRoutes from './userBookHistory/usersBooksHistory.routes.js';
+import usersBooksHistoryRoutes from './books/history/history.routes.js';
 import userRequestBooksRoutes from './userRequestBooks/userRequestBooks.routes.js';
 import recentlyVisitedBooksRoutes from './books/recentlyVisited/recentlyVisited.routes.js';
 import userSettingsRoutes from './userSettings/userSettings.routes.js';
