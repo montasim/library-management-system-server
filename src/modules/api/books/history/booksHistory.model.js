@@ -27,24 +27,32 @@ const booksHistorySchema = new mongoose.Schema(
         book: {
             type: Schema.Types.ObjectId,
             ref: 'Books',
+            required: [true, 'Book reference is required.'],
+            description: 'Reference to the book associated with the lending or returning history.',
         },
         lend: [
             {
                 user: {
                     type: Schema.Types.ObjectId,
                     ref: 'Users',
+                    required: [true, 'User reference for lending is required.'],
+                    description: 'Reference to the user who has lent the book.',
                 },
                 from: {
                     type: Date,
-                    required: true,
+                    required: [true, 'Lending start date is required.'],
+                    description: 'The date when the book was lent to the user.',
                 },
                 to: {
                     type: Date,
-                    required: true,
+                    required: [true, 'Lending end date is required.'],
+                    description: 'The expected return date for the lent book.',
                 },
                 remarks: {
                     type: String,
+                    required: [true, 'Remarks for lending are required.'],
                     default: '',
+                    description: 'Additional comments or remarks about the lending process.',
                 },
             },
         ],
@@ -53,14 +61,19 @@ const booksHistorySchema = new mongoose.Schema(
                 user: {
                     type: Schema.Types.ObjectId,
                     ref: 'Users',
+                    required: [true, 'User reference for returning is required.'],
+                    description: 'Reference to the user who returned the book.',
                 },
                 date: {
                     type: Date,
-                    required: true,
+                    required: [true, 'Return date is required.'],
+                    description: 'The date when the book was returned by the user.',
                 },
                 remarks: {
                     type: String,
+                    required: [true, 'Remarks for returning are required.'],
                     default: '',
+                    description: 'Additional comments or remarks about the return process.',
                 },
             },
         ],
@@ -69,7 +82,7 @@ const booksHistorySchema = new mongoose.Schema(
         timestamps: true,
         versionKey: false,
         description:
-            'Schema for storing user data with automatic timestamping for creation and updates.',
+            'Schema for managing the history of books lent and returned by users, including timestamps for automatic tracking of creation and updates. Each record tracks the book, lending details, and return details, allowing for comprehensive management of book circulation in a library system.',
     }
 );
 
