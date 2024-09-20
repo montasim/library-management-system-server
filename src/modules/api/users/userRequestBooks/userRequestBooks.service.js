@@ -31,9 +31,10 @@ const getRequestBooks = async (requester) => {
         });
 
         if (!requestBooks || requestBooks.requestBooks.length === 0) {
-            return errorResponse(
+            return sendResponse(
+                {},
                 'You have not requested any book yet.',
-                httpStatus.NOT_FOUND
+                httpStatus.OK
             );
         }
 
