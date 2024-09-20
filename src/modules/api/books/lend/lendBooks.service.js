@@ -26,12 +26,12 @@ const createLendBook = async (requester, lendBookData) => {
         const lenderDetails = await UsersModel.findById(lendBookData.user);
         if (!lenderDetails) {
             return errorResponse(
-                'No book found with the provided ID.',
+                'No user found with the provided ID.',
                 httpStatus.NOT_FOUND
             );
         }
 
-        const bookDetails = await BooksModel.findById(lendBookData.bookId);
+        const bookDetails = await BooksModel.findById(lendBookData.book);
         if (!bookDetails) {
             return errorResponse(
                 'No book found with the provided ID.',
@@ -41,7 +41,7 @@ const createLendBook = async (requester, lendBookData) => {
 
         // Step 3: Check if the book is already lent by someone else
         const isBookLent = await LendBooksModel.findOne({
-            'books.id': lendBookData.bookId,
+            'books.id': lendBookData.book,
         });
         if (isBookLent) {
             return errorResponse(
@@ -83,7 +83,7 @@ const createLendBook = async (requester, lendBookData) => {
             // Prevent adding duplicate book IDs
             if (
                 existingLend.books.some(
-                    (book) => book.id.toString() === lendBookData.bookId
+                    (book) => book.id.toString() === lendBookData.book
                 )
             ) {
                 return errorResponse(
@@ -93,7 +93,7 @@ const createLendBook = async (requester, lendBookData) => {
             }
 
             existingLend.books.push({
-                id: lendBookData.bookId,
+                id: lendBookData.book,
                 from: lendBookData.from,
                 to: lendBookData.to,
                 remarks: lendBookData.remarks || '',
@@ -111,7 +111,7 @@ const createLendBook = async (requester, lendBookData) => {
                 lender: lendBookData.user,
                 books: [
                     {
-                        id: lendBookData.bookId,
+                        id: lendBookData.book,
                         from: lendBookData.from,
                         to: lendBookData.to,
                         remarks: lendBookData.remarks || '',
