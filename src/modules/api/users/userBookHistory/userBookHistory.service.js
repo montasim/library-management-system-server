@@ -4,11 +4,14 @@
  * These functions interact with the `BooksHistoryModel` and handle data population, error responses, and logging.
  */
 
-import errorResponse from '../../../../utilities/errorResponse.js';
+import mongoose from 'mongoose';
+
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import BooksHistoryModel from '../../books/history/booksHistory.model.js';
-import sendResponse from '../../../../utilities/sendResponse.js';
 import loggerService from '../../../../service/logger.service.js';
+
+import errorResponse from '../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../utilities/sendResponse.js';
 
 /**
  * Retrieves the book history for the requesting user.
@@ -25,28 +28,160 @@ import loggerService from '../../../../service/logger.service.js';
  */
 const getBooksHistory = async (requester) => {
     try {
-        // Fetch all lending and returning records associated with the requester
-        const bookHistories = await BooksHistoryModel.find({
-            $or: [{ 'lend.user': requester }, { 'return.user': requester }],
-        })
-            .populate({
-                path: 'book',
-                select: '-createdBy -updatedBy',
-            })
-            .populate({
-                path: 'lend.user return.user',
-                select: '-createdBy -updatedBy',
-            });
+        // Aggregation pipeline to fetch and format data
+        const bookHistories = await BooksHistoryModel.aggregate([
+            {
+                // Match documents where the requester is in either lend or return
+                $match: {
+                    $or: [
+                        { 'lend.user': new mongoose.Types.ObjectId(requester) },
+                        { 'return.user': new mongoose.Types.ObjectId(requester) },
+                    ],
+                },
+            },
+            {
+                // Lookup to populate the book details
+                $lookup: {
+                    from: 'books',
+                    localField: 'book',
+                    foreignField: '_id',
+                    as: 'book',
+                },
+            },
+            {
+                // Unwind to deconstruct the book array
+                $unwind: {
+                    path: '$book',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                // Lookup to populate writer details of the book
+                $lookup: {
+                    from: 'writers',
+                    localField: 'book.writer',
+                    foreignField: '_id',
+                    as: 'book.writer',
+                },
+            },
+            {
+                // Unwind writer details to extract the first object from the array
+                $unwind: {
+                    path: '$book.writer',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                // Lookup to populate subject details of the book
+                $lookup: {
+                    from: 'subjects',
+                    localField: 'book.subject',
+                    foreignField: '_id',
+                    as: 'book.subject',
+                },
+            },
+            // No unwind for subjects to handle multiple subjects properly
+            {
+                // Lookup to populate publication details of the book
+                $lookup: {
+                    from: 'publications',
+                    localField: 'book.publication',
+                    foreignField: '_id',
+                    as: 'book.publication',
+                },
+            },
+            {
+                // Unwind publication details to extract the first object from the array
+                $unwind: {
+                    path: '$book.publication',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                // Reshape the final document format to include only necessary fields
+                $project: {
+                    _id: 0,
+                    user: { id: requester },
+                    book: {
+                        _id: '$book._id',
+                        name: '$book.name',
+                        image: '$book.image',
+                        summary: '$book.summary',
+                        page: '$book.page',
+                        edition: '$book.edition',
+                        price: '$book.price',
+                        isActive: '$book.isActive',
+                        writer: {
+                            _id: '$book.writer._id',
+                            name: '$book.writer.name',
+                        },
+                        subject: {
+                            $map: {
+                                input: '$book.subject',
+                                as: 'subj',
+                                in: {
+                                    _id: '$$subj._id',
+                                    name: '$$subj.name',
+                                },
+                            },
+                        },
+                        publication: {
+                            _id: '$book.publication._id',
+                            name: '$book.publication.name',
+                        },
+                    },
+                    lend: {
+                        $arrayElemAt: [
+                            {
+                                $filter: {
+                                    input: '$lend',
+                                    as: 'lend',
+                                    cond: { $eq: ['$$lend.user', new mongoose.Types.ObjectId(requester)] },
+                                },
+                            },
+                            0,
+                        ],
+                    },
+                    return: {
+                        $arrayElemAt: [
+                            {
+                                $filter: {
+                                    input: '$return',
+                                    as: 'return',
+                                    cond: { $eq: ['$$return.user', new mongoose.Types.ObjectId(requester)] },
+                                },
+                            },
+                            0,
+                        ],
+                    },
+                },
+            },
+        ]);
 
         if (!bookHistories.length) {
-            return errorResponse(
+            return sendResponse(
+                {},
                 'No book history found for this user.',
-                httpStatus.NOT_FOUND
+                httpStatus.OK
             );
         }
 
+        // Reshape the data into the required format
+        const formattedData = {
+            user: { id: requester },
+            books: bookHistories.map((history) => ({
+                book: history.book,
+                lend: history.lend
+                    ? { from: history.lend.from, to: history.lend.to, remarks: history.lend.remarks }
+                    : null,
+                return: history.return
+                    ? { date: history.return.date, remarks: history.return.remarks }
+                    : null,
+            })),
+        };
+
         return sendResponse(
-            bookHistories,
+            formattedData,
             'Successfully retrieved book history.',
             httpStatus.OK
         );
