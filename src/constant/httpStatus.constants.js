@@ -13,19 +13,19 @@
  */
 
 /**
- * Continue - The initial part of a requestBooks has been received and has not yet been rejected by the server.
+ * Continue - The initial part of a request has been received and has not yet been rejected by the server.
  * @type {number}
  */
 const CONTINUE = 100;
 
 /**
- * Switching Protocols - The server understands and is willing to comply with the client's requestBooks to switch protocols.
+ * Switching Protocols - The server understands and is willing to comply with the client's request to switch protocols.
  * @type {number}
  */
 const SWITCHING_PROTOCOLS = 101;
 
 /**
- * Processing - The server has received and is processing the requestBooks, but no response is available yet.
+ * Processing - The server has received and is processing the request, but no response is available yet.
  * @type {number}
  */
 const PROCESSING = 102;
@@ -41,37 +41,37 @@ const EARLY_HINTS = 103;
  */
 
 /**
- * OK - The requestBooks has succeeded.
+ * OK - The request has succeeded.
  * @type {number}
  */
 const OK = 200;
 
 /**
- * Created - The requestBooks has been fulfilled, resulting in the creation of a new resource.
+ * Created - The request has been fulfilled, resulting in the creation of a new resource.
  * @type {number}
  */
 const CREATED = 201;
 
 /**
- * Accepted - The requestBooks has been accepted for processing, but the processing has not been completed.
+ * Accepted - The request has been accepted for processing, but the processing has not been completed.
  * @type {number}
  */
 const ACCEPTED = 202;
 
 /**
- * Non-Authoritative Information - The requestBooks was successful but the enclosed payload has been modified by a transforming proxy from that of the origin server's 200 OK response.
+ * Non-Authoritative Information - The request was successful but the enclosed payload has been modified by a transforming proxy from that of the origin server's 200 OK response.
  * @type {number}
  */
 const NON_AUTHORITATIVE_INFORMATION = 203;
 
 /**
- * No Content - The server successfully processed the requestBooks, but is not returning any content.
+ * No Content - The server successfully processed the request, but is not returning any content.
  * @type {number}
  */
 const NO_CONTENT = 204;
 
 /**
- * Reset Content - The server successfully processed the requestBooks, but is not returning any content and requires that the requester reset the document view.
+ * Reset Content - The server successfully processed the request, but is not returning any content and requires that the requester reset the document view.
  * @type {number}
  */
 const RESET_CONTENT = 205;
@@ -89,13 +89,13 @@ const PARTIAL_CONTENT = 206;
 const MULTI_STATUS = 207;
 
 /**
- * Already Reported - The members of a DAV binding have already been enumerated in a previous reply to this requestBooks, and are not being included again.
+ * Already Reported - The members of a DAV binding have already been enumerated in a previous reply to this request, and are not being included again.
  * @type {number}
  */
 const ALREADY_REPORTED = 208;
 
 /**
- * IM Used - The server has fulfilled a requestBooks for the resource, and the response is a representation of the result of one or more instance-manipulations applied to the current instance.
+ * IM Used - The server has fulfilled a request for the resource, and the response is a representation of the result of one or more instance-manipulations applied to the current instance.
  * @type {number}
  */
 const IM_USED = 226;
@@ -123,13 +123,13 @@ const MOVED_PERMANENTLY = 301;
 const FOUND = 302;
 
 /**
- * See Other - The response to the requestBooks can be found under another URI using the GET method.
+ * See Other - The response to the request can be found under another URI using the GET method.
  * @type {number}
  */
 const SEE_OTHER = 303;
 
 /**
- * Not Modified - Indicates that the resource has not been modified since the version specified by the requestBooks headers.
+ * Not Modified - Indicates that the resource has not been modified since the version specified by the request headers.
  * @type {number}
  */
 const NOT_MODIFIED = 304;
@@ -141,13 +141,13 @@ const NOT_MODIFIED = 304;
 const USE_PROXY = 305;
 
 /**
- * Temporary Redirect - The server is currently responding to the requestBooks with a URI for a different resource.
+ * Temporary Redirect - The server is currently responding to the request with a URI for a different resource.
  * @type {number}
  */
 const TEMPORARY_REDIRECT = 307;
 
 /**
- * Permanent Redirect - The requestBooks and all future requests should be repeated using another URI.
+ * Permanent Redirect - The request and all future requests should be repeated using another URI.
  * @type {number}
  */
 const PERMANENT_REDIRECT = 308;
@@ -157,7 +157,7 @@ const PERMANENT_REDIRECT = 308;
  */
 
 /**
- * Bad Request - The server cannot process the requestBooks due to a client error.
+ * Bad Request - The server cannot process the request due to a client error.
  * @type {number}
  */
 const BAD_REQUEST = 400;
@@ -187,13 +187,13 @@ const FORBIDDEN = 403;
 const NOT_FOUND = 404;
 
 /**
- * Method Not Allowed - The requestBooks method is known by the server but is not supported by the target resource.
+ * Method Not Allowed - The request method is known by the server but is not supported by the target resource.
  * @type {number}
  */
 const METHOD_NOT_ALLOWED = 405;
 
 /**
- * Not Acceptable - The server cannot produce a response matching the list of acceptable values defined in the requestBooks's proactive content negotiation headers.
+ * Not Acceptable - The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers.
  * @type {number}
  */
 const NOT_ACCEPTABLE = 406;
@@ -211,7 +211,7 @@ const PROXY_AUTHENTICATION_REQUIRED = 407;
 const REQUEST_TIMEOUT = 408;
 
 /**
- * Conflict - The requestBooks could not be completed due to a conflict with the current state of the target resource.
+ * Conflict - The request could not be completed due to a conflict with the current state of the target resource.
  * @type {number}
  */
 const CONFLICT = 409;
@@ -223,19 +223,19 @@ const CONFLICT = 409;
 const GONE = 410;
 
 /**
- * Length Required - The server rejects the requestBooks because the Content-Length header field is not defined and the server requires it.
+ * Length Required - The server rejects the request because the Content-Length header field is not defined and the server requires it.
  * @type {number}
  */
 const LENGTH_REQUIRED = 411;
 
 /**
- * Precondition Failed - The server does not meet one of the preconditions that the requester put on the requestBooks header fields.
+ * Precondition Failed - The server does not meet one of the preconditions that the requester put on the request header fields.
  * @type {number}
  */
 const PRECONDITION_FAILED = 412;
 
 /**
- * Payload Too Large - The requestBooks is larger than the server is willing or able to process.
+ * Payload Too Large - The request is larger than the server is willing or able to process.
  * @type {number}
  */
 const PAYLOAD_TOO_LARGE = 413;
@@ -247,7 +247,7 @@ const PAYLOAD_TOO_LARGE = 413;
 const URI_TOO_LONG = 414;
 
 /**
- * Unsupported Media Type - The requestBooks entity has a media type which the server or resource does not support.
+ * Unsupported Media Type - The request entity has a media type which the server or resource does not support.
  * @type {number}
  */
 const UNSUPPORTED_MEDIA_TYPE = 415;
@@ -259,7 +259,7 @@ const UNSUPPORTED_MEDIA_TYPE = 415;
 const RANGE_NOT_SATISFIABLE = 416;
 
 /**
- * Expectation Failed - The server cannot meet the requirements of the Expect requestBooks-header field.
+ * Expectation Failed - The server cannot meet the requirements of the Expect request-header field.
  * @type {number}
  */
 const EXPECTATION_FAILED = 417;
@@ -271,14 +271,14 @@ const EXPECTATION_FAILED = 417;
 const IM_A_TEAPOT = 418;
 
 /**
- * Misdirected Request - The requestBooks was directed at a server that is not able to produce a response.
+ * Misdirected Request - The request was directed at a server that is not able to produce a response.
  * @type {number}
  */
 const MISDIRECTED_REQUEST = 421;
 
 /**
- * Unprocessable Entity - The server understands the content type of the requestBooks entity,
- * and the syntax of the requestBooks entity is correct, but it was unable to process the contained instructions.
+ * Unprocessable Entity - The server understands the content type of the request entity,
+ * and the syntax of the request entity is correct, but it was unable to process the contained instructions.
  * @type {number}
  */
 const UNPROCESSABLE_ENTITY = 422;
@@ -290,13 +290,13 @@ const UNPROCESSABLE_ENTITY = 422;
 const LOCKED = 423;
 
 /**
- * Failed Dependency - The requestBooks failed due to failure of a previous requestBooks.
+ * Failed Dependency - The request failed due to failure of a previous request.
  * @type {number}
  */
 const FAILED_DEPENDENCY = 424;
 
 /**
- * Too Early - Indicates that the server is unwilling to risk processing a requestBooks that might be replayed.
+ * Too Early - Indicates that the server is unwilling to risk processing a request that might be replayed.
  * @type {number}
  */
 const TOO_EARLY = 425;
@@ -308,7 +308,7 @@ const TOO_EARLY = 425;
 const UPGRADE_REQUIRED = 426;
 
 /**
- * Precondition Required - The origin server requires the requestBooks to be conditional.
+ * Precondition Required - The origin server requires the request to be conditional.
  * @type {number}
  */
 const PRECONDITION_REQUIRED = 428;
@@ -320,7 +320,7 @@ const PRECONDITION_REQUIRED = 428;
 const TOO_MANY_REQUESTS = 429;
 
 /**
- * Request Header Fields Too Large - The server is unwilling to process the requestBooks because its header fields are too large.
+ * Request Header Fields Too Large - The server is unwilling to process the request because its header fields are too large.
  * @type {number}
  */
 const REQUEST_HEADER_FIELDS_TOO_LARGE = 431;
@@ -343,7 +343,7 @@ const UNAVAILABLE_FOR_LEGAL_REASONS = 451;
 const INTERNAL_SERVER_ERROR = 500;
 
 /**
- * Not Implemented - The server either does not recognize the requestBooks method, or it lacks the ability to fulfil the requestBooks.
+ * Not Implemented - The server either does not recognize the request method, or it lacks the ability to fulfil the request.
  * @type {number}
  */
 const NOT_IMPLEMENTED = 501;
@@ -355,7 +355,7 @@ const NOT_IMPLEMENTED = 501;
 const BAD_GATEWAY = 502;
 
 /**
- * Service Unavailable - The server is not ready to handle the requestBooks.
+ * Service Unavailable - The server is not ready to handle the request.
  * @type {number}
  */
 const SERVICE_UNAVAILABLE = 503;
@@ -367,31 +367,31 @@ const SERVICE_UNAVAILABLE = 503;
 const GATEWAY_TIMEOUT = 504;
 
 /**
- * HTTP Version Not Supported - The HTTP version used in the requestBooks is not supported by the server.
+ * HTTP Version Not Supported - The HTTP version used in the request is not supported by the server.
  * @type {number}
  */
 const HTTP_VERSION_NOT_SUPPORTED = 505;
 
 /**
- * Variant Also Negotiates - The server has an internal configuration error: transparent content negotiation for the requestBooks results in a circular reference.
+ * Variant Also Negotiates - The server has an internal configuration error: transparent content negotiation for the request results in a circular reference.
  * @type {number}
  */
 const VARIANT_ALSO_NEGOTIATES = 506;
 
 /**
- * Insufficient Storage - The method could not be performed on the resource because the server is unable to store the representation needed to successfully complete the requestBooks.
+ * Insufficient Storage - The method could not be performed on the resource because the server is unable to store the representation needed to successfully complete the request.
  * @type {number}
  */
 const INSUFFICIENT_STORAGE = 507;
 
 /**
- * Loop Detected - The server detected an infinite loop while processing a requestBooks.
+ * Loop Detected - The server detected an infinite loop while processing a request.
  * @type {number}
  */
 const LOOP_DETECTED = 508;
 
 /**
- * Not Extended - Further extensions to the requestBooks are required for the server to fulfil it.
+ * Not Extended - Further extensions to the request are required for the server to fulfil it.
  * @type {number}
  */
 const NOT_EXTENDED = 510;

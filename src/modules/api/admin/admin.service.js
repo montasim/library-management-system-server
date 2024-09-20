@@ -166,7 +166,7 @@ const verifyAdmin = async (token, hostData) => {
 
         if (!adminDetails) {
             return errorResponse(
-                'The verification link is invalid or has expired. Please requestBooks a new verification email.',
+                'The verification link is invalid or has expired. Please request a new verification email.',
                 httpStatus.FORBIDDEN
             );
         }
@@ -434,7 +434,7 @@ const resetAdminPassword = async (hostData, token, adminData) => {
         });
         if (!adminDetails) {
             return errorResponse(
-                'Your password reset link is invalid or has expired. Please requestBooks a new password reset link.',
+                'Your password reset link is invalid or has expired. Please request a new password reset link.',
                 httpStatus.FORBIDDEN
             );
         }

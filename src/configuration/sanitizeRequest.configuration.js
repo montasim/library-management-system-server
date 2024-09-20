@@ -78,7 +78,7 @@ const sanitizeRequestConfiguration = (req, res, next) => {
 
         return res.status(500).json({
             success: false,
-            message: 'Error processing requestBooks, please try again later.',
+            message: 'Error processing request, please try again later.',
         });
     }
 

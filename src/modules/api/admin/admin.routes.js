@@ -146,7 +146,7 @@ router
 
 /**
  * @openapi
- * /requestBooks-new-password:
+ * /request-new-password:
  *   put:
  *     summary: Requests a new admin password.
  *     description: Initiates a password reset process for an admin.
@@ -179,7 +179,7 @@ router
  *       - Admin Management
  */
 router
-    .route('/requestBooks-new-password')
+    .route('/request-new-password')
     .put(
         adminValidator.requestNewAdminPassword,
         adminController.requestNewAdminPassword

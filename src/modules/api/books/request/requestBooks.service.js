@@ -36,12 +36,12 @@ cloudinary.config({
  */
 const createRequestBook = async (requester, bookData, bookImage) => {
     try {
-        // Check for existing requestBooks document for the user
+        // Check for existing request document for the user
         const existingRequest = await RequestBooksModel.findOne({
             owner: requester,
         });
         if (existingRequest) {
-            // Check for duplicate book requestBooks
+            // Check for duplicate book request
             const isDuplicate = existingRequest.requestBooks.some(
                 (book) => book.name === bookData.name
             );
@@ -91,13 +91,13 @@ const createRequestBook = async (requester, bookData, bookImage) => {
             };
             bookData.createdBy = requester;
 
-            // Add new book to the existing requestBooks document
+            // Add new book to the existing request document
             existingRequest.requestBooks.push(bookData);
             await existingRequest.save();
 
             return sendResponse(
                 existingRequest,
-                'New book requestBooks added successfully.',
+                'New book request added successfully.',
                 httpStatus.OK
             );
         } else {
@@ -140,7 +140,7 @@ const createRequestBook = async (requester, bookData, bookImage) => {
             };
             bookData.createdBy = requester;
 
-            // Create a new requestBooks document if none exists
+            // Create a new request document if none exists
             const newRequest = await RequestBooksModel.create({
                 owner: requester,
                 requestBooks: [bookData],
@@ -209,7 +209,7 @@ const getRequestBooks = async () => {
  */
 const getRequestBook = async (bookId) => {
     try {
-        // Attempt to find a request document that contains the specific book ID in its requestBooks array
+        // Attempt to find a request document that contains the specific book ID in its request array
         const request = await RequestBooksModel.findOne({
             'requestBooks._id': bookId, // Adjust this path if your book ID is stored differently
         })
@@ -228,7 +228,7 @@ const getRequestBook = async (bookId) => {
             );
         }
 
-        // Extract the specific requested book from the requestBooks array
+        // Extract the specific requested book from the request array
         const requestedBook = request.requestBooks.find(
             (book) => book._id.toString() === bookId
         );
@@ -321,7 +321,7 @@ const deleteRequestBook = async (requester, requestBookId) => {
         });
         if (!requestBook) {
             return errorResponse(
-                'No book requestBooks found to delete.',
+                'No book request found to delete.',
                 httpStatus.NOT_FOUND
             );
         }
@@ -339,12 +339,12 @@ const deleteRequestBook = async (requester, requestBookId) => {
                 {
                     removedBookId: requestBookId,
                 },
-                'Book requestBooks removed successfully.',
+                'Book request removed successfully.',
                 httpStatus.OK
             );
         } else {
             return errorResponse(
-                'Book requestBooks not found in your records.',
+                'Book request not found in your records.',
                 httpStatus.NOT_FOUND
             );
         }

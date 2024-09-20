@@ -43,14 +43,14 @@ app.use(cors(corsConfiguration));
 app.use(hppConfiguration());
 app.use(compressionConfiguration);
 
-// Morgan HTTP requestBooks loggerService setup
+// Morgan HTTP request loggerService setup
 app.use(morganConfiguration);
 
 // Body parsing middleware
 app.use(express.json({ limit: '20mb' })); // unified the limit for JSON
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
-// Sanitize requestBooks data
+// Sanitize request data
 app.use(sanitizeRequestConfiguration);
 
 // Routes

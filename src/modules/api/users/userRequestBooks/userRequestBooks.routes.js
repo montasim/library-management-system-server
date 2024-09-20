@@ -32,7 +32,7 @@ const router = express.Router();
  *                 total:
  *                   type: integer
  *                   description: Total number of requested books.
- *                 requestBooks:
+ *                 request:
  *                   type: array
  *                   items:
  *                     type: object

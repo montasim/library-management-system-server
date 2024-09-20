@@ -8,7 +8,7 @@
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
-import RequestBooksModel from '../../books/requestBooks/requestBooks.model.js';
+import RequestBooksModel from '../../books/request/requestBooks.model.js';
 import loggerService from '../../../../service/logger.service.js';
 
 /**
@@ -83,21 +83,21 @@ const getRequestBook = async (requester, requestBookId) => {
             );
         }
 
-        // Find the specific book requestBooks in the array of requestBooks
+        // Find the specific book request in the array of request
         const bookRequest = requestBooks.requestBooks.find((book) => {
             return book._id.toString() === requestBookId;
         });
         if (!bookRequest) {
             return errorResponse(
-                'Book requestBooks not found.',
+                'Book request not found.',
                 httpStatus.NOT_FOUND
             );
         }
 
-        // Return the found book requestBooks
+        // Return the found book request
         return sendResponse(
             bookRequest,
-            'Successfully retrieved the book requestBooks.',
+            'Successfully retrieved the book request.',
             httpStatus.OK
         );
     } catch (error) {
@@ -131,7 +131,7 @@ const deleteRequestBook = async (requester, requestBookId) => {
         });
         if (!requestBook) {
             return errorResponse(
-                'No book requestBooks found to delete.',
+                'No book request found to delete.',
                 httpStatus.NOT_FOUND
             );
         }
@@ -149,12 +149,12 @@ const deleteRequestBook = async (requester, requestBookId) => {
                 {
                     removedBookId: requestBookId,
                 },
-                'Book requestBooks removed successfully.',
+                'Book request removed successfully.',
                 httpStatus.OK
             );
         } else {
             return errorResponse(
-                'Book requestBooks not found in your records.',
+                'Book request not found in your records.',
                 httpStatus.NOT_FOUND
             );
         }
