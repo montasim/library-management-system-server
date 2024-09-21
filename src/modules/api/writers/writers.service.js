@@ -21,6 +21,7 @@ import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import validateFile from '../../../utilities/validateFile.js';
+import BooksModel from '../books/books.model.js';
 
 /**
  * Populates writer fields with additional information.
@@ -145,13 +146,65 @@ const createWriter = async (requester, writerData, writerImage) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object containing the list of writers.
  */
 const getWriters = async (params) => {
-    return service.getResourceList(
-        WritersModel,
-        populateWriterFields,
-        params,
-        writerListParamsMapping,
-        'writer'
-    );
+    try {
+        const writersWithBookCounts = await WritersModel.aggregate([
+            {
+                $lookup: {
+                    from: BooksModel.collection.name, // Make sure this is the correct collection name
+                    localField: '_id',
+                    foreignField: 'writer',
+                    as: 'books',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$books',
+                    preserveNullAndEmptyArrays: true, // Keep writers with no books
+                },
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    name: { $first: '$name' },
+                    image: { $first: '$image' },
+                    summary: { $first: '$summary' },
+                    isActive: { $first: '$isActive' },
+                    bookCount: { $sum: 1 }, // Sum the occurrences of books
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    image: 1,
+                    summary: 1,
+                    isActive: 1,
+                    bookCount: {
+                        $cond: {
+                            if: { $gt: ['$bookCount', 0] },
+                            then: { $subtract: ['$bookCount', 1] },
+                            else: 0,
+                        },
+                    }, // Correct for $unwind adding 1 when no books are present
+                },
+            },
+        ]);
+
+        return sendResponse(
+            {
+                items: writersWithBookCounts,
+            },
+            'Writers fetched successfully.',
+            httpStatus.CREATED
+        );
+    } catch (error) {
+        loggerService.error(`Failed to fetch writers: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to fetch subject.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 };
 
 /**
@@ -164,12 +217,65 @@ const getWriters = async (params) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object containing the writer details.
  */
 const getWriter = async (writerId) => {
-    return service.getResourceById(
-        WritersModel,
-        populateWriterFields,
-        writerId,
-        'writer'
-    );
+    try {
+        const writersWithBookCounts = await WritersModel.aggregate([
+            {
+                $lookup: {
+                    from: BooksModel.collection.name, // Make sure this is the correct collection name
+                    localField: '_id',
+                    foreignField: 'writer',
+                    as: 'books',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$books',
+                    preserveNullAndEmptyArrays: true, // Keep writers with no books
+                },
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    name: { $first: '$name' },
+                    image: { $first: '$image' },
+                    summary: { $first: '$summary' },
+                    isActive: { $first: '$isActive' },
+                    bookCount: { $sum: 1 }, // Sum the occurrences of books
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    image: 1,
+                    summary: 1,
+                    isActive: 1,
+                    bookCount: {
+                        $cond: {
+                            if: { $gt: ['$bookCount', 0] },
+                            then: { $subtract: ['$bookCount', 1] },
+                            else: 0,
+                        },
+                    }, // Correct for $unwind adding 1 when no books are present
+                },
+            },
+        ]);
+
+        return sendResponse(
+            {
+                items: writersWithBookCounts,
+            },
+            'Writers fetched successfully.',
+            httpStatus.CREATED
+        );
+    } catch (error) {
+        loggerService.error(`Failed to fetch writers: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to fetch subject.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 };
 
 /**
