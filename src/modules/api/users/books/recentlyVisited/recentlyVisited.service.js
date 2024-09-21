@@ -5,13 +5,13 @@
  * The service interacts with the `RecentlyVisitedBooksModel` and `BooksModel` to perform database operations.
  */
 
-import validateUserRequest from '../../../../../utilities/validateUserRequest.js';
-import errorResponse from '../../../../../utilities/errorResponse.js';
 import httpStatus from '../../../../../constant/httpStatus.constants.js';
-import sendResponse from '../../../../../utilities/sendResponse.js';
 import RecentlyVisitedBooksModel from './recentlyVisited.model.js';
 import BooksModel from '../../../books/books.model.js';
 import loggerService from '../../../../../service/logger.service.js';
+
+import errorResponse from '../../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../../utilities/sendResponse.js';
 
 /**
  * Adds a book to the recently visited books list for the requester.
@@ -138,9 +138,10 @@ const get = async (requester) => {
             .lean();
 
         if (!recentlyVisitedBooks) {
-            return errorResponse(
+            return sendResponse(
+                {},
                 'No recently visited books found.',
-                httpStatus.NOT_FOUND
+                httpStatus.OK
             );
         }
 
@@ -150,7 +151,10 @@ const get = async (requester) => {
         );
 
         return sendResponse(
-            populatedBooks,
+            {
+                total: populatedBooks?.length,
+                books: populatedBooks,
+            },
             'Successfully retrieved recently visited books.',
             httpStatus.OK
         );
