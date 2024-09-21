@@ -168,6 +168,18 @@ const routesConstants = {
             deleteByList: 'delete-writer-by-list',
         },
     },
+    userFavouriteBooks: {
+        routes: 'books/favourite',
+        params: 'bookId',
+        permissions: {
+            create: 'create-writer',
+            getList: 'get-writer-list',
+            getById: 'get-writer-by-id',
+            updateById: 'update-writer-by-id',
+            deleteById: 'delete-writer-by-id',
+            deleteByList: 'delete-writer-by-list',
+        },
+    },
 };
 
 export default routesConstants;
