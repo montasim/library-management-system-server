@@ -5,6 +5,8 @@
  * and handle data retrieval, manipulation, error responses, and logging.
  */
 
+import mongoose from 'mongoose';
+
 import httpStatus from '../../../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../../utilities/sendResponse.js';
@@ -26,11 +28,27 @@ import loggerService from '../../../../../service/logger.service.js';
  */
 const getRequestBooks = async (requester) => {
     try {
-        const requestBooks = await RequestBooksModel.findOne({
-            owner: requester,
-        });
+        // Check if the requester ID is valid and perform aggregation
+        const requestedBooks = await RequestBooksModel.aggregate([
+            {
+                $match: {
+                    owner: new mongoose.Types.ObjectId(requester),
+                },
+            },
+            {
+                $project: {
+                    books: '$requestedBooks', // Rename requestedBooks to books for clarity
+                },
+            },
+            {
+                $addFields: {
+                    total: { $size: '$books' }, // Calculate the total number of books
+                },
+            },
+        ]);
 
-        if (!requestBooks || requestBooks.requestBooks.length === 0) {
+        // Check if no books were found
+        if (!requestedBooks.length || !requestedBooks[0].books.length) {
             return sendResponse(
                 {},
                 'You have not requested any book yet.',
@@ -38,10 +56,11 @@ const getRequestBooks = async (requester) => {
             );
         }
 
+        // Respond with the found books and their total count
         return sendResponse(
             {
-                total: requestBooks.requestBooks.length,
-                requestBooks: requestBooks.requestBooks,
+                total: requestedBooks[0].total,
+                books: requestedBooks[0].books,
             },
             'Successfully retrieved your requested books.',
             httpStatus.OK
@@ -126,9 +145,12 @@ const getRequestBook = async (requester, requestBookId) => {
  */
 const deleteRequestBook = async (requester, requestBookId) => {
     try {
+        // Find the request book document belonging to the requester
         const requestBook = await RequestBooksModel.findOne({
             owner: requester,
         });
+
+        // Check if the requested book record exists
         if (!requestBook) {
             return errorResponse(
                 'No book request found to delete.',
@@ -136,28 +158,38 @@ const deleteRequestBook = async (requester, requestBookId) => {
             );
         }
 
-        // Remove the requested book by ID from the array
-        const index = requestBook.requestBooks.findIndex(
-            (book) => book._id.toString() === requestBookId
-        );
-        if (index > -1) {
-            requestBook.requestBooks.splice(index, 1);
-
-            await requestBook.save();
-
-            return sendResponse(
-                {
-                    removedBookId: requestBookId,
+        // Use MongoDB's $pull operator to remove the specific book from requestedBooks array
+        const updatedRequestBook = await RequestBooksModel.findOneAndUpdate(
+            {
+                owner: requester,
+                'requestedBooks._id': requestBookId,
+            },
+            {
+                $pull: {
+                    requestedBooks: { _id: requestBookId },
                 },
-                'Book request removed successfully.',
-                httpStatus.OK
-            );
-        } else {
+            },
+            {
+                new: true,
+            }
+        );
+
+        // If the book was not found or deleted, return a not found response
+        if (!updatedRequestBook) {
             return errorResponse(
                 'Book request not found in your records.',
                 httpStatus.NOT_FOUND
             );
         }
+
+        // Send success response
+        return sendResponse(
+            {
+                removedBookId: requestBookId,
+            },
+            'Book request removed successfully.',
+            httpStatus.OK
+        );
     } catch (error) {
         loggerService.error(`Failed to delete requested book: ${error}`);
 
