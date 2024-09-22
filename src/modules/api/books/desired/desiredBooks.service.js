@@ -8,7 +8,7 @@
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import errorResponse from '../../../../utilities/errorResponse.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
-import RequestBooksModel from '../requestBooks/requestBooks.model.js';
+import RequestBooksModel from '../request/requestBooks.model.js';
 import loggerService from '../../../../service/logger.service.js';
 
 /**

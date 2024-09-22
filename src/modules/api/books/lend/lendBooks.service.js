@@ -7,10 +7,11 @@
 import LendBooksModel from './lendBooks.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
 import BooksModel from '../books.model.js';
-import errorResponse from '../../../../utilities/errorResponse.js';
-import sendResponse from '../../../../utilities/sendResponse.js';
 import UsersModel from '../../users/users.model.js';
 import loggerService from '../../../../service/logger.service.js';
+
+import errorResponse from '../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../utilities/sendResponse.js';
 
 /**
  * createLendBook - Service function to create a new lend book record.
@@ -25,12 +26,12 @@ const createLendBook = async (requester, lendBookData) => {
         const lenderDetails = await UsersModel.findById(lendBookData.user);
         if (!lenderDetails) {
             return errorResponse(
-                'No book found with the provided ID.',
+                'No user found with the provided ID.',
                 httpStatus.NOT_FOUND
             );
         }
 
-        const bookDetails = await BooksModel.findById(lendBookData.bookId);
+        const bookDetails = await BooksModel.findById(lendBookData.book);
         if (!bookDetails) {
             return errorResponse(
                 'No book found with the provided ID.',
@@ -40,7 +41,7 @@ const createLendBook = async (requester, lendBookData) => {
 
         // Step 3: Check if the book is already lent by someone else
         const isBookLent = await LendBooksModel.findOne({
-            'books.id': lendBookData.bookId,
+            'books.id': lendBookData.book,
         });
         if (isBookLent) {
             return errorResponse(
@@ -53,7 +54,7 @@ const createLendBook = async (requester, lendBookData) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0); // Reset time to the start of the day
 
-        const fromDate = new Date(lendBookData.from);
+        const fromDate = new Date();
         const toDate = new Date(lendBookData.to);
 
         if (fromDate < today) {
@@ -73,6 +74,7 @@ const createLendBook = async (requester, lendBookData) => {
             );
         }
 
+        lendBookData.from = fromDate; // Update the 'to' date to the validated value
         // Step 5: Find existing document for the user or create a new one
         const existingLend = await LendBooksModel.findOne({
             lender: lendBookData.user,
@@ -81,7 +83,7 @@ const createLendBook = async (requester, lendBookData) => {
             // Prevent adding duplicate book IDs
             if (
                 existingLend.books.some(
-                    (book) => book.id.toString() === lendBookData.bookId
+                    (book) => book.id.toString() === lendBookData.book
                 )
             ) {
                 return errorResponse(
@@ -91,7 +93,7 @@ const createLendBook = async (requester, lendBookData) => {
             }
 
             existingLend.books.push({
-                id: lendBookData.bookId,
+                id: lendBookData.book,
                 from: lendBookData.from,
                 to: lendBookData.to,
                 remarks: lendBookData.remarks || '',
@@ -109,7 +111,7 @@ const createLendBook = async (requester, lendBookData) => {
                 lender: lendBookData.user,
                 books: [
                     {
-                        id: lendBookData.bookId,
+                        id: lendBookData.book,
                         from: lendBookData.from,
                         to: lendBookData.to,
                         remarks: lendBookData.remarks || '',
@@ -140,57 +142,140 @@ const createLendBook = async (requester, lendBookData) => {
  * @param {ObjectId} requester - The ID of the user making the request.
  * @returns {Promise<Object>} - The response object containing the status and data or error message.
  */
-const getLendBooks = async (requester) => {
-    try {
-        // Step 2: Fetch the lend books for the requester
-        const lendBooks = await LendBooksModel.findOne({
-            lender: requester,
-        }).populate({
-            path: 'books.id',
-            select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt',
-            populate: [
-                {
-                    path: 'subject',
-                    model: 'Subjects',
-                    select: 'name -_id',
-                },
-                {
-                    path: 'publication',
-                    model: 'Publications',
-                    select: 'name -_id',
-                },
-            ],
-        });
+// const getLendBooks = async (requester) => {
+//     try {
+//         // Step 2: Fetch the lend books for the requester
+//         const lendBooks = await LendBooksModel.findOne({
+//             lender: requester,
+//         }).populate({
+//             path: 'books.id',
+//             select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt',
+//             populate: [
+//                 {
+//                     path: 'subject',
+//                     model: 'Subjects',
+//                     select: 'name -_id',
+//                 },
+//                 {
+//                     path: 'publication',
+//                     model: 'Publications',
+//                     select: 'name -_id',
+//                 },
+//             ],
+//         });
+//
+//         // Step 3: Check if the requester has any lend books
+//         if (!lendBooks || lendBooks.books.length === 0) {
+//             return errorResponse(
+//                 'You have no lend books.',
+//                 httpStatus.NOT_FOUND
+//             );
+//         }
+//
+//         // Step 4: Transform the data to rename 'id' to 'book'
+//         const transformedLendBooks = lendBooks.books.map((bookEntry) => ({
+//             ...bookEntry._doc,
+//             book: bookEntry.id,
+//             id: bookEntry._id,
+//         }));
+//
+//         // Step 5: Return the lend books with the transformed structure
+//         return sendResponse(
+//             {
+//                 total: transformedLendBooks.length,
+//                 lendBooks: transformedLendBooks,
+//             },
+//             'Successfully retrieved your lend books.',
+//             httpStatus.OK
+//         );
+//     } catch (error) {
+//         loggerService.error(`Failed to get lend book: ${error}`);
+//
+//         return errorResponse(
+//             error.message || 'Failed to get lend book.',
+//             httpStatus.INTERNAL_SERVER_ERROR
+//         );
+//     }
+// };
 
-        // Step 3: Check if the requester has any lend books
-        if (!lendBooks || lendBooks.books.length === 0) {
+const getLendBooks = async () => {
+    try {
+        // Fetch lend books grouped by lender, populating the book details automatically
+        const lendBooksGrouped = await LendBooksModel.find()
+            .populate({
+                path: 'books.id',
+                select: '-bestSeller -review -price -stockAvailable -createdBy -createdAt -updatedAt', // Select the fields you want to include/exclude
+                populate: [
+                    {
+                        path: 'subject',
+                        model: 'Subjects',
+                        select: 'name -_id', // Populating subject details
+                    },
+                    {
+                        path: 'publication',
+                        model: 'Publications',
+                        select: 'name -_id', // Populating publication details
+                    }
+                ]
+            })
+            .populate({
+                path: 'lender',
+                model: 'Users', // Assuming 'Users' collection holds the lender information
+                select: 'name email', // Include necessary lender details
+            });
+
+        // Step 3: Check if there are any lend books
+        if (!lendBooksGrouped || lendBooksGrouped.length === 0) {
             return errorResponse(
-                'You have no lend books.',
+                'No lend books found.',
                 httpStatus.NOT_FOUND
             );
         }
 
-        // Step 4: Transform the data to rename 'id' to 'book'
-        const transformedLendBooks = lendBooks.books.map((bookEntry) => ({
-            ...bookEntry._doc,
-            book: bookEntry.id,
-            id: bookEntry._id,
+        // Step 4: Transform the data into the desired format
+        const responseData = lendBooksGrouped.map((lendGroup) => ({
+            lender: {
+                _id: lendGroup.lender._id,
+                name: lendGroup.lender.name,
+                email: lendGroup.lender.email, // Include other lender details as needed
+            },
+            totalLend: lendGroup.books.length,
+            books: lendGroup.books.map(book => ({
+                _id: book.id._id,
+                name: book.id.name,
+                subject: book.id.subject?.name, // If the subject is populated
+                publication: book.id.publication?.name, // If the publication is populated
+                bestSeller: book.id.bestSeller,
+                review: book.id.review,
+                price: book.id.price,
+                stockAvailable: book.id.stockAvailable,
+                edition: book.id.edition,
+                summary: book.id.summary,
+                page: book.id.page,
+                image: book.id.image, // If there is an image associated
+                createdAt: book.id.createdAt,
+                updatedAt: book.id.updatedAt,
+                from: book.from,  // Adding from date
+                to: book.to,      // Adding to date
+                remarks: book.remarks,  // Adding remarks field
+            }))
         }));
 
-        // Step 5: Return the lend books with the transformed structure
+        // Step 5: Return the grouped lend books
         return sendResponse(
             {
-                total: transformedLendBooks.length,
-                lendBooks: transformedLendBooks,
+                totalLender: responseData.length,
+                totalLend: responseData.reduce((sum, group) => sum + group.totalLend, 0),
+                details: responseData,
             },
-            'Successfully retrieved your lend books.',
+            'Successfully retrieved lend books grouped by lender.',
             httpStatus.OK
         );
     } catch (error) {
-        loggerService.error(`Failed to get lend book: ${error}`);
+        loggerService.error(`Failed to get lend books grouped by lender: ${error}`);
 
         return errorResponse(
-            error.message || 'Failed to get lend book.',
+            error.message || 'Failed to get lend books grouped by lender.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }

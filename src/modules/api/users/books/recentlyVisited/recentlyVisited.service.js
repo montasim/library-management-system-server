@@ -5,13 +5,13 @@
  * The service interacts with the `RecentlyVisitedBooksModel` and `BooksModel` to perform database operations.
  */
 
-import validateUserRequest from '../../../../utilities/validateUserRequest.js';
-import errorResponse from '../../../../utilities/errorResponse.js';
-import httpStatus from '../../../../constant/httpStatus.constants.js';
-import sendResponse from '../../../../utilities/sendResponse.js';
-import RecentlyVisitedBooksModel from './recentlyVisitedBooks.model.js';
-import BooksModel from '../../books/books.model.js';
-import loggerService from '../../../../service/logger.service.js';
+import httpStatus from '../../../../../constant/httpStatus.constants.js';
+import RecentlyVisitedBooksModel from './recentlyVisited.model.js';
+import BooksModel from '../../../books/books.model.js';
+import loggerService from '../../../../../service/logger.service.js';
+
+import errorResponse from '../../../../../utilities/errorResponse.js';
+import sendResponse from '../../../../../utilities/sendResponse.js';
 
 /**
  * Adds a book to the recently visited books list for the requester.
@@ -22,7 +22,7 @@ import loggerService from '../../../../service/logger.service.js';
  *
  * @function
  * @async
- * @name recentlyVisitedBooksService.add
+ * @name recentlyVisitedService.add
  *
  * @param {Object} requester - The user making the request, identified by their ID.
  * @param {Object} bookData - The data of the book to be added, containing the book ID.
@@ -109,7 +109,7 @@ const add = async (requester, bookData) => {
  *
  * @function
  * @async
- * @name recentlyVisitedBooksService.get
+ * @name recentlyVisitedService.get
  *
  * @param {Object} requester - The user making the request, identified by their ID.
  *
@@ -138,9 +138,10 @@ const get = async (requester) => {
             .lean();
 
         if (!recentlyVisitedBooks) {
-            return errorResponse(
+            return sendResponse(
+                {},
                 'No recently visited books found.',
-                httpStatus.NOT_FOUND
+                httpStatus.OK
             );
         }
 
@@ -150,7 +151,10 @@ const get = async (requester) => {
         );
 
         return sendResponse(
-            populatedBooks,
+            {
+                total: populatedBooks?.length,
+                books: populatedBooks,
+            },
             'Successfully retrieved recently visited books.',
             httpStatus.OK
         );
@@ -164,9 +168,9 @@ const get = async (requester) => {
     }
 };
 
-const recentlyVisitedBooksService = {
+const recentlyVisitedService = {
     add,
     get,
 };
 
-export default recentlyVisitedBooksService;
+export default recentlyVisitedService;

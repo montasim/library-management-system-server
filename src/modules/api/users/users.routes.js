@@ -6,30 +6,30 @@
 
 import express from 'express';
 
-import usersBooksHistoryRoutes from './userBookHistory/usersBooksHistory.routes.js';
-import userRequestBooksRoutes from './userRequestBooks/userRequestBooks.routes.js';
-import recentlyVisitedBooksRoutes from './recentlyVisitedBooks/recentlyVisitedBooks.routes.js';
+import userBooksRoutes from './books/usersBooks.routes.js';
 import userSettingsRoutes from './userSettings/userSettings.routes.js';
-import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
 import accessTypesConstants from '../../../constant/accessTypes.constants.js';
+import cacheMiddleware from '../../../middleware/cache.middleware.js';
+import configuration from '../../../configuration/configuration.js';
+import usersValidator from './users.validators.js';
+import usersController from './users.controller.js';
+
+import authenticateMiddleware from '../../../middleware/authenticate.middleware.js';
+import methodNotSupported from '../../../shared/methodNotSupported.js';
 
 const router = express.Router();
 
-router.use(
-    '/history',
-    authenticateMiddleware(accessTypesConstants.BOTH),
-    usersBooksHistoryRoutes
-);
-router.use(
-    '/recently-visited',
-    authenticateMiddleware(accessTypesConstants.USER),
-    recentlyVisitedBooksRoutes
-);
-router.use(
-    '/requested',
-    authenticateMiddleware(accessTypesConstants.USER),
-    userRequestBooksRoutes
-);
+router
+    .route('/')
+    .get(
+        usersValidator.getUsersList,
+        usersController.getUsersList,
+        cacheMiddleware.create(configuration.cache.timeout)
+    )
+    .all(methodNotSupported);
+
+router.use('/books', userBooksRoutes);
+
 router.use(
     '/settings',
     authenticateMiddleware(accessTypesConstants.USER),

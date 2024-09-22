@@ -2,16 +2,16 @@
  * @fileoverview This module defines the controller for handling operations related to user-requested books.
  * It leverages the shared controller utilities to create, retrieve, and delete records of books requested by users.
  *
- * The `userRequestBooksController` object includes methods to:
+ * The `requestedController` object includes methods to:
  * - Retrieve the list of requested books for the requesting user.
  * - Retrieve details of a specific requested book.
  * - Delete a specific requested book.
  */
 
-import requestBooksService from './userRequestBooks.service.js';
-import controller from '../../../../shared/controller.js';
+import requestBooksService from './requested.service.js';
+import controller from '../../../../../shared/controller.js';
 
-const userRequestBooksController = {
+const requestedController = {
     /**
      * Retrieves the list of requested books for the requesting user.
      *
@@ -20,7 +20,7 @@ const userRequestBooksController = {
      * It delegates the actual service logic to the `requestBooksService` and specifies the `getRequestBooks` method.
      *
      * @function
-     * @name userRequestBooksController.getRequestBooks
+     * @name requestedController.getRequestBooks
      * @param {Object} request - The request object containing the requester's details.
      * @param {Object} response - The response object used to send back the list of requested books.
      *
@@ -39,7 +39,7 @@ const userRequestBooksController = {
      * It delegates the actual service logic to the `requestBooksService` and specifies the `getRequestBook` method.
      *
      * @function
-     * @name userRequestBooksController.getRequestBook
+     * @name requestedController.getRequestBook
      * @param {Object} request - The request object containing the book ID.
      * @param {Object} response - The response object used to send back the details of the requested book.
      *
@@ -59,7 +59,7 @@ const userRequestBooksController = {
      * It delegates the actual service logic to the `requestBooksService` and specifies the `deleteRequestBook` method.
      *
      * @function
-     * @name userRequestBooksController.deleteRequestBook
+     * @name requestedController.deleteRequestBook
      * @param {Object} request - The request object containing the book ID.
      * @param {Object} response - The response object used to send back the confirmation of the deletion.
      *
@@ -72,4 +72,4 @@ const userRequestBooksController = {
     ),
 };
 
-export default userRequestBooksController;
+export default requestedController;

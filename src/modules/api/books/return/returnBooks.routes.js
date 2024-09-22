@@ -59,7 +59,7 @@ const router = express.Router();
  */
 router
     .route('/')
-    .delete(
+    .post(
         authenticateMiddleware(
             accessTypesConstants.ADMIN,
             routesConstants.returnBooks.permissions.create

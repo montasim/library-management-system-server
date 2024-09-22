@@ -6,7 +6,7 @@
  */
 
 import Joi from 'joi';
-import validationService from '../../../../service/validation.service.js';
+import validationService from '../../../../../service/validation.service.js';
 
 const add = Joi.object({
     /**
@@ -27,13 +27,13 @@ const add = Joi.object({
  *
  * This object contains all the validation schemas related to recently visited books operations. Currently, it includes the schema for adding a recently visited book.
  *
- * @const {Object} recentlyVisitedBooksSchema
+ * @const {Object} recentlyVisitedSchema
  * @memberof module:validators/recentlyVisitedBooksSchema
  *
  * @property {Joi.ObjectSchema} add - The validation schema for adding a recently visited book.
  */
-const recentlyVisitedBooksSchema = {
+const recentlyVisitedSchema = {
     add,
 };
 
-export default recentlyVisitedBooksSchema;
+export default recentlyVisitedSchema;

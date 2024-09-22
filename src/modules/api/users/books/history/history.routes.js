@@ -7,9 +7,9 @@
 
 import express from 'express';
 
-import userBookHistoryController from './userBookHistory.controller.js';
-import methodNotSupported from '../../../../shared/methodNotSupported.js';
-import userBookHistoryValidator from './userBookHistory.validator.js';
+import historyController from './history.controller.js';
+import methodNotSupported from '../../../../../shared/methodNotSupported.js';
+import historyValidator from './history.validator.js';
 
 const router = express.Router();
 
@@ -46,8 +46,8 @@ const router = express.Router();
 router
     .route('/')
     .get(
-        userBookHistoryValidator.booksQueryParamSchema,
-        userBookHistoryController.getBooksHistory
+        historyValidator.booksQueryParamSchema,
+        historyController.getBooksHistory
     )
     .all(methodNotSupported);
 
@@ -89,8 +89,8 @@ router
 router
     .route('/:bookId')
     .get(
-        userBookHistoryValidator.bookIdParamSchema,
-        userBookHistoryController.getBookHistoryByBookId
+        historyValidator.bookIdParamSchema,
+        historyController.getBookHistoryByBookId
     )
     .all(methodNotSupported);
 

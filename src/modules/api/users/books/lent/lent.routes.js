@@ -1,29 +1,29 @@
 /**
- * @fileoverview This file defines the routes for user-requested books operations. The routes include
- * endpoints to retrieve the list of requested books for a user, fetch the details of a specific requested book,
- * and delete a specific requested book. The routes apply validation middleware to ensure request parameters
+ * @fileoverview This file defines the routes for user-lent books operations. The routes include
+ * endpoints to retrieve the list of lent books for a user, fetch the details of a specific lent book,
+ * and delete a specific lent book. The routes apply validation middleware to ensure request parameters
  * are correctly formatted, and use controller methods to handle the business logic for each operation.
  */
 
 import express from 'express';
 
-import userRequestBooksController from './userRequestBooks.controller.js';
-import methodNotSupported from '../../../../shared/methodNotSupported.js';
-import userRequestBooksValidator from './userRequestBooks.validator.js';
+import lentController from './lent.controller.js';
+import methodNotSupported from '../../../../../shared/methodNotSupported.js';
+import lentValidator from './lent.validator.js';
 
 const router = express.Router();
 
 /**
  * @openapi
- * /user-requested-books:
+ * /user-lent-books:
  *   get:
- *     summary: Retrieves a list of requested books for the authenticated user.
- *     description: Returns a list of all books requested by the authenticated user, including details like book ID, title, and status.
+ *     summary: Retrieves a list of lent books for the authenticated user.
+ *     description: Returns a list of all books lent by the authenticated user, including details like book ID, title, and status.
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of requested books retrieved successfully.
+ *         description: List of lent books retrieved successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -31,8 +31,8 @@ const router = express.Router();
  *               properties:
  *                 total:
  *                   type: integer
- *                   description: Total number of requested books.
- *                 requestBooks:
+ *                   description: Total number of lent books.
+ *                 request:
  *                   type: array
  *                   items:
  *                     type: object
@@ -49,7 +49,7 @@ const router = express.Router();
  *       404:
  *         description: No books found for this user.
  *     tags:
- *       - User Requested Books
+ *       - User Lent Books
  *   all:
  *     summary: Handles unsupported methods.
  *     description: Returns an error if an unsupported HTTP method is used.
@@ -57,31 +57,31 @@ const router = express.Router();
  *       405:
  *         description: Method not supported.
  *     tags:
- *       - User Requested Books
+ *       - User Lent Books
  */
 router
     .route('/')
-    .get(userRequestBooksController.getRequestBooks)
+    .get(lentController.getLentBooks)
     .all(methodNotSupported);
 
 /**
  * @openapi
- * /user-requested-books/{requestedBookId}:
+ * /user-lent-books/{lentBookId}:
  *   get:
- *     summary: Retrieves details of a specific requested book.
- *     description: Returns the details of a specific requested book identified by its unique ID.
+ *     summary: Retrieves details of a specific lent book.
+ *     description: Returns the details of a specific lent book identified by its unique ID.
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: requestedBookId
+ *         name: lentBookId
  *         required: true
  *         schema:
  *           type: string
- *         description: The unique identifier of the requested book.
+ *         description: The unique identifier of the lent book.
  *     responses:
  *       200:
- *         description: Requested book details retrieved successfully.
+ *         description: Lent book details retrieved successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -97,28 +97,28 @@ router
  *                   type: string
  *                   description: The status of the request.
  *       404:
- *         description: Requested book not found.
+ *         description: Lent book not found.
  *     tags:
- *       - User Requested Books
+ *       - User Lent Books
  *   delete:
- *     summary: Deletes a specific requested book.
- *     description: Removes a specific requested book identified by its unique ID from the user's requested books list.
+ *     summary: Deletes a specific lent book.
+ *     description: Removes a specific lent book identified by its unique ID from the user's lent books list.
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: requestedBookId
+ *         name: lentBookId
  *         required: true
  *         schema:
  *           type: string
- *         description: The unique identifier of the requested book to be deleted.
+ *         description: The unique identifier of the lent book to be deleted.
  *     responses:
  *       200:
- *         description: Requested book deleted successfully.
+ *         description: Lent book deleted successfully.
  *       404:
- *         description: Requested book not found or already deleted.
+ *         description: Lent book not found or already deleted.
  *     tags:
- *       - User Requested Books
+ *       - User Lent Books
  *   all:
  *     summary: Handles unsupported methods.
  *     description: Returns an error if an unsupported HTTP method is used.
@@ -126,17 +126,13 @@ router
  *       405:
  *         description: Method not supported.
  *     tags:
- *       - User Requested Books
+ *       - User Lent Books
  */
 router
-    .route('/:requestedBookId')
+    .route('/:lentBookId')
     .get(
-        userRequestBooksValidator.requestBookId,
-        userRequestBooksController.getRequestBook
-    )
-    .delete(
-        userRequestBooksValidator.requestBookId,
-        userRequestBooksController.deleteRequestBook
+        lentValidator.lentBookId,
+        lentController.getLentBook
     )
     .all(methodNotSupported);
 

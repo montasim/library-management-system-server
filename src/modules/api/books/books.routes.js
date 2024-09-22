@@ -16,7 +16,7 @@ import desiredBooksRoutes from './desired/desiredBooks.routes.js';
 import favouriteBooksRoutes from './favourite/favouriteBooks.routes.js';
 import booksHistoryRoutes from './history/booksHistory.routes.js';
 import lendBooksRoutes from './lend/lendBooks.routes.js';
-import requestBooksRoutes from './requestBooks/requestBooks.routes.js';
+import requestBooksRoutes from './request/requestBooks.routes.js';
 import returnBooksRoutes from './return/returnBooks.routes.js';
 import routesConstants from '../../../constant/routes.constants.js';
 import accessTypesConstants from '../../../constant/accessTypes.constants.js';

@@ -41,7 +41,7 @@ const create = (duration = 3600) => {
     return (req, res, next) => {
         let key;
 
-        // If the requestBooks is a GET requestBooks, extract the resource name from the URL
+        // If the request is a GET request, extract the resource name from the URL
         if (req.method === 'GET') {
             // Extract the last segment of the URL as the cache key
             const urlSegments = req.originalUrl.split('/');

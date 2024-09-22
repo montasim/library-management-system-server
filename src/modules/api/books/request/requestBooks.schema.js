@@ -61,6 +61,7 @@ const requestBookSchemaBase = Joi.object({
             requestBooksConstants.lengths.SUMMARY_MIN,
             requestBooksConstants.lengths.SUMMARY_MAX
         )
+        .trim()
         .description(
             'A concise description of the book, outlining the main points and features.'
         ),
@@ -86,7 +87,6 @@ const requestBookSchemaBase = Joi.object({
         .description(
             'Sorting parameter for the query results, defaulting to the creation date.'
         ),
-    isActive: validationService.booleanField,
     createdBy: validationService.objectIdField,
     updatedBy: validationService.objectIdField,
     createdAt: validationService.dateField,

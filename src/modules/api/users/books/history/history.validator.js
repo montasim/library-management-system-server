@@ -4,12 +4,12 @@
  * The validation is applied to parameters for querying book histories and validating book IDs.
  */
 
-import validateWithSchema from '../../../../shared/validateWithSchema.js';
-import userBookHistorySchema from './userBookHistory.schema.js';
+import validateWithSchema from '../../../../../shared/validateWithSchema.js';
+import historySchema from './history.schema.js';
 
 /**
  * booksQueryParamSchema - Middleware to validate query parameters for retrieving user book histories.
- * This function uses the `userBookHistorySchema.booksQueryParamSchema` schema to validate the parameters
+ * This function uses the `historySchema.booksQueryParamSchema` schema to validate the parameters
  * and ensures they conform to the required formats, lengths, and patterns.
  *
  * @function
@@ -21,14 +21,14 @@ import userBookHistorySchema from './userBookHistory.schema.js';
  */
 const booksQueryParamSchema = validateWithSchema([
     {
-        schema: userBookHistorySchema.booksQueryParamSchema,
+        schema: historySchema.booksQueryParamSchema,
         property: 'params',
     },
 ]);
 
 /**
  * bookIdParamSchema - Middleware to validate a single book ID passed as a parameter.
- * This function uses the `userBookHistorySchema.bookIdParamSchema` schema to validate the book ID
+ * This function uses the `historySchema.bookIdParamSchema` schema to validate the book ID
  * and ensures it conforms to the required ObjectId format.
  *
  * @function
@@ -40,14 +40,14 @@ const booksQueryParamSchema = validateWithSchema([
  */
 const bookIdParamSchema = validateWithSchema([
     {
-        schema: userBookHistorySchema.bookIdParamSchema,
+        schema: historySchema.bookIdParamSchema,
         property: 'params',
     },
 ]);
 
-const userBookHistoryValidator = {
+const historyValidator = {
     booksQueryParamSchema,
     bookIdParamSchema,
 };
 
-export default userBookHistoryValidator;
+export default historyValidator;

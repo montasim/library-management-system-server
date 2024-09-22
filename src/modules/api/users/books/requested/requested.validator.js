@@ -4,13 +4,13 @@
  * The validation is applied to request bodies for creating books and parameters for validating book IDs.
  */
 
-import validateWithSchema from '../../../../shared/validateWithSchema.js';
-import userRequestBooksSchema from './userRequestBooks.schema.js';
+import validateWithSchema from '../../../../../shared/validateWithSchema.js';
+import requestedSchema from './requested.schema.js';
 
 /**
  * Middleware to validate the request body for creating a requested book.
  *
- * This function uses the `userRequestBooksSchema.createRequestBookSchema` schema to validate the request body.
+ * This function uses the `requestedSchema.createRequestBookSchema` schema to validate the request body.
  * It ensures that the book data provided in the body conforms to the required formats, lengths, and patterns.
  *
  * @function
@@ -22,7 +22,7 @@ import userRequestBooksSchema from './userRequestBooks.schema.js';
  */
 const createRequestBook = validateWithSchema([
     {
-        schema: userRequestBooksSchema.createRequestBookSchema,
+        schema: requestedSchema.createRequestBookSchema,
         property: 'body',
     },
 ]);
@@ -30,7 +30,7 @@ const createRequestBook = validateWithSchema([
 /**
  * Middleware to validate a single requested book ID passed as a parameter.
  *
- * This function uses the `userRequestBooksSchema.requestBookIdSchema` schema to validate the book ID parameter.
+ * This function uses the `requestedSchema.requestBookIdSchema` schema to validate the book ID parameter.
  * It ensures that the book ID provided in the parameters conforms to the required ObjectId format.
  *
  * @function
@@ -42,14 +42,14 @@ const createRequestBook = validateWithSchema([
  */
 const requestBookId = validateWithSchema([
     {
-        schema: userRequestBooksSchema.requestBookIdSchema,
+        schema: requestedSchema.requestBookIdSchema,
         property: 'params',
     },
 ]);
 
-const userRequestBooksValidator = {
+const requestedValidator = {
     createRequestBook,
     requestBookId,
 };
 
-export default userRequestBooksValidator;
+export default requestedValidator;

@@ -7,13 +7,15 @@
 
 import SubjectsModel from './subjects.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
-import errorResponse from '../../../utilities/errorResponse.js';
-import sendResponse from '../../../utilities/sendResponse.js';
-import isEmptyObject from '../../../utilities/isEmptyObject.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
 import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import BooksModel from '../books/books.model.js';
+
+import errorResponse from '../../../utilities/errorResponse.js';
+import sendResponse from '../../../utilities/sendResponse.js';
+import isEmptyObject from '../../../utilities/isEmptyObject.js';
 
 /**
  * populateSubjectFields - A helper function to populate related fields in the subject documents.
@@ -94,14 +96,72 @@ const createSubject = async (requester, newSubjectData) => {
  * @param {Object} params - The query parameters for retrieving the subjects list.
  * @returns {Promise<Object>} - The retrieved list of subjects or an error response.
  */
-const getSubjects = async (params) => {
-    return service.getResourceList(
-        SubjectsModel,
-        populateSubjectFields,
-        params,
-        subjectListParamsMapping,
-        'subject'
-    );
+const getSubjects = async () => {
+    try {
+        let subjectsWithBookCounts = await SubjectsModel.aggregate([
+            {
+                $lookup: {
+                    from: BooksModel.collection.name,
+                    localField: '_id',
+                    foreignField: 'subject',
+                    as: 'books',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$books',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $unwind: {
+                    path: '$books.subject',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    name: { $first: '$name' },
+                    isActive: { $first: '$isActive' },
+                    bookCount: {
+                        $sum: {
+                            $cond: [{ $eq: ['$books.subject', '$_id'] }, 1, 0],
+                        },
+                    },
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    isActive: 1,
+                    bookCount: 1,
+                },
+            },
+        ]);
+
+        // Adjust book counts for those with no books to show 0 instead of 1
+        subjectsWithBookCounts = subjectsWithBookCounts.map((subject) => ({
+            ...subject,
+            bookCount: subject.books ? subject.bookCount : 0,
+        }));
+
+        return sendResponse(
+            {
+                items: subjectsWithBookCounts,
+            },
+            'Subject fetched successfully.',
+            httpStatus.CREATED
+        );
+    } catch (error) {
+        loggerService.error(`Failed to fetch subjects: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to fetch subject.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 };
 
 /**

@@ -4,7 +4,7 @@
  * It structures the data model to associate users with their recently visited books.
  * The schema includes references to user and book collections and utilizes Mongoose for schema definition and model creation.
  *
- * The module exports the `recentlyVisitedBooksModel`, which is the Mongoose model for recently visited books.
+ * The module exports the `recentlyVisitedModel`, which is the Mongoose model for recently visited books.
  */
 
 import mongoose, { Schema } from 'mongoose';
@@ -47,11 +47,11 @@ const recentlyVisitedBookSchema = new mongoose.Schema(
  * This model provides an interface to interact with the `RecentlyVisitedBooks` collection in the MongoDB database,
  * using the defined schema to structure the data.
  *
- * @const {Model} recentlyVisitedBooksModel
+ * @const {Model} recentlyVisitedModel
  */
-const recentlyVisitedBooksModel = mongoose.model(
+const recentlyVisitedModel = mongoose.model(
     'RecentlyVisitedBooks',
     recentlyVisitedBookSchema
 );
 
-export default recentlyVisitedBooksModel;
+export default recentlyVisitedModel;

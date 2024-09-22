@@ -12,16 +12,11 @@ import lendBooksConstants from './lendBooks.constant.js';
 
 /**
  * lendBookSchemaBase - Base Joi schema for validating common fields used in lend books-related operations.
- * Ensures that fields such as user, bookId, from, to, remarks, page, limit, sort, createdBy, updatedBy, createdAt, and updatedAt meet the specified criteria.
+ * Ensures that fields such as user, book, from, to, remarks, page, limit, sort, createdBy, updatedBy, createdAt, and updatedAt meet the specified criteria.
  */
 const lendBookSchemaBase = Joi.object({
     user: validationService.objectIdField,
-    bookId: validationService.objectIdField,
-    from: Joi.string().messages({
-        'date.base': '"from" must be a valid date in ISO 8601 format',
-        'date.iso': '"from" date must strictly follow ISO 8601 format',
-        'any.required': '"from" date is required',
-    }),
+    book: validationService.objectIdField,
     to: Joi.string().messages({
         'date.base': '"to" must be a valid date in ISO 8601 format',
         'date.iso': '"to" date must strictly follow ISO 8601 format',
@@ -50,26 +45,25 @@ const lendBookSchemaBase = Joi.object({
 
 /**
  * createLendBooksSchema - Joi schema for validating the data to create a new lend book record.
- * Ensures that the user, bookId, from, to, and remarks fields are required and meet the specified criteria.
+ * Ensures that the user, book, from, to, and remarks fields are required and meet the specified criteria.
  *
  * @function
  */
 const createLendBooksSchema = lendBookSchemaBase.fork(
-    ['user', 'bookId', 'from', 'to', 'remarks'],
+    ['user', 'book', 'to', 'remarks'],
     (field) => field.required()
 );
 
 /**
  * getLendBooksQuerySchema - Joi schema for validating query parameters when retrieving a list of lend books.
- * Ensures that parameters such as user, bookId, from, to, remarks, page, limit, sort, createdBy, updatedBy, createdAt, and updatedAt are optional and meet the specified criteria.
+ * Ensures that parameters such as user, book, from, to, remarks, page, limit, sort, createdBy, updatedBy, createdAt, and updatedAt are optional and meet the specified criteria.
  *
  * @function
  */
 const getLendBooksQuerySchema = lendBookSchemaBase.fork(
     [
         'user',
-        'bookId',
-        'from',
+        'book',
         'to',
         'remarks',
         'page',

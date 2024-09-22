@@ -36,13 +36,14 @@ cloudinary.config({
  */
 const createRequestBook = async (requester, bookData, bookImage) => {
     try {
-        // Check for existing requestBooks document for the user
-        const existingRequest = await RequestBooksModel.findOne({
+        // Check for existing requestedBooks document for the user
+        let existingRequest = await RequestBooksModel.findOne({
             owner: requester,
-        });
+        }).populate('owner', 'name image isActive'); // Populate owner data
+
         if (existingRequest) {
-            // Check for duplicate book requestBooks
-            const isDuplicate = existingRequest.requestBooks.some(
+            // Check for duplicate book requestedBooks
+            const isDuplicate = existingRequest.requestedBooks.some(
                 (book) => book.name === bookData.name
             );
             if (isDuplicate) {
@@ -82,8 +83,7 @@ const createRequestBook = async (requester, bookData, bookImage) => {
                 }
             );
 
-            // Update image data in update object
-            // Add the extra data
+            // Update image data in bookData
             bookData.image = {
                 fileId: result?.asset_id,
                 shareableLink: result?.secure_url,
@@ -91,13 +91,18 @@ const createRequestBook = async (requester, bookData, bookImage) => {
             };
             bookData.createdBy = requester;
 
-            // Add new book to the existing requestBooks document
-            existingRequest.requestBooks.push(bookData);
+            // Add new book to the existing requestedBooks document
+            existingRequest.requestedBooks.push(bookData);
             await existingRequest.save();
+
+            // Re-populate owner data after save
+            existingRequest = await RequestBooksModel.findById(
+                existingRequest._id
+            ).populate('owner', 'name image isActive');
 
             return sendResponse(
                 existingRequest,
-                'New book requestBooks added successfully.',
+                'New book requested book successfully.',
                 httpStatus.OK
             );
         } else {
@@ -131,8 +136,7 @@ const createRequestBook = async (requester, bookData, bookImage) => {
                 }
             );
 
-            // Update image data in update object
-            // Add the extra data
+            // Update image data in bookData
             bookData.image = {
                 fileId: result?.asset_id,
                 shareableLink: result?.secure_url,
@@ -140,14 +144,19 @@ const createRequestBook = async (requester, bookData, bookImage) => {
             };
             bookData.createdBy = requester;
 
-            // Create a new requestBooks document if none exists
+            // Create a new requestedBooks document if none exists
             const newRequest = await RequestBooksModel.create({
                 owner: requester,
-                requestBooks: [bookData],
+                requestedBooks: [bookData],
             });
 
+            // Populate owner data after creation
+            const populatedRequest = await RequestBooksModel.findById(
+                newRequest._id
+            ).populate('owner', 'name image isActive');
+
             return sendResponse(
-                newRequest,
+                populatedRequest,
                 'Book requested successfully.',
                 httpStatus.OK
             );
@@ -169,14 +178,14 @@ const createRequestBook = async (requester, bookData, bookImage) => {
  */
 const getRequestBooks = async () => {
     try {
-        const requestBooks = await RequestBooksModel.find()
+        const requestedBooks = await RequestBooksModel.find()
             .populate({
                 path: 'owner',
                 select: 'name _id',
             })
             .lean();
 
-        if (!requestBooks || requestBooks.length === 0) {
+        if (!requestedBooks || requestedBooks.length === 0) {
             return errorResponse(
                 'No requested books found.',
                 httpStatus.NOT_FOUND
@@ -185,8 +194,8 @@ const getRequestBooks = async () => {
 
         return sendResponse(
             {
-                total: requestBooks.length,
-                requestBooks,
+                total: requestedBooks.length,
+                requestedBooks,
             },
             'Successfully retrieved all requested books.',
             httpStatus.OK
@@ -209,13 +218,13 @@ const getRequestBooks = async () => {
  */
 const getRequestBook = async (bookId) => {
     try {
-        // Attempt to find a request document that contains the specific book ID in its requestBooks array
+        // Attempt to find a request document that contains the specific book ID in its requestedBooks array
         const request = await RequestBooksModel.findOne({
-            'requestBooks._id': bookId, // Adjust this path if your book ID is stored differently
+            'requestedBooks._id': bookId, // Adjust this path if your book ID is stored differently
         })
             .populate('owner', 'username email') // Populate owner details; adjust fields as necessary.
             .populate({
-                path: 'requestBooks.writer',
+                path: 'requestedBooks.writer',
                 select: 'name biography', // Populate writer details if it is stored as a reference.
             })
             .exec();
@@ -228,8 +237,8 @@ const getRequestBook = async (bookId) => {
             );
         }
 
-        // Extract the specific requested book from the requestBooks array
-        const requestedBook = request.requestBooks.find(
+        // Extract the specific requested book from the requestedBooks array
+        const requestedBook = request.requestedBooks.find(
             (book) => book._id.toString() === bookId
         );
 
@@ -268,7 +277,7 @@ const getRequestedBooksByOwnerId = async (ownerId) => {
         const requests = await RequestBooksModel.find({ owner: ownerId })
             .populate('owner', 'username email') // Populate owner details; adjust fields as necessary.
             .populate({
-                path: 'requestBooks.writer',
+                path: 'requestedBooks.writer',
                 select: 'name biography', // Populate writer details if it is stored as a reference.
             })
             .exec();
@@ -283,7 +292,7 @@ const getRequestedBooksByOwnerId = async (ownerId) => {
 
         // Compile all requested books into one array
         const allRequestBooks = requests.flatMap((request) =>
-            request.requestBooks.map((book) => ({
+            request.requestedBooks.map((book) => ({
                 ...book.toObject(),
                 owner: request.owner.username, // Optionally include owner details in each book.
             }))
@@ -292,7 +301,7 @@ const getRequestedBooksByOwnerId = async (ownerId) => {
         return sendResponse(
             {
                 total: allRequestBooks.length,
-                requestBooks: allRequestBooks,
+                requestedBooks: allRequestBooks,
             },
             'Successfully retrieved requested books for the specified user.',
             httpStatus.OK
@@ -321,17 +330,17 @@ const deleteRequestBook = async (requester, requestBookId) => {
         });
         if (!requestBook) {
             return errorResponse(
-                'No book requestBooks found to delete.',
+                'No book requested books found to delete.',
                 httpStatus.NOT_FOUND
             );
         }
 
         // Remove the requested book by ID from the array
-        const index = requestBook.requestBooks.findIndex(
+        const index = requestBook.requestedBooks.findIndex(
             (book) => book._id.toString() === requestBookId
         );
         if (index > -1) {
-            requestBook.requestBooks.splice(index, 1);
+            requestBook.requestedBooks.splice(index, 1);
 
             await requestBook.save();
 
@@ -339,12 +348,12 @@ const deleteRequestBook = async (requester, requestBookId) => {
                 {
                     removedBookId: requestBookId,
                 },
-                'Book requestBooks removed successfully.',
+                'Book requested books removed successfully.',
                 httpStatus.OK
             );
         } else {
             return errorResponse(
-                'Book requestBooks not found in your records.',
+                'Book requested books not found in your records.',
                 httpStatus.NOT_FOUND
             );
         }

@@ -4,17 +4,17 @@
  * It uses the shared validation utility to apply Joi validation schemas to incoming requests.
  */
 
-import validateWithSchema from '../../../../shared/validateWithSchema.js';
-import recentlyVisitedBooksSchema from './recentlyVisitedBooks.schema.js';
+import validateWithSchema from '../../../../../shared/validateWithSchema.js';
+import recentlyVisitedSchema from './recentlyVisited.schema.js';
 
 /**
  * Validation middleware for adding a recently visited book.
  *
- * This middleware validates the request body against the `recentlyVisitedBooksSchema.add` schema.
+ * This middleware validates the request body against the `recentlyVisitedSchema.add` schema.
  * It ensures that the incoming request contains a valid book ID in the correct format.
  *
  * @function
- * @name recentlyVisitedBooksValidator.add
+ * @name recentlyVisitedValidator.add
  *
  * @param {Object} request - The request object containing the body to be validated.
  * @param {Object} response - The response object used to send back the appropriate HTTP response in case of validation failure.
@@ -24,13 +24,13 @@ import recentlyVisitedBooksSchema from './recentlyVisitedBooks.schema.js';
  */
 const add = validateWithSchema([
     {
-        schema: recentlyVisitedBooksSchema.add,
+        schema: recentlyVisitedSchema.add,
         property: 'body',
     },
 ]);
 
-const recentlyVisitedBooksValidator = {
+const recentlyVisitedValidator = {
     add,
 };
 
-export default recentlyVisitedBooksValidator;
+export default recentlyVisitedValidator;

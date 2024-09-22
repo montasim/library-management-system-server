@@ -36,6 +36,14 @@ const routesConstants = {
     trending: {
         routes: 'trending',
     },
+    users: {
+        routes: 'users',
+        params: 'userId',
+        permissions: {
+            getList: 'get-user-list',
+            getById: 'get-user-by-id',
+        },
+    },
     user: {
         routes: 'user',
     },
@@ -151,6 +159,18 @@ const routesConstants = {
     writers: {
         routes: 'writers',
         params: 'writerId',
+        permissions: {
+            create: 'create-writer',
+            getList: 'get-writer-list',
+            getById: 'get-writer-by-id',
+            updateById: 'update-writer-by-id',
+            deleteById: 'delete-writer-by-id',
+            deleteByList: 'delete-writer-by-list',
+        },
+    },
+    userFavouriteBooks: {
+        routes: 'books/favourite',
+        params: 'bookId',
         permissions: {
             create: 'create-writer',
             getList: 'get-writer-list',
