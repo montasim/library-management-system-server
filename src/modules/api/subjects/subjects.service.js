@@ -96,69 +96,99 @@ const createSubject = async (requester, newSubjectData) => {
  * @param {Object} params - The query parameters for retrieving the subjects list.
  * @returns {Promise<Object>} - The retrieved list of subjects or an error response.
  */
-const getSubjects = async () => {
+const getSubjects = async (params) => {
     try {
-        let subjectsWithBookCounts = await SubjectsModel.aggregate([
+        // Aggregation pipeline to fetch subjects with their book counts and populate createdBy and updatedBy fields
+        const subjectsWithBookCounts = await SubjectsModel.aggregate([
             {
+                // Lookup stage to join Books with Subjects
                 $lookup: {
-                    from: BooksModel.collection.name,
-                    localField: '_id',
-                    foreignField: 'subject',
-                    as: 'books',
+                    from: 'books', // Name of the books collection
+                    localField: '_id', // Subject ID in the Subjects collection
+                    foreignField: 'subject', // Reference field in the Books collection
+                    as: 'books', // Output array name
+                },
+            },
+            {
+                // Lookup stage to populate the createdBy field from the Users collection
+                $lookup: {
+                    from: 'admins', // Name of the users (or admin) collection
+                    localField: 'createdBy', // Field in the Subjects collection
+                    foreignField: '_id', // Matching field in the Users collection
+                    as: 'createdBy', // Output array name
+                },
+            },
+            {
+                // Lookup stage to populate the updatedBy field from the Users collection
+                $lookup: {
+                    from: 'admins', // Name of the users (or admin) collection
+                    localField: 'updatedBy', // Field in the Subjects collection
+                    foreignField: '_id', // Matching field in the Users collection
+                    as: 'updatedBy', // Output array name
+                },
+            },
+            {
+                // Unwind createdBy and updatedBy fields to convert them from arrays to objects
+                $unwind: {
+                    path: '$createdBy',
+                    preserveNullAndEmptyArrays: true, // Keeps the subject even if createdBy is null
                 },
             },
             {
                 $unwind: {
-                    path: '$books',
-                    preserveNullAndEmptyArrays: true,
+                    path: '$updatedBy',
+                    preserveNullAndEmptyArrays: true, // Keeps the subject even if updatedBy is null
                 },
             },
             {
-                $unwind: {
-                    path: '$books.subject',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $group: {
-                    _id: '$_id',
-                    name: { $first: '$name' },
-                    isActive: { $first: '$isActive' },
-                    bookCount: {
-                        $sum: {
-                            $cond: [{ $eq: ['$books.subject', '$_id'] }, 1, 0],
-                        },
-                    },
-                },
-            },
-            {
+                // Project stage to format the output, include fields, and count the number of books
                 $project: {
                     _id: 1,
                     name: 1,
                     isActive: 1,
-                    bookCount: 1,
+                    createdBy: {
+                        _id: 1,
+                        name: 1, // Adjust fields based on your user schema
+                        email: 1,
+                    },
+                    updatedBy: {
+                        _id: 1,
+                        name: 1, // Adjust fields based on your user schema
+                        email: 1,
+                    },
+                    bookCount: { $size: '$books' }, // Count the number of books
+                },
+            },
+            {
+                // Add a facet to get both the items and the total count
+                $facet: {
+                    items: [{ $match: {} }], // Retrieve all items with previous stages
+                    total: [{ $count: 'total' }], // Count total subjects
                 },
             },
         ]);
 
-        // Adjust book counts for those with no books to show 0 instead of 1
-        subjectsWithBookCounts = subjectsWithBookCounts.map((subject) => ({
-            ...subject,
-            bookCount: subject.books ? subject.bookCount : 0,
-        }));
+        // Extract items and total count from the aggregated result
+        const items = subjectsWithBookCounts[0]?.items || [];
+        const total = subjectsWithBookCounts[0]?.total[0]?.total || 0;
+
+        if (!total) {
+            return sendResponse({}, 'No subjects found.', httpStatus.OK);
+        }
 
         return sendResponse(
             {
-                items: subjectsWithBookCounts,
+                items,
+                total, // Add the total subjects count to the response
             },
-            'Subject fetched successfully.',
-            httpStatus.CREATED
+            'Subjects fetched successfully.',
+            httpStatus.OK
         );
     } catch (error) {
         loggerService.error(`Failed to fetch subjects: ${error}`);
 
         return errorResponse(
-            error.message || 'Failed to fetch subject.',
+            error.message || 'Failed to fetch subjects.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
