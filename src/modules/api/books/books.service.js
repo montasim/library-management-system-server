@@ -348,14 +348,79 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                 );
             }
 
+            // Increment booksCount for new subjects
+            await Promise.all(
+                newSubjects.map((subjectId) =>
+                    SubjectsModel.findByIdAndUpdate(
+                        subjectId,
+                        { $inc: { booksCount: 1 } },
+                        { new: true, runValidators: true }
+                    )
+                )
+            );
+
             book.subject.push(...newSubjects);
         }
 
         // Handle deleting subjects
         if (deleteSubject && deleteSubject.length) {
+            // Decrement booksCount for deleted subjects
+            await Promise.all(
+                deleteSubject.map((subjectId) =>
+                    SubjectsModel.findByIdAndUpdate(
+                        subjectId,
+                        { $inc: { booksCount: -1 } },
+                        { new: true, runValidators: true }
+                    )
+                )
+            );
+
             book.subject = book.subject.filter(
                 (subject) => !deleteSubject.includes(subject.toString())
             );
+        }
+
+        // Update booksCount for writer if it is being updated
+        if (writer && writer.toString() !== book.writer.toString()) {
+            await Promise.all([
+                // Decrement booksCount of the old writer
+                WritersModel.findByIdAndUpdate(
+                    book.writer,
+                    { $inc: { booksCount: -1 } },
+                    { new: true, runValidators: true }
+                ),
+
+                // Increment booksCount of the new writer
+                WritersModel.findByIdAndUpdate(
+                    writer,
+                    { $inc: { booksCount: 1 } },
+                    { new: true, runValidators: true }
+                ),
+            ]);
+            book.writer = writer;
+        }
+
+        // Update booksCount for publication if it is being updated
+        if (
+            publication &&
+            publication.toString() !== book.publication.toString()
+        ) {
+            await Promise.all([
+                // Decrement booksCount of the old publication
+                PublicationsModel.findByIdAndUpdate(
+                    book.publication,
+                    { $inc: { booksCount: -1 } },
+                    { new: true, runValidators: true }
+                ),
+
+                // Increment booksCount of the new publication
+                PublicationsModel.findByIdAndUpdate(
+                    publication,
+                    { $inc: { booksCount: 1 } },
+                    { new: true, runValidators: true }
+                ),
+            ]);
+            book.publication = publication;
         }
 
         // Update other fields
@@ -413,7 +478,7 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.UPDATE,
             description: `${bookId} updated successfully.`,
-            details: JSON.stringify(newBookDetails),
+            details: JSON.stringify(updatedBookDetails),
             affectedId: bookId,
         });
 
