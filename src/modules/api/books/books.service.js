@@ -188,7 +188,10 @@ const createNewBook = async (requester, bookData, bookImage) => {
                 bookData.subject.map((subjectId) =>
                     SubjectsModel.findByIdAndUpdate(
                         subjectId,
-                        { $inc: { booksCount: 1 } },
+                        {
+                            $inc: { booksCount: 1 },
+                            $set: { updatedBy: requester },
+                        },
                         { new: true, runValidators: true }
                     )
                 )
@@ -197,13 +200,21 @@ const createNewBook = async (requester, bookData, bookImage) => {
             // Update booksCount of associated writers
             WritersModel.updateMany(
                 { _id: { $in: bookData.writer } },
-                { $inc: { booksCount: 1 } }
+                {
+                    $inc: { booksCount: 1 },
+                    $set: { updatedBy: requester },
+                },
+                { new: true, runValidators: true }
             ),
 
             // Update booksCount of associated publications
             PublicationsModel.updateMany(
                 { _id: { $in: bookData.publication } },
-                { $inc: { booksCount: 1 } }
+                {
+                    $inc: { booksCount: 1 },
+                    $set: { updatedBy: requester },
+                },
+                { new: true, runValidators: true }
             ),
         ]);
 
@@ -353,7 +364,10 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                 newSubjects.map((subjectId) =>
                     SubjectsModel.findByIdAndUpdate(
                         subjectId,
-                        { $inc: { booksCount: 1 } },
+                        {
+                            $inc: { booksCount: 1 },
+                            $set: { updatedBy: requester },
+                        },
                         { new: true, runValidators: true }
                     )
                 )
@@ -369,7 +383,10 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                 deleteSubject.map((subjectId) =>
                     SubjectsModel.findByIdAndUpdate(
                         subjectId,
-                        { $inc: { booksCount: -1 } },
+                        {
+                            $inc: { booksCount: -1 },
+                            $set: { updatedBy: requester },
+                        },
                         { new: true, runValidators: true }
                     )
                 )
@@ -386,14 +403,20 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                 // Decrement booksCount of the old writer
                 WritersModel.findByIdAndUpdate(
                     book.writer,
-                    { $inc: { booksCount: -1 } },
+                    {
+                        $inc: { booksCount: -1 },
+                        $set: { updatedBy: requester },
+                    },
                     { new: true, runValidators: true }
                 ),
 
                 // Increment booksCount of the new writer
                 WritersModel.findByIdAndUpdate(
                     writer,
-                    { $inc: { booksCount: 1 } },
+                    {
+                        $inc: { booksCount: 1 },
+                        $set: { updatedBy: requester },
+                    },
                     { new: true, runValidators: true }
                 ),
             ]);
@@ -409,14 +432,20 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                 // Decrement booksCount of the old publication
                 PublicationsModel.findByIdAndUpdate(
                     book.publication,
-                    { $inc: { booksCount: -1 } },
+                    {
+                        $inc: { booksCount: -1 },
+                        $set: { updatedBy: requester },
+                    },
                     { new: true, runValidators: true }
                 ),
 
                 // Increment booksCount of the new publication
                 PublicationsModel.findByIdAndUpdate(
                     publication,
-                    { $inc: { booksCount: 1 } },
+                    {
+                        $inc: { booksCount: 1 },
+                        $set: { updatedBy: requester },
+                    },
                     { new: true, runValidators: true }
                 ),
             ]);
@@ -505,7 +534,75 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object indicating the result of the operation.
  */
 const deleteBookById = async (requester, bookId) => {
-    return service.deleteResourceById(requester, BooksModel, bookId, 'book');
+    try {
+        // Find the book by ID
+        const book = await BooksModel.findById(bookId);
+
+        if (!book) {
+            return errorResponse('Book not found.', httpStatus.NOT_FOUND);
+        }
+
+        console.log(requester);
+
+        // Decrement booksCount for associated subjects, writer, and publication
+        await Promise.all([
+            // Decrement booksCount of associated subjects
+            Promise.all(
+                book.subject.map((subjectId) =>
+                    SubjectsModel.findByIdAndUpdate(
+                        subjectId,
+                        {
+                            $inc: { booksCount: -1 },
+                            $set: { updatedBy: requester },
+                        },
+                        { new: true, runValidators: true }
+                    )
+                )
+            ),
+
+            // Decrement booksCount of the associated writer
+            WritersModel.findByIdAndUpdate(
+                book.writer,
+                {
+                    $inc: { booksCount: -1 },
+                    $set: { updatedBy: requester },
+                },
+                { new: true, runValidators: true }
+            ),
+
+            // Decrement booksCount of the associated publication
+            PublicationsModel.findByIdAndUpdate(
+                book.publication,
+                {
+                    $inc: { booksCount: -1 },
+                    $set: { updatedBy: requester },
+                },
+                { new: true, runValidators: true }
+            ),
+        ]);
+
+        // Delete the book
+        await BooksModel.findByIdAndDelete(bookId);
+
+        // Log the deletion action
+        await AdminActivityLoggerModel.create({
+            user: requester,
+            action: adminActivityLoggerConstants.actionTypes.DELETE,
+            description: `Book with ID ${bookId} deleted successfully.`,
+            details: JSON.stringify({ bookId, bookName: book.name }),
+            affectedId: bookId,
+        });
+
+        // Send success response
+        return sendResponse({}, 'Book deleted successfully.', httpStatus.OK);
+    } catch (error) {
+        loggerService.error(`Failed to delete book: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to delete book.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 };
 
 /**
@@ -516,12 +613,98 @@ const deleteBookById = async (requester, bookId) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object indicating the result of the operation.
  */
 const deleteBookList = async (requester, bookIds) => {
-    return await service.deleteResourcesByList(
-        requester,
-        BooksModel,
-        bookIds,
-        'books'
-    );
+    try {
+        if (!bookIds || !bookIds.length) {
+            return errorResponse('Please provide book IDs.', httpStatus.BAD_REQUEST);
+        }
+
+        // Find all books by the provided IDs
+        const books = await BooksModel.find({ _id: { $in: bookIds } });
+
+        if (!books.length) {
+            return errorResponse('No books found for the provided IDs.', httpStatus.NOT_FOUND);
+        }
+
+        // Collect associated subject, writer, and publication IDs to update
+        const subjectIds = [];
+        const writerIds = new Set();
+        const publicationIds = new Set();
+
+        books.forEach((book) => {
+            if (book.subject && Array.isArray(book.subject)) {
+                subjectIds.push(...book.subject);
+            }
+            if (book.writer) {
+                writerIds.add(book.writer.toString());
+            }
+            if (book.publication) {
+                publicationIds.add(book.publication.toString());
+            }
+        });
+
+        // Decrement booksCount for associated subjects, writers, and publications
+        await Promise.all([
+            // Decrement booksCount for subjects
+            Promise.all(
+                subjectIds.map((subjectId) =>
+                    SubjectsModel.findByIdAndUpdate(
+                        subjectId,
+                        {
+                            $inc: { booksCount: -1 },
+                            $set: { updatedBy: requester },
+                        },
+                        { new: true, runValidators: true }
+                    )
+                )
+            ),
+
+            // Decrement booksCount for writers
+            WritersModel.updateMany(
+                { _id: { $in: Array.from(writerIds) } },
+                {
+                    $inc: { booksCount: -1 },
+                    $set: { updatedBy: requester },
+                },
+                { new: true, runValidators: true }
+            ),
+
+            // Decrement booksCount for publications
+            PublicationsModel.updateMany(
+                { _id: { $in: Array.from(publicationIds) } },
+                {
+                    $inc: { booksCount: -1 },
+                    $set: { updatedBy: requester },
+                },
+                { new: true, runValidators: true }
+            ),
+        ]);
+
+        // Delete the books
+        await BooksModel.deleteMany({ _id: { $in: bookIds } });
+
+        // Log the deletion action for each book
+        await Promise.all(
+            books.map((book) =>
+                AdminActivityLoggerModel.create({
+                    user: requester,
+                    action: adminActivityLoggerConstants.actionTypes.DELETE,
+                    description: `Book with ID ${book._id} deleted successfully.`,
+                    details: JSON.stringify({ bookId: book._id, bookName: book.name }),
+                    affectedId: book._id,
+                })
+            )
+        );
+
+        // Send success response
+        return sendResponse({}, 'Books deleted successfully.', httpStatus.OK);
+    } catch (error) {
+        loggerService.error(`Failed to delete books: ${error}`);
+
+        return errorResponse(
+            error.message || 'Failed to delete books.',
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 };
 
 /**
