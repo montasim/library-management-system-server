@@ -50,18 +50,6 @@ const writerSchema = new mongoose.Schema(
                 'The name of the writer. It must be unique and conform to specified length constraints.',
         },
         image: sharedSchema.imageSchema,
-        review: {
-            type: Number,
-            min: [
-                writersConstants.lengths.REVIEW_MIN,
-                `Review must be at least ${writersConstants.lengths.REVIEW_MIN}.`,
-            ],
-            max: [
-                writersConstants.lengths.REVIEW_MAX,
-                `Review cannot be more than ${writersConstants.lengths.REVIEW_MAX}.`,
-            ],
-            description: `The review rating of the writer, ranging from ${writersConstants.lengths.REVIEW_MIN} to ${writersConstants.lengths.REVIEW_MAX}.`,
-        },
         summary: {
             type: String,
             trim: true,
@@ -75,6 +63,19 @@ const writerSchema = new mongoose.Schema(
             ],
             description:
                 'A brief summary of the writer’s profile, within specified length constraints.',
+        },
+        booksCount: {
+            type: Number,
+            default: 0,
+            description: 'The number of books available for the writer.',
+        },
+        review: {
+            type: Number,
+            max: [
+                writersConstants.lengths.REVIEW_MAX,
+                `Review cannot be more than ${writersConstants.lengths.REVIEW_MAX}.`,
+            ],
+            description: `The review rating of the writer, ranging from ${writersConstants.lengths.REVIEW_MIN} to ${writersConstants.lengths.REVIEW_MAX}.`,
         },
         isActive: sharedSchema.isActiveSchema,
         createdBy: sharedSchema.createdByAdminSchema,

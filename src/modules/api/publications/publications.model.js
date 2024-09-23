@@ -41,6 +41,19 @@ const publicationSchema = new mongoose.Schema(
             description:
                 'The name of the publication, representing different journals or reviews.',
         },
+        booksCount: {
+            type: Number,
+            default: 0,
+            description: 'The number of books available for the publication.',
+        },
+        review: {
+            type: Number,
+            max: [
+                publicationsConstants.lengths.REVIEW_MAX,
+                `Review cannot be more than ${publicationsConstants.lengths.REVIEW_MAX}.`,
+            ],
+            description: `The review rating of the publication, maximum ${publicationsConstants.lengths.REVIEW_MAX}.`,
+        },
         isActive: sharedSchema.isActiveSchema,
         createdBy: sharedSchema.createdByAdminSchema,
         updatedBy: sharedSchema.updatedByAdminSchema,

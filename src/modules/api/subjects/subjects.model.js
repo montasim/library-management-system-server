@@ -41,6 +41,19 @@ const subjectSchema = new Schema(
             description:
                 'The name of the subject. It must be unique and conform to specified length constraints.',
         },
+        booksCount: {
+            type: Number,
+            default: 0,
+            description: 'The number of books available for the subject.',
+        },
+        review: {
+            type: Number,
+            max: [
+                subjectsConstants.lengths.REVIEW_MAX,
+                `Review cannot be more than ${subjectsConstants.lengths.REVIEW_MAX}.`,
+            ],
+            description: `The review rating of the subject, maximum ${subjectsConstants.lengths.REVIEW_MAX}.`,
+        },
         isActive: sharedSchema.isActiveSchema,
         createdBy: sharedSchema.createdByAdminSchema,
         updatedBy: sharedSchema.updatedByAdminSchema,

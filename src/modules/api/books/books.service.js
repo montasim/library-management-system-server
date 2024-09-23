@@ -10,15 +10,18 @@ import { v2 as cloudinary } from 'cloudinary';
 import BooksModel from './books.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
-import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
+import fileExtensionsConstants
+    from '../../../constant/fileExtensions.constants.js';
 import booksConstant from './books.constant.js';
 import SubjectsModel from '../subjects/subjects.model.js';
 import PublicationsModel from '../publications/publications.model.js';
 import WritersModel from '../writers/writers.model.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
-import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel
+    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants
+    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 import configuration from '../../../configuration/configuration.js';
 
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
@@ -168,18 +171,41 @@ const createNewBook = async (requester, bookData, bookImage) => {
         );
 
         // Update image data in update object
-        const bookImageData = {
+        bookData.image = {
             fileId: result?.asset_id,
             shareableLink: result?.secure_url,
             downloadLink: result.url,
         };
-
-        // Add the extra data
-        bookData.image = bookImageData;
         bookData.createdBy = requester;
 
         // Create the book
         const newBook = await BooksModel.create(bookData);
+
+        // Update booksCount of associated subjects, writers, and publications concurrently
+        await Promise.all([
+            // Update booksCount of associated subjects
+            Promise.all(
+                bookData.subject.map((subjectId) =>
+                    SubjectsModel.findByIdAndUpdate(
+                        subjectId,
+                        { $inc: { booksCount: 1 } },
+                        { new: true, runValidators: true }
+                    )
+                )
+            ),
+
+            // Update booksCount of associated writers
+            WritersModel.updateMany(
+                { _id: { $in: bookData.writer } },
+                { $inc: { booksCount: 1 } }
+            ),
+
+            // Update booksCount of associated publications
+            PublicationsModel.updateMany(
+                { _id: { $in: bookData.publication } },
+                { $inc: { booksCount: 1 } }
+            ),
+        ]);
 
         // Get the populated book data
         const newBookDetails = await populateBookFields(
