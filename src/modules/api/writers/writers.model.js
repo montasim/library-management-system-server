@@ -77,7 +77,7 @@ const writerSchema = new mongoose.Schema(
             ],
             description: `The review rating of the writer, ranging from ${writersConstants.lengths.REVIEW_MIN} to ${writersConstants.lengths.REVIEW_MAX}.`,
         },
-        isActive: sharedSchema.isActiveSchema
+        isActive: sharedSchema.isActiveSchema,
     },
     {
         timestamps: true,
@@ -90,6 +90,7 @@ const writerSchema = new mongoose.Schema(
 // Create a unique index on the name field
 writerSchema.index({ name: 1 }, { unique: true });
 
-const WritersModel = mongoose.models.Writers || mongoose.model('Writers', writerSchema);
+const WritersModel =
+    mongoose.models.Writers || mongoose.model('Writers', writerSchema);
 
 export default WritersModel;

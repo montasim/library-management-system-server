@@ -15,8 +15,7 @@ import service from '../../../shared/service.js';
  * @returns {Promise<Object>} - Populated query result.
  */
 const populateUserFields = async (query) => {
-    return await query
-        .select('-createdBy -updatedBy');
+    return await query.select('-createdBy -updatedBy');
 };
 
 /**

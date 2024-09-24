@@ -67,6 +67,8 @@ const publicationSchema = new mongoose.Schema(
 // Create a unique index on the name field
 publicationSchema.index({ name: 1 }, { unique: true });
 
-const PublicationsModel = mongoose.models.Publications || mongoose.model('Publications', publicationSchema);
+const PublicationsModel =
+    mongoose.models.Publications ||
+    mongoose.model('Publications', publicationSchema);
 
 export default PublicationsModel;

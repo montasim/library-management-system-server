@@ -130,10 +130,7 @@ router
  */
 router
     .route('/:requestedBookId')
-    .get(
-        requestedValidator.requestBookId,
-        requestedController.getRequestBook
-    )
+    .get(requestedValidator.requestBookId, requestedController.getRequestBook)
     .delete(
         requestedValidator.requestBookId,
         requestedController.deleteRequestBook

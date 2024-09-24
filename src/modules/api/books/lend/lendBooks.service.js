@@ -215,8 +215,8 @@ const getLendBooks = async () => {
                         path: 'publication',
                         model: 'Publications',
                         select: 'name -_id', // Populating publication details
-                    }
-                ]
+                    },
+                ],
             })
             .populate({
                 path: 'lender',
@@ -226,10 +226,7 @@ const getLendBooks = async () => {
 
         // Step 3: Check if there are any lend books
         if (!lendBooksGrouped || lendBooksGrouped.length === 0) {
-            return errorResponse(
-                'No lend books found.',
-                httpStatus.NOT_FOUND
-            );
+            return errorResponse('No lend books found.', httpStatus.NOT_FOUND);
         }
 
         // Step 4: Transform the data into the desired format
@@ -240,7 +237,7 @@ const getLendBooks = async () => {
                 email: lendGroup.lender.email, // Include other lender details as needed
             },
             totalLend: lendGroup.books.length,
-            books: lendGroup.books.map(book => ({
+            books: lendGroup.books.map((book) => ({
                 _id: book.id._id,
                 name: book.id.name,
                 subject: book.id.subject?.name, // If the subject is populated
@@ -255,24 +252,29 @@ const getLendBooks = async () => {
                 image: book.id.image, // If there is an image associated
                 createdAt: book.id.createdAt,
                 updatedAt: book.id.updatedAt,
-                from: book.from,  // Adding from date
-                to: book.to,      // Adding to date
-                remarks: book.remarks,  // Adding remarks field
-            }))
+                from: book.from, // Adding from date
+                to: book.to, // Adding to date
+                remarks: book.remarks, // Adding remarks field
+            })),
         }));
 
         // Step 5: Return the grouped lend books
         return sendResponse(
             {
                 totalLender: responseData.length,
-                totalLend: responseData.reduce((sum, group) => sum + group.totalLend, 0),
+                totalLend: responseData.reduce(
+                    (sum, group) => sum + group.totalLend,
+                    0
+                ),
                 details: responseData,
             },
             'Successfully retrieved lend books grouped by lender.',
             httpStatus.OK
         );
     } catch (error) {
-        loggerService.error(`Failed to get lend books grouped by lender: ${error}`);
+        loggerService.error(
+            `Failed to get lend books grouped by lender: ${error}`
+        );
 
         return errorResponse(
             error.message || 'Failed to get lend books grouped by lender.',

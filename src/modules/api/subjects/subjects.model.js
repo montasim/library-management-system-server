@@ -68,6 +68,7 @@ const subjectSchema = new mongoose.Schema(
 subjectSchema.index({ name: 1 }, { unique: true });
 
 // Check if the model already exists before defining it
-const SubjectsModel = mongoose.models.Subjects || mongoose.model('Subjects', subjectSchema);
+const SubjectsModel =
+    mongoose.models.Subjects || mongoose.model('Subjects', subjectSchema);
 
 export default SubjectsModel;

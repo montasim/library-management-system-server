@@ -10,18 +10,15 @@ import { v2 as cloudinary } from 'cloudinary';
 import BooksModel from './books.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
-import fileExtensionsConstants
-    from '../../../constant/fileExtensions.constants.js';
+import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
 import booksConstant from './books.constant.js';
 import SubjectsModel from '../subjects/subjects.model.js';
 import PublicationsModel from '../publications/publications.model.js';
 import WritersModel from '../writers/writers.model.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
-import AdminActivityLoggerModel
-    from '../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../admin/adminActivityLogger/adminActivityLogger.constants.js';
 import configuration from '../../../configuration/configuration.js';
 
 import isEmptyObject from '../../../utilities/isEmptyObject.js';
@@ -598,14 +595,20 @@ const deleteBookById = async (requester, bookId) => {
 const deleteBookList = async (requester, bookIds) => {
     try {
         if (!bookIds || !bookIds.length) {
-            return errorResponse('Please provide book IDs.', httpStatus.BAD_REQUEST);
+            return errorResponse(
+                'Please provide book IDs.',
+                httpStatus.BAD_REQUEST
+            );
         }
 
         // Find all books by the provided IDs
         const books = await BooksModel.find({ _id: { $in: bookIds } });
 
         if (!books.length) {
-            return errorResponse('No books found for the provided IDs.', httpStatus.NOT_FOUND);
+            return errorResponse(
+                'No books found for the provided IDs.',
+                httpStatus.NOT_FOUND
+            );
         }
 
         // Collect associated subject, writer, and publication IDs to update
@@ -669,7 +672,10 @@ const deleteBookList = async (requester, bookIds) => {
                     user: requester,
                     action: adminActivityLoggerConstants.actionTypes.DELETE,
                     description: `Book with ID ${book._id} deleted successfully.`,
-                    details: JSON.stringify({ bookId: book._id, bookName: book.name }),
+                    details: JSON.stringify({
+                        bookId: book._id,
+                        bookName: book.name,
+                    }),
                     affectedId: book._id,
                 })
             )
