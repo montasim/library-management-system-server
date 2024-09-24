@@ -176,7 +176,6 @@ const createNewBook = async (requester, bookData, bookImage) => {
             shareableLink: result?.secure_url,
             downloadLink: result.url,
         };
-        bookData.createdBy = requester;
 
         // Create the book
         const newBook = await BooksModel.create(bookData);
@@ -190,7 +189,6 @@ const createNewBook = async (requester, bookData, bookImage) => {
                         subjectId,
                         {
                             $inc: { booksCount: 1 },
-                            $set: { updatedBy: requester },
                         },
                         { new: true, runValidators: true }
                     )
@@ -202,7 +200,6 @@ const createNewBook = async (requester, bookData, bookImage) => {
                 { _id: { $in: bookData.writer } },
                 {
                     $inc: { booksCount: 1 },
-                    $set: { updatedBy: requester },
                 },
                 { new: true, runValidators: true }
             ),
@@ -212,7 +209,6 @@ const createNewBook = async (requester, bookData, bookImage) => {
                 { _id: { $in: bookData.publication } },
                 {
                     $inc: { booksCount: 1 },
-                    $set: { updatedBy: requester },
                 },
                 { new: true, runValidators: true }
             ),
@@ -325,8 +321,6 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
             }
         }
 
-        updateData.updatedBy = requester;
-
         // Find the current book
         const book = await BooksModel.findById(bookId);
 
@@ -366,7 +360,6 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                         subjectId,
                         {
                             $inc: { booksCount: 1 },
-                            $set: { updatedBy: requester },
                         },
                         { new: true, runValidators: true }
                     )
@@ -385,7 +378,6 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                         subjectId,
                         {
                             $inc: { booksCount: -1 },
-                            $set: { updatedBy: requester },
                         },
                         { new: true, runValidators: true }
                     )
@@ -405,7 +397,6 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                     book.writer,
                     {
                         $inc: { booksCount: -1 },
-                        $set: { updatedBy: requester },
                     },
                     { new: true, runValidators: true }
                 ),
@@ -415,7 +406,6 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                     writer,
                     {
                         $inc: { booksCount: 1 },
-                        $set: { updatedBy: requester },
                     },
                     { new: true, runValidators: true }
                 ),
@@ -434,7 +424,6 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                     book.publication,
                     {
                         $inc: { booksCount: -1 },
-                        $set: { updatedBy: requester },
                     },
                     { new: true, runValidators: true }
                 ),
@@ -444,7 +433,6 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
                     publication,
                     {
                         $inc: { booksCount: 1 },
-                        $set: { updatedBy: requester },
                     },
                     { new: true, runValidators: true }
                 ),
@@ -542,8 +530,6 @@ const deleteBookById = async (requester, bookId) => {
             return errorResponse('Book not found.', httpStatus.NOT_FOUND);
         }
 
-        console.log(requester);
-
         // Decrement booksCount for associated subjects, writer, and publication
         await Promise.all([
             // Decrement booksCount of associated subjects
@@ -553,7 +539,6 @@ const deleteBookById = async (requester, bookId) => {
                         subjectId,
                         {
                             $inc: { booksCount: -1 },
-                            $set: { updatedBy: requester },
                         },
                         { new: true, runValidators: true }
                     )
@@ -565,7 +550,6 @@ const deleteBookById = async (requester, bookId) => {
                 book.writer,
                 {
                     $inc: { booksCount: -1 },
-                    $set: { updatedBy: requester },
                 },
                 { new: true, runValidators: true }
             ),
@@ -575,7 +559,6 @@ const deleteBookById = async (requester, bookId) => {
                 book.publication,
                 {
                     $inc: { booksCount: -1 },
-                    $set: { updatedBy: requester },
                 },
                 { new: true, runValidators: true }
             ),
@@ -651,7 +634,6 @@ const deleteBookList = async (requester, bookIds) => {
                         subjectId,
                         {
                             $inc: { booksCount: -1 },
-                            $set: { updatedBy: requester },
                         },
                         { new: true, runValidators: true }
                     )
@@ -663,7 +645,6 @@ const deleteBookList = async (requester, bookIds) => {
                 { _id: { $in: Array.from(writerIds) } },
                 {
                     $inc: { booksCount: -1 },
-                    $set: { updatedBy: requester },
                 },
                 { new: true, runValidators: true }
             ),
@@ -673,7 +654,6 @@ const deleteBookList = async (requester, bookIds) => {
                 { _id: { $in: Array.from(publicationIds) } },
                 {
                     $inc: { booksCount: -1 },
-                    $set: { updatedBy: requester },
                 },
                 { new: true, runValidators: true }
             ),

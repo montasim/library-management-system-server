@@ -55,8 +55,6 @@ const publicationSchema = new mongoose.Schema(
             description: `The review rating of the publication, maximum ${publicationsConstants.lengths.REVIEW_MAX}.`,
         },
         isActive: sharedSchema.isActiveSchema,
-        createdBy: sharedSchema.createdByAdminSchema,
-        updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
         timestamps: true,
@@ -69,40 +67,6 @@ const publicationSchema = new mongoose.Schema(
 // Create a unique index on the name field
 publicationSchema.index({ name: 1 }, { unique: true });
 
-/**
- * Pre-save and update Middleware - A middleware that runs before save and update operations to
- * ensure the presence of createdBy and updatedBy fields. Throws an error if these fields are missing.
- *
- * @param {Function} next - The next middleware function in the stack.
- * @throws {Error} - Throws an error if createdBy or updatedBy fields are missing.
- */
-publicationSchema.pre(['save', 'findOneAndUpdate'], function (next) {
-    if (
-        (this.isNew && !this.createdBy) ||
-        (this._update && !this._update.updatedBy)
-    ) {
-        return next(new Error('Creator or updater is required.'));
-    }
-    next();
-});
-
-/**
- * Error Handling Middleware - A middleware that runs after save and update operations to handle
- * unique constraint violations. If a duplicate name is detected, it throws an error indicating
- * that the publication name already exists.
- *
- * @param {Error} error - The error object passed to the middleware.
- * @param {Document} doc - The document being processed.
- * @param {Function} next - The next middleware function in the stack.
- */
-publicationSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        next(new Error('Publication name already exists.'));
-    } else {
-        next(error);
-    }
-});
-
-const PublicationsModel = mongoose.model('Publications', publicationSchema);
+const PublicationsModel = mongoose.models.Publications || mongoose.model('Publications', publicationSchema);
 
 export default PublicationsModel;
