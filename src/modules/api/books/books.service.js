@@ -15,6 +15,7 @@ import booksConstant from './books.constant.js';
 import SubjectsModel from '../subjects/subjects.model.js';
 import PublicationsModel from '../publications/publications.model.js';
 import WritersModel from '../writers/writers.model.js';
+import TranslatorsModel from '../translators/translators.model.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
 import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
@@ -36,19 +37,25 @@ cloudinary.config({
  * Helper function to validate IDs for writer and publication.
  *
  * @param {string} writer - Writer ID to validate.
+ * @param {string} translator - Translator ID to validate.
  * @param {string} publication - Publication ID to validate.
  * @returns {Array<string>} - An array of error messages, if any.
  */
-const validateIds = async (writer, publication) => {
+const validateIds = async (writer, translator, publication) => {
     const errors = [];
 
     // Validate writer
-    if (writer && !(await WritersModel.findById(writer))) {
+    if (writer && !(await WritersModel.exists(writer))) {
         errors.push(`Invalid writer ID: ${writer}`);
     }
 
+    // Validate writer
+    if (translator && !(await TranslatorsModel.exists(translator))) {
+        errors.push(`Invalid translator ID: ${translator}`);
+    }
+
     // Validate publication
-    if (publication && !(await PublicationsModel.findById(publication))) {
+    if (publication && !(await PublicationsModel.exists(publication))) {
         errors.push(`Invalid publication ID: ${publication}`);
     }
 
@@ -85,6 +92,10 @@ const populateBookFields = async (query) => {
     return await query
         .populate({
             path: 'writer',
+            select: '-createdBy -updatedBy',
+        })
+        .populate({
+            path: 'translator',
             select: '-createdBy -updatedBy',
         })
         .populate({
@@ -126,7 +137,7 @@ const createNewBook = async (requester, bookData, bookImage) => {
 
         // Validate writer, publication, and subject IDs
         const validationErrors = [
-            ...(await validateIds(bookData.writer, bookData.publication)),
+            ...(await validateIds(bookData.writer, bookData.translator, bookData.publication)),
             ...(await validateSubjectIds(bookData.subject)),
         ];
         if (validationErrors.length) {
@@ -195,6 +206,15 @@ const createNewBook = async (requester, bookData, bookImage) => {
             // Update booksCount of associated writers
             WritersModel.updateMany(
                 { _id: { $in: bookData.writer } },
+                {
+                    $inc: { booksCount: 1 },
+                },
+                { new: true, runValidators: true }
+            ),
+
+            // Update booksCount of associated writers
+            bookData?.translator && TranslatorsModel.updateMany(
+                { _id: { $in: bookData.translator } },
                 {
                     $inc: { booksCount: 1 },
                 },
@@ -288,8 +308,8 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
             );
         }
 
-        const { writer, addSubject, deleteSubject, publication } = updateData;
-        const errors = await validateIds(writer, publication);
+        const { writer, translator, addSubject, deleteSubject, publication } = updateData;
+        const errors = await validateIds(writer, translator, publication);
 
         if (errors.length) {
             return errorResponse(errors.join(' '), httpStatus.BAD_REQUEST);
@@ -551,6 +571,15 @@ const deleteBookById = async (requester, bookId) => {
                 { new: true, runValidators: true }
             ),
 
+            // Decrement booksCount of the associated translator
+            TranslatorsModel.findByIdAndUpdate(
+                book.translator,
+                {
+                    $inc: { booksCount: -1 },
+                },
+                { new: true, runValidators: true }
+            ),
+
             // Decrement booksCount of the associated publication
             PublicationsModel.findByIdAndUpdate(
                 book.publication,
@@ -614,6 +643,7 @@ const deleteBookList = async (requester, bookIds) => {
         // Collect associated subject, writer, and publication IDs to update
         const subjectIds = [];
         const writerIds = new Set();
+        const translatorIds = new Set();
         const publicationIds = new Set();
 
         books.forEach((book) => {
@@ -622,6 +652,9 @@ const deleteBookList = async (requester, bookIds) => {
             }
             if (book.writer) {
                 writerIds.add(book.writer.toString());
+            }
+            if (book.translator) {
+                translatorIds.add(book.translator.toString());
             }
             if (book.publication) {
                 publicationIds.add(book.publication.toString());
@@ -646,6 +679,15 @@ const deleteBookList = async (requester, bookIds) => {
             // Decrement booksCount for writers
             WritersModel.updateMany(
                 { _id: { $in: Array.from(writerIds) } },
+                {
+                    $inc: { booksCount: -1 },
+                },
+                { new: true, runValidators: true }
+            ),
+
+            // Decrement booksCount for translators
+            TranslatorsModel.updateMany(
+                { _id: { $in: Array.from(translatorIds) } },
                 {
                     $inc: { booksCount: -1 },
                 },

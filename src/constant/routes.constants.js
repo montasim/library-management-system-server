@@ -168,6 +168,18 @@ const routesConstants = {
             deleteByList: 'delete-writer-by-list',
         },
     },
+    translators: {
+        routes: 'translators',
+        params: 'translatorId',
+        permissions: {
+            create: 'create-translator',
+            getList: 'get-translator-list',
+            getById: 'get-translator-by-id',
+            updateById: 'update-translator-by-id',
+            deleteById: 'delete-translator-by-id',
+            deleteByList: 'delete-translator-by-list',
+        },
+    },
     userFavouriteBooks: {
         routes: 'books/favourite',
         params: 'bookId',
