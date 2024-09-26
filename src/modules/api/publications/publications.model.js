@@ -55,6 +55,8 @@ const publicationSchema = new mongoose.Schema(
             description: `The review rating of the publication, maximum ${publicationsConstants.lengths.REVIEW_MAX}.`,
         },
         isActive: sharedSchema.isActiveSchema,
+        createdBy: sharedSchema.createdByAdminSchema,
+        updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
         timestamps: true,

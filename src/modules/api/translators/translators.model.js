@@ -78,6 +78,8 @@ const translatorSchema = new mongoose.Schema(
             description: `The review rating of the translator, ranging from ${translatorsConstants.lengths.REVIEW_MIN} to ${translatorsConstants.lengths.REVIEW_MAX}.`,
         },
         isActive: sharedSchema.isActiveSchema,
+        createdBy: sharedSchema.createdByAdminSchema,
+        updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
         timestamps: true,

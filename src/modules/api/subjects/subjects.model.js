@@ -55,6 +55,8 @@ const subjectSchema = new mongoose.Schema(
             description: `The review rating of the subject, maximum ${subjectsConstants.lengths.REVIEW_MAX}.`,
         },
         isActive: sharedSchema.isActiveSchema,
+        createdBy: sharedSchema.createdByAdminSchema,
+        updatedBy: sharedSchema.updatedByAdminSchema,
     },
     {
         timestamps: true,
