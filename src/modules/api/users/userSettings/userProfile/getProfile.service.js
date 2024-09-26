@@ -35,26 +35,14 @@ import validateFile from '../../../../../utilities/validateFile.js';
  */
 const getProfile = async (userId) => {
     try {
-        const user = await UsersModel.findById(userId).lean();
-        if (!user) {
-            return errorResponse(
-                'Please login first.',
-                httpStatus.UNAUTHORIZED
-            );
-        }
+        // Fetch only the necessary fields and exclude sensitive data directly from the database
+        const user = await UsersModel.findById(userId)
+            .select('-passwordHash -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -emails.emailVerifyToken -emails.emailVerifyTokenExpires -mobiles.phoneVerifyToken -mobiles.phoneVerifyTokenExpires -sessions -activities')
+            .lean();
 
-        // Remove sensitive data, considering the user may have multiple emails
-        user.emails.forEach((email) => {
-            delete email.emailVerifyToken;
-            delete email.emailVerifyTokenExpires;
-        });
-        user.mobiles.forEach((mobile) => {
-            delete mobile.phoneVerifyToken;
-            delete mobile.phoneVerifyTokenExpires;
-        });
-        delete user.passwordHash;
-        delete user.resetPasswordVerifyToken;
-        delete user.resetPasswordVerifyTokenExpires;
+        if (!user) {
+            return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
+        }
 
         return sendResponse(user, 'User fetched successfully.', httpStatus.OK);
     } catch (error) {
