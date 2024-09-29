@@ -137,7 +137,11 @@ const createNewBook = async (requester, bookData, bookImage) => {
 
         // Validate writer, publication, and subject IDs
         const validationErrors = [
-            ...(await validateIds(bookData.writer, bookData.translator, bookData.publication)),
+            ...(await validateIds(
+                bookData.writer,
+                bookData.translator,
+                bookData.publication
+            )),
             ...(await validateSubjectIds(bookData.subject)),
         ];
         if (validationErrors.length) {
@@ -213,13 +217,14 @@ const createNewBook = async (requester, bookData, bookImage) => {
             ),
 
             // Update booksCount of associated writers
-            bookData?.translator && TranslatorsModel.updateMany(
-                { _id: { $in: bookData.translator } },
-                {
-                    $inc: { booksCount: 1 },
-                },
-                { new: true, runValidators: true }
-            ),
+            bookData?.translator &&
+                TranslatorsModel.updateMany(
+                    { _id: { $in: bookData.translator } },
+                    {
+                        $inc: { booksCount: 1 },
+                    },
+                    { new: true, runValidators: true }
+                ),
 
             // Update booksCount of associated publications
             PublicationsModel.updateMany(
@@ -266,13 +271,99 @@ const createNewBook = async (requester, bookData, bookImage) => {
  * @returns {Promise<Object>} - A promise that resolves to the response object containing the list of books.
  */
 const getBookList = async (params) => {
-    return service.getResourceList(
-        BooksModel,
-        populateBookFields,
-        params,
-        bookListParamsMapping,
-        'Book'
-    );
+    try {
+        const {
+            page, // No default value, check if it's provided
+            limit = 10,
+            sort = '-createdAt',
+            requester,
+            categories, // Filters by subjects
+            writers, // Filters by writer
+            publications, // Filters by publication
+            ...restParams
+        } = params;
+
+        // Dynamic query construction with mapping for other fields
+        const query = Object.keys(restParams).reduce((acc, key) => {
+            if (restParams[key] !== undefined && restParams[key] !== '') {
+                const schemaKey = bookListParamsMapping[key] || key; // Use mapped key if available, otherwise use the key as is
+                // Apply regex pattern for text search fields
+                if (['name', 'createdBy', 'updatedBy'].includes(schemaKey)) {
+                    acc[schemaKey] = new RegExp(restParams[key], 'i'); // Handle text search using regex
+                } else {
+                    acc[schemaKey] = restParams[key]; // Direct assignment for other fields
+                }
+            }
+            return acc;
+        }, {});
+
+        // Filter by categories (subjects), writers, and publications only if they are not empty
+        if (categories && categories.trim() !== '') {
+            query.subject = { $in: categories.split(',').map((c) => c.trim()) }; // subjects (categories) are stored as an array of ObjectIds
+        }
+        if (writers && writers.trim() !== '') {
+            query.writer = { $in: writers.split(',').map((w) => w.trim()) }; // writer is a single ObjectId
+        }
+        if (publications && publications.trim() !== '') {
+            query.publication = {
+                $in: publications.split(',').map((p) => p.trim()),
+            }; // publication is a single ObjectId
+        }
+
+        // Get total items count based on the query
+        const totalItems = await BooksModel.countDocuments(query);
+
+        // Conditionally apply pagination if `page` is provided, else return all data
+        let itemsQuery = BooksModel.find(query).sort(sort);
+
+        if (page) {
+            const totalPages = Math.ceil(totalItems / limit);
+            itemsQuery = itemsQuery.skip((page - 1) * limit).limit(limit);
+
+            const items = await populateBookFields(itemsQuery);
+
+            if (!items.length) {
+                return sendResponse({}, `No books found.`, httpStatus.OK);
+            }
+
+            return sendResponse(
+                {
+                    items,
+                    totalItems,
+                    totalPages,
+                    currentPage: page,
+                    pageSize: limit,
+                    sort,
+                },
+                `${items.length} books fetched successfully.`,
+                httpStatus.OK
+            );
+        } else {
+            // If no page is provided, return all data without pagination
+            const items = await populateBookFields(itemsQuery);
+
+            if (!items.length) {
+                return sendResponse({}, `No books found.`, httpStatus.OK);
+            }
+
+            return sendResponse(
+                {
+                    items,
+                    totalItems,
+                    sort,
+                },
+                `${items.length} books fetched successfully.`,
+                httpStatus.OK
+            );
+        }
+    } catch (error) {
+        loggerService.error(`Failed to get books: ${error}`);
+
+        return errorResponse(
+            error.message || `Failed to get books.`,
+            httpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 };
 
 /**
@@ -308,7 +399,8 @@ const updateBookById = async (requester, bookId, updateData, bookImage) => {
             );
         }
 
-        const { writer, translator, addSubject, deleteSubject, publication } = updateData;
+        const { writer, translator, addSubject, deleteSubject, publication } =
+            updateData;
         const errors = await validateIds(writer, translator, publication);
 
         if (errors.length) {

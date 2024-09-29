@@ -13,7 +13,7 @@ import validationService from '../../../service/validation.service.js';
 
 /**
  * bookSchemaBase - Base Joi schema for validating common fields used in book-related operations.
- * Ensures that fields such as name, bestSeller, review, writer, subject, publication, page, edition,
+ * Ensures that fields such as name, bestSeller, review, writer, category, publication, page, edition,
  * summary, price, stockAvailable, isActive, createdBy, updatedBy, createdAt, and updatedAt meet the specified criteria.
  */
 const bookSchemaBase = Joi.object({
@@ -37,15 +37,14 @@ const bookSchemaBase = Joi.object({
         .max(5)
         .messages(customValidationMessage)
         .description('A numerical rating for the book, from 0 to 5.'),
-    writer: validationService.objectIdField
+    writers: Joi.string()
         .messages({
             'any.custom': 'Invalid writer ID format.',
-            ...customValidationMessage,
         })
         .description(
             'The writer ID related to the book. Each ID must be a valid MongoDB ObjectId.'
         ),
-    translator: validationService.objectIdField
+    translators: Joi.string()
         .messages({
             'any.custom': 'Invalid translator ID format.',
             ...customValidationMessage,
@@ -53,37 +52,32 @@ const bookSchemaBase = Joi.object({
         .description(
             'The translator ID related to the book. Each ID must be a valid MongoDB ObjectId.'
         ),
-    subject: Joi.array()
-        .items(validationService.objectIdField)
+    categories: Joi.string()
         .messages({
-            'any.custom': 'Invalid subject ID format.',
+            'any.custom': 'Invalid category ID format.',
+        })
+        .description(
+            'List of category IDs related to the book. Each ID must be a valid MongoDB ObjectId.'
+        ),
+    addCategories: Joi.string()
+        .messages({
+            'any.custom': 'Invalid category ID format.',
             ...customValidationMessage,
         })
         .description(
-            'List of subject IDs related to the book. Each ID must be a valid MongoDB ObjectId.'
+            'List of the category IDs related to the book that will be added. Each ID must be a valid MongoDB ObjectId.'
         ),
-    addSubject: Joi.array()
-        .items(validationService.objectIdField)
+    deleteCategories: Joi.string()
         .messages({
-            'any.custom': 'Invalid subject ID format.',
+            'any.custom': 'Invalid category ID format.',
             ...customValidationMessage,
         })
         .description(
-            'List of the subject IDs related to the book that will be added. Each ID must be a valid MongoDB ObjectId.'
+            'List of the category IDs related to the book that will be deleted. Each ID must be a valid MongoDB ObjectId.'
         ),
-    deleteSubject: Joi.array()
-        .items(validationService.objectIdField)
-        .messages({
-            'any.custom': 'Invalid subject ID format.',
-            ...customValidationMessage,
-        })
-        .description(
-            'List of the subject IDs related to the book that will be deleted. Each ID must be a valid MongoDB ObjectId.'
-        ),
-    publication: validationService.objectIdField
+    publications: Joi.string()
         .messages({
             'any.custom': 'Invalid publication ID format.',
-            ...customValidationMessage,
         })
         .description(
             'The publication ID related to the book. Each ID must be a valid MongoDB ObjectId.'
@@ -153,7 +147,7 @@ const bookSchemaBase = Joi.object({
 
 /**
  * createBookSchema - Joi schema for validating the data to create a new book.
- * Ensures that the name, writer, subject, publication, page, edition, summary, price, stockAvailable,
+ * Ensures that the name, writer, category, publication, page, edition, summary, price, stockAvailable,
  * and isActive fields are required and meet the specified criteria.
  *
  * @function
@@ -161,9 +155,9 @@ const bookSchemaBase = Joi.object({
 const createBookSchema = bookSchemaBase.fork(
     [
         'name',
-        'writer',
-        'subject',
-        'publication',
+        'writers',
+        'categories',
+        'publications',
         'page',
         'edition',
         'summary',
@@ -172,11 +166,7 @@ const createBookSchema = bookSchemaBase.fork(
         'isActive',
     ],
     (field) => field.required(),
-    [
-        'bestSeller',
-        'review',
-        'translator',
-    ],
+    ['bestSeller', 'review', 'translator'],
     (field) => field.optional()
 );
 
@@ -192,11 +182,11 @@ const updateBookSchema = bookSchemaBase
             'name',
             'bestSeller',
             'review',
-            'writer',
-            'translator',
-            'addSubject',
-            'deleteSubject',
-            'publication',
+            'writers',
+            'translators',
+            'addCategories',
+            'deleteCategories',
+            'publications',
             'page',
             'edition',
             'summary',
@@ -226,7 +216,7 @@ const bookIdsParamSchema = Joi.object({
 
 /**
  * getBooksQuerySchema - Joi schema for validating query parameters when retrieving a list of books.
- * Ensures that parameters such as name, bestSeller, review, writer, subject, publication, page,
+ * Ensures that parameters such as name, bestSeller, review, writer, category, publication, page,
  * edition, summary, price, stockAvailable, isActive, limit, sort, createdBy, updatedBy, createdAt,
  * and updatedAt are optional and meet the specified criteria.
  *
@@ -237,10 +227,10 @@ const getBooksQuerySchema = bookSchemaBase.fork(
         'name',
         'bestSeller',
         'review',
-        'writer',
-        'translator',
-        'subject',
-        'publication',
+        'writers',
+        'translators',
+        'categories',
+        'publications',
         'page',
         'edition',
         'summary',
