@@ -32,7 +32,7 @@ const corsConfiguration = {
             'http://localhost:3000',
             '127.0.01:5000',
             'https://library-management-system-client-mauve.vercel.app',
-            'https://ndevers.com/',
+            'https://ndevers.com',
         ]; // List of allowed origins
 
         if (whitelist.indexOf(origin) !== -1 || !origin) {
