@@ -65,9 +65,10 @@ const getTrendingBooks = async () => {
         ]);
 
         if (trendingBooks.length === 0) {
-            return errorResponse(
+            return sendResponse(
+                {},
                 'No trending books found at the moment.',
-                httpStatus.NOT_FOUND
+                httpStatus.OK
             );
         }
 
