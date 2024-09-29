@@ -26,6 +26,7 @@ import adminRoutes from './admin/admin.routes.js';
 import pronounsRoutes from './pronouns/pronouns.routes.js';
 import userProfileRoutes from './userProfile/userProfile.routes.js';
 import accessTypesConstants from '../../constant/accessTypes.constants.js';
+import translatorsRoutes from './translators/translators.routes.js';
 
 const router = express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -77,6 +78,7 @@ router.use(
     usersRoutes
 );
 router.use(`/${routesConstants.writers.routes}`, writersRoutes);
+router.use(`/${routesConstants.translators.routes}`, translatorsRoutes);
 router.use('/', userProfileRoutes);
 
 // TODO: dashboard route

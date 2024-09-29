@@ -50,18 +50,6 @@ const writerSchema = new mongoose.Schema(
                 'The name of the writer. It must be unique and conform to specified length constraints.',
         },
         image: sharedSchema.imageSchema,
-        review: {
-            type: Number,
-            min: [
-                writersConstants.lengths.REVIEW_MIN,
-                `Review must be at least ${writersConstants.lengths.REVIEW_MIN}.`,
-            ],
-            max: [
-                writersConstants.lengths.REVIEW_MAX,
-                `Review cannot be more than ${writersConstants.lengths.REVIEW_MAX}.`,
-            ],
-            description: `The review rating of the writer, ranging from ${writersConstants.lengths.REVIEW_MIN} to ${writersConstants.lengths.REVIEW_MAX}.`,
-        },
         summary: {
             type: String,
             trim: true,
@@ -75,6 +63,19 @@ const writerSchema = new mongoose.Schema(
             ],
             description:
                 'A brief summary of the writer’s profile, within specified length constraints.',
+        },
+        booksCount: {
+            type: Number,
+            default: 0,
+            description: 'The number of books available for the writer.',
+        },
+        review: {
+            type: Number,
+            max: [
+                writersConstants.lengths.REVIEW_MAX,
+                `Review cannot be more than ${writersConstants.lengths.REVIEW_MAX}.`,
+            ],
+            description: `The review rating of the writer, ranging from ${writersConstants.lengths.REVIEW_MIN} to ${writersConstants.lengths.REVIEW_MAX}.`,
         },
         isActive: sharedSchema.isActiveSchema,
         createdBy: sharedSchema.createdByAdminSchema,
@@ -91,48 +92,7 @@ const writerSchema = new mongoose.Schema(
 // Create a unique index on the name field
 writerSchema.index({ name: 1 }, { unique: true });
 
-/**
- * Pre-save and update middleware for the writer schema.
- *
- * This middleware ensures that the creator or updater information is present when a writer record is saved or updated.
- * If the required information is missing, it throws an error.
- *
- * @function
- * @name preSaveUpdateMiddleware
- * @param {function} next - The next middleware function in the request-response cycle.
- * @throws {Error} - Throws an error if the creator or updater information is missing.
- */
-writerSchema.pre(['save', 'findOneAndUpdate'], function (next) {
-    if (
-        (this.isNew && !this.createdBy) ||
-        (this._update && !this._update.updatedBy)
-    ) {
-        return next(new Error('Creator or updater is required.'));
-    }
-    next();
-});
-
-/**
- * Error handling middleware for unique constraint violations.
- *
- * This middleware catches MongoDB unique constraint errors and converts them into more user-friendly error messages.
- * Specifically, it handles the case where a writer name already exists.
- *
- * @function
- * @name uniqueConstraintErrorHandlingMiddleware
- * @param {Object} error - The error object.
- * @param {Object} doc - The document being saved or updated.
- * @param {function} next - The next middleware function in the request-response cycle.
- * @throws {Error} - Throws a user-friendly error message if a unique constraint violation is detected.
- */
-writerSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        next(new Error('Writer name already exists.'));
-    } else {
-        next(error);
-    }
-});
-
-const WritersModel = mongoose.model('Writers', writerSchema);
+const WritersModel =
+    mongoose.models.Writers || mongoose.model('Writers', writerSchema);
 
 export default WritersModel;

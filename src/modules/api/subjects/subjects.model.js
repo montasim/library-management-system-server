@@ -5,7 +5,7 @@
  * indexing on the name field, and middleware for validation and error handling.
  */
 
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import subjectsConstants from './subjects.constant.js';
 import sharedSchema from '../../../shared/schema.js';
@@ -22,7 +22,7 @@ import sharedSchema from '../../../shared/schema.js';
  * The schema also includes automatic timestamping for creation and updates,
  * and ensures uniqueness of the name field.
  */
-const subjectSchema = new Schema(
+const subjectSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -41,6 +41,19 @@ const subjectSchema = new Schema(
             description:
                 'The name of the subject. It must be unique and conform to specified length constraints.',
         },
+        booksCount: {
+            type: Number,
+            default: 0,
+            description: 'The number of books available for the subject.',
+        },
+        review: {
+            type: Number,
+            max: [
+                subjectsConstants.lengths.REVIEW_MAX,
+                `Review cannot be more than ${subjectsConstants.lengths.REVIEW_MAX}.`,
+            ],
+            description: `The review rating of the subject, maximum ${subjectsConstants.lengths.REVIEW_MAX}.`,
+        },
         isActive: sharedSchema.isActiveSchema,
         createdBy: sharedSchema.createdByAdminSchema,
         updatedBy: sharedSchema.updatedByAdminSchema,
@@ -56,41 +69,8 @@ const subjectSchema = new Schema(
 // Create a unique index on the name field
 subjectSchema.index({ name: 1 }, { unique: true });
 
-/**
- * Pre-save and update Middleware - A middleware that runs before save and update operations to
- * ensure the presence of createdBy and updatedBy fields. Throws an error if these fields are missing.
- *
- * @param {Function} next - The next middleware function in the stack.
- * @throws {Error} - Throws an error if createdBy or updatedBy fields are missing.
- */
-subjectSchema.pre(['save', 'findOneAndUpdate'], function (next) {
-    if (
-        (this.isNew && !this.createdBy) ||
-        (this._update && !this._update.updatedBy)
-    ) {
-        return next(new Error('Creator or updater is required.'));
-    }
-    next();
-});
-
-/**
- * Error Handling Middleware - A middleware that runs after save and update operations to handle
- * unique constraint violations. If a duplicate name is detected, it throws an error indicating
- * that the subject name already exists.
- *
- * @param {Error} error - The error object passed to the middleware.
- * @param {Document} doc - The document being processed.
- * @param {Function} next - The next middleware function in the stack.
- */
-subjectSchema.post(['save', 'findOneAndUpdate'], (error, doc, next) => {
-    if (error.name === 'MongoServerError' && error.code === 11000) {
-        next(new Error('Subject name already exists.'));
-    } else {
-        next(error);
-    }
-});
-
 // Check if the model already exists before defining it
-const SubjectsModel = mongoose.model('Subjects', subjectSchema);
+const SubjectsModel =
+    mongoose.models.Subjects || mongoose.model('Subjects', subjectSchema);
 
 export default SubjectsModel;

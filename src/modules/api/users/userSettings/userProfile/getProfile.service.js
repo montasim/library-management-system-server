@@ -35,26 +35,14 @@ import validateFile from '../../../../../utilities/validateFile.js';
  */
 const getProfile = async (userId) => {
     try {
-        const user = await UsersModel.findById(userId).lean();
-        if (!user) {
-            return errorResponse(
-                'Please login first.',
-                httpStatus.UNAUTHORIZED
-            );
-        }
+        // Fetch only the necessary fields and exclude sensitive data directly from the database
+        const user = await UsersModel.findById(userId)
+            .select('-passwordHash -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -emails.emailVerifyToken -emails.emailVerifyTokenExpires -mobiles.phoneVerifyToken -mobiles.phoneVerifyTokenExpires -sessions -activities')
+            .lean();
 
-        // Remove sensitive data, considering the user may have multiple emails
-        user.emails.forEach((email) => {
-            delete email.emailVerifyToken;
-            delete email.emailVerifyTokenExpires;
-        });
-        user.mobiles.forEach((mobile) => {
-            delete mobile.phoneVerifyToken;
-            delete mobile.phoneVerifyTokenExpires;
-        });
-        delete user.passwordHash;
-        delete user.resetPasswordVerifyToken;
-        delete user.resetPasswordVerifyTokenExpires;
+        if (!user) {
+            return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
+        }
 
         return sendResponse(user, 'User fetched successfully.', httpStatus.OK);
     } catch (error) {
@@ -86,7 +74,7 @@ const getProfile = async (userId) => {
 const updateProfile = async (requester, updateData, userImage) => {
     try {
         // Fetch the existing user; no need to lean() if updates are to be applied.
-        const existingUser = await UsersModel.findById(requester);
+        const existingUser = await UsersModel.exists({ _id: requester });
         if (!existingUser) {
             return errorResponse(
                 'Unauthorized. Please login first.',
@@ -102,17 +90,23 @@ const updateProfile = async (requester, updateData, userImage) => {
             );
         }
 
-        // Optionally, check if the updates are allowed based on the schema
-        const updatesAllowed = ['name', 'bio', 'username']; // Example fields that can be updated
-        const updates = Object.keys(updateData).filter((key) =>
-            updatesAllowed.includes(key)
-        );
-        if (updates.length === 0) {
-            return errorResponse(
-                'Invalid update fields.',
-                httpStatus.BAD_REQUEST
-            );
-        }
+        // // Optionally, check if the updates are allowed based on the schema
+        // const updatesAllowed = ['name', 'bio', 'username']; // Example fields that can be updated
+        // const updates = Object.keys(updateData).filter((key) =>
+        //     updatesAllowed.includes(key)
+        // );
+        // if (updates.length === 0) {
+        //     return errorResponse(
+        //         'Invalid update fields.',
+        //         httpStatus.BAD_REQUEST
+        //     );
+        // }
+        //
+        // // Create an update object with only allowed fields
+        // const updateFields = {};
+        // updates.forEach((key) => {
+        //     updateFields[key] = updateData[key];
+        // });
 
         // Handle image upload and update if provided
         if (userImage) {
@@ -153,10 +147,12 @@ const updateProfile = async (requester, updateData, userImage) => {
             };
         }
 
+        // Track who made the update
+        updateData.updatedBy = requester;
+
         // Apply updates to the user document
-        updateData.updatedBy = requester; // Track who made the update
         const updatedUser = await UsersModel.findByIdAndUpdate(
-            requester,
+            { _id: requester },
             { $set: updateData },
             { new: true, runValidators: true }
         ).lean();

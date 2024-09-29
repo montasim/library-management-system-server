@@ -52,7 +52,10 @@ const getBooksHistory = async (params) => {
         const totalPages = Math.ceil(totalHistory / limit);
 
         // Adjust the limit if it exceeds the total number of history records
-        const adjustedLimit = Math.min(limit, totalHistory - (page - 1) * limit);
+        const adjustedLimit = Math.min(
+            limit,
+            totalHistory - (page - 1) * limit
+        );
 
         const booksHistory = await BooksHistoryModel.find(query)
             .sort(sort)
@@ -81,7 +84,7 @@ const getBooksHistory = async (params) => {
             })
             .populate({
                 path: 'lend.user return.user',
-                select: 'name email image'
+                select: 'name email image',
             })
             .lean();
 

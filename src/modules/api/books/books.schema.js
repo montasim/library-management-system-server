@@ -45,6 +45,14 @@ const bookSchemaBase = Joi.object({
         .description(
             'The writer ID related to the book. Each ID must be a valid MongoDB ObjectId.'
         ),
+    translator: validationService.objectIdField
+        .messages({
+            'any.custom': 'Invalid translator ID format.',
+            ...customValidationMessage,
+        })
+        .description(
+            'The translator ID related to the book. Each ID must be a valid MongoDB ObjectId.'
+        ),
     subject: Joi.array()
         .items(validationService.objectIdField)
         .messages({
@@ -163,7 +171,13 @@ const createBookSchema = bookSchemaBase.fork(
         'stockAvailable',
         'isActive',
     ],
-    (field) => field.required()
+    (field) => field.required(),
+    [
+        'bestSeller',
+        'review',
+        'translator',
+    ],
+    (field) => field.optional()
 );
 
 /**
@@ -179,6 +193,7 @@ const updateBookSchema = bookSchemaBase
             'bestSeller',
             'review',
             'writer',
+            'translator',
             'addSubject',
             'deleteSubject',
             'publication',
@@ -223,6 +238,7 @@ const getBooksQuerySchema = bookSchemaBase.fork(
         'bestSeller',
         'review',
         'writer',
+        'translator',
         'subject',
         'publication',
         'page',

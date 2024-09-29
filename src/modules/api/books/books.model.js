@@ -89,6 +89,13 @@ const bookSchema = new mongoose.Schema(
             description:
                 'The database ID of the writer associated with this book.',
         },
+        translator: {
+            type: Schema.Types.ObjectId,
+            ref: 'Translators',
+            required: 'Please specify the translator of the book.',
+            description:
+                'The database ID of the translator associated with this book.',
+        },
         subject: [
             {
                 type: Schema.Types.ObjectId,

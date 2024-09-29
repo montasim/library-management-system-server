@@ -1,16 +1,16 @@
 /**
- * @fileoverview This module defines the service functions for managing writer-related operations.
- * It includes functions for creating, retrieving, updating, and deleting writer records.
+ * @fileoverview This module defines the service functions for managing translator-related operations.
+ * It includes functions for creating, retrieving, updating, and deleting translator records.
  * The service handles validation, file uploads to Google Drive, and logging of admin activities.
  */
 
 import { v2 as cloudinary } from 'cloudinary';
 
-import WritersModel from './writers.model.js';
+import TranslatorsModel from './translators.model.js';
 import httpStatus from '../../../constant/httpStatus.constants.js';
 import mimeTypesConstants from '../../../constant/mimeTypes.constants.js';
 import fileExtensionsConstants from '../../../constant/fileExtensions.constants.js';
-import writersConstant from './writers.constant.js';
+import translatorsConstant from './translators.constant.js';
 import loggerService from '../../../service/logger.service.js';
 import service from '../../../shared/service.js';
 import AdminActivityLoggerModel from '../admin/adminActivityLogger/adminActivityLogger.model.js';
@@ -24,15 +24,15 @@ import validateFile from '../../../utilities/validateFile.js';
 import BooksModel from '../books/books.model.js';
 
 /**
- * Populates writer fields with additional information.
+ * Populates translator fields with additional information.
  *
  * @async
  * @function
- * @name populateWriterFields
+ * @name populateTranslatorFields
  * @param {mongoose.Query} query - The Mongoose query to populate fields.
  * @returns {Promise<mongoose.Document>} - The populated document.
  */
-const populateWriterFields = async (query) => {
+const populateTranslatorFields = async (query) => {
     return await query
         .populate({
             path: 'createdBy',
@@ -44,42 +44,42 @@ const populateWriterFields = async (query) => {
         });
 };
 
-const writerListParamsMapping = {};
+const translatorListParamsMapping = {};
 
 /**
- * Creates a new writer.
+ * Creates a new translator.
  *
  * @async
  * @function
- * @name createWriter
+ * @name createTranslator
  * @param {Object} requester - The user requesting the creation.
- * @param {Object} writerData - The data for the new writer.
- * @param {Object} writerImage - The image file for the writer.
- * @returns {Promise<Object>} - A promise that resolves to the response object containing the created writer.
+ * @param {Object} translatorData - The data for the new translator.
+ * @param {Object} translatorImage - The image file for the translator.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the created translator.
  */
-const createWriter = async (requester, writerData, writerImage) => {
+const createTranslator = async (requester, translatorData, translatorImage) => {
     try {
-        const exists = await WritersModel.exists({ name: writerData.name });
+        const exists = await TranslatorsModel.exists({ name: translatorData.name });
         if (exists) {
             return sendResponse(
                 {},
-                `Writers name "${writerData.name}" already exists.`,
+                `Translators name "${translatorData.name}" already exists.`,
                 httpStatus.BAD_REQUEST
             );
         }
 
-        // if (!writerImage) {
+        // if (!translatorImage) {
         //     return errorResponse(
         //         'Please provide an image.',
         //         httpStatus.BAD_REQUEST
         //     );
         // }
 
-        let writerImageData;
-        if (writerImage) {
+        let translatorImageData;
+        if (translatorImage) {
             const fileValidationResults = validateFile(
-                writerImage,
-                writersConstant.imageSize,
+                translatorImage,
+                translatorsConstant.imageSize,
                 [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
                 [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
             );
@@ -90,7 +90,7 @@ const createWriter = async (requester, writerData, writerImage) => {
                 );
             }
 
-            const file = writerImage;
+            const file = translatorImage;
             const result = await cloudinary.uploader.upload(
                 `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
                 {
@@ -100,61 +100,61 @@ const createWriter = async (requester, writerData, writerImage) => {
             );
 
             // Update image data in update object
-            writerImageData = {
+            translatorImageData = {
                 fileId: result?.asset_id,
                 shareableLink: result?.secure_url,
                 downloadLink: result.url,
             };
         }
 
-        writerData.createdBy = requester;
+        translatorData.createdBy = requester;
 
-        const newWriter = await WritersModel.create({
-            ...writerData,
-            image: writerImageData,
+        const newTranslator = await TranslatorsModel.create({
+            ...translatorData,
+            image: translatorImageData,
         });
 
         await AdminActivityLoggerModel.create({
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.CREATE,
-            description: `${writerData.name} created successfully.`,
-            details: JSON.stringify(newWriter),
+            description: `${translatorData.name} created successfully.`,
+            details: JSON.stringify(newTranslator),
         });
 
         return sendResponse(
-            newWriter,
-            'Writer created successfully.',
+            newTranslator,
+            'Translator created successfully.',
             httpStatus.CREATED
         );
     } catch (error) {
-        loggerService.error(`Failed to create writer: ${error}`);
+        loggerService.error(`Failed to create translator: ${error}`);
 
         return errorResponse(
-            error.message || 'Failed to create writer.',
+            error.message || 'Failed to create translator.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
 };
 
 /**
- * Retrieves a list of writers.
+ * Retrieves a list of translators.
  *
  * @async
  * @function
- * @name getWriters
- * @param {Object} params - The query parameters for retrieving writers.
- * @returns {Promise<Object>} - A promise that resolves to the response object containing the list of writers.
+ * @name getTranslators
+ * @param {Object} params - The query parameters for retrieving translators.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the list of translators.
  */
-const getWriters = async (params) => {
+const getTranslators = async (params) => {
     try {
-        // Aggregation pipeline to fetch writers with their book counts and populate createdBy and updatedBy fields
-        const writersWithBookCounts = await WritersModel.aggregate([
+        // Aggregation pipeline to fetch translators with their book counts and populate createdBy and updatedBy fields
+        const translatorsWithBookCounts = await TranslatorsModel.aggregate([
             {
-                // Lookup stage to join Books with Writers
+                // Lookup stage to join Books with Translators
                 $lookup: {
                     from: 'books', // Name of the books collection
-                    localField: '_id', // Writer ID in the Writers collection
-                    foreignField: 'writer', // Reference field in the Books collection
+                    localField: '_id', // Translator ID in the Translators collection
+                    foreignField: 'translator', // Reference field in the Books collection
                     as: 'books', // Output array name
                 },
             },
@@ -162,7 +162,7 @@ const getWriters = async (params) => {
                 // Lookup stage to populate the createdBy field from the Users collection
                 $lookup: {
                     from: 'admins', // Name of the users (or admin) collection
-                    localField: 'createdBy', // Field in the Writers collection
+                    localField: 'createdBy', // Field in the Translators collection
                     foreignField: '_id', // Matching field in the Users collection
                     as: 'createdBy', // Output array name
                 },
@@ -171,7 +171,7 @@ const getWriters = async (params) => {
                 // Lookup stage to populate the updatedBy field from the Users collection
                 $lookup: {
                     from: 'admins', // Name of the users (or admin) collection
-                    localField: 'updatedBy', // Field in the Writers collection
+                    localField: 'updatedBy', // Field in the Translators collection
                     foreignField: '_id', // Matching field in the Users collection
                     as: 'updatedBy', // Output array name
                 },
@@ -180,13 +180,13 @@ const getWriters = async (params) => {
                 // Unwind createdBy and updatedBy fields to convert them from arrays to objects
                 $unwind: {
                     path: '$createdBy',
-                    preserveNullAndEmptyArrays: true, // Keeps the writer even if createdBy is null
+                    preserveNullAndEmptyArrays: true, // Keeps the translator even if createdBy is null
                 },
             },
             {
                 $unwind: {
                     path: '$updatedBy',
-                    preserveNullAndEmptyArrays: true, // Keeps the writer even if updatedBy is null
+                    preserveNullAndEmptyArrays: true, // Keeps the translator even if updatedBy is null
                 },
             },
             {
@@ -214,61 +214,61 @@ const getWriters = async (params) => {
                 // Add a facet to get both the items and the total count
                 $facet: {
                     items: [{ $match: {} }], // Retrieve all items with previous stages
-                    total: [{ $count: 'total' }], // Count total writers
+                    total: [{ $count: 'total' }], // Count total translators
                 },
             },
         ]);
 
         // Extract items and total count from the aggregated result
-        const items = writersWithBookCounts[0]?.items || [];
-        const total = writersWithBookCounts[0]?.total[0]?.total || 0;
+        const items = translatorsWithBookCounts[0]?.items || [];
+        const total = translatorsWithBookCounts[0]?.total[0]?.total || 0;
 
         if (!total) {
-            return sendResponse({}, 'No writers found.', httpStatus.OK);
+            return sendResponse({}, 'No translators found.', httpStatus.OK);
         }
 
         return sendResponse(
             {
                 items,
-                total, // Add the total writers count to the response
+                total, // Add the total translators count to the response
             },
-            'Writers fetched successfully.',
+            'Translators fetched successfully.',
             httpStatus.OK
         );
     } catch (error) {
-        loggerService.error(`Failed to fetch writers: ${error}`);
+        loggerService.error(`Failed to fetch translators: ${error}`);
 
         return errorResponse(
-            error.message || 'Failed to fetch writers.',
+            error.message || 'Failed to fetch translators.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
 };
 
 /**
- * Retrieves details of a specific writer by ID.
+ * Retrieves details of a specific translator by ID.
  *
  * @async
  * @function
- * @name getWriter
- * @param {string} writerId - The ID of the writer to be retrieved.
- * @returns {Promise<Object>} - A promise that resolves to the response object containing the writer details.
+ * @name getTranslator
+ * @param {string} translatorId - The ID of the translator to be retrieved.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the translator details.
  */
-const getWriter = async (writerId) => {
+const getTranslator = async (translatorId) => {
     try {
-        const writersWithBookCounts = await WritersModel.aggregate([
+        const translatorsWithBookCounts = await TranslatorsModel.aggregate([
             {
                 $lookup: {
                     from: BooksModel.collection.name, // Make sure this is the correct collection name
                     localField: '_id',
-                    foreignField: 'writer',
+                    foreignField: 'translator',
                     as: 'books',
                 },
             },
             {
                 $unwind: {
                     path: '$books',
-                    preserveNullAndEmptyArrays: true, // Keep writers with no books
+                    preserveNullAndEmptyArrays: true, // Keep translators with no books
                 },
             },
             {
@@ -301,13 +301,13 @@ const getWriter = async (writerId) => {
 
         return sendResponse(
             {
-                items: writersWithBookCounts,
+                items: translatorsWithBookCounts,
             },
-            'Writers fetched successfully.',
+            'Translators fetched successfully.',
             httpStatus.CREATED
         );
     } catch (error) {
-        loggerService.error(`Failed to fetch writers: ${error}`);
+        loggerService.error(`Failed to fetch translators: ${error}`);
 
         return errorResponse(
             error.message || 'Failed to fetch subject.',
@@ -317,18 +317,18 @@ const getWriter = async (writerId) => {
 };
 
 /**
- * Updates a specific writer by ID.
+ * Updates a specific translator by ID.
  *
  * @async
  * @function
- * @name updateWriter
+ * @name updateTranslator
  * @param {Object} requester - The user requesting the update.
- * @param {string} writerId - The ID of the writer to be updated.
- * @param {Object} updateData - The data to update the writer with.
- * @param {Object} writerImage - The new image file for the writer.
- * @returns {Promise<Object>} - A promise that resolves to the response object containing the updated writer.
+ * @param {string} translatorId - The ID of the translator to be updated.
+ * @param {Object} updateData - The data to update the translator with.
+ * @param {Object} translatorImage - The new image file for the translator.
+ * @returns {Promise<Object>} - A promise that resolves to the response object containing the updated translator.
  */
-const updateWriter = async (requester, writerId, updateData, writerImage) => {
+const updateTranslator = async (requester, translatorId, updateData, translatorImage) => {
     try {
         if (isEmptyObject(updateData)) {
             return errorResponse(
@@ -337,17 +337,17 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
             );
         }
 
-        // if (!writerImage) {
+        // if (!translatorImage) {
         //     return errorResponse(
         //         'Please provide an image.',
         //         httpStatus.BAD_REQUEST
         //     );
         // }
 
-        if (writerImage) {
+        if (translatorImage) {
             const fileValidationResults = validateFile(
-                writerImage,
-                writersConstant.imageSize,
+                translatorImage,
+                translatorsConstant.imageSize,
                 [mimeTypesConstants.JPG, mimeTypesConstants.PNG],
                 [fileExtensionsConstants.JPG, fileExtensionsConstants.PNG]
             );
@@ -358,7 +358,7 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
                 );
             }
 
-            const file = writerImage;
+            const file = translatorImage;
             const result = await cloudinary.uploader.upload(
                 `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
                 {
@@ -368,21 +368,21 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
             );
 
             // Update image data in update object
-            const writerImageData = {
+            const translatorImageData = {
                 fileId: result?.asset_id,
                 shareableLink: result?.secure_url,
                 downloadLink: result.url,
             };
 
-            if (writerImageData) {
-                updateData.image = writerImageData;
+            if (translatorImageData) {
+                updateData.image = translatorImageData;
             }
         }
 
         updateData.updatedBy = requester;
 
-        const updatedWriter = await WritersModel.findByIdAndUpdate(
-            writerId,
+        const updatedTranslator = await TranslatorsModel.findByIdAndUpdate(
+            translatorId,
             updateData,
             {
                 new: true,
@@ -392,71 +392,71 @@ const updateWriter = async (requester, writerId, updateData, writerImage) => {
         await AdminActivityLoggerModel.create({
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.UPDATE,
-            description: `${writerId} updated successfully.`,
-            details: JSON.stringify(updatedWriter),
-            affectedId: writerId,
+            description: `${translatorId} updated successfully.`,
+            details: JSON.stringify(updatedTranslator),
+            affectedId: translatorId,
         });
 
         return sendResponse(
-            updatedWriter,
-            'Writer updated successfully.',
+            updatedTranslator,
+            'Translator updated successfully.',
             httpStatus.OK
         );
     } catch (error) {
-        loggerService.error(`Failed to update writer: ${error}`);
+        loggerService.error(`Failed to update translator: ${error}`);
 
         return errorResponse(
-            error.message || 'Failed to update writer.',
+            error.message || 'Failed to update translator.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
 };
 
 /**
- * Deletes multiple writers by their IDs.
+ * Deletes multiple translators by their IDs.
  *
  * @async
  * @function
- * @name deleteWriters
+ * @name deleteTranslators
  * @param {Object} requester - The user requesting the deletion.
- * @param {Array<string>} writerIds - The IDs of the writers to be deleted.
+ * @param {Array<string>} translatorIds - The IDs of the translators to be deleted.
  * @returns {Promise<Object>} - A promise that resolves to the response object confirming the deletion.
  */
-const deleteWriters = async (requester, writerIds) => {
+const deleteTranslators = async (requester, translatorIds) => {
     return await service.deleteResourcesByList(
         requester,
-        WritersModel,
-        writerIds,
-        'writer'
+        TranslatorsModel,
+        translatorIds,
+        'translator'
     );
 };
 
 /**
- * Deletes a specific writer by ID.
+ * Deletes a specific translator by ID.
  *
  * @async
  * @function
- * @name deleteWriter
+ * @name deleteTranslator
  * @param {Object} requester - The user requesting the deletion.
- * @param {string} writerId - The ID of the writer to be deleted.
+ * @param {string} translatorId - The ID of the translator to be deleted.
  * @returns {Promise<Object>} - A promise that resolves to the response object confirming the deletion.
  */
-const deleteWriter = async (requester, writerId) => {
+const deleteTranslator = async (requester, translatorId) => {
     return service.deleteResourceById(
         requester,
-        WritersModel,
-        writerId,
-        'writer'
+        TranslatorsModel,
+        translatorId,
+        'translator'
     );
 };
 
-const writersService = {
-    createWriter,
-    getWriters,
-    getWriter,
-    updateWriter,
-    deleteWriters,
-    deleteWriter,
+const translatorsService = {
+    createTranslator,
+    getTranslators,
+    getTranslator,
+    updateTranslator,
+    deleteTranslators,
+    deleteTranslator,
 };
 
-export default writersService;
+export default translatorsService;

@@ -35,7 +35,11 @@ const getBooksHistory = async (requester) => {
                 $match: {
                     $or: [
                         { 'lend.user': new mongoose.Types.ObjectId(requester) },
-                        { 'return.user': new mongoose.Types.ObjectId(requester) },
+                        {
+                            'return.user': new mongoose.Types.ObjectId(
+                                requester
+                            ),
+                        },
                     ],
                 },
             },
@@ -136,7 +140,14 @@ const getBooksHistory = async (requester) => {
                                 $filter: {
                                     input: '$lend',
                                     as: 'lend',
-                                    cond: { $eq: ['$$lend.user', new mongoose.Types.ObjectId(requester)] },
+                                    cond: {
+                                        $eq: [
+                                            '$$lend.user',
+                                            new mongoose.Types.ObjectId(
+                                                requester
+                                            ),
+                                        ],
+                                    },
                                 },
                             },
                             0,
@@ -148,7 +159,14 @@ const getBooksHistory = async (requester) => {
                                 $filter: {
                                     input: '$return',
                                     as: 'return',
-                                    cond: { $eq: ['$$return.user', new mongoose.Types.ObjectId(requester)] },
+                                    cond: {
+                                        $eq: [
+                                            '$$return.user',
+                                            new mongoose.Types.ObjectId(
+                                                requester
+                                            ),
+                                        ],
+                                    },
                                 },
                             },
                             0,
@@ -172,10 +190,17 @@ const getBooksHistory = async (requester) => {
             books: bookHistories.map((history) => ({
                 book: history.book,
                 lend: history.lend
-                    ? { from: history.lend.from, to: history.lend.to, remarks: history.lend.remarks }
+                    ? {
+                          from: history.lend.from,
+                          to: history.lend.to,
+                          remarks: history.lend.remarks,
+                      }
                     : null,
                 return: history.return
-                    ? { date: history.return.date, remarks: history.return.remarks }
+                    ? {
+                          date: history.return.date,
+                          remarks: history.return.remarks,
+                      }
                     : null,
             })),
         };

@@ -59,10 +59,7 @@ const router = express.Router();
  *     tags:
  *       - User Lent Books
  */
-router
-    .route('/')
-    .get(lentController.getLentBooks)
-    .all(methodNotSupported);
+router.route('/').get(lentController.getLentBooks).all(methodNotSupported);
 
 /**
  * @openapi
@@ -130,10 +127,7 @@ router
  */
 router
     .route('/:lentBookId')
-    .get(
-        lentValidator.lentBookId,
-        lentController.getLentBook
-    )
+    .get(lentValidator.lentBookId, lentController.getLentBook)
     .all(methodNotSupported);
 
 export default router;
