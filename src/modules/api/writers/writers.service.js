@@ -22,6 +22,7 @@ import errorResponse from '../../../utilities/errorResponse.js';
 import sendResponse from '../../../utilities/sendResponse.js';
 import validateFile from '../../../utilities/validateFile.js';
 import BooksModel from '../books/books.model.js';
+import mongoose from 'mongoose';
 
 /**
  * Populates writer fields with additional information.
@@ -197,6 +198,7 @@ const getWriters = async (params) => {
                     review: 1,
                     summary: 1,
                     isActive: 1,
+                    image: 1,
                     createdBy: {
                         _id: 1,
                         name: 1, // Adjust fields based on your user schema
@@ -258,6 +260,9 @@ const getWriter = async (writerId) => {
     try {
         const writersWithBookCounts = await WritersModel.aggregate([
             {
+                $match: { _id: new mongoose.Types.ObjectId(writerId) }, // Match the specific writer by writerId
+            },
+            {
                 $lookup: {
                     from: BooksModel.collection.name, // Make sure this is the correct collection name
                     localField: '_id',
@@ -299,18 +304,25 @@ const getWriter = async (writerId) => {
             },
         ]);
 
+        if (!writersWithBookCounts.length) {
+            return errorResponse(
+                'Writer not found.',
+                httpStatus.NOT_FOUND
+            );
+        }
+
         return sendResponse(
             {
-                items: writersWithBookCounts,
+                ...writersWithBookCounts[0], // Return only the specific writer
             },
-            'Writers fetched successfully.',
-            httpStatus.CREATED
+            'Writer fetched successfully.',
+            httpStatus.OK
         );
     } catch (error) {
-        loggerService.error(`Failed to fetch writers: ${error}`);
+        loggerService.error(`Failed to fetch writer: ${error}`);
 
         return errorResponse(
-            error.message || 'Failed to fetch subject.',
+            error.message || 'Failed to fetch writer.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
