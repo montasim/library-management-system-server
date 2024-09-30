@@ -69,6 +69,9 @@ const routesConstants = {
     trendingBooks: {
         routes: 'books',
     },
+    trendingWriters: {
+        routes: 'writers',
+    },
     booksHistory: {
         routes: 'history',
         params: 'bookId',
