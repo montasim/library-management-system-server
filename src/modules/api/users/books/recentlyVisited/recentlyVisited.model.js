@@ -32,6 +32,7 @@ const recentlyVisitedBookSchema = new mongoose.Schema(
                     type: Schema.Types.ObjectId,
                     ref: 'Books',
                 },
+                _id: false, // Prevents Mongoose from adding an _id field to each book
             },
         ],
     },

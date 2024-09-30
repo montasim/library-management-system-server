@@ -25,7 +25,7 @@ import sendResponse from '../../../../../utilities/sendResponse.js';
  * @name recentlyVisitedService.add
  *
  * @param {Object} requester - The user making the request, identified by their ID.
- * @param {Object} bookData - The data of the book to be added, containing the book ID.
+ * @param {Object} bookId - The data of the book to be added, containing the book ID.
  *
  * @returns {Promise<Object>} - A promise that resolves to the result of the addition operation:
  * - On success: An object containing the added book details and the updated recently visited books list.
@@ -33,9 +33,8 @@ import sendResponse from '../../../../../utilities/sendResponse.js';
  *
  * @throws {Error} - Throws an error if there is an issue adding the book to the recently visited list.
  */
-const add = async (requester, bookData) => {
+const add = async (requester, bookId) => {
     try {
-        const bookId = bookData.book;
         const isValidBook = await BooksModel.exists({ _id: bookId });
         if (!isValidBook) {
             return errorResponse(
@@ -60,9 +59,10 @@ const add = async (requester, bookData) => {
             (book) => book.id.toString() === bookId.toString()
         );
         if (existingBook) {
-            return errorResponse(
+            return sendResponse(
+                {},
                 'The book is already in your recently visited list.',
-                httpStatus.BAD_REQUEST
+                httpStatus.OK
             );
         }
 

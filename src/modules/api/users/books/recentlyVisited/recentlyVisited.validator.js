@@ -25,7 +25,7 @@ import recentlyVisitedSchema from './recentlyVisited.schema.js';
 const add = validateWithSchema([
     {
         schema: recentlyVisitedSchema.add,
-        property: 'body',
+        property: 'params',
     },
 ]);
 
