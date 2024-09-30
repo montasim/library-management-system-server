@@ -6,9 +6,11 @@
  */
 
 import express from 'express';
+
 import recentlyVisitedValidator from './recentlyVisited.validator.js';
-import methodNotSupported from '../../../../../shared/methodNotSupported.js';
 import recentlyVisitedController from './recentlyVisited.controller.js';
+
+import methodNotSupported from '../../../../../shared/methodNotSupported.js';
 
 const router = express.Router();
 
@@ -66,8 +68,12 @@ const router = express.Router();
  */
 router
     .route('/')
-    .post(recentlyVisitedValidator.add, recentlyVisitedController.add)
     .get(recentlyVisitedController.get)
+    .all(methodNotSupported);
+
+router
+    .route('/:bookId')
+    .post(recentlyVisitedValidator.add, recentlyVisitedController.add)
     .all(methodNotSupported);
 
 export default router;

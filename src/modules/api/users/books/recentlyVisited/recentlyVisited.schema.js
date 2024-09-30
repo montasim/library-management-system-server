@@ -19,7 +19,7 @@ const add = Joi.object({
      *
      * @property {string} book - The ID of the book being added to the recently visited list. This field is required and must be a valid object ID.
      */
-    book: validationService.objectIdField.required(),
+    bookId: validationService.objectIdField.required(),
 }).strict();
 
 /**

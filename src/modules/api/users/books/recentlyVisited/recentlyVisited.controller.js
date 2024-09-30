@@ -10,6 +10,28 @@
 
 import recentlyVisitedService from './recentlyVisited.service.js';
 import controller from '../../../../../shared/controller.js';
+import asyncErrorHandlerService
+    from '../../../../../utilities/asyncErrorHandler.js';
+import getRequesterId from '../../../../../utilities/getRequesterId.js';
+import loggerService from '../../../../../service/logger.service.js';
+
+
+const addRecentlyVisited = asyncErrorHandlerService(async (req, res) => {
+        const requester = getRequesterId(req);
+        const bookId = req.params.bookId;
+
+        // Call the service function with the appropriate query.
+        const newData = await recentlyVisitedService.add(requester, bookId);
+
+        loggerService.info(
+            `Entity created by ${requester} at ${req.originalUrl}`,
+            newData
+        );
+
+        newData.route = req.originalUrl;
+        res.status(newData.status).send(newData);
+    });
+
 
 const recentlyVisitedController = {
     /**
@@ -26,7 +48,7 @@ const recentlyVisitedController = {
      *
      * @returns {Promise<void>} - A promise that resolves when the book is successfully added to the list.
      */
-    add: controller.create(recentlyVisitedService, 'add'),
+    add: addRecentlyVisited,
 
     /**
      * Retrieves the list of recently visited books for the requester.

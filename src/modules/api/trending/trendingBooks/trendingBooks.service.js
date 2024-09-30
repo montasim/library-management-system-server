@@ -26,55 +26,66 @@ const getTrendingBooks = async () => {
         // Aggregate to find the most common books across all users' favourites
         const trendingBooks = await FavouriteBooksModel.aggregate([
             {
-                $unwind: '$favourite',
+                $unwind: '$favouriteBooks', // Unwind the favouriteBooks array for each user
             },
             {
                 $group: {
-                    _id: '$favourite',
-                    count: { $sum: 1 },
+                    _id: '$favouriteBooks', // Group by the book ID
+                    count: { $sum: 1 }, // Count the occurrences of each book
                 },
             },
             {
                 $match: {
-                    count: { $gt: 1 }, // Adjust this threshold based on what you consider "trending"
+                    count: { $gt: 1 }, // A book is trending if favorited by more than 2 users
                 },
             },
             {
                 $lookup: {
-                    from: 'books',
-                    localField: '_id',
-                    foreignField: '_id',
-                    as: 'bookDetails',
+                    from: 'books', // Join with the books collection
+                    localField: '_id', // The _id here is the book ID from the favouriteBooks array
+                    foreignField: '_id', // Match with the _id field in the books collection
+                    as: 'bookDetails', // Store the joined book details in bookDetails
                 },
             },
             {
-                $unwind: '$bookDetails',
+                $unwind: '$bookDetails', // Unwind the bookDetails array
             },
             {
                 $project: {
-                    bookDetails: 1,
-                    count: 1,
+                    bookDetails: 1, // Include book details in the result
+                    count: 1, // Include the count of how many times the book has been favorited
                 },
             },
             {
-                $sort: { count: -1 }, // Sort by the most popular books first
+                $sort: { count: -1 }, // Sort by the count of favorited books in descending order
             },
             {
-                $limit: 10, // Limit to top 10 trending books
+                $limit: 10, // Limit to the top 10 trending books
             },
         ]);
 
-        if (trendingBooks.length === 0) {
+        const totalItems = trendingBooks.length;
+
+        if (totalItems === 0) {
             return sendResponse(
-                {},
+                {
+                    items: [],
+                    totalItems,
+                },
                 'No trending books found at the moment.',
                 httpStatus.OK
             );
         }
 
         return sendResponse(
-            trendingBooks,
-            `Successfully retrieved the top ${trendingBooks.length < 10 ? trendingBooks.length : '10'} trending books.`,
+            {
+                items: trendingBooks.map(book => ({
+                    ...book.bookDetails,
+                    count: book.count, // Add favorite count to each book detail
+                })),
+                totalItems,
+            },
+            `${totalItems} book${totalItems === 1 ? '' : 's'} fetched successfully.`,
             httpStatus.OK
         );
     } catch (error) {
