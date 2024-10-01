@@ -416,6 +416,28 @@ const deleteList = (service, deleteByIdFunction) =>
         res.status(deletedListData.status).send(deletedListData);
     });
 
+/**
+ * @function deleteAll
+ * Allows for bulk deletion of resources based on a list of IDs provided in the request query. This function ensures efficient and secure deletion of multiple entries.
+ *
+ * @param {Object} service - The service object containing business logic for bulk deletions.
+ * @param {Function} deleteFunction - The specific function on the service object to handle bulk deletions.
+ */
+const deleteAll = (service, deleteFunction) =>
+    asyncErrorHandlerService(async (req, res) => {
+        const requester = getRequesterId(req);
+        const deletedListData = await service[deleteFunction](
+            requester,
+        );
+
+        loggerService.warn(
+            `All entities deleted by ${requester} at ${req.originalUrl}`
+        );
+
+        deletedListData.route = req.originalUrl;
+        res.status(deletedListData.status).send(deletedListData);
+    });
+
 const controller = {
     createNewUser,
     signup,
@@ -435,6 +457,7 @@ const controller = {
     updateByRequester,
     deleteById,
     deleteList,
+    deleteAll,
 };
 
 export default controller;

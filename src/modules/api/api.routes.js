@@ -27,6 +27,7 @@ import pronounsRoutes from './pronouns/pronouns.routes.js';
 import userProfileRoutes from './userProfile/userProfile.routes.js';
 import accessTypesConstants from '../../constant/accessTypes.constants.js';
 import translatorsRoutes from './translators/translators.routes.js';
+import siteRoutes from './site/site.routes.js';
 
 const router = express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -72,6 +73,7 @@ router.use(`/${routesConstants.roles.routes}`, rolesRoutes);
 router.use(`/${routesConstants.subjects.routes}`, subjectsRoutes);
 router.use(`/${routesConstants.trending.routes}`, trendingRoutes);
 router.use(`/${routesConstants.users.routes}`, usersRoutes);
+router.use(`/${routesConstants.site.routes}`, siteRoutes);
 router.use(
     `/${routesConstants.user.routes}`,
     authenticateMiddleware(accessTypesConstants.USER),

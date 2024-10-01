@@ -27,6 +27,27 @@ const routesConstants = {
             create: 'create-admin',
         },
     },
+    site: {
+        routes: 'site',
+    },
+    faqs: {
+        routes: 'faqs',
+        permissions: {
+            create: 'create-faqs',
+            getList: 'get-faqs',
+            updateById: 'update-faqs',
+            deleteByList: 'delete-faqs',
+        },
+    },
+    aboutUs: {
+        routes: 'about-us',
+        permissions: {
+            create: 'create-about-us',
+            getList: 'get-about-us',
+            updateById: 'update-about-us',
+            deleteByList: 'delete-about-us',
+        },
+    },
     auth: {
         routes: 'auth',
     },
