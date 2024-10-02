@@ -13,12 +13,12 @@ const permissionSchema = new mongoose.Schema(
             sparse: true,
             required: [true, 'Please provide a question for the faq.'],
             minlength: [
-                faqsConstants.lengths.NAME_MIN,
-                `Question must be at least ${faqsConstants.lengths.NAME_MIN} characters long.`,
+                faqsConstants.lengths.QUESTION_MIN,
+                `Question must be at least ${faqsConstants.lengths.QUESTION_MIN} characters long.`,
             ],
             maxlength: [
-                faqsConstants.lengths.NAME_MAX,
-                `Question must not exceed ${faqsConstants.lengths.NAME_MAX} characters.`,
+                faqsConstants.lengths.QUESTION_MAX,
+                `Question must not exceed ${faqsConstants.lengths.QUESTION_MAX} characters.`,
             ],
             description:
                 'Question of the faq. Must be unique and conform to specified format constraints.',
@@ -29,12 +29,12 @@ const permissionSchema = new mongoose.Schema(
             lowercase: true,
             required: [true, 'Please provide a answer for the faq.'],
             minlength: [
-                faqsConstants.lengths.NAME_MIN,
-                `Answer must be at least ${faqsConstants.lengths.NAME_MIN} characters long.`,
+                faqsConstants.lengths.ANSWER_MIN,
+                `Answer must be at least ${faqsConstants.lengths.ANSWER_MIN} characters long.`,
             ],
             maxlength: [
-                faqsConstants.lengths.NAME_MAX,
-                `Answer must not exceed ${faqsConstants.lengths.NAME_MAX} characters.`,
+                faqsConstants.lengths.ANSWER_MAX,
+                `Answer must not exceed ${faqsConstants.lengths.ANSWER_MAX} characters.`,
             ],
             description:
                 'Answer of the faq. Must be unique and conform to specified format constraints.',

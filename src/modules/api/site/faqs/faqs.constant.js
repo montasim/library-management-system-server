@@ -1,6 +1,8 @@
 const lengths = {
-    NAME_MIN: 3,
-    NAME_MAX: 100,
+    QUESTION_MIN: 1,
+    QUESTION_MAX: 1000,
+    ANSWER_MIN: 1,
+    ANSWER_MAX: 1000000000,
 };
 
 const pattern = {

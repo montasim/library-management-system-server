@@ -4,16 +4,16 @@ import faqsConstants from './faqs.constant.js';
 import customValidationMessage from '../../../../shared/customValidationMessage.js';
 import validationService from '../../../../service/validation.service.js';
 
-const permissionSchemaBase = Joi.object({
+const faqSchemaBase = Joi.object({
     question: validationService
         .createStringField(
-            faqsConstants.lengths.NAME_MIN,
-            faqsConstants.lengths.NAME_MAX
+            faqsConstants.lengths.QUESTION_MIN,
+            faqsConstants.lengths.QUESTION_MAX
         ),
     answer: validationService
         .createStringField(
-            faqsConstants.lengths.NAME_MIN,
-            faqsConstants.lengths.NAME_MAX
+            faqsConstants.lengths.ANSWER_MIN,
+            faqsConstants.lengths.ANSWER_MAX
         ),
     page: Joi.string()
         .min(1)
@@ -31,24 +31,24 @@ const permissionSchemaBase = Joi.object({
     updatedAt: validationService.dateField,
 }).strict();
 
-const createFaqSchema = permissionSchemaBase.fork(
+const createFaqSchema = faqSchemaBase.fork(
     ['question', 'answer'],
     (field) => field.required()
 );
 
-const updateFaqSchema = permissionSchemaBase
-    .fork(Object.keys(permissionSchemaBase.describe().keys), (field) =>
+const updateFaqSchema = faqSchemaBase
+    .fork(Object.keys(faqSchemaBase.describe().keys), (field) =>
         field.optional()
     )
     .min(1);
 
-const permissionIdsParamSchema = Joi.object({
+const faqIdsParamSchema = Joi.object({
     ids: validationService.objectIdsField.required(),
 })
     .required()
     .messages(customValidationMessage);
 
-const getFaqsQuerySchema = permissionSchemaBase.fork(
+const getFaqsQuerySchema = faqSchemaBase.fork(
     [
         'question',
         'answer',
@@ -64,16 +64,16 @@ const getFaqsQuerySchema = permissionSchemaBase.fork(
     (field) => field.optional()
 );
 
-const permissionIdParamSchema = Joi.object({
-    permissionId: validationService.objectIdField.required(),
+const faqIdParamSchema = Joi.object({
+    faqId: validationService.objectIdField.required(),
 }).strict();
 
 const faqsSchema = {
     createFaqSchema,
     updateFaqSchema,
     getFaqsQuerySchema,
-    permissionIdsParamSchema,
-    permissionIdParamSchema,
+    faqIdsParamSchema,
+    faqIdParamSchema,
 };
 
 export default faqsSchema;

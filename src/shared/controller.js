@@ -323,13 +323,15 @@ const getByRequester = (service, getByIdFunction) =>
  */
 const updateById = (service, updateByIdFunction, paramsId) =>
     asyncErrorHandlerService(async (req, res) => {
+        console.log('ghghghghghghgh');
+        
         const requester = getRequesterId(req);
         const includesFile = req.file;
 
         // Determine the query to pass based on the presence of `requester`.
         const body = includesFile
-            ? [requester, paramsId, req.body, includesFile]
-            : [requester, paramsId, req.body];
+            ? [requester, req.params[paramsId], req.body, includesFile]
+            : [requester, req.params[paramsId], req.body];
 
         // Call the service function with the appropriate query.
         const updatedData = await service[updateByIdFunction](...body);
