@@ -48,6 +48,15 @@ const routesConstants = {
             deleteByList: 'delete-about-us',
         },
     },
+    termsAndConditions: {
+        routes: 'terms-and-conditions',
+        permissions: {
+            create: 'create-terms-and-conditions',
+            getList: 'get-terms-and-conditions',
+            updateById: 'update-terms-and-conditions',
+            deleteByList: 'delete-terms-and-conditions',
+        },
+    },
     auth: {
         routes: 'auth',
     },
