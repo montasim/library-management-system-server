@@ -12,26 +12,26 @@ const getFaqList = validateWithSchema([
 
 const getFaqById = validateWithSchema([
     {
-        schema: faqsSchema.permissionIdParamSchema,
+        schema: faqsSchema.faqIdParamSchema,
         property: 'params',
     },
 ]);
 
 const updateFaqById = validateWithSchema([
-    { schema: faqsSchema.permissionIdParamSchema, property: 'params' },
+    { schema: faqsSchema.faqIdParamSchema, property: 'params' },
     { schema: faqsSchema.updateFaqSchema, property: 'body' },
 ]);
 
 const deleteFaqList = validateWithSchema([
     {
-        schema: faqsSchema.permissionIdsParamSchema,
+        schema: faqsSchema.faqIdsParamSchema,
         property: 'query',
     },
 ]);
 
 const deleteFaqById = validateWithSchema([
     {
-        schema: faqsSchema.permissionIdParamSchema,
+        schema: faqsSchema.faqIdParamSchema,
         property: 'params',
     },
 ]);

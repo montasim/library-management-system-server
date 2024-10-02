@@ -32,6 +32,7 @@ const routesConstants = {
     },
     faqs: {
         routes: 'faqs',
+        params: 'faqId',
         permissions: {
             create: 'create-faqs',
             getList: 'get-faqs',
