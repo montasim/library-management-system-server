@@ -5,10 +5,8 @@ import AdminActivityLoggerModel
 import adminActivityLoggerConstants
     from '../../admin/adminActivityLogger/adminActivityLogger.constants.js';
 import loggerService from '../../../../service/logger.service.js';
-import service from '../../../../shared/service.js';
 
 import errorResponse from '../../../../utilities/errorResponse.js';
-import isEmptyObject from '../../../../utilities/isEmptyObject.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 
 const populateAboutUsFields = async (query) => {
@@ -29,17 +27,17 @@ const createOrUpdateAboutUs = async (requester, newAboutUsData) => {
     try {
         newAboutUsData.createdBy = requester;
 
-        // Check if an AboutUs document already exists
+        // Check if an about us document already exists
         const existingAboutUs = await AboutUsModel.findOne();
 
         let aboutUs;
         if (existingAboutUs) {
-            // If an AboutUs already exists, update it
+            // If an about us already exists, update it
             existingAboutUs.details = newAboutUsData.details;
             existingAboutUs.updatedBy = requester; // Update the `updatedBy` field
             aboutUs = await existingAboutUs.save(); // Save the updated document
         } else {
-            // If no AboutUs exists, create a new one
+            // If no about us exists, create a new one
             aboutUs = await AboutUsModel.create(newAboutUsData);
         }
 
@@ -57,14 +55,14 @@ const createOrUpdateAboutUs = async (requester, newAboutUsData) => {
 
         return sendResponse(
             populatedAboutUs,
-            'AboutUs created or updated successfully.',
+            'About us created or updated successfully.',
             httpStatus.CREATED
         );
     } catch (error) {
-        loggerService.error(`Failed to create or update AboutUs: ${error}`);
+        loggerService.error(`Failed to create or update about us: ${error}`);
 
         return errorResponse(
-            error.message || 'Failed to create or update AboutUs.',
+            error.message || 'Failed to create or update about us.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
@@ -72,13 +70,13 @@ const createOrUpdateAboutUs = async (requester, newAboutUsData) => {
 
 const getAboutUs = async (params) => {
     try {
-        // Aggregation pipeline to fetch aboutUs and populate createdBy and updatedBy fields
+        // Aggregation pipeline to fetch about us and populate createdBy and updatedBy fields
         const aboutUsData = await AboutUsModel.aggregate([
             {
                 // Lookup stage to populate the createdBy field from the Admins collection
                 $lookup: {
                     from: 'admins', // Name of the admins (or users) collection
-                    localField: 'createdBy', // Field in the AboutUs collection
+                    localField: 'createdBy', // Field in the about us collection
                     foreignField: '_id', // Matching field in the Admins collection
                     as: 'createdBy', // Output array name
                 },
@@ -87,7 +85,7 @@ const getAboutUs = async (params) => {
                 // Lookup stage to populate the updatedBy field from the Admins collection
                 $lookup: {
                     from: 'admins', // Name of the admins (or users) collection
-                    localField: 'updatedBy', // Field in the AboutUs collection
+                    localField: 'updatedBy', // Field in the about us collection
                     foreignField: '_id', // Matching field in the Admins collection
                     as: 'updatedBy', // Output array name
                 },
@@ -96,13 +94,13 @@ const getAboutUs = async (params) => {
                 // Unwind createdBy and updatedBy fields to convert them from arrays to objects
                 $unwind: {
                     path: '$createdBy',
-                    preserveNullAndEmptyArrays: true, // Keeps the aboutUs even if createdBy is null
+                    preserveNullAndEmptyArrays: true, // Keeps the about us even if createdBy is null
                 },
             },
             {
                 $unwind: {
                     path: '$updatedBy',
-                    preserveNullAndEmptyArrays: true, // Keeps the aboutUs even if updatedBy is null
+                    preserveNullAndEmptyArrays: true, // Keeps the about us even if updatedBy is null
                 },
             },
             {
@@ -125,7 +123,7 @@ const getAboutUs = async (params) => {
         ]);
 
         if (!aboutUsData || aboutUsData.length === 0) {
-            return sendResponse({}, 'No aboutUs content found.', httpStatus.OK);
+            return sendResponse({}, 'No about us content found.', httpStatus.OK);
         }
 
         return sendResponse(
@@ -136,10 +134,10 @@ const getAboutUs = async (params) => {
             httpStatus.OK
         );
     } catch (error) {
-        loggerService.error(`Failed to fetch aboutUs: ${error}`);
+        loggerService.error(`Failed to fetch about us: ${error}`);
 
         return errorResponse(
-            error.message || 'Failed to fetch aboutUs.',
+            error.message || 'Failed to fetch about us.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }
@@ -147,27 +145,27 @@ const getAboutUs = async (params) => {
 
 const deleteAboutUs = async (requester) => {
     try {
-        // Delete all documents from the AboutUs collection
+        // Delete all documents from the about us collection
         const result = await AboutUsModel.deleteMany({});
 
         // Log the deletion activity
         await AdminActivityLoggerModel.create({
             user: requester,
             action: adminActivityLoggerConstants.actionTypes.DELETE,
-            description: `All AboutUs content deleted successfully.`,
-            details: `Deleted ${result.deletedCount} documents from AboutUs collection.`,
+            description: `All about us content deleted successfully.`,
+            details: `Deleted ${result.deletedCount} documents from about us collection.`,
         });
 
         return sendResponse(
             {},
-            `All AboutUs content deleted successfully. Deleted ${result.deletedCount} documents.`,
+            `All about us content deleted successfully. Deleted ${result.deletedCount} documents.`,
             httpStatus.OK
         );
     } catch (error) {
-        loggerService.error(`Failed to delete all AboutUs content: ${error}`);
+        loggerService.error(`Failed to delete all about us content: ${error}`);
 
         return errorResponse(
-            error.message || 'Failed to delete all AboutUs content.',
+            error.message || 'Failed to delete all about us content.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }

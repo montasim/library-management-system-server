@@ -5,10 +5,8 @@ import AdminActivityLoggerModel
 import adminActivityLoggerConstants
     from '../../admin/adminActivityLogger/adminActivityLogger.constants.js';
 import loggerService from '../../../../service/logger.service.js';
-import service from '../../../../shared/service.js';
 
 import errorResponse from '../../../../utilities/errorResponse.js';
-import isEmptyObject from '../../../../utilities/isEmptyObject.js';
 import sendResponse from '../../../../utilities/sendResponse.js';
 
 const populateTermsAndConditionsFields = async (query) => {
@@ -72,7 +70,7 @@ const createOrUpdateTermsAndConditions = async (requester, newTermsAndConditions
 
 const getTermsAndConditions = async (params) => {
     try {
-        // Aggregation pipeline to fetch termsAndConditions and populate createdBy and updatedBy fields
+        // Aggregation pipeline to fetch terms and conditions and populate createdBy and updatedBy fields
         const termsAndConditionsData = await TermsAndConditionsModel.aggregate([
             {
                 // Lookup stage to populate the createdBy field from the Admins collection
@@ -96,13 +94,13 @@ const getTermsAndConditions = async (params) => {
                 // Unwind createdBy and updatedBy fields to convert them from arrays to objects
                 $unwind: {
                     path: '$createdBy',
-                    preserveNullAndEmptyArrays: true, // Keeps the termsAndConditions even if createdBy is null
+                    preserveNullAndEmptyArrays: true, // Keeps the terms and conditions even if createdBy is null
                 },
             },
             {
                 $unwind: {
                     path: '$updatedBy',
-                    preserveNullAndEmptyArrays: true, // Keeps the termsAndConditions even if updatedBy is null
+                    preserveNullAndEmptyArrays: true, // Keeps the terms and conditions even if updatedBy is null
                 },
             },
             {
