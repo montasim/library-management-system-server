@@ -57,6 +57,15 @@ const routesConstants = {
             deleteByList: 'delete-terms-and-conditions',
         },
     },
+    privacyPolicy: {
+        routes: 'privacy-policy',
+        permissions: {
+            create: 'create-privacy-policy',
+            getList: 'get-privacy-policy',
+            updateById: 'update-privacy-policy',
+            deleteByList: 'delete-privacy-policy',
+        },
+    },
     auth: {
         routes: 'auth',
     },
