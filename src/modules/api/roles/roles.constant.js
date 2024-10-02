@@ -24,15 +24,19 @@ const lengths = {
 const pattern = {
     /**
      * name - Regular expression pattern for validating role names. The pattern ensures that
-     * the role name starts with an uppercase letter followed by lowercase letters and contains
-     * a space separating two words, each starting with a lowercase letter.
+     * the role name starts with an uppercase letter followed by lowercase letters. Optionally,
+     * it allows a second word starting with an uppercase or lowercase letter after a space.
      *
      * @example
-     * const namePattern = /^[A-Z][a-z]+ [a-z]+$/;
-     * console.log(namePattern.test("Admin role")); // true
+     * const namePattern = /^[A-Z][a-z]+(?: [A-Za-z]+)?$/;
+     * console.log(namePattern.test("Todo")); // true
+     * console.log(namePattern.test("Test")); // true
+     * console.log(namePattern.test("Data")); // true
+     * console.log(namePattern.test("Todo Name")); // true
+     * console.log(namePattern.test("Test role")); // true
      * console.log(namePattern.test("admin Role")); // false (first word must start with uppercase)
      */
-    name: /^[A-Z][a-z]+ [a-z]+$/,
+    name: /^[A-Z][a-z]+(?: [A-Za-z]+)?$/,
 };
 
 /**
