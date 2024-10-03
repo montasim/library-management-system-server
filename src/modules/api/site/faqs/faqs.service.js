@@ -26,7 +26,7 @@ const permissionListParamsMapping = {};
 const createFaq = async (requester, newFaqData) => {
     try {
         const exists = await FaqsModel.exists({
-            question: newFaqData.question
+            question: newFaqData.question,
         });
         if (exists) {
             return sendResponse(
@@ -67,7 +67,7 @@ const createFaq = async (requester, newFaqData) => {
     }
 };
 
-const getFaqList = async (requester, params) => {
+const getFaqList = async (params) => {
     return service.getResourceList(
         FaqsModel,
         populateFaqFields,
@@ -89,7 +89,7 @@ const getFaqById = async (permissionId) => {
 const updateFaqById = async (requester, faqId, updateData) => {
     try {
         console.log(faqId);
-        
+
         if (isEmptyObject(updateData)) {
             return errorResponse(
                 'Please provide update data.',
@@ -107,11 +107,7 @@ const updateFaqById = async (requester, faqId, updateData) => {
         );
 
         if (!updatedFaq) {
-            return sendResponse(
-                {},
-                'Faq not found.',
-                httpStatus.NOT_FOUND
-            );
+            return sendResponse({}, 'Faq not found.', httpStatus.NOT_FOUND);
         }
 
         // Optionally populate if necessary (can be skipped if not required)
@@ -141,7 +137,6 @@ const updateFaqById = async (requester, faqId, updateData) => {
         );
     }
 };
-
 
 const deleteFaqList = async (requester, permissionIds) => {
     return await service.deleteResourcesByList(

@@ -105,10 +105,6 @@ router
         cacheMiddleware.invalidate(routesConstants.permissions.routes)
     )
     .get(
-        authenticateMiddleware(
-            accessTypesConstants.ADMIN,
-            routesConstants.faqs.permissions.getList
-        ),
         faqsValidator.getFaqList,
         faqsController.getFaqList,
         cacheMiddleware.create(configuration.cache.timeout)
@@ -201,10 +197,6 @@ router
 router
     .route(`/:${routesConstants.faqs.params}`)
     .get(
-        authenticateMiddleware(
-            accessTypesConstants.ADMIN,
-            routesConstants.faqs.permissions.getById
-        ),
         faqsValidator.getFaqById,
         faqsController.getFaqById,
         cacheMiddleware.create(configuration.cache.timeout)

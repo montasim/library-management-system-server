@@ -5,10 +5,7 @@ import routesConstants from '../../../../constant/routes.constants.js';
 const faqsController = {
     createFaq: controller.create(faqsService, 'createFaq'),
 
-    getFaqList: controller.getList(
-        faqsService,
-        'getFaqList'
-    ),
+    getFaqList: controller.getList(faqsService, 'getFaqList'),
 
     getFaqById: controller.getById(
         faqsService,
@@ -28,10 +25,7 @@ const faqsController = {
         routesConstants.faqs.params
     ),
 
-    deleteFaqList: controller.deleteList(
-        faqsService,
-        'deleteFaqList'
-    ),
+    deleteFaqList: controller.deleteList(faqsService, 'deleteFaqList'),
 };
 
 export default faqsController;

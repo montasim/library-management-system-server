@@ -5,16 +5,14 @@ import customValidationMessage from '../../../../shared/customValidationMessage.
 import validationService from '../../../../service/validation.service.js';
 
 const faqSchemaBase = Joi.object({
-    question: validationService
-        .createStringField(
-            faqsConstants.lengths.QUESTION_MIN,
-            faqsConstants.lengths.QUESTION_MAX
-        ),
-    answer: validationService
-        .createStringField(
-            faqsConstants.lengths.ANSWER_MIN,
-            faqsConstants.lengths.ANSWER_MAX
-        ),
+    question: validationService.createStringField(
+        faqsConstants.lengths.QUESTION_MIN,
+        faqsConstants.lengths.QUESTION_MAX
+    ),
+    answer: validationService.createStringField(
+        faqsConstants.lengths.ANSWER_MIN,
+        faqsConstants.lengths.ANSWER_MAX
+    ),
     page: Joi.string()
         .min(1)
         .custom((value, helpers) => parseInt(value)),
@@ -31,9 +29,8 @@ const faqSchemaBase = Joi.object({
     updatedAt: validationService.dateField,
 }).strict();
 
-const createFaqSchema = faqSchemaBase.fork(
-    ['question', 'answer'],
-    (field) => field.required()
+const createFaqSchema = faqSchemaBase.fork(['question', 'answer'], (field) =>
+    field.required()
 );
 
 const updateFaqSchema = faqSchemaBase
