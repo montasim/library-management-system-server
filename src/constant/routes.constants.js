@@ -58,6 +58,15 @@ const routesConstants = {
             deleteByList: 'delete-terms-and-conditions',
         },
     },
+    siteMap: {
+        routes: 'site-map',
+        permissions: {
+            create: 'create-site-map',
+            getList: 'get-site-map',
+            updateById: 'update-site-map',
+            deleteByList: 'delete-site-map',
+        },
+    },
     privacyPolicy: {
         routes: 'privacy-policy',
         permissions: {
