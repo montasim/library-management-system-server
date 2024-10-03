@@ -1,9 +1,7 @@
 import TermsAndConditionsModel from './termsAndConditions.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import AdminActivityLoggerModel
-    from '../../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../../admin/adminActivityLogger/adminActivityLogger.constants.js';
 import loggerService from '../../../../service/logger.service.js';
 
 import errorResponse from '../../../../utilities/errorResponse.js';
@@ -23,28 +21,36 @@ const populateTermsAndConditionsFields = async (query) => {
 
 const termsAndConditionsListParamsMapping = {};
 
-const createOrUpdateTermsAndConditions = async (requester, newTermsAndConditionsData) => {
+const createOrUpdateTermsAndConditions = async (
+    requester,
+    newTermsAndConditionsData
+) => {
     try {
         newTermsAndConditionsData.createdBy = requester;
 
         // Check if an TermsAndConditions document already exists
-        const existingTermsAndConditions = await TermsAndConditionsModel.findOne();
+        const existingTermsAndConditions =
+            await TermsAndConditionsModel.findOne();
 
         let termsAndConditions;
         if (existingTermsAndConditions) {
             // If an TermsAndConditions already exists, update it
-            existingTermsAndConditions.details = newTermsAndConditionsData.details;
+            existingTermsAndConditions.details =
+                newTermsAndConditionsData.details;
             existingTermsAndConditions.updatedBy = requester; // Update the `updatedBy` field
             termsAndConditions = await existingTermsAndConditions.save(); // Save the updated document
         } else {
             // If no TermsAndConditions exists, create a new one
-            termsAndConditions = await TermsAndConditionsModel.create(newTermsAndConditionsData);
+            termsAndConditions = await TermsAndConditionsModel.create(
+                newTermsAndConditionsData
+            );
         }
 
         // Populate necessary fields after creation or update
-        const populatedTermsAndConditions = await populateTermsAndConditionsFields(
-            TermsAndConditionsModel.findById(termsAndConditions._id)
-        );
+        const populatedTermsAndConditions =
+            await populateTermsAndConditionsFields(
+                TermsAndConditionsModel.findById(termsAndConditions._id)
+            );
 
         await AdminActivityLoggerModel.create({
             user: requester,
@@ -59,7 +65,9 @@ const createOrUpdateTermsAndConditions = async (requester, newTermsAndConditions
             httpStatus.CREATED
         );
     } catch (error) {
-        loggerService.error(`Failed to create or update terms and conditions: ${error}`);
+        loggerService.error(
+            `Failed to create or update terms and conditions: ${error}`
+        );
 
         return errorResponse(
             error.message || 'Failed to create or update terms and conditions.',
@@ -123,7 +131,11 @@ const getTermsAndConditions = async (params) => {
         ]);
 
         if (!termsAndConditionsData || termsAndConditionsData.length === 0) {
-            return sendResponse({}, 'No terms and conditions content found.', httpStatus.OK);
+            return sendResponse(
+                {},
+                'No terms and conditions content found.',
+                httpStatus.OK
+            );
         }
 
         return sendResponse(
@@ -162,10 +174,13 @@ const deleteTermsAndConditions = async (requester) => {
             httpStatus.OK
         );
     } catch (error) {
-        loggerService.error(`Failed to delete all terms and conditions content: ${error}`);
+        loggerService.error(
+            `Failed to delete all terms and conditions content: ${error}`
+        );
 
         return errorResponse(
-            error.message || 'Failed to delete all terms and conditions content.',
+            error.message ||
+                'Failed to delete all terms and conditions content.',
             httpStatus.INTERNAL_SERVER_ERROR
         );
     }

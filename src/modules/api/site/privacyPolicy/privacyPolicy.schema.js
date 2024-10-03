@@ -2,8 +2,7 @@ import Joi from 'joi';
 
 import privacyPolicyConstants from './privacyPolicy.constant.js';
 import validationService from '../../../../service/validation.service.js';
-import customValidationMessage
-    from '../../../../shared/customValidationMessage.js';
+import customValidationMessage from '../../../../shared/customValidationMessage.js';
 
 const privacyPolicySchemaBase = Joi.object({
     details: validationService
@@ -28,13 +27,7 @@ const updatePrivacyPolicySchema = privacyPolicySchemaBase
     .min(1);
 
 const getPrivacyPolicyQuerySchema = privacyPolicySchemaBase.fork(
-    [
-        'details',
-        'createdBy',
-        'updatedBy',
-        'createdAt',
-        'updatedBy',
-    ],
+    ['details', 'createdBy', 'updatedBy', 'createdAt', 'updatedBy'],
     (field) => field.optional()
 );
 

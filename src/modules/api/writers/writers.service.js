@@ -305,10 +305,7 @@ const getWriter = async (writerId) => {
         ]);
 
         if (!writersWithBookCounts.length) {
-            return errorResponse(
-                'Writer not found.',
-                httpStatus.NOT_FOUND
-            );
+            return errorResponse('Writer not found.', httpStatus.NOT_FOUND);
         }
 
         return sendResponse(

@@ -59,7 +59,9 @@ const translatorListParamsMapping = {};
  */
 const createTranslator = async (requester, translatorData, translatorImage) => {
     try {
-        const exists = await TranslatorsModel.exists({ name: translatorData.name });
+        const exists = await TranslatorsModel.exists({
+            name: translatorData.name,
+        });
         if (exists) {
             return sendResponse(
                 {},
@@ -328,7 +330,12 @@ const getTranslator = async (translatorId) => {
  * @param {Object} translatorImage - The new image file for the translator.
  * @returns {Promise<Object>} - A promise that resolves to the response object containing the updated translator.
  */
-const updateTranslator = async (requester, translatorId, updateData, translatorImage) => {
+const updateTranslator = async (
+    requester,
+    translatorId,
+    updateData,
+    translatorImage
+) => {
     try {
         if (isEmptyObject(updateData)) {
             return errorResponse(

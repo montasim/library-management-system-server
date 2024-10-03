@@ -324,7 +324,7 @@ const getByRequester = (service, getByIdFunction) =>
 const updateById = (service, updateByIdFunction, paramsId) =>
     asyncErrorHandlerService(async (req, res) => {
         console.log('ghghghghghghgh');
-        
+
         const requester = getRequesterId(req);
         const includesFile = req.file;
 
@@ -428,9 +428,7 @@ const deleteList = (service, deleteByIdFunction) =>
 const deleteAll = (service, deleteFunction) =>
     asyncErrorHandlerService(async (req, res) => {
         const requester = getRequesterId(req);
-        const deletedListData = await service[deleteFunction](
-            requester,
-        );
+        const deletedListData = await service[deleteFunction](requester);
 
         loggerService.warn(
             `All entities deleted by ${requester} at ${req.originalUrl}`

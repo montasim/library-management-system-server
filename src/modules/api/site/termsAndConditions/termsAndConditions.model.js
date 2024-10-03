@@ -10,7 +10,10 @@ const termsAndConditionsSchema = new mongoose.Schema(
             trim: true,
             unique: true,
             sparse: true,
-            required: [true, 'Please provide content for the termsAndConditions.'],
+            required: [
+                true,
+                'Please provide content for the termsAndConditions.',
+            ],
             minlength: [
                 termsAndConditionsConstants.lengths.CONTENT_MIN,
                 `TermsAndConditions content must be at least ${termsAndConditionsConstants.lengths.CONTENT_MIN} characters long.`,
@@ -38,6 +41,7 @@ termsAndConditionsSchema.index({ details: 1 }, { unique: true });
 
 // Check if the model already exists before defining it
 const TermsAndConditionsModel =
-    mongoose.models.TermsAndConditions || mongoose.model('TermsAndConditions', termsAndConditionsSchema);
+    mongoose.models.TermsAndConditions ||
+    mongoose.model('TermsAndConditions', termsAndConditionsSchema);
 
 export default TermsAndConditionsModel;

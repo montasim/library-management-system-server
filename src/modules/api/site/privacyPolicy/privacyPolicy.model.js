@@ -38,6 +38,7 @@ privacyPolicySchema.index({ details: 1 }, { unique: true });
 
 // Check if the model already exists before defining it
 const PrivacyPolicyModel =
-    mongoose.models.PrivacyPolicy || mongoose.model('PrivacyPolicy', privacyPolicySchema);
+    mongoose.models.PrivacyPolicy ||
+    mongoose.model('PrivacyPolicy', privacyPolicySchema);
 
 export default PrivacyPolicyModel;

@@ -1,9 +1,7 @@
 import AboutUsModel from './aboutUs.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import AdminActivityLoggerModel
-    from '../../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../../admin/adminActivityLogger/adminActivityLogger.constants.js';
 import loggerService from '../../../../service/logger.service.js';
 
 import errorResponse from '../../../../utilities/errorResponse.js';
@@ -123,7 +121,11 @@ const getAboutUs = async (params) => {
         ]);
 
         if (!aboutUsData || aboutUsData.length === 0) {
-            return sendResponse({}, 'No about us content found.', httpStatus.OK);
+            return sendResponse(
+                {},
+                'No about us content found.',
+                httpStatus.OK
+            );
         }
 
         return sendResponse(

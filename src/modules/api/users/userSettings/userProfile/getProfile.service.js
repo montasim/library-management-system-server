@@ -37,11 +37,16 @@ const getProfile = async (userId) => {
     try {
         // Fetch only the necessary fields and exclude sensitive data directly from the database
         const user = await UsersModel.findById(userId)
-            .select('-passwordHash -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -emails.emailVerifyToken -emails.emailVerifyTokenExpires -mobiles.phoneVerifyToken -mobiles.phoneVerifyTokenExpires -sessions -activities')
+            .select(
+                '-passwordHash -resetPasswordVerifyToken -resetPasswordVerifyTokenExpires -emails.emailVerifyToken -emails.emailVerifyTokenExpires -mobiles.phoneVerifyToken -mobiles.phoneVerifyTokenExpires -sessions -activities'
+            )
             .lean();
 
         if (!user) {
-            return errorResponse('Please login first.', httpStatus.UNAUTHORIZED);
+            return errorResponse(
+                'Please login first.',
+                httpStatus.UNAUTHORIZED
+            );
         }
 
         return sendResponse(user, 'User fetched successfully.', httpStatus.OK);

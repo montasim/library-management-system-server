@@ -93,6 +93,7 @@ const translatorSchema = new mongoose.Schema(
 translatorSchema.index({ name: 1 }, { unique: true });
 
 const TranslatorsModel =
-    mongoose.models.Translators || mongoose.model('Translators', translatorSchema);
+    mongoose.models.Translators ||
+    mongoose.model('Translators', translatorSchema);
 
 export default TranslatorsModel;

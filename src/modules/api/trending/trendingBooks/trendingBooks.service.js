@@ -79,7 +79,7 @@ const getTrendingBooks = async () => {
 
         return sendResponse(
             {
-                items: trendingBooks.map(book => ({
+                items: trendingBooks.map((book) => ({
                     ...book.bookDetails,
                     count: book.count, // Add favorite count to each book detail
                 })),

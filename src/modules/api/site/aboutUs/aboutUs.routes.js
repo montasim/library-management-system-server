@@ -2,14 +2,12 @@ import express from 'express';
 
 import aboutUsController from './aboutUs.controller.js';
 import aboutUsValidator from './aboutUs.validator.js';
-import accessTypesConstants
-    from '../../../../constant/accessTypes.constants.js';
+import accessTypesConstants from '../../../../constant/accessTypes.constants.js';
 import routesConstants from '../../../../constant/routes.constants.js';
 import cacheMiddleware from '../../../../middleware/cache.middleware.js';
 import configuration from '../../../../configuration/configuration.js';
 
-import authenticateMiddleware
-    from '../../../../middleware/authenticate.middleware.js';
+import authenticateMiddleware from '../../../../middleware/authenticate.middleware.js';
 import methodNotSupported from '../../../../shared/methodNotSupported.js';
 
 const router = express.Router();

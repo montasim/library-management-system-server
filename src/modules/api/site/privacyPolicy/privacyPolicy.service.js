@@ -1,9 +1,7 @@
 import PrivacyPolicyModel from './privacyPolicy.model.js';
 import httpStatus from '../../../../constant/httpStatus.constants.js';
-import AdminActivityLoggerModel
-    from '../../admin/adminActivityLogger/adminActivityLogger.model.js';
-import adminActivityLoggerConstants
-    from '../../admin/adminActivityLogger/adminActivityLogger.constants.js';
+import AdminActivityLoggerModel from '../../admin/adminActivityLogger/adminActivityLogger.model.js';
+import adminActivityLoggerConstants from '../../admin/adminActivityLogger/adminActivityLogger.constants.js';
 import loggerService from '../../../../service/logger.service.js';
 
 import errorResponse from '../../../../utilities/errorResponse.js';
@@ -38,7 +36,8 @@ const createOrUpdatePrivacyPolicy = async (requester, newPrivacyPolicyData) => {
             privacyPolicy = await existingPrivacyPolicy.save(); // Save the updated document
         } else {
             // If no privacy policy exists, create a new one
-            privacyPolicy = await PrivacyPolicyModel.create(newPrivacyPolicyData);
+            privacyPolicy =
+                await PrivacyPolicyModel.create(newPrivacyPolicyData);
         }
 
         // Populate necessary fields after creation or update
@@ -59,7 +58,9 @@ const createOrUpdatePrivacyPolicy = async (requester, newPrivacyPolicyData) => {
             httpStatus.CREATED
         );
     } catch (error) {
-        loggerService.error(`Failed to create or update privacy policy: ${error}`);
+        loggerService.error(
+            `Failed to create or update privacy policy: ${error}`
+        );
 
         return errorResponse(
             error.message || 'Failed to create or update privacy policy.',
@@ -123,7 +124,11 @@ const getPrivacyPolicy = async (params) => {
         ]);
 
         if (!privacyPolicyData || privacyPolicyData.length === 0) {
-            return sendResponse({}, 'No privacy policy content found.', httpStatus.OK);
+            return sendResponse(
+                {},
+                'No privacy policy content found.',
+                httpStatus.OK
+            );
         }
 
         return sendResponse(
@@ -162,7 +167,9 @@ const deletePrivacyPolicy = async (requester) => {
             httpStatus.OK
         );
     } catch (error) {
-        loggerService.error(`Failed to delete all privacy policy content: ${error}`);
+        loggerService.error(
+            `Failed to delete all privacy policy content: ${error}`
+        );
 
         return errorResponse(
             error.message || 'Failed to delete all privacy policy content.',

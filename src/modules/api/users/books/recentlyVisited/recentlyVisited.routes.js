@@ -66,10 +66,7 @@ const router = express.Router();
  *     tags:
  *       - Recently Visited Books
  */
-router
-    .route('/')
-    .get(recentlyVisitedController.get)
-    .all(methodNotSupported);
+router.route('/').get(recentlyVisitedController.get).all(methodNotSupported);
 
 router
     .route('/:bookId')

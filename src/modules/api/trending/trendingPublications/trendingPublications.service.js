@@ -91,7 +91,7 @@ const getTrendingPublications = async () => {
 
         return sendResponse(
             {
-                items: trendingPublications.map(publication => ({
+                items: trendingPublications.map((publication) => ({
                     ...publication.publicationDetails,
                     count: publication.count, // Add favorite count to each publication detail
                 })),

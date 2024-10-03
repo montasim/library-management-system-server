@@ -91,7 +91,7 @@ const getTrendingSubjects = async () => {
 
         return sendResponse(
             {
-                items: trendingSubjects.map(subject => ({
+                items: trendingSubjects.map((subject) => ({
                     ...subject.subjectDetails,
                     count: subject.count, // Add favorite count to each subject detail
                 })),

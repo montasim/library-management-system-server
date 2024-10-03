@@ -116,7 +116,10 @@ const translatorsController = {
      *
      * @returns {Promise<void>} - A promise that resolves with the confirmation of the translators' deletion.
      */
-    deleteTranslators: controller.deleteList(translatorsService, 'deleteTranslators'),
+    deleteTranslators: controller.deleteList(
+        translatorsService,
+        'deleteTranslators'
+    ),
 };
 
 export default translatorsController;

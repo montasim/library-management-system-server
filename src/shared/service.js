@@ -76,12 +76,14 @@ const getResourceList = async (
 ) => {
     try {
         const {
-            page, // No default value, check if it's provided
-            limit = 10,
+            page,
+            limit,
             sort = '-createdAt',
             requester,
             ...restParams
         } = params;
+
+        console.log(page);
 
         // Dynamic query construction with mapping
         const query = Object.keys(restParams).reduce((acc, key) => {

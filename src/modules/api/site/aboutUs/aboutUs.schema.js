@@ -2,8 +2,7 @@ import Joi from 'joi';
 
 import aboutUsConstants from './aboutUs.constant.js';
 import validationService from '../../../../service/validation.service.js';
-import customValidationMessage
-    from '../../../../shared/customValidationMessage.js';
+import customValidationMessage from '../../../../shared/customValidationMessage.js';
 
 const aboutUsSchemaBase = Joi.object({
     details: validationService
@@ -18,9 +17,8 @@ const aboutUsSchemaBase = Joi.object({
     updatedAt: validationService.dateField,
 }).strict();
 
-const createAboutUsSchema = aboutUsSchemaBase.fork(
-    ['details'],
-    (field) => field.required()
+const createAboutUsSchema = aboutUsSchemaBase.fork(['details'], (field) =>
+    field.required()
 );
 
 const updateAboutUsSchema = aboutUsSchemaBase
@@ -28,13 +26,7 @@ const updateAboutUsSchema = aboutUsSchemaBase
     .min(1);
 
 const getAboutUsQuerySchema = aboutUsSchemaBase.fork(
-    [
-        'details',
-        'createdBy',
-        'updatedBy',
-        'createdAt',
-        'updatedBy',
-    ],
+    ['details', 'createdBy', 'updatedBy', 'createdAt', 'updatedBy'],
     (field) => field.optional()
 );
 

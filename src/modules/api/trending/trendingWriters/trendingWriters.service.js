@@ -91,7 +91,7 @@ const getTrendingWriters = async () => {
 
         return sendResponse(
             {
-                items: trendingWriters.map(writer => ({
+                items: trendingWriters.map((writer) => ({
                     ...writer.writerDetails,
                     count: writer.count, // Add favorite count to each writer detail
                 })),
